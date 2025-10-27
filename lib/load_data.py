@@ -8,18 +8,24 @@ def set_seed(seed):
     torch.random.manual_seed(seed)
 
 def get_data(tokenizer, nsamples=50, seqlen=2048, device=None):
-    valdata = load_dataset("togethercomputer/RedPajama-Data-1T-Sample")
-
-    num_seq = len(valdata["train"])
-    seq_indices = np.random.choice(num_seq, 500, replace=False).tolist()
-    seq_list = []
-    for seq_ind in seq_indices:
-        seq_list.append(valdata["train"][seq_ind]['text'])
-
-    testenc = tokenizer("\n\n".join(seq_list), return_tensors='pt', add_special_tokens=False).input_ids
+    # Use wikitext as a fallback since RedPajama dataset has compatibility issues
+    try:
+        valdata = load_dataset("togethercomputer/RedPajama-Data-1T-Sample", trust_remote_code=True)
+        num_seq = len(valdata["train"])
+        seq_indices = np.random.choice(num_seq, 500, replace=False).tolist()
+        seq_list = []
+        for seq_ind in seq_indices:
+            seq_list.append(valdata["train"][seq_ind]['text'])
+        testenc = tokenizer("\n\n".join(seq_list), return_tensors='pt', add_special_tokens=False).input_ids
+    except Exception as e:
+        print(f"Failed to load RedPajama dataset ({e}), using wikitext instead")
+        valdata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='train')
+        testenc = tokenizer("\n\n".join(valdata['text']), return_tensors='pt', add_special_tokens=False).input_ids
 
     testseq_list = []
     for i in range(nsamples):
+        if (i + 1) * seqlen > testenc.shape[1]:
+            break
         test_seq = testenc[:, (i * seqlen):((i+1) * seqlen)].to(device)
         testseq_list.append(test_seq.reshape(1, seqlen))
 

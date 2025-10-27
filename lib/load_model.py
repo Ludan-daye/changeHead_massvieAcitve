@@ -11,18 +11,24 @@ def load_llm(args):
     print(f"loading model {args.model}")
     model_name, cache_dir = MODEL_DICT_LLMs[args.model]["model_id"], MODEL_DICT_LLMs[args.model]["cache_dir"]
 
+    # Only use token if it's not the default placeholder
+    token_kwargs = {} if args.access_token == "type in your access token here" else {"token": args.access_token}
+
+    # For attention analysis, we need attn_implementation='eager'
+    attn_impl = getattr(args, 'attn_implementation', 'eager')
+
     if "falcon" in args.model or "mpt" in args.model or "phi" in args.model:
-        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", trust_remote_code=True, token=args.access_token)
+        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", trust_remote_code=True, attn_implementation=attn_impl, **token_kwargs)
     elif "mistral" in args.model or "pythia" in args.model:
-        model = AutoModelForCausalLM.from_pretrained(model_name, revision=args.revision, torch_dtype=torch.float16, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", token=args.access_token)
+        model = AutoModelForCausalLM.from_pretrained(model_name, revision=args.revision, torch_dtype=torch.float16, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", attn_implementation=attn_impl, **token_kwargs)
     else:
-        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", token=args.access_token)
+        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", attn_implementation=attn_impl, **token_kwargs)
     model.eval()
 
     if "mpt" in args.model or "pythia" in args.model:
-        tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True, token=args.access_token)
+        tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True, **token_kwargs)
     else:
-        tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False, token=args.access_token)
+        tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False, **token_kwargs)
 
     device = torch.device("cuda:0")
     if "mpt_30b" in args.model:

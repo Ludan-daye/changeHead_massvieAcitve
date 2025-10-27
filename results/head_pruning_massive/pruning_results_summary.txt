@@ -1,0 +1,17 @@
+Head Pruning Effects on Massive Activations
+================================================================================
+
+EXPERIMENT 1: Prune TOP heads (most related to massive activations)
+Pruned heads: {2: [7], 5: [1], 6: [1]}
+Average Top1 change: 0.06%
+Max Top1 change: 0.73% (Layer 11)
+
+EXPERIMENT 2: Prune BOTTOM heads (least related to massive activations)
+Pruned heads: {0: [1], 4: [11], 11: [8]}
+Average Top1 change: -0.57%
+Max Top1 change: 0.59% (Layer 11)
+
+
+Conclusion:
+✗ Pruning TOP heads has SMALLER impact than expected
+  → These heads may not be the primary cause of massive activations

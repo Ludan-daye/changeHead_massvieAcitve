@@ -107,9 +107,9 @@ MODEL_DICT_LLMs = {
         "cache_dir": CACHE_DIR_BASE,
     },
 
-    ### gpt2 model 
+    ### gpt2 model
     "gpt2": {
-        "model_id": "gpt2",
+        "model_id": "openai-community/gpt2",
         "cache_dir": CACHE_DIR_BASE
     },
     "gpt2_medium": {

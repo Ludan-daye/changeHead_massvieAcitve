@@ -47,6 +47,8 @@ if __name__ == "__main__":
             mp.enable_mistral_custom_decoderlayer(layers[layer_id], layer_id)
         elif "phi-2" in args.model:
             mp.enable_phi2_custom_decoderlayer(layers[layer_id], layer_id)
+        elif "gpt2" in args.model:
+            mp.enable_gpt2_custom_block(layers[layer_id], layer_id)
         else:
             raise ValueError(f"model {args.model} not supported")
 
@@ -77,6 +79,8 @@ if __name__ == "__main__":
                 mp.enable_mistral_custom_decoderlayer(layer, layer_id)
             elif "phi-2" in args.model:
                 mp.enable_phi2_custom_decoderlayer(layers[layer_id], layer_id)
+            elif "gpt2" in args.model:
+                mp.enable_gpt2_custom_block(layers[layer_id], layer_id)
             else:
                 raise ValueError(f"model {args.model} not supported")
 
