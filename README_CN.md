@@ -320,13 +320,111 @@
 
 ---
 
-### 6️⃣ 3D可视化：剪枝前后对比
+### 6️⃣ 实验2C：MLP内部追踪 - 精确定位爆发点
+
+<div align="center">
+
+![GELU影响](results/exp2c_mlp_internal/exp2c_gelu_impact.png)
+
+**图13：MLP内部激活流 - 爆发发生在Linear2输出**
+
+</div>
+
+#### 实验设计：
+
+既然我们知道MLP层生成massive activations（实验2A），我们需要找到**确切位置** - MLP内部哪里发生了爆发。
+
+我们在Layer 2 MLP的4个内部检查点进行追踪：
+1. **MLP输入**（768维） - 残差流输入
+2. **Linear1之后**（3072维） - 第一次投影：768 → 3072
+3. **GELU之后**（3072维） - 激活函数之后
+4. **MLP输出**（768维） - Linear2之后：3072 → 768
+
+**待测试假设**：GELU是否导致了产生massive activations的放大？
+
+#### 结果：
+
+| 检查点 | 维度 | 最大激活值 | 中位数 | Top1/中位数 | 相对前一步的变化 |
+|-------|-----|----------|-------|-----------|----------------|
+| **1. MLP输入** | 768 | 19.88 | 0.11 | 185.76× | - |
+| **2. Linear1之后** | 3072 | 62.91 | 1.00 | 62.84× | +43.03 (+216.5%) |
+| **3. GELU之后** | 3072 | 62.91 | 0.10 | 634.25× | **+0.00 (+0.0%)** ⚠️ |
+| **4. MLP输出** | 768 | **2342.00** | 0.27 | 8595.73× | **+2279.09 (+3623.0%)** 🔥 |
+
+<div align="center">
+
+![维度分析](results/exp2c_mlp_internal/exp2c_dimension_analysis.png)
+
+**图14：GELU前后的Top维度 + 权重贡献**
+
+</div>
+
+#### GELU影响分析：
+
+| 指标 | GELU之前 | GELU之后 | 变化 | 影响 |
+|-----|---------|---------|-----|-----|
+| **最大激活值** | 62.91 | 62.91 | **+0.00** | **+0.0%** |
+| **Top维度** | Dim 666 | Dim 666 | 相同 | 不变 |
+
+**惊人结果**：GELU对最大激活值的影响为**零**！
+
+#### 爆发实际发生在哪里？
+
+**真正的罪魁祸首：Linear2 (c_proj) 权重矩阵**
+
+大规模爆发（62.91 → 2342.00）发生在**Linear2输出**，而非GELU：
+
+1. **Linear1**在3072个中间维度创建适度激活值（最大：62.91）
+2. **GELU**保留这些值（最大值保持62.91，但将负值清零）
+3. **Linear2**权重矩阵**集中**这些中间激活到特定输出维度：
+   - 输出Dim 447达到**2342.00**（massive activation！）
+   - 输出Dim 138达到**97.38**
+
+#### 权重矩阵分析：
+
+对Dim 447贡献最大的中间维度：
+- 中间Dim 496：权重 = **-0.2986**
+- 中间Dim 681：权重 = **-0.2295**
+- 中间Dim 732：权重 = **-0.2231**
+- 中间Dim 21：权重 = **-0.2190**
+- 中间Dim 231：权重 = **+0.2190**
+
+**关键洞察**：即使是适度的权重（-0.3到+0.3）也可以从3072个维度累加，在Dim 447中产生巨大的2342.00值。
+
+<div align="center">
+
+![激活流](results/exp2c_mlp_internal/exp2c_activation_flow.png)
+
+**图15：通过MLP的激活进展 - 爆发点已确认**
+
+</div>
+
+#### 实验2C结论：
+
+🎯 **明确发现：Massive activations在Linear2输出爆发，而非GELU**
+
+该实验推翻了常见假设：
+- **GELU是无辜的**：对最大激活值影响0%
+- **Linear2是生成器**：从中间到输出爆发3623%
+- **机制已确认**：从3072个中间维度的加权和集中到特定输出维度（447, 138）
+
+**完整图景**：
+1. **Linear1**扩展到3072维，值适中（~63）
+2. **GELU**应用非线性但不放大最大值
+3. **Linear2**执行加权求和：3072维 → 768维
+4. **集中效应**：许多适度值 × 权重 = 少数巨大值
+
+**类比**：Linear2就像**聚焦阳光的透镜** - 许多适度的光线集中成一个燃烧点。
+
+---
+
+### 7️⃣ 3D可视化：剪枝前后对比
 
 <div align="center">
 
 ![Layer 2对比](results/3d_comparison/layer2_3d_comparison.png)
 
-**图13：Layer 2 - 剪枝Head 7前（左）后（右）**
+**图16：Layer 2 - 剪枝Head 7前（左）后（右）**
 
 </div>
 
@@ -339,7 +437,7 @@
 
 ![Layer 2差异](results/3d_comparison/layer2_difference_analysis.png)
 
-**图14：Layer 2差异分析**
+**图17：Layer 2差异分析**
 
 </div>
 
@@ -349,7 +447,7 @@
 
 ![Layer 5对比](results/3d_comparison/layer5_3d_comparison.png)
 
-**图15：Layer 5 - 剪枝Head 1前（左）后（右）**
+**图18：Layer 5 - 剪枝Head 1前（左）后（右）**
 
 </div>
 
@@ -362,7 +460,7 @@
 
 ![Layer 5差异](results/3d_comparison/layer5_difference_analysis.png)
 
-**图16：Layer 5差异分析 - 零影响**
+**图19：Layer 5差异分析 - 零影响**
 
 </div>
 
@@ -518,7 +616,36 @@ python exp2a_mlp_feasibility_test.py --model gpt2 --nsamples 30 --savedir result
 | 全部注意力头（实验1） | +0.63% | -0.08% | ❌ 不是生成器 |
 | 全部MLP层（实验2A） | **-61.47%** | **-62.30%** | ✅ **是生成器！** |
 
-#### 6️⃣ 3D对比：剪枝前后
+#### 6️⃣ 实验2C：MLP内部追踪
+
+```bash
+# 在4个检查点追踪Layer 2 MLP内部激活
+python exp2c_mlp_internal_analysis.py --model gpt2 --layer_id 2 --nsamples 30 --savedir results/exp2c_mlp_internal/
+```
+
+**该实验追踪**：
+- 检查点1：MLP输入（768维）
+- 检查点2：Linear1之后（768 → 3072）
+- 检查点3：GELU激活之后
+- 检查点4：MLP输出/Linear2之后（3072 → 768）
+
+**输出**：
+- `exp2c_activation_flow.png`：通过4个阶段的激活进展
+- `exp2c_dimension_analysis.png`：Top维度和权重贡献
+- `exp2c_gelu_impact.png`：GELU影响分析（前后对比）
+- `EXPERIMENT_2C_SUMMARY.txt`：详细发现报告
+- `exp2c_detailed_results.json`：完整数值结果
+
+**突破性发现**：GELU对最大值的影响为**0%**！爆发发生在**Linear2输出**（62.91 → 2342.00，3623%的跳跃）。Linear2权重矩阵将3072个中间维度集中到特定输出维度如Dim 447。
+
+| 检查点 | 最大激活值 | 变化 |
+|-------|----------|-----|
+| MLP输入 | 19.88 | - |
+| Linear1之后 | 62.91 | +216.5% |
+| GELU之后 | 62.91 | **0.0%** ⚠️ |
+| MLP输出 | 2342.00 | **+3623%** 🔥 |
+
+#### 7️⃣ 3D对比：剪枝前后
 
 ```bash
 # Layer 2：对比剪枝Head 7前后
