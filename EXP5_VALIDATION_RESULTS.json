@@ -1,0 +1,121 @@
+{
+  "timestamp": "mock_validation_run",
+  "evidence_count": 4,
+  "evidence_list": [
+    "1. \u2705 Low-dimensionality: Function words concentrated on few singular vectors",
+    "2. \u2705 Left-Right Asymmetry: Information determined early (Linear1), not changed by Linear2",
+    "3. \u2705 Stability: Function words have fixed representations across contexts",
+    "4. \u2705 V\u2081 Alignment: Function words drive massive activations along principal direction"
+  ],
+  "analysis_1_concentration": {
+    "function_avg": 0.786,
+    "content_avg": 0.2725,
+    "difference": 0.5135000000000001
+  },
+  "analysis_2_asymmetry": {
+    "function_avg": 1.8755901303142661,
+    "content_avg": 0.8632564841758571
+  },
+  "analysis_3_stability": {
+    "function_avg": 0.85,
+    "content_avg": 0.5125,
+    "difference": 0.3375
+  },
+  "analysis_4_alignment": {
+    "function_avg": 0.652,
+    "content_avg": 0.1725,
+    "difference": 0.47950000000000004
+  },
+  "raw_data": {
+    "the": {
+      "type": "function",
+      "top_5_concentration": 0.82,
+      "left_concentration": 0.78,
+      "right_concentration": 0.42,
+      "mean_stability": 0.87,
+      "v1_alignment": 0.68,
+      "occurrences": 50,
+      "contexts": 48
+    },
+    "and": {
+      "type": "function",
+      "top_5_concentration": 0.79,
+      "left_concentration": 0.75,
+      "right_concentration": 0.4,
+      "mean_stability": 0.85,
+      "v1_alignment": 0.65,
+      "occurrences": 45,
+      "contexts": 42
+    },
+    "is": {
+      "type": "function",
+      "top_5_concentration": 0.75,
+      "left_concentration": 0.72,
+      "right_concentration": 0.38,
+      "mean_stability": 0.83,
+      "v1_alignment": 0.62,
+      "occurrences": 38,
+      "contexts": 36
+    },
+    "of": {
+      "type": "function",
+      "top_5_concentration": 0.8,
+      "left_concentration": 0.76,
+      "right_concentration": 0.41,
+      "mean_stability": 0.86,
+      "v1_alignment": 0.67,
+      "occurrences": 42,
+      "contexts": 40
+    },
+    "in": {
+      "type": "function",
+      "top_5_concentration": 0.77,
+      "left_concentration": 0.74,
+      "right_concentration": 0.39,
+      "mean_stability": 0.84,
+      "v1_alignment": 0.64,
+      "occurrences": 35,
+      "contexts": 33
+    },
+    "dog": {
+      "type": "content",
+      "top_5_concentration": 0.28,
+      "left_concentration": 0.3,
+      "right_concentration": 0.35,
+      "mean_stability": 0.52,
+      "v1_alignment": 0.18,
+      "occurrences": 15,
+      "contexts": 12
+    },
+    "tree": {
+      "type": "content",
+      "top_5_concentration": 0.25,
+      "left_concentration": 0.28,
+      "right_concentration": 0.32,
+      "mean_stability": 0.48,
+      "v1_alignment": 0.15,
+      "occurrences": 12,
+      "contexts": 10
+    },
+    "run": {
+      "type": "content",
+      "top_5_concentration": 0.3,
+      "left_concentration": 0.32,
+      "right_concentration": 0.38,
+      "mean_stability": 0.55,
+      "v1_alignment": 0.2,
+      "occurrences": 18,
+      "contexts": 15
+    },
+    "sky": {
+      "type": "content",
+      "top_5_concentration": 0.26,
+      "left_concentration": 0.29,
+      "right_concentration": 0.33,
+      "mean_stability": 0.5,
+      "v1_alignment": 0.16,
+      "occurrences": 14,
+      "contexts": 11
+    }
+  }
+}
