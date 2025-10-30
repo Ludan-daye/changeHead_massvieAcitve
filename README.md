@@ -9,7 +9,7 @@
 
 **Investigating the relationship between attention heads and massive activations in large language models**
 
-[📖 Overview](#overview) • [🔬 Key Findings](#key-findings) • [📊 Visualizations](#visualizations) • [🚀 Quick Start](#quick-start) • [中文版](README_CN.md)
+[📖 Overview](#overview) • [🔬 Key Findings](#key-findings) • [📊 Visualizations](#visualizations) • [📋 Exp Summary](EXPERIMENT_SUMMARY.md) • [🚀 Quick Start](#quick-start) • [中文版](README_CN.md)
 
 </div>
 
