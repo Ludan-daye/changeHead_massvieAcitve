@@ -1,0 +1,89 @@
+nohup: 忽略输入
+/home/vicuna/anaconda3/lib/python3.11/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.5' currently installed).
+  from pandas.core import (
+
+================================================================================
+EXPERIMENT 5: MLP SVD ALIGNMENT - LLAMA2_7B_CHAT
+================================================================================
+
+Loading model...
+loading model llama2_7b_chat
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:03<00:03,  3.38s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:05<00:00,  2.71s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:05<00:00,  2.81s/it]
+Traceback (most recent call last):
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 409, in hf_raise_for_status
+    response.raise_for_status()
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 403 Client Error: Forbidden for url: https://hf-mirror.com/meta-llama/Llama-2-7b-chat-hf/resolve/main/config.json
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/hub.py", line 479, in cached_files
+    hf_hub_download(
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1010, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1117, in _hf_hub_download_to_cache_dir
+    _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1658, in _raise_on_head_call_error
+    raise head_call_error
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1546, in _get_metadata_or_catch_error
+    metadata = get_hf_file_metadata(
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1463, in get_hf_file_metadata
+    r = _request_wrapper(
+        ^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 286, in _request_wrapper
+    response = _request_wrapper(
+               ^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 310, in _request_wrapper
+    hf_raise_for_status(response)
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 426, in hf_raise_for_status
+    raise _format(GatedRepoError, message, response) from e
+huggingface_hub.errors.GatedRepoError: 403 Client Error. (Request ID: Root=1-6924efc3-3764b43f04f17d6d397ce55a;adaed457-b724-4e48-a68b-82886210fb13)
+
+Cannot access gated repo for url https://hf-mirror.com/meta-llama/Llama-2-7b-chat-hf/resolve/main/config.json.
+Your request to access model meta-llama/Llama-2-7b-chat-hf has been rejected by the repo's authors.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp5_multi_model_mlp_svd.py", line 272, in <module>
+    main()
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp5_multi_model_mlp_svd.py", line 218, in main
+    model, tokenizer, device, layers, hidden_size, seq_len = lib.load_llm(args)
+                                                             ^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/lib/load_model.py", line 58, in load_llm
+    tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False, **token_kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/models/auto/tokenization_auto.py", line 1093, in from_pretrained
+    config = AutoConfig.from_pretrained(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/models/auto/configuration_auto.py", line 1332, in from_pretrained
+    config_dict, unused_kwargs = PretrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/configuration_utils.py", line 662, in get_config_dict
+    config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/configuration_utils.py", line 721, in _get_config_dict
+    resolved_config_file = cached_file(
+                           ^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/hub.py", line 322, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/hub.py", line 543, in cached_files
+    raise OSError(
+OSError: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/meta-llama/Llama-2-7b-chat-hf.
+403 Client Error. (Request ID: Root=1-6924efc3-3764b43f04f17d6d397ce55a;adaed457-b724-4e48-a68b-82886210fb13)
+
+Cannot access gated repo for url https://hf-mirror.com/meta-llama/Llama-2-7b-chat-hf/resolve/main/config.json.
+Your request to access model meta-llama/Llama-2-7b-chat-hf has been rejected by the repo's authors.

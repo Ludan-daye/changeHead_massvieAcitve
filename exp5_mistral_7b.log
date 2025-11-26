@@ -1,0 +1,20 @@
+nohup: 忽略输入
+/home/vicuna/anaconda3/lib/python3.11/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.5' currently installed).
+  from pandas.core import (
+
+================================================================================
+EXPERIMENT 5: MLP SVD ALIGNMENT - MISTRAL_7B
+================================================================================
+
+Loading model...
+loading model mistral_7b
+Traceback (most recent call last):
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp5_multi_model_mlp_svd.py", line 272, in <module>
+    main()
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp5_multi_model_mlp_svd.py", line 218, in main
+    model, tokenizer, device, layers, hidden_size, seq_len = lib.load_llm(args)
+                                                             ^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/lib/load_model.py", line 49, in load_llm
+    model = AutoModelForCausalLM.from_pretrained(model_name, revision=args.revision, **common_kwargs)
+                                                                      ^^^^^^^^^^^^^
+AttributeError: 'Namespace' object has no attribute 'revision'

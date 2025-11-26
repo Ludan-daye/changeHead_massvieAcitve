@@ -1,0 +1,38 @@
+{
+  "q_proj": {
+    "top_alignment": {
+      "component": 1,
+      "singular_value": 13.070293426513672,
+      "cosine_similarity": -0.34802576899528503,
+      "abs_cosine_similarity": 0.34802576899528503
+    },
+    "mean_abs_alignment": 0.06486566142411902
+  },
+  "k_proj": {
+    "top_alignment": {
+      "component": 0,
+      "singular_value": 19.212108612060547,
+      "cosine_similarity": 0.1259033977985382,
+      "abs_cosine_similarity": 0.1259033977985382
+    },
+    "mean_abs_alignment": 0.04020968121476472
+  },
+  "v_proj": {
+    "top_alignment": {
+      "component": 0,
+      "singular_value": 3.731013774871826,
+      "cosine_similarity": -0.02875320240855217,
+      "abs_cosine_similarity": 0.02875320240855217
+    },
+    "mean_abs_alignment": 0.003697169393853983
+  },
+  "o_proj": {
+    "top_alignment": {
+      "component": 3,
+      "singular_value": 3.202779769897461,
+      "cosine_similarity": 0.014199797064065933,
+      "abs_cosine_similarity": 0.014199797064065933
+    },
+    "mean_abs_alignment": 0.006536261225119233
+  }
+}

@@ -1,0 +1,71 @@
+nohup: 忽略输入
+
+================================================================================
+EXPERIMENT 2: ROBUST BATCH PARALLEL RUNNER
+================================================================================
+Model: opt_7b
+Range: Layer 3 - 37
+Batch Size: 3 processes
+================================================================================
+✓ Layer 3 already completed.
+✓ Layer 4 already completed.
+✓ Layer 5 already completed.
+✓ Layer 6 already completed.
+✓ Layer 7 already completed.
+✓ Layer 8 already completed.
+✓ Layer 9 already completed.
+✓ Layer 10 already completed.
+✓ Layer 11 already completed.
+✓ Layer 12 already completed.
+✓ Layer 13 already completed.
+✓ Layer 14 already completed.
+
+Total layers to process: 23
+
+[22:23:42] Starting Batch 1/8
+Running Layers: [15, 16, 17]
+✅ Batch 1 completed successfully.
+🧹 Cleaning up processes and memory...
+Progress: 13.0% (3/23)
+
+[22:28:26] Starting Batch 2/8
+Running Layers: [18, 19, 20]
+✅ Batch 2 completed successfully.
+🧹 Cleaning up processes and memory...
+Progress: 26.1% (6/23)
+
+[22:33:34] Starting Batch 3/8
+Running Layers: [21, 22, 23]
+✅ Batch 3 completed successfully.
+🧹 Cleaning up processes and memory...
+Progress: 39.1% (9/23)
+
+[22:38:12] Starting Batch 4/8
+Running Layers: [24, 25, 26]
+✅ Batch 4 completed successfully.
+🧹 Cleaning up processes and memory...
+Progress: 52.2% (12/23)
+
+[22:42:55] Starting Batch 5/8
+Running Layers: [27, 28, 29]
+✅ Batch 5 completed successfully.
+🧹 Cleaning up processes and memory...
+Progress: 65.2% (15/23)
+
+[22:47:43] Starting Batch 6/8
+Running Layers: [30, 31, 32]
+✅ Batch 6 completed successfully.
+🧹 Cleaning up processes and memory...
+Progress: 78.3% (18/23)
+
+[22:52:28] Starting Batch 7/8
+Running Layers: [33, 34, 35]
+✅ Batch 7 completed successfully.
+🧹 Cleaning up processes and memory...
+Progress: 91.3% (21/23)
+
+[22:57:18] Starting Batch 8/8
+Running Layers: [36, 37]
+✅ Batch 8 completed successfully.
+🧹 Cleaning up processes and memory...
+Progress: 100.0% (23/23)

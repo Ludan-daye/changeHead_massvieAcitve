@@ -1,0 +1,109 @@
+nohup: 忽略输入
+/home/vicuna/anaconda3/lib/python3.11/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.5' currently installed).
+  from pandas.core import (
+
+================================================================================
+EXPERIMENT 1: FEASIBILITY TEST (OPTIMIZED FOR A100)
+================================================================================
+
+Optimizations:
+  ✓ Batch processing (batch_size=8)
+  ✓ Increased samples (nsamples=100)
+  ✓ Reduced CPU-GPU transfers
+  ✓ Memory optimization
+
+Research Question:
+  Do attention heads generate massive activations?
+
+Method:
+  1. Run baseline (no pruning)
+  2. Run with all attention heads disabled
+  3. Compare activation magnitudes
+
+================================================================================
+
+🔵 PHASE 1: Running Baseline Experiment (Optimized)
+
+================================================================================
+Running Experiment (OPTIMIZED): BASELINE
+================================================================================
+
+loading model llama2_13b
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:03<00:06,  3.38s/it]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:06<00:03,  3.11s/it]Loading checkpoint shards: 100%|██████████| 3/3 [00:08<00:00,  2.49s/it]Loading checkpoint shards: 100%|██████████| 3/3 [00:08<00:00,  2.69s/it]
+Enabling feature capture for all layers...
+
+Loading dataset with batching...
+Loading dataset with batch_size=8...
+Created 13 batches (batch_size=8)
+
+Processing 13 batches...
+Processing (baseline):   0%|          | 0/13 [00:00<?, ?it/s]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([8, 4096, 5120])
+/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py:1762: FutureWarning: Both `past_key_value` and `past_key_values` are set for `LlamaAttention.forward`. Using `past_key_values=DynamicCache(layers=[DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer])` and ignoring deprecated `past_key_value=None`.
+  return forward_call(*args, **kwargs)
+Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([8, 4096, 5120])
+Processing (baseline):   0%|          | 0/13 [00:01<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp1_feasibility_test_optimized.py", line 327, in <module>
+    main()
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp1_feasibility_test_optimized.py", line 291, in main
+    baseline_results, baseline_stats = run_experiment_optimized(args, mode='baseline')
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp1_feasibility_test_optimized.py", line 166, in run_experiment_optimized
+    _ = model(testseq_batch)
+        ^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/generic.py", line 918, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 459, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/generic.py", line 1064, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 395, in forward
+    hidden_states = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/modeling_layers.py", line 94, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/monkey_patch/modify_llama.py", line 37, in llama_custom_decoderlayer_forward
+    attn_outputs = self.self_attn(
+                   ^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 252, in forward
+    attn_output, attn_weights = attention_interface(
+                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 189, in eager_attention_forward
+    attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query.dtype)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/functional.py", line 2142, in softmax
+    ret = input.softmax(dim, dtype=dtype)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 GiB. GPU 0 has a total capacity of 79.15 GiB of which 16.11 GiB is free. Process 2892377 has 5.80 GiB memory in use. Including non-PyTorch memory, this process has 57.21 GiB memory in use. Of the allocated memory 37.01 GiB is allocated by PyTorch, and 19.70 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

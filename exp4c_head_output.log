@@ -1,0 +1,136 @@
+nohup: 忽略输入
+/home/vicuna/anaconda3/lib/python3.11/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.5' currently installed).
+  from pandas.core import (
+
+================================================================================
+EXPERIMENT 4C: LAYER 3 HEAD OUTPUT ALIGNMENT
+================================================================================
+
+Research Question:
+  Do Layer 3 heads produce different outputs
+  for function words vs content words?
+
+================================================================================
+
+================================================================================
+COLLECTING LAYER 3 HEAD OUTPUTS FOR FUNCTION WORDS
+================================================================================
+loading model llama2_13b
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:03<00:06,  3.11s/it]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:06<00:03,  3.09s/it]Loading checkpoint shards: 100%|██████████| 3/3 [00:08<00:00,  2.54s/it]Loading checkpoint shards: 100%|██████████| 3/3 [00:08<00:00,  2.69s/it]
+
+Model config:
+  Hidden size: 5120
+  Number of heads: 40
+  Head dimension: 128
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+
+Processing 10 samples...
+Layer 3:   0%|          | 0/10 [00:00<?, ?it/s]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
+/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py:1805: FutureWarning: Both `past_key_value` and `past_key_values` are set for `LlamaAttention.forward`. Using `past_key_values=DynamicCache(layers=[DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer])` and ignoring deprecated `past_key_value=None`.
+  result = forward_call(*args, **kwargs)
+Layer 3:  10%|█         | 1/10 [00:02<00:19,  2.20s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
+Layer 3:  20%|██        | 2/10 [00:03<00:13,  1.71s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
+Layer 3:  30%|███       | 3/10 [00:04<00:10,  1.56s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
+Layer 3:  40%|████      | 4/10 [00:06<00:08,  1.49s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
+Layer 3:  50%|█████     | 5/10 [00:07<00:07,  1.45s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
+Layer 3:  60%|██████    | 6/10 [00:09<00:06,  1.52s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
+Layer 3:  70%|███████   | 7/10 [00:10<00:04,  1.48s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
+Layer 3:  80%|████████  | 8/10 [00:12<00:02,  1.45s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
+Layer 3:  90%|█████████ | 9/10 [00:13<00:01,  1.43s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
+Layer 3: 100%|██████████| 10/10 [00:14<00:00,  1.42s/it]Layer 3: 100%|██████████| 10/10 [00:14<00:00,  1.49s/it]
+
+✅ Data collection complete!
+  Function words: 93 unique words
+  Content words: 4429 unique words
+  Total tokens analyzed: 37801
+
+================================================================================
+ANALYZING HEAD OUTPUT ALIGNMENT FOR LAYER 3
+================================================================================
+
+Analyzing function words...
+Function words:   0%|          | 0/93 [00:00<?, ?it/s]Function words:   3%|▎         | 3/93 [00:00<00:09,  9.23it/s]Function words:   6%|▋         | 6/93 [00:00<00:05, 15.43it/s]Function words:  10%|▉         | 9/93 [00:00<00:05, 16.21it/s]Function words:  12%|█▏        | 11/93 [00:00<00:04, 16.67it/s]Function words:  28%|██▊       | 26/93 [00:00<00:01, 50.47it/s]Function words:  35%|███▌      | 33/93 [00:00<00:01, 53.27it/s]Function words:  63%|██████▎   | 59/93 [00:01<00:00, 106.73it/s]Function words: 100%|██████████| 93/93 [00:01<00:00, 82.08it/s] 
+Analyzing content words...
+Content words:   0%|          | 0/4429 [00:00<?, ?it/s]Content words:   0%|          | 6/4429 [00:00<01:14, 59.48it/s]Content words:   1%|          | 29/4429 [00:00<00:54, 80.74it/s]Content words:   1%|          | 37/4429 [00:00<01:06, 66.18it/s]Content words:   1%|          | 44/4429 [00:00<01:09, 62.81it/s]Content words:   1%|▏         | 59/4429 [00:00<00:54, 79.55it/s]Content words:   2%|▏         | 68/4429 [00:00<01:00, 72.53it/s]Content words:   2%|▏         | 97/4429 [00:01<00:34, 125.46it/s]Content words:   3%|▎         | 150/4429 [00:01<00:18, 225.59it/s]Content words:   4%|▍         | 188/4429 [00:01<00:16, 259.24it/s]Content words:   6%|▌         | 271/4429 [00:01<00:10, 412.66it/s]Content words:   8%|▊         | 369/4429 [00:01<00:07, 569.67it/s]Content words:  10%|█         | 463/4429 [00:01<00:05, 666.13it/s]Content words:  12%|█▏        | 549/4429 [00:01<00:05, 708.32it/s]Content words:  16%|█▌        | 711/4429 [00:01<00:03, 968.97it/s]Content words:  19%|█▉        | 835/4429 [00:01<00:03, 1037.21it/s]Content words:  21%|██        | 941/4429 [00:01<00:03, 1009.74it/s]Content words:  26%|██▌       | 1162/4429 [00:02<00:02, 1353.58it/s]Content words:  29%|██▉       | 1301/4429 [00:02<00:02, 1133.94it/s]Content words:  33%|███▎      | 1483/4429 [00:02<00:02, 1307.40it/s]Content words:  37%|███▋      | 1624/4429 [00:02<00:02, 1329.81it/s]Content words:  41%|████▏     | 1834/4429 [00:02<00:01, 1541.14it/s]Content words:  45%|████▌     | 1995/4429 [00:02<00:01, 1557.37it/s]Content words:  50%|████▉     | 2203/4429 [00:02<00:01, 1704.96it/s]Content words:  55%|█████▌    | 2456/4429 [00:02<00:01, 1943.50it/s]Content words:  63%|██████▎   | 2792/4429 [00:02<00:00, 2344.80it/s]Content words:  68%|██████▊   | 3030/4429 [00:03<00:00, 2290.57it/s]Content words:  78%|███████▊  | 3441/4429 [00:03<00:00, 2816.98it/s]Content words:  86%|████████▋ | 3828/4429 [00:03<00:00, 3123.57it/s]Content words:  96%|█████████▌| 4248/4429 [00:03<00:00, 3440.25it/s]Content words: 100%|██████████| 4429/4429 [00:03<00:00, 1298.77it/s]
+
+================================================================================
+TOP HEADS BY FUNCTION WORD OUTPUT STRENGTH
+================================================================================
+
+Rank   Head     Mean Norm       Count     
+--------------------------------------------------
+1      21       0.8609          9344      
+2      0        0.5395          9344      
+3      12       0.5083          9344      
+4      2        0.4561          9344      
+5      16       0.4361          9344      
+6      34       0.4040          9344      
+7      17       0.3934          9344      
+8      38       0.3923          9344      
+9      35       0.3868          9344      
+10     9        0.3744          9344      
+
+💾 Saving results...
+
+================================================================================
+GENERATING VISUALIZATIONS
+================================================================================
+✅ Saved: layer3_head_output_comparison.png
+✅ Saved: layer3_head_diff_heatmap.png
+
+================================================================================
+GENERATING SUMMARY REPORT
+================================================================================
+================================================================================
+EXPERIMENT 4C: LAYER 3 HEAD OUTPUT ALIGNMENT - SUMMARY
+================================================================================
+
+RESEARCH QUESTION:
+  Do Layer 3 attention heads produce stronger outputs
+  when processing function words vs content words?
+
+================================================================================
+TOP 10 HEADS FOR FUNCTION WORDS
+================================================================================
+
+Rank   Head     Mean Norm       Std             Count     
+----------------------------------------------------------------------
+1      21       0.8609          0.3691          9344      
+2      0        0.5395          0.0883          9344      
+3      12       0.5083          0.1026          9344      
+4      2        0.4561          0.1132          9344      
+5      16       0.4361          1.2156          9344      
+6      34       0.4040          0.1040          9344      
+7      17       0.3934          0.0902          9344      
+8      38       0.3923          0.0859          9344      
+9      35       0.3868          0.0901          9344      
+10     9        0.3744          0.0831          9344      
+
+================================================================================
+COMPARISON: FUNCTION VS CONTENT WORDS
+================================================================================
+
+Overall mean output norm:
+  Function words: 0.3633
+  Content words:  0.3372
+  Ratio: 1.08×
+
+================================================================================
+CONCLUSION
+================================================================================
+
+❌ NO SIGNIFICANT DIFFERENCE
+  Ratio: 1.08×
+  Heads do not show specialization for function words
+
+================================================================================
+
+✅ Summary saved!
+
+================================================================================
+✅ EXPERIMENT 4C COMPLETE
+================================================================================
+
+Results saved to: results/exp4c_layer3_head_output/
+================================================================================

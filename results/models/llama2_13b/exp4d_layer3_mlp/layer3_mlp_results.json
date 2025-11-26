@@ -1,0 +1,157 @@
+{
+  "down_proj_left": {
+    "all_alignments": [
+      {
+        "component": 0,
+        "singular_value": 7.103092670440674,
+        "cosine_similarity": -0.3841726779937744,
+        "abs_cosine_similarity": 0.3841726779937744
+      },
+      {
+        "component": 1,
+        "singular_value": 5.826995849609375,
+        "cosine_similarity": 0.05703093856573105,
+        "abs_cosine_similarity": 0.05703093856573105
+      },
+      {
+        "component": 2,
+        "singular_value": 5.600404262542725,
+        "cosine_similarity": -0.09250986576080322,
+        "abs_cosine_similarity": 0.09250986576080322
+      },
+      {
+        "component": 3,
+        "singular_value": 5.453855037689209,
+        "cosine_similarity": -0.09698405861854553,
+        "abs_cosine_similarity": 0.09698405861854553
+      },
+      {
+        "component": 4,
+        "singular_value": 5.438629627227783,
+        "cosine_similarity": 0.1103220134973526,
+        "abs_cosine_similarity": 0.1103220134973526
+      },
+      {
+        "component": 5,
+        "singular_value": 5.271395206451416,
+        "cosine_similarity": -0.06279022246599197,
+        "abs_cosine_similarity": 0.06279022246599197
+      },
+      {
+        "component": 6,
+        "singular_value": 5.188418388366699,
+        "cosine_similarity": -0.03094494715332985,
+        "abs_cosine_similarity": 0.03094494715332985
+      },
+      {
+        "component": 7,
+        "singular_value": 5.1541337966918945,
+        "cosine_similarity": -0.00016724842134863138,
+        "abs_cosine_similarity": 0.00016724842134863138
+      },
+      {
+        "component": 8,
+        "singular_value": 5.086428165435791,
+        "cosine_similarity": -0.006182215176522732,
+        "abs_cosine_similarity": 0.006182215176522732
+      },
+      {
+        "component": 9,
+        "singular_value": 5.041322708129883,
+        "cosine_similarity": -0.054149407893419266,
+        "abs_cosine_similarity": 0.054149407893419266
+      },
+      {
+        "component": 10,
+        "singular_value": 5.003145217895508,
+        "cosine_similarity": -0.027541492134332657,
+        "abs_cosine_similarity": 0.027541492134332657
+      },
+      {
+        "component": 11,
+        "singular_value": 4.979457855224609,
+        "cosine_similarity": -0.009602892212569714,
+        "abs_cosine_similarity": 0.009602892212569714
+      },
+      {
+        "component": 12,
+        "singular_value": 4.964144706726074,
+        "cosine_similarity": -0.027959970757365227,
+        "abs_cosine_similarity": 0.027959970757365227
+      },
+      {
+        "component": 13,
+        "singular_value": 4.91883659362793,
+        "cosine_similarity": 0.0073314085602760315,
+        "abs_cosine_similarity": 0.0073314085602760315
+      },
+      {
+        "component": 14,
+        "singular_value": 4.887165069580078,
+        "cosine_similarity": -0.01325255073606968,
+        "abs_cosine_similarity": 0.01325255073606968
+      },
+      {
+        "component": 15,
+        "singular_value": 4.851775169372559,
+        "cosine_similarity": 0.02650357224047184,
+        "abs_cosine_similarity": 0.02650357224047184
+      },
+      {
+        "component": 16,
+        "singular_value": 4.78325080871582,
+        "cosine_similarity": -0.04566718637943268,
+        "abs_cosine_similarity": 0.04566718637943268
+      },
+      {
+        "component": 17,
+        "singular_value": 4.768305778503418,
+        "cosine_similarity": -0.008620101027190685,
+        "abs_cosine_similarity": 0.008620101027190685
+      },
+      {
+        "component": 18,
+        "singular_value": 4.731271266937256,
+        "cosine_similarity": 0.0427582748234272,
+        "abs_cosine_similarity": 0.0427582748234272
+      },
+      {
+        "component": 19,
+        "singular_value": 4.698252201080322,
+        "cosine_similarity": 0.01350548304617405,
+        "abs_cosine_similarity": 0.01350548304617405
+      }
+    ],
+    "top_alignment": {
+      "component": 0,
+      "singular_value": 7.103092670440674,
+      "cosine_similarity": -0.3841726779937744,
+      "abs_cosine_similarity": 0.3841726779937744
+    },
+    "mean_abs_alignment": 0.05589982637320645
+  },
+  "regression": {
+    "r_squared": 0.9880208253771853,
+    "slope": 2.5150073732955005,
+    "intercept": 5.267396241822501,
+    "p_value": 0.0
+  },
+  "up_proj_right": {
+    "top_alignment": {
+      "component": 4,
+      "singular_value": 4.370070457458496,
+      "cosine_similarity": -0.21649359166622162,
+      "abs_cosine_similarity": 0.21649359166622162
+    },
+    "mean_abs_alignment": 0.08393608694896101
+  },
+  "gate_proj_right": {
+    "top_alignment": {
+      "component": 0,
+      "singular_value": 11.627570152282715,
+      "cosine_similarity": 0.5367276668548584,
+      "abs_cosine_similarity": 0.5367276668548584
+    },
+    "mean_abs_alignment": 0.07580139427445828
+  }
+}

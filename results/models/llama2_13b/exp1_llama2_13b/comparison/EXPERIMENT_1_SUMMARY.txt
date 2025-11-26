@@ -1,0 +1,111 @@
+================================================================================
+EXPERIMENT 1: FEASIBILITY TEST - SUMMARY REPORT
+================================================================================
+Generated: 2025-11-24 21:36:41
+
+RESEARCH QUESTION:
+  Do attention heads generate massive activations?
+
+METHODOLOGY:
+  1. Baseline: Run model with all attention heads active
+  2. All Disabled: Run model with all 144 attention heads zeroed out
+  3. Compare massive activation magnitudes
+
+================================================================================
+KEY FINDINGS
+================================================================================
+
+1️⃣ DIMENSION 447 (Primary Massive Activation Dimension)
+----------------------------------------------------------------------
+  Baseline Peak Value:       10.22 (Layer 39)
+  All Heads Disabled Value:  5.30
+  Absolute Change:           -4.93
+  Percentage Change:         -48.21%
+
+  Conclusion: ⚠️ SIGNIFICANT DECREASE - Heads may contribute to generation
+
+2️⃣ DIMENSION 138 (Secondary Massive Activation Dimension)
+----------------------------------------------------------------------
+  Baseline Peak Value:       9.11 (Layer 39)
+  All Heads Disabled Value:  5.40
+  Absolute Change:           -3.71
+  Percentage Change:         -40.75%
+
+  Conclusion: ⚠️ SIGNIFICANT DECREASE - Heads may contribute to generation
+
+3️⃣ OVERALL TOP1 ACTIVATION
+----------------------------------------------------------------------
+  Baseline Peak Value:       1282.80 (Layer 22)
+  All Heads Disabled Value:  263.02
+  Absolute Change:           -1019.78
+  Percentage Change:         -79.50%
+
+
+================================================================================
+LAYER-WISE DETAILED ANALYSIS
+================================================================================
+
+Layer   Baseline Top1   Disabled Top1   Change       % Change    
+----------------------------------------------------------------------
+0       64.76           17.14           -47.62       -73.53      %
+1       90.58           38.44           -52.14       -57.56      %
+2       90.62           38.53           -52.09       -57.48      %
+3       1223.90         22.03           -1201.87     -98.20      %
+4       1223.90         21.74           -1202.16     -98.22      %
+5       1224.90         21.42           -1203.48     -98.25      %
+6       1225.90         21.17           -1204.73     -98.27      %
+7       1272.80         56.48           -1216.32     -95.56      %
+8       1272.80         56.34           -1216.46     -95.57      %
+9       1272.80         56.24           -1216.56     -95.58      %
+10      1272.80         56.09           -1216.71     -95.59      %
+11      1272.80         55.88           -1216.92     -95.61      %
+12      1273.80         55.81           -1217.99     -95.62      %
+13      1274.80         55.71           -1219.09     -95.63      %
+14      1274.80         55.46           -1219.34     -95.65      %
+15      1275.80         55.51           -1220.29     -95.65      %
+16      1276.80         55.71           -1221.09     -95.64      %
+17      1277.80         55.64           -1222.16     -95.65      %
+18      1277.80         55.76           -1222.04     -95.64      %
+19      1277.80         56.06           -1221.74     -95.61      %
+20      1277.80         56.47           -1221.33     -95.58      %
+21      1280.80         57.30           -1223.50     -95.53      %
+22      1282.80         58.02           -1224.78     -95.48      %
+23      1282.80         59.81           -1222.99     -95.34      %
+24      1282.80         60.27           -1222.53     -95.30      %
+25      1282.80         60.96           -1221.84     -95.25      %
+26      1282.80         62.08           -1220.72     -95.16      %
+27      1282.80         62.38           -1220.42     -95.14      %
+28      1282.80         63.13           -1219.67     -95.08      %
+29      1282.80         65.88           -1216.92     -94.86      %
+30      1282.80         66.52           -1216.28     -94.81      %
+31      1282.80         68.58           -1214.22     -94.65      %
+32      1281.80         69.94           -1211.86     -94.54      %
+33      1280.80         71.36           -1209.44     -94.43      %
+34      1279.80         72.12           -1207.67     -94.36      %
+35      1278.80         72.00           -1206.80     -94.37      %
+36      1277.80         70.05           -1207.75     -94.52      %
+37      1257.57         85.09           -1172.47     -93.23      %
+38      842.37          51.34           -791.02      -93.90      %
+39      343.78          263.02          -80.76       -23.49      %
+
+================================================================================
+OVERALL CONCLUSION
+================================================================================
+
+
+⚠️ ATTENTION HEADS SIGNIFICANTLY CONTRIBUTE TO MASSIVE ACTIVATIONS
+
+The experiment shows that disabling all attention heads reduces massive
+activations by >20% on average. This suggests:
+
+  1. Attention heads DO participate in generating massive activations
+  2. Further experiments needed to identify which specific heads are responsible
+  3. Possible multi-head cooperation effects
+
+NEXT STEPS:
+  → Proceed to Experiment 2: Single-layer restoration
+  → Identify critical layers
+  → Then proceed to Experiment 3: Single-head restoration within critical layers
+
+
+================================================================================

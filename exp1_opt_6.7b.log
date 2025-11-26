@@ -1,0 +1,297 @@
+nohup: 忽略输入
+/home/vicuna/anaconda3/lib/python3.11/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.5' currently installed).
+  from pandas.core import (
+
+================================================================================
+EXPERIMENT 1: FEASIBILITY TEST (OPTIMIZED FOR A100)
+================================================================================
+
+Optimizations:
+  ✓ Batch processing (batch_size=8)
+  ✓ Increased samples (nsamples=30)
+  ✓ Reduced CPU-GPU transfers
+  ✓ Memory optimization
+
+Research Question:
+  Do attention heads generate massive activations?
+
+Method:
+  1. Run baseline (no pruning)
+  2. Run with all attention heads disabled
+  3. Compare activation magnitudes
+
+================================================================================
+
+🔵 PHASE 1: Running Baseline Experiment (Optimized)
+
+================================================================================
+Running Experiment (OPTIMIZED): BASELINE
+================================================================================
+
+loading model opt_7b
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:03<00:03,  3.23s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  1.99s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.18s/it]
+Enabling feature capture for all layers...
+
+Loading dataset with batching...
+Loading dataset with batch_size=8...
+Created 4 batches (batch_size=8)
+
+Processing 4 batches...
+Processing (baseline):   0%|          | 0/4 [00:00<?, ?it/s]Processing (baseline):  25%|██▌       | 1/4 [00:11<00:33, 11.31s/it]Processing (baseline):  50%|█████     | 2/4 [00:22<00:22, 11.44s/it]Processing (baseline):  75%|███████▌  | 3/4 [00:34<00:11, 11.50s/it]Processing (baseline): 100%|██████████| 4/4 [00:43<00:00, 10.54s/it]Processing (baseline): 100%|██████████| 4/4 [00:43<00:00, 10.87s/it]
+
+Computing statistics...
+
+Layer 0:
+  Top1: 154.62 ± 1.46
+  Median: 0.04
+  Dim 138: 0.40 (max: 0.49)
+  Dim 447: 0.50 (max: 0.55)
+
+Layer 2:
+  Top1: 279.31 ± 3.89
+  Median: 0.06
+  Dim 138: 0.77 (max: 0.85)
+  Dim 447: 0.83 (max: 0.89)
+
+Layer 5:
+  Top1: 309.25 ± 5.17
+  Median: 0.10
+  Dim 138: 1.44 (max: 1.67)
+  Dim 447: 1.46 (max: 1.54)
+
+Layer 10:
+  Top1: 320.56 ± 5.30
+  Median: 0.18
+  Dim 138: 2.16 (max: 2.34)
+  Dim 447: 2.55 (max: 2.73)
+
+Layer 11:
+  Top1: 325.25 ± 5.43
+  Median: 0.21
+  Dim 138: 2.31 (max: 2.40)
+  Dim 447: 2.61 (max: 2.72)
+
+🔴 PHASE 2: Running All Heads Disabled Experiment (Optimized)
+
+================================================================================
+Running Experiment (OPTIMIZED): ALL_DISABLED
+================================================================================
+
+loading model opt_7b
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:03<00:03,  3.14s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  1.93s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.11s/it]
+Enabling feature capture for all layers...
+
+Registering hooks for mode: all_disabled
+  Layer 0: Disabling all 32 heads
+  Layer 1: Disabling all 32 heads
+  Layer 2: Disabling all 32 heads
+  Layer 3: Disabling all 32 heads
+  Layer 4: Disabling all 32 heads
+  Layer 5: Disabling all 32 heads
+  Layer 6: Disabling all 32 heads
+  Layer 7: Disabling all 32 heads
+  Layer 8: Disabling all 32 heads
+  Layer 9: Disabling all 32 heads
+  Layer 10: Disabling all 32 heads
+  Layer 11: Disabling all 32 heads
+  Layer 12: Disabling all 32 heads
+  Layer 13: Disabling all 32 heads
+  Layer 14: Disabling all 32 heads
+  Layer 15: Disabling all 32 heads
+  Layer 16: Disabling all 32 heads
+  Layer 17: Disabling all 32 heads
+  Layer 18: Disabling all 32 heads
+  Layer 19: Disabling all 32 heads
+  Layer 20: Disabling all 32 heads
+  Layer 21: Disabling all 32 heads
+  Layer 22: Disabling all 32 heads
+  Layer 23: Disabling all 32 heads
+  Layer 24: Disabling all 32 heads
+  Layer 25: Disabling all 32 heads
+  Layer 26: Disabling all 32 heads
+  Layer 27: Disabling all 32 heads
+  Layer 28: Disabling all 32 heads
+  Layer 29: Disabling all 32 heads
+  Layer 30: Disabling all 32 heads
+  Layer 31: Disabling all 32 heads
+
+Loading dataset with batching...
+Loading dataset with batch_size=8...
+Created 4 batches (batch_size=8)
+
+Processing 4 batches...
+Processing (all_disabled):   0%|          | 0/4 [00:00<?, ?it/s]Processing (all_disabled):  25%|██▌       | 1/4 [00:11<00:33, 11.24s/it]Processing (all_disabled):  50%|█████     | 2/4 [00:23<00:23, 11.81s/it]Processing (all_disabled):  75%|███████▌  | 3/4 [00:35<00:11, 11.95s/it]Processing (all_disabled): 100%|██████████| 4/4 [00:44<00:00, 10.94s/it]Processing (all_disabled): 100%|██████████| 4/4 [00:44<00:00, 11.24s/it]
+
+Computing statistics...
+
+Layer 0:
+  Top1: 1304.50 ± 120.83
+  Median: 0.93
+  Dim 138: 9.69 (max: 10.82)
+  Dim 447: 19.80 (max: 22.34)
+
+Layer 2:
+  Top1: 1353.00 ± 113.95
+  Median: 1.10
+  Dim 138: 15.26 (max: 17.39)
+  Dim 447: 19.92 (max: 22.47)
+
+Layer 5:
+  Top1: 1369.50 ± 109.71
+  Median: 1.13
+  Dim 138: 14.52 (max: 16.67)
+  Dim 447: 19.90 (max: 22.41)
+
+Layer 10:
+  Top1: 1340.25 ± 110.29
+  Median: 1.31
+  Dim 138: 14.28 (max: 16.28)
+  Dim 447: 19.11 (max: 21.64)
+
+Layer 11:
+  Top1: 1337.75 ± 110.56
+  Median: 1.33
+  Dim 138: 14.36 (max: 16.34)
+  Dim 447: 19.13 (max: 21.67)
+
+🎨 PHASE 3: Generating Visualizations
+
+================================================================================
+GENERATING VISUALIZATIONS
+================================================================================
+✓ Generated: exp1_top1_comparison.png
+✓ Generated: exp1_percentage_change_heatmap.png
+✓ Generated: exp1_layerwise_breakdown.png
+/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp1_feasibility_test.py:414: UserWarning: Glyph 128293 (\N{FIRE}) missing from current font.
+  plt.tight_layout()
+/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp1_feasibility_test.py:414: UserWarning: Glyph 11088 (\N{WHITE MEDIUM STAR}) missing from current font.
+  plt.tight_layout()
+/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp1_feasibility_test.py:415: UserWarning: Glyph 128293 (\N{FIRE}) missing from current font.
+  plt.savefig(os.path.join(comparison_dir, 'exp1_critical_dimensions.png'), dpi=150, bbox_inches='tight')
+/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp1_feasibility_test.py:415: UserWarning: Glyph 11088 (\N{WHITE MEDIUM STAR}) missing from current font.
+  plt.savefig(os.path.join(comparison_dir, 'exp1_critical_dimensions.png'), dpi=150, bbox_inches='tight')
+✓ Generated: exp1_critical_dimensions.png
+
+✅ All visualizations generated successfully!
+
+📊 PHASE 4: Generating Summary Report
+
+================================================================================
+GENERATING SUMMARY REPORT
+================================================================================
+================================================================================
+EXPERIMENT 1: FEASIBILITY TEST - SUMMARY REPORT
+================================================================================
+Generated: 2025-11-25 09:17:08
+
+RESEARCH QUESTION:
+  Do attention heads generate massive activations?
+
+METHODOLOGY:
+  1. Baseline: Run model with all attention heads active
+  2. All Disabled: Run model with all 144 attention heads zeroed out
+  3. Compare massive activation magnitudes
+
+================================================================================
+KEY FINDINGS
+================================================================================
+
+1️⃣ DIMENSION 447 (Primary Massive Activation Dimension)
+----------------------------------------------------------------------
+  Baseline Peak Value:       13.74 (Layer 31)
+  All Heads Disabled Value:  20.09
+  Absolute Change:           6.35
+  Percentage Change:         46.20%
+
+  Conclusion: 🔍 MODERATE CHANGE - Partial contribution from heads
+
+2️⃣ DIMENSION 138 (Secondary Massive Activation Dimension)
+----------------------------------------------------------------------
+  Baseline Peak Value:       12.96 (Layer 31)
+  All Heads Disabled Value:  15.72
+  Absolute Change:           2.75
+  Percentage Change:         21.23%
+
+  Conclusion: 🔍 MODERATE CHANGE - Partial contribution from heads
+
+3️⃣ OVERALL TOP1 ACTIVATION
+----------------------------------------------------------------------
+  Baseline Peak Value:       391.06 (Layer 25)
+  All Heads Disabled Value:  1369.75
+  Absolute Change:           978.69
+  Percentage Change:         250.26%
+
+
+================================================================================
+LAYER-WISE DETAILED ANALYSIS
+================================================================================
+
+Layer   Baseline Top1   Disabled Top1   Change       % Change    
+----------------------------------------------------------------------
+0       154.62          1304.50         1149.88      743.65      %
+1       227.09          1333.00         1105.91      486.98      %
+2       279.31          1353.00         1073.69      384.40      %
+3       298.38          1368.00         1069.62      358.48      %
+4       306.56          1369.75         1063.19      346.81      %
+5       309.25          1369.50         1060.25      342.85      %
+6       310.94          1364.75         1053.81      338.91      %
+7       312.81          1357.00         1044.19      333.81      %
+8       314.56          1352.00         1037.44      329.80      %
+9       317.06          1346.75         1029.69      324.76      %
+10      320.56          1340.25         1019.69      318.09      %
+11      325.25          1337.75         1012.50      311.30      %
+12      330.00          1334.00         1004.00      304.24      %
+13      335.81          1333.50         997.69       297.10      %
+14      341.31          1334.50         993.19       290.99      %
+15      346.06          1333.50         987.44       285.34      %
+16      350.06          1332.00         981.94       280.50      %
+17      354.94          1331.50         976.56       275.14      %
+18      359.44          1331.00         971.56       270.30      %
+19      364.88          1329.25         964.38       264.30      %
+20      370.31          1331.00         960.69       259.43      %
+21      375.31          1331.25         955.94       254.70      %
+22      380.25          1331.50         951.25       250.16      %
+23      385.75          1332.00         946.25       245.30      %
+24      389.12          1330.75         941.62       241.99      %
+25      391.06          1330.75         939.69       240.29      %
+26      391.06          1329.50         938.44       239.97      %
+27      389.25          1327.75         938.50       241.10      %
+28      383.44          1324.75         941.31       245.49      %
+29      370.94          1318.50         947.56       255.45      %
+30      347.44          1308.50         961.06       276.61      %
+31      263.28          1261.75         998.47       379.24      %
+
+================================================================================
+OVERALL CONCLUSION
+================================================================================
+
+
+⚠️ ATTENTION HEADS SIGNIFICANTLY CONTRIBUTE TO MASSIVE ACTIVATIONS
+
+The experiment shows that disabling all attention heads reduces massive
+activations by >20% on average. This suggests:
+
+  1. Attention heads DO participate in generating massive activations
+  2. Further experiments needed to identify which specific heads are responsible
+  3. Possible multi-head cooperation effects
+
+NEXT STEPS:
+  → Proceed to Experiment 2: Single-layer restoration
+  → Identify critical layers
+  → Then proceed to Experiment 3: Single-head restoration within critical layers
+
+
+================================================================================
+
+✅ Summary report saved to: results/exp1_opt_6.7b/comparison/EXPERIMENT_1_SUMMARY.txt
+
+================================================================================
+✅ EXPERIMENT 1 COMPLETE (OPTIMIZED)
+================================================================================
+
+Results saved to: results/exp1_opt_6.7b/
+
+Processed 30 samples with batch_size=8
+
+================================================================================

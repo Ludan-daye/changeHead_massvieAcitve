@@ -25,8 +25,9 @@ env/
 # Model cache
 cache/
 .cache/
-models/
+/models/
 checkpoints/
+model_weights/
 
 # Jupyter
 .ipynb_checkpoints/
@@ -43,5 +44,6 @@ Thumbs.db
 *.safetensors
 
 # Temporary files
-*.log
 *.tmp
+
+# Keep experiment logs (remove *.log from ignore)

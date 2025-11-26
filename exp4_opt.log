@@ -1,0 +1,136 @@
+/home/vicuna/anaconda3/lib/python3.11/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.5' currently installed).
+  from pandas.core import (
+================================================================================
+EXPERIMENT 4: OPT MLP SVD ALIGNMENT
+Target Layers: [0, 1, 2, 3, 29, 30, 31]
+================================================================================
+loading model opt_7b
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:03<00:03,  3.44s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.12s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.32s/it]
+
+Computing SVD for Layer 0 MLP Weights...
+  fc1 shape: (16384, 4096)
+  fc1 Top 5 Singular Values: [16.136013   8.8944645  6.7510543  6.5517516  6.3396955]
+  fc1 Ratio σ₁/σ₂: 1.8142
+  fc2 shape: (4096, 16384)
+  fc2 Top 5 Singular Values: [14.150619   7.3844867  6.5057955  5.98206    5.0469966]
+  fc2 Ratio σ₁/σ₂: 1.9163
+  -> We expect fc2's U[:, 0] to align with massive activations.
+
+Computing SVD for Layer 1 MLP Weights...
+  fc1 shape: (16384, 4096)
+  fc1 Top 5 Singular Values: [16.54056    9.045652   8.390926   8.063813   7.8860435]
+  fc1 Ratio σ₁/σ₂: 1.8286
+  fc2 shape: (4096, 16384)
+  fc2 Top 5 Singular Values: [19.468695  7.70379   6.655147  5.895138  5.476335]
+  fc2 Ratio σ₁/σ₂: 2.5272
+  -> We expect fc2's U[:, 0] to align with massive activations.
+
+Computing SVD for Layer 2 MLP Weights...
+  fc1 shape: (16384, 4096)
+  fc1 Top 5 Singular Values: [17.009493  9.612494  9.233644  8.850342  8.615004]
+  fc1 Ratio σ₁/σ₂: 1.7695
+  fc2 shape: (4096, 16384)
+  fc2 Top 5 Singular Values: [20.255135   7.084227   5.857882   5.4213753  5.0677857]
+  fc2 Ratio σ₁/σ₂: 2.8592
+  -> We expect fc2's U[:, 0] to align with massive activations.
+
+Computing SVD for Layer 3 MLP Weights...
+  fc1 shape: (16384, 4096)
+  fc1 Top 5 Singular Values: [19.470835 11.818266 10.593112  9.730006  9.210222]
+  fc1 Ratio σ₁/σ₂: 1.6475
+  fc2 shape: (4096, 16384)
+  fc2 Top 5 Singular Values: [17.13148    6.4118     5.513168   5.1144466  5.048098 ]
+  fc2 Ratio σ₁/σ₂: 2.6719
+  -> We expect fc2's U[:, 0] to align with massive activations.
+
+Computing SVD for Layer 29 MLP Weights...
+  fc1 shape: (16384, 4096)
+  fc1 Top 5 Singular Values: [24.19394    8.48121    7.8553267  7.611626   7.541417 ]
+  fc1 Ratio σ₁/σ₂: 2.8527
+  fc2 shape: (4096, 16384)
+  fc2 Top 5 Singular Values: [7.4739614 7.4008036 6.8761578 6.614995  6.5287547]
+  fc2 Ratio σ₁/σ₂: 1.0099
+  -> We expect fc2's U[:, 0] to align with massive activations.
+
+Computing SVD for Layer 30 MLP Weights...
+  fc1 shape: (16384, 4096)
+  fc1 Top 5 Singular Values: [25.290373   8.499232   7.5213366  7.4498363  7.0961595]
+  fc1 Ratio σ₁/σ₂: 2.9756
+  fc2 shape: (4096, 16384)
+  fc2 Top 5 Singular Values: [9.594305  7.4367337 7.3033867 7.2891574 6.789539 ]
+  fc2 Ratio σ₁/σ₂: 1.2901
+  -> We expect fc2's U[:, 0] to align with massive activations.
+
+Computing SVD for Layer 31 MLP Weights...
+  fc1 shape: (16384, 4096)
+  fc1 Top 5 Singular Values: [31.633234  15.725134   9.081559   8.058218   7.3923836]
+  fc1 Ratio σ₁/σ₂: 2.0116
+  fc2 shape: (4096, 16384)
+  fc2 Top 5 Singular Values: [10.71019  10.545793  8.809702  8.360229  7.915562]
+  fc2 Ratio σ₁/σ₂: 1.0156
+  -> We expect fc2's U[:, 0] to align with massive activations.
+
+Collecting activations for Layers [0, 1, 2, 3, 29, 30, 31]...
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+  0%|          | 0/30 [00:00<?, ?it/s]  0%|          | 0/30 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp4_opt_mlp_svd.py", line 215, in <module>
+    main()
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp4_opt_mlp_svd.py", line 205, in main
+    alignments = collect_activations_and_align(model, tokenizer, device, layer_ids, svd_data, args.nsamples)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp4_opt_mlp_svd.py", line 122, in collect_activations_and_align
+    model(batch)
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/generic.py", line 918, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/models/opt/modeling_opt.py", line 818, in forward
+    outputs = self.model.decoder(
+              ^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/generic.py", line 918, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/models/opt/modeling_opt.py", line 648, in forward
+    layer_outputs = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/modeling_layers.py", line 94, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/models/opt/modeling_opt.py", line 281, in forward
+    hidden_states = self.fc1(hidden_states)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1857, in _call_impl
+    return inner()
+           ^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1818, in inner
+    hook_result = hook(self, args, result)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp4_opt_mlp_svd.py", line 101, in hook
+    idx = max_idx[b]
+          ~~~~~~~^^^
+IndexError: invalid index of a 0-dim tensor. Use `tensor.item()` in Python or `tensor.item<T>()` in C++ to convert a 0-dim tensor to a number

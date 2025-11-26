@@ -1,0 +1,124 @@
+nohup: 忽略输入
+/home/vicuna/anaconda3/lib/python3.11/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.5' currently installed).
+  from pandas.core import (
+
+================================================================================
+EXPERIMENT 1: FEASIBILITY TEST
+================================================================================
+
+Research Question:
+  Do attention heads generate massive activations?
+
+Method:
+  1. Run baseline (no pruning)
+  2. Run with all 144 attention heads disabled
+  3. Compare activation magnitudes
+
+================================================================================
+
+🔵 PHASE 1: Running Baseline Experiment
+
+================================================================================
+Running Experiment: BASELINE
+================================================================================
+
+loading model llama2_7b
+Traceback (most recent call last):
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/urllib3/connectionpool.py", line 711, in urlopen
+    self._prepare_proxy(conn)
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/urllib3/connectionpool.py", line 1007, in _prepare_proxy
+    conn.connect()
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/urllib3/connection.py", line 419, in connect
+    self.sock = ssl_wrap_socket(
+                ^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/urllib3/util/ssl_.py", line 449, in ssl_wrap_socket
+    ssl_sock = _ssl_wrap_socket_impl(
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/urllib3/util/ssl_.py", line 493, in _ssl_wrap_socket_impl
+    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/ssl.py", line 517, in wrap_socket
+    return self.sslsocket_class._create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/ssl.py", line 1075, in _create
+    self.do_handshake()
+  File "/home/vicuna/anaconda3/lib/python3.11/ssl.py", line 1346, in do_handshake
+    self._sslobj.do_handshake()
+TimeoutError: _ssl.c:985: The handshake operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/urllib3/connectionpool.py", line 798, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/urllib3/util/retry.py", line 592, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='hf-mirror.com', port=443): Max retries exceeded with url: /meta-llama/Llama-2-7b-hf/resolve/main/config.json (Caused by ProxyError('Cannot connect to proxy.', TimeoutError('_ssl.c:985: The handshake operation timed out')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp1_feasibility_test.py", line 695, in <module>
+    main()
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp1_feasibility_test.py", line 649, in main
+    baseline_results, baseline_stats = run_experiment(args, mode='baseline')
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp1_feasibility_test.py", line 95, in run_experiment
+    model, tokenizer, device, layers, hidden_size, seq_len = lib.load_llm(args)
+                                                             ^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/lib/load_model.py", line 51, in load_llm
+    model = AutoModelForCausalLM.from_pretrained(model_name, **common_kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 508, in from_pretrained
+    resolved_config_file = cached_file(
+                           ^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/hub.py", line 322, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/hub.py", line 567, in cached_files
+    raise e
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/hub.py", line 479, in cached_files
+    hf_hub_download(
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1010, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1073, in _hf_hub_download_to_cache_dir
+    (url_to_download, etag, commit_hash, expected_size, xet_file_data, head_call_error) = _get_metadata_or_catch_error(
+                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1546, in _get_metadata_or_catch_error
+    metadata = get_hf_file_metadata(
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1463, in get_hf_file_metadata
+    r = _request_wrapper(
+        ^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 286, in _request_wrapper
+    response = _request_wrapper(
+               ^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 309, in _request_wrapper
+    response = http_backoff(method=method, url=url, **params, retry_on_exceptions=(), retry_on_status_codes=(429,))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 310, in http_backoff
+    response = session.request(method=method, url=url, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 96, in send
+    return super().send(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/requests/adapters.py", line 694, in send
+    raise ProxyError(e, request=request)
+requests.exceptions.ProxyError: (MaxRetryError("HTTPSConnectionPool(host='hf-mirror.com', port=443): Max retries exceeded with url: /meta-llama/Llama-2-7b-hf/resolve/main/config.json (Caused by ProxyError('Cannot connect to proxy.', TimeoutError('_ssl.c:985: The handshake operation timed out')))"), '(Request ID: f257b090-fc23-4741-a8c4-463c606d48b6)')

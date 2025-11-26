@@ -1,0 +1,57 @@
+================================================================================
+EXPERIMENT 4D: LAYER 3 MLP SVD ALIGNMENT - SUMMARY
+================================================================================
+
+RESEARCH QUESTION:
+  Do the singular vectors of Layer 3 MLP weight matrices
+  align with the direction of massive activations?
+
+  COMPARISON WITH GPT-2:
+  GPT-2 showed R² = 0.998 alignment in down_proj
+
+================================================================================
+SINGULAR VALUE ANALYSIS
+================================================================================
+
+UP_PROJ:
+  σ₁: 5.5082
+  σ₂: 4.6503
+  σ₁/σ₂ ratio: 1.1845×
+
+GATE_PROJ:
+  σ₁: 11.6276
+  σ₂: 9.5174
+  σ₁/σ₂ ratio: 1.2217×
+
+DOWN_PROJ:
+  σ₁: 7.1031
+  σ₂: 5.8270
+  σ₁/σ₂ ratio: 1.2190×
+
+================================================================================
+ALIGNMENT ANALYSIS
+================================================================================
+
+DOWN_PROJ (Left Singular Vectors - Output Space):
+  Best alignment:
+    Component: 0
+    Cosine similarity: -0.3842
+    |Cosine similarity|: 0.3842
+    Singular value: 7.1031
+  Mean alignment (top 20): 0.0559
+
+  LINEAR REGRESSION:
+    R² = 0.9880
+    p-value = 0.00e+00
+
+  ✅ STRONG ALIGNMENT (R² > 0.7)
+     Similar to GPT-2!
+
+================================================================================
+CONCLUSION
+================================================================================
+
+✅ LLAMA-2 USES SIMILAR MECHANISM TO GPT-2
+   MLP down_proj shows strong SVD alignment (R²=0.9880)
+
+================================================================================

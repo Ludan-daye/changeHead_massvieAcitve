@@ -1,0 +1,136 @@
+# Head Analysis Configuration for gpt2
+# Based on attention to first token (typical massive activation location)
+# Generated from 30 samples
+
+
+Layer 0:
+  Total heads: 12
+  Top 3 heads with highest attention to first token:
+    Rank 1: Head 11 (score: 0.0147)
+    Rank 2: Head 2 (score: 0.0104)
+    Rank 3: Head 0 (score: 0.0103)
+  Bottom 3 heads (lowest attention):
+    Rank 1: Head 1 (score: 0.0011)
+    Rank 2: Head 3 (score: 0.0015)
+    Rank 3: Head 4 (score: 0.0035)
+
+Layer 1:
+  Total heads: 12
+  Top 3 heads with highest attention to first token:
+    Rank 1: Head 3 (score: 0.0781)
+    Rank 2: Head 9 (score: 0.0368)
+    Rank 3: Head 8 (score: 0.0352)
+  Bottom 3 heads (lowest attention):
+    Rank 1: Head 10 (score: 0.0020)
+    Rank 2: Head 11 (score: 0.0045)
+    Rank 3: Head 1 (score: 0.0073)
+
+Layer 2:
+  Total heads: 12
+  Top 3 heads with highest attention to first token:
+    Rank 1: Head 7 (score: 0.5684)
+    Rank 2: Head 4 (score: 0.2284)
+    Rank 3: Head 11 (score: 0.1227)
+  Bottom 3 heads (lowest attention):
+    Rank 1: Head 10 (score: 0.0083)
+    Rank 2: Head 3 (score: 0.0385)
+    Rank 3: Head 2 (score: 0.0431)
+
+Layer 3:
+  Total heads: 12
+  Top 3 heads with highest attention to first token:
+    Rank 1: Head 3 (score: 0.5215)
+    Rank 2: Head 10 (score: 0.5186)
+    Rank 3: Head 9 (score: 0.4331)
+  Bottom 3 heads (lowest attention):
+    Rank 1: Head 2 (score: 0.1681)
+    Rank 2: Head 6 (score: 0.1761)
+    Rank 3: Head 7 (score: 0.2035)
+
+Layer 4:
+  Total heads: 12
+  Top 3 heads with highest attention to first token:
+    Rank 1: Head 5 (score: 0.5254)
+    Rank 2: Head 2 (score: 0.4841)
+    Rank 3: Head 4 (score: 0.4622)
+  Bottom 3 heads (lowest attention):
+    Rank 1: Head 11 (score: 0.0019)
+    Rank 2: Head 7 (score: 0.1349)
+    Rank 3: Head 8 (score: 0.3394)
+
+Layer 5:
+  Total heads: 12
+  Top 3 heads with highest attention to first token:
+    Rank 1: Head 1 (score: 0.8281)
+    Rank 2: Head 6 (score: 0.7261)
+    Rank 3: Head 8 (score: 0.7202)
+  Bottom 3 heads (lowest attention):
+    Rank 1: Head 10 (score: 0.2034)
+    Rank 2: Head 3 (score: 0.3301)
+    Rank 3: Head 9 (score: 0.4583)
+
+Layer 6:
+  Total heads: 12
+  Top 3 heads with highest attention to first token:
+    Rank 1: Head 1 (score: 0.7964)
+    Rank 2: Head 9 (score: 0.7007)
+    Rank 3: Head 3 (score: 0.6172)
+  Bottom 3 heads (lowest attention):
+    Rank 1: Head 4 (score: 0.2527)
+    Rank 2: Head 0 (score: 0.3179)
+    Rank 3: Head 7 (score: 0.3792)
+
+Layer 7:
+  Total heads: 12
+  Top 3 heads with highest attention to first token:
+    Rank 1: Head 2 (score: 0.7959)
+    Rank 2: Head 4 (score: 0.7334)
+    Rank 3: Head 10 (score: 0.6807)
+  Bottom 3 heads (lowest attention):
+    Rank 1: Head 5 (score: 0.4011)
+    Rank 2: Head 6 (score: 0.4292)
+    Rank 3: Head 1 (score: 0.4724)
+
+Layer 8:
+  Total heads: 12
+  Top 3 heads with highest attention to first token:
+    Rank 1: Head 4 (score: 0.6748)
+    Rank 2: Head 1 (score: 0.6733)
+    Rank 3: Head 11 (score: 0.6553)
+  Bottom 3 heads (lowest attention):
+    Rank 1: Head 2 (score: 0.1937)
+    Rank 2: Head 5 (score: 0.4023)
+    Rank 3: Head 0 (score: 0.4153)
+
+Layer 9:
+  Total heads: 12
+  Top 3 heads with highest attention to first token:
+    Rank 1: Head 10 (score: 0.6353)
+    Rank 2: Head 5 (score: 0.6191)
+    Rank 3: Head 1 (score: 0.5972)
+  Bottom 3 heads (lowest attention):
+    Rank 1: Head 11 (score: 0.3262)
+    Rank 2: Head 0 (score: 0.4614)
+    Rank 3: Head 3 (score: 0.4626)
+
+Layer 10:
+  Total heads: 12
+  Top 3 heads with highest attention to first token:
+    Rank 1: Head 5 (score: 0.7373)
+    Rank 2: Head 9 (score: 0.5884)
+    Rank 3: Head 10 (score: 0.5454)
+  Bottom 3 heads (lowest attention):
+    Rank 1: Head 3 (score: 0.3303)
+    Rank 2: Head 4 (score: 0.3335)
+    Rank 3: Head 7 (score: 0.3640)
+
+Layer 11:
+  Total heads: 12
+  Top 3 heads with highest attention to first token:
+    Rank 1: Head 9 (score: 0.5425)
+    Rank 2: Head 6 (score: 0.5415)
+    Rank 3: Head 3 (score: 0.5229)
+  Bottom 3 heads (lowest attention):
+    Rank 1: Head 8 (score: 0.0010)
+    Rank 2: Head 0 (score: 0.0946)
+    Rank 3: Head 4 (score: 0.2583)
