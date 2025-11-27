@@ -1,176 +1,0 @@
-nohup: 忽略输入
-/home/vicuna/anaconda3/lib/python3.11/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.5' currently installed).
-  from pandas.core import (
-
-================================================================================
-EXPERIMENT 2: SINGLE-LAYER RESTORATION
-================================================================================
-
-Goal: Identify which layers contribute most to massive activations
-Testing layers: 3 to 37
-
-================================================================================
-
-================================================================================
-Testing Layer 3 (restoring its attention heads)
-================================================================================
-loading model opt_7b
-`torch_dtype` is deprecated! Use `dtype` instead!
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:03<00:03,  3.24s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  1.98s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.17s/it]
-Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
-Layer 3 restored:   0%|          | 0/30 [00:00<?, ?it/s]Layer 3 restored:   3%|▎         | 1/30 [00:22<11:01, 22.82s/it]Layer 3 restored:   7%|▋         | 2/30 [00:45<10:35, 22.70s/it]Layer 3 restored:  10%|█         | 3/30 [01:08<10:17, 22.86s/it]Layer 3 restored:  13%|█▎        | 4/30 [01:31<09:57, 22.98s/it]Layer 3 restored:  17%|█▋        | 5/30 [01:54<09:34, 22.96s/it]Layer 3 restored:  20%|██        | 6/30 [02:17<09:09, 22.89s/it]Layer 3 restored:  23%|██▎       | 7/30 [02:40<08:49, 23.02s/it]Layer 3 restored:  27%|██▋       | 8/30 [03:03<08:27, 23.07s/it]Layer 3 restored:  30%|███       | 9/30 [03:27<08:05, 23.14s/it]Layer 3 restored:  33%|███▎      | 10/30 [03:50<07:46, 23.31s/it]Layer 3 restored:  37%|███▋      | 11/30 [04:13<07:20, 23.16s/it]Layer 3 restored:  40%|████      | 12/30 [04:36<06:56, 23.12s/it]Layer 3 restored:  43%|████▎     | 13/30 [04:59<06:34, 23.19s/it]Layer 3 restored:  47%|████▋     | 14/30 [05:21<06:04, 22.77s/it]Layer 3 restored:  50%|█████     | 15/30 [05:44<05:39, 22.65s/it]Layer 3 restored:  53%|█████▎    | 16/30 [06:06<05:16, 22.62s/it]Layer 3 restored:  57%|█████▋    | 17/30 [06:30<04:57, 22.89s/it]Layer 3 restored:  60%|██████    | 18/30 [06:53<04:35, 22.94s/it]Layer 3 restored:  63%|██████▎   | 19/30 [07:16<04:12, 22.97s/it]Layer 3 restored:  67%|██████▋   | 20/30 [07:39<03:50, 23.09s/it]Layer 3 restored:  70%|███████   | 21/30 [08:02<03:27, 23.07s/it]Layer 3 restored:  73%|███████▎  | 22/30 [08:25<03:03, 22.98s/it]Layer 3 restored:  77%|███████▋  | 23/30 [08:48<02:41, 23.06s/it]Layer 3 restored:  80%|████████  | 24/30 [09:11<02:18, 23.01s/it]Layer 3 restored:  83%|████████▎ | 25/30 [09:34<01:54, 22.98s/it]Layer 3 restored:  87%|████████▋ | 26/30 [09:57<01:32, 23.06s/it]Layer 3 restored:  90%|█████████ | 27/30 [10:20<01:09, 23.00s/it]Layer 3 restored:  93%|█████████▎| 28/30 [10:42<00:45, 22.70s/it]Layer 3 restored:  97%|█████████▋| 29/30 [11:05<00:22, 22.75s/it]Layer 3 restored: 100%|██████████| 30/30 [11:28<00:00, 22.72s/it]Layer 3 restored: 100%|██████████| 30/30 [11:28<00:00, 22.94s/it]
-
-Layer 3 restored - Key metrics:
-  Layer 3: Top1=1163.38 (Recovery: 95.0%)
-  Layer 10: Top1=1138.07 (Recovery: 88.9%)
-  Layer 20: Top1=1133.08 (Recovery: 88.2%)
-  Layer 30: Top1=1112.75 (Recovery: 86.0%)
-
-================================================================================
-Testing Layer 4 (restoring its attention heads)
-================================================================================
-loading model opt_7b
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:03<00:03,  3.24s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.11s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.28s/it]
-Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
-Layer 4 restored:   0%|          | 0/30 [00:00<?, ?it/s]Layer 4 restored:   3%|▎         | 1/30 [00:21<10:35, 21.90s/it]Layer 4 restored:   7%|▋         | 2/30 [00:44<10:26, 22.38s/it]Layer 4 restored:  10%|█         | 3/30 [01:07<10:11, 22.65s/it]Layer 4 restored:  13%|█▎        | 4/30 [01:30<09:52, 22.80s/it]Layer 4 restored:  17%|█▋        | 5/30 [01:53<09:27, 22.68s/it]Layer 4 restored:  20%|██        | 6/30 [02:15<09:04, 22.68s/it]Layer 4 restored:  23%|██▎       | 7/30 [02:38<08:42, 22.72s/it]Layer 4 restored:  27%|██▋       | 8/30 [03:01<08:18, 22.68s/it]Layer 4 restored:  30%|███       | 9/30 [03:23<07:53, 22.53s/it]Layer 4 restored:  33%|███▎      | 10/30 [03:45<07:30, 22.54s/it]Layer 4 restored:  37%|███▋      | 11/30 [04:08<07:08, 22.54s/it]Layer 4 restored:  40%|████      | 12/30 [04:30<06:44, 22.45s/it]Layer 4 restored:  43%|████▎     | 13/30 [04:53<06:22, 22.52s/it]Layer 4 restored:  47%|████▋     | 14/30 [05:15<05:59, 22.44s/it]Layer 4 restored:  50%|█████     | 15/30 [05:38<05:37, 22.52s/it]Layer 4 restored:  53%|█████▎    | 16/30 [06:01<05:16, 22.60s/it]Layer 4 restored:  57%|█████▋    | 17/30 [06:23<04:53, 22.55s/it]Layer 4 restored:  60%|██████    | 18/30 [06:45<04:29, 22.43s/it]Layer 4 restored:  63%|██████▎   | 19/30 [07:08<04:08, 22.59s/it]Layer 4 restored:  67%|██████▋   | 20/30 [07:30<03:42, 22.21s/it]Layer 4 restored:  70%|███████   | 21/30 [07:51<03:17, 21.96s/it]Layer 4 restored:  73%|███████▎  | 22/30 [08:13<02:56, 22.00s/it]Layer 4 restored:  77%|███████▋  | 23/30 [08:36<02:35, 22.19s/it]Layer 4 restored:  80%|████████  | 24/30 [08:58<02:14, 22.36s/it]Layer 4 restored:  83%|████████▎ | 25/30 [09:21<01:52, 22.47s/it]Layer 4 restored:  87%|████████▋ | 26/30 [09:44<01:30, 22.53s/it]Layer 4 restored:  90%|█████████ | 27/30 [10:06<01:07, 22.58s/it]Layer 4 restored:  93%|█████████▎| 28/30 [10:29<00:45, 22.53s/it]Layer 4 restored:  97%|█████████▋| 29/30 [10:52<00:22, 22.70s/it]Layer 4 restored: 100%|██████████| 30/30 [11:15<00:00, 22.83s/it]Layer 4 restored: 100%|██████████| 30/30 [11:15<00:00, 22.52s/it]
-
-Layer 4 restored - Key metrics:
-  Layer 3: Top1=1206.37 (Recovery: 98.5%)
-  Layer 10: Top1=1154.12 (Recovery: 90.2%)
-  Layer 20: Top1=1147.63 (Recovery: 89.3%)
-  Layer 30: Top1=1122.87 (Recovery: 86.9%)
-
-================================================================================
-Testing Layer 5 (restoring its attention heads)
-================================================================================
-loading model opt_7b
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:03<00:03,  3.24s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.00s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.19s/it]
-Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
-Layer 5 restored:   0%|          | 0/30 [00:00<?, ?it/s]Layer 5 restored:   3%|▎         | 1/30 [00:22<10:41, 22.13s/it]Layer 5 restored:   7%|▋         | 2/30 [00:44<10:23, 22.26s/it]Layer 5 restored:  10%|█         | 3/30 [01:06<09:57, 22.14s/it]Layer 5 restored:  13%|█▎        | 4/30 [01:29<09:43, 22.46s/it]Layer 5 restored:  17%|█▋        | 5/30 [01:51<09:19, 22.39s/it]Layer 5 restored:  20%|██        | 6/30 [02:14<08:59, 22.49s/it]Layer 5 restored:  23%|██▎       | 7/30 [02:37<08:40, 22.64s/it]Layer 5 restored:  27%|██▋       | 8/30 [03:00<08:19, 22.68s/it]Layer 5 restored:  30%|███       | 9/30 [03:22<07:55, 22.65s/it]Layer 5 restored:  33%|███▎      | 10/30 [03:45<07:33, 22.68s/it]Layer 5 restored:  37%|███▋      | 11/30 [04:07<07:08, 22.58s/it]Layer 5 restored:  40%|████      | 12/30 [04:30<06:47, 22.66s/it]Layer 5 restored:  43%|████▎     | 13/30 [04:53<06:26, 22.74s/it]Layer 5 restored:  47%|████▋     | 14/30 [05:16<06:03, 22.70s/it]Layer 5 restored:  50%|█████     | 15/30 [05:38<05:40, 22.69s/it]Layer 5 restored:  53%|█████▎    | 16/30 [06:01<05:19, 22.81s/it]Layer 5 restored:  57%|█████▋    | 17/30 [06:24<04:54, 22.67s/it]Layer 5 restored:  60%|██████    | 18/30 [06:46<04:31, 22.60s/it]Layer 5 restored:  63%|██████▎   | 19/30 [07:09<04:09, 22.64s/it]Layer 5 restored:  67%|██████▋   | 20/30 [07:31<03:45, 22.51s/it]Layer 5 restored:  70%|███████   | 21/30 [07:54<03:22, 22.50s/it]Layer 5 restored:  73%|███████▎  | 22/30 [08:16<02:59, 22.42s/it]Layer 5 restored:  77%|███████▋  | 23/30 [08:39<02:37, 22.53s/it]Layer 5 restored:  80%|████████  | 24/30 [09:01<02:15, 22.61s/it]Layer 5 restored:  83%|████████▎ | 25/30 [09:24<01:52, 22.59s/it]Layer 5 restored:  87%|████████▋ | 26/30 [09:47<01:30, 22.71s/it]Layer 5 restored:  90%|█████████ | 27/30 [10:10<01:08, 22.74s/it]Layer 5 restored:  93%|█████████▎| 28/30 [10:33<00:45, 22.79s/it]Layer 5 restored:  97%|█████████▋| 29/30 [10:55<00:22, 22.76s/it]Layer 5 restored: 100%|██████████| 30/30 [11:18<00:00, 22.86s/it]Layer 5 restored: 100%|██████████| 30/30 [11:18<00:00, 22.63s/it]
-
-Layer 5 restored - Key metrics:
-  Layer 3: Top1=1206.37 (Recovery: 98.5%)
-  Layer 10: Top1=1172.10 (Recovery: 91.7%)
-  Layer 20: Top1=1165.45 (Recovery: 90.8%)
-  Layer 30: Top1=1143.35 (Recovery: 88.5%)
-
-================================================================================
-Testing Layer 6 (restoring its attention heads)
-================================================================================
-loading model opt_7b
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:03<00:03,  3.30s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.02s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.21s/it]
-Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
-Layer 6 restored:   0%|          | 0/30 [00:00<?, ?it/s]Layer 6 restored:   3%|▎         | 1/30 [00:22<10:55, 22.61s/it]Layer 6 restored:   7%|▋         | 2/30 [00:44<10:25, 22.33s/it]Layer 6 restored:  10%|█         | 3/30 [01:07<10:04, 22.37s/it]Layer 6 restored:  13%|█▎        | 4/30 [01:30<09:46, 22.56s/it]Layer 6 restored:  17%|█▋        | 5/30 [01:52<09:27, 22.71s/it]Layer 6 restored:  20%|██        | 6/30 [02:15<09:03, 22.67s/it]Layer 6 restored:  23%|██▎       | 7/30 [02:38<08:43, 22.76s/it]Layer 6 restored:  27%|██▋       | 8/30 [03:01<08:21, 22.80s/it]Layer 6 restored:  30%|███       | 9/30 [03:23<07:57, 22.73s/it]Layer 6 restored:  33%|███▎      | 10/30 [03:45<07:28, 22.44s/it]Layer 6 restored:  37%|███▋      | 11/30 [04:07<07:04, 22.35s/it]Layer 6 restored:  40%|████      | 12/30 [04:30<06:42, 22.35s/it]Layer 6 restored:  43%|████▎     | 13/30 [04:53<06:23, 22.55s/it]Layer 6 restored:  47%|████▋     | 14/30 [05:16<06:04, 22.77s/it]Layer 6 restored:  50%|█████     | 15/30 [05:39<05:40, 22.71s/it]Layer 6 restored:  53%|█████▎    | 16/30 [06:02<05:19, 22.80s/it]Layer 6 restored:  57%|█████▋    | 17/30 [06:24<04:54, 22.62s/it]Layer 6 restored:  60%|██████    | 18/30 [06:46<04:30, 22.53s/it]Layer 6 restored:  63%|██████▎   | 19/30 [07:09<04:08, 22.62s/it]Layer 6 restored:  67%|██████▋   | 20/30 [07:31<03:43, 22.38s/it]Layer 6 restored:  70%|███████   | 21/30 [07:53<03:22, 22.46s/it]Layer 6 restored:  73%|███████▎  | 22/30 [08:16<02:59, 22.39s/it]Layer 6 restored:  77%|███████▋  | 23/30 [08:39<02:38, 22.57s/it]Layer 6 restored:  80%|████████  | 24/30 [09:01<02:14, 22.40s/it]Layer 6 restored:  83%|████████▎ | 25/30 [09:22<01:50, 22.18s/it]Layer 6 restored:  87%|████████▋ | 26/30 [09:45<01:29, 22.42s/it]Layer 6 restored:  90%|█████████ | 27/30 [10:08<01:07, 22.41s/it]Layer 6 restored:  93%|█████████▎| 28/30 [10:30<00:44, 22.41s/it]Layer 6 restored:  97%|█████████▋| 29/30 [10:53<00:22, 22.57s/it]Layer 6 restored: 100%|██████████| 30/30 [11:15<00:00, 22.51s/it]Layer 6 restored: 100%|██████████| 30/30 [11:15<00:00, 22.53s/it]
-
-Layer 6 restored - Key metrics:
-  Layer 3: Top1=1206.37 (Recovery: 98.5%)
-  Layer 10: Top1=1173.23 (Recovery: 91.8%)
-  Layer 20: Top1=1166.82 (Recovery: 90.9%)
-  Layer 30: Top1=1144.00 (Recovery: 88.6%)
-
-================================================================================
-Testing Layer 7 (restoring its attention heads)
-================================================================================
-loading model opt_7b
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:03<00:03,  3.26s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.01s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.19s/it]
-Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
-Layer 7 restored:   0%|          | 0/30 [00:00<?, ?it/s]Layer 7 restored:   3%|▎         | 1/30 [00:22<10:48, 22.37s/it]Layer 7 restored:   7%|▋         | 2/30 [00:44<10:20, 22.14s/it]Layer 7 restored:  10%|█         | 3/30 [01:07<10:04, 22.38s/it]Layer 7 restored:  13%|█▎        | 4/30 [01:29<09:45, 22.50s/it]Layer 7 restored:  17%|█▋        | 5/30 [01:52<09:22, 22.48s/it]Layer 7 restored:  20%|██        | 6/30 [02:14<08:59, 22.46s/it]Layer 7 restored:  23%|██▎       | 7/30 [02:37<08:39, 22.57s/it]Layer 7 restored:  27%|██▋       | 8/30 [03:00<08:18, 22.65s/it]Layer 7 restored:  30%|███       | 9/30 [03:22<07:55, 22.65s/it]Layer 7 restored:  33%|███▎      | 10/30 [03:45<07:32, 22.63s/it]Layer 7 restored:  37%|███▋      | 11/30 [04:07<07:06, 22.47s/it]Layer 7 restored:  40%|████      | 12/30 [04:29<06:44, 22.47s/it]Layer 7 restored:  43%|████▎     | 13/30 [04:52<06:22, 22.48s/it]Layer 7 restored:  47%|████▋     | 14/30 [05:15<06:01, 22.59s/it]Layer 7 restored:  50%|█████     | 15/30 [05:37<05:38, 22.56s/it]Layer 7 restored:  53%|█████▎    | 16/30 [06:00<05:18, 22.72s/it]Layer 7 restored:  57%|█████▋    | 17/30 [06:23<04:53, 22.54s/it]Layer 7 restored:  60%|██████    | 18/30 [06:45<04:29, 22.47s/it]Layer 7 restored:  63%|██████▎   | 19/30 [07:07<04:06, 22.45s/it]Layer 7 restored:  67%|██████▋   | 20/30 [07:31<03:48, 22.84s/it]Layer 7 restored:  70%|███████   | 21/30 [07:54<03:25, 22.83s/it]Layer 7 restored:  73%|███████▎  | 22/30 [08:16<03:01, 22.63s/it]Layer 7 restored:  77%|███████▋  | 23/30 [08:39<02:39, 22.72s/it]Layer 7 restored:  80%|████████  | 24/30 [09:01<02:15, 22.63s/it]Layer 7 restored:  83%|████████▎ | 25/30 [09:24<01:53, 22.70s/it]Layer 7 restored:  87%|████████▋ | 26/30 [09:47<01:30, 22.65s/it]Layer 7 restored:  90%|█████████ | 27/30 [10:09<01:07, 22.64s/it]Layer 7 restored:  93%|█████████▎| 28/30 [10:32<00:45, 22.50s/it]Layer 7 restored:  97%|█████████▋| 29/30 [10:54<00:22, 22.55s/it]Layer 7 restored: 100%|██████████| 30/30 [11:17<00:00, 22.49s/it]Layer 7 restored: 100%|██████████| 30/30 [11:17<00:00, 22.57s/it]
-
-Layer 7 restored - Key metrics:
-  Layer 3: Top1=1206.37 (Recovery: 98.5%)
-  Layer 10: Top1=1175.02 (Recovery: 92.0%)
-  Layer 20: Top1=1169.97 (Recovery: 91.2%)
-  Layer 30: Top1=1146.85 (Recovery: 88.8%)
-
-================================================================================
-Testing Layer 8 (restoring its attention heads)
-================================================================================
-loading model opt_7b
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:03<00:03,  3.27s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.00s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.19s/it]
-Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
-Layer 8 restored:   0%|          | 0/30 [00:00<?, ?it/s]Layer 8 restored:   3%|▎         | 1/30 [00:21<10:37, 21.97s/it]Layer 8 restored:   7%|▋         | 2/30 [00:44<10:16, 22.03s/it]Layer 8 restored:  10%|█         | 3/30 [01:06<10:01, 22.27s/it]Layer 8 restored:  13%|█▎        | 4/30 [01:29<09:42, 22.39s/it]Layer 8 restored:  17%|█▋        | 5/30 [01:51<09:20, 22.43s/it]Layer 8 restored:  20%|██        | 6/30 [02:13<08:55, 22.32s/it]Layer 8 restored:  23%|██▎       | 7/30 [02:36<08:32, 22.29s/it]Layer 8 restored:  27%|██▋       | 8/30 [02:57<08:08, 22.20s/it]Layer 8 restored:  30%|███       | 9/30 [03:20<07:46, 22.20s/it]Layer 8 restored:  33%|███▎      | 10/30 [03:42<07:24, 22.24s/it]Layer 8 restored:  37%|███▋      | 11/30 [04:04<07:00, 22.14s/it]Layer 8 restored:  40%|████      | 12/30 [04:26<06:37, 22.08s/it]Layer 8 restored:  43%|████▎     | 13/30 [04:48<06:16, 22.12s/it]Layer 8 restored:  47%|████▋     | 14/30 [05:10<05:52, 22.05s/it]Layer 8 restored:  50%|█████     | 15/30 [05:32<05:30, 22.03s/it]Layer 8 restored:  53%|█████▎    | 16/30 [05:55<05:10, 22.19s/it]Layer 8 restored:  57%|█████▋    | 17/30 [06:17<04:48, 22.16s/it]Layer 8 restored:  60%|██████    | 18/30 [06:39<04:25, 22.16s/it]Layer 8 restored:  63%|██████▎   | 19/30 [07:01<04:04, 22.19s/it]Layer 8 restored:  67%|██████▋   | 20/30 [07:23<03:42, 22.26s/it]Layer 8 restored:  70%|███████   | 21/30 [07:46<03:21, 22.37s/it]Layer 8 restored:  73%|███████▎  | 22/30 [08:08<02:58, 22.33s/it]Layer 8 restored:  77%|███████▋  | 23/30 [08:31<02:37, 22.48s/it]Layer 8 restored:  80%|████████  | 24/30 [08:54<02:14, 22.46s/it]Layer 8 restored:  83%|████████▎ | 25/30 [09:16<01:51, 22.39s/it]Layer 8 restored:  87%|████████▋ | 26/30 [09:38<01:29, 22.39s/it]Layer 8 restored:  90%|█████████ | 27/30 [10:00<01:07, 22.35s/it]Layer 8 restored:  93%|█████████▎| 28/30 [10:23<00:44, 22.40s/it]Layer 8 restored:  97%|█████████▋| 29/30 [10:45<00:22, 22.42s/it]Layer 8 restored: 100%|██████████| 30/30 [11:08<00:00, 22.33s/it]Layer 8 restored: 100%|██████████| 30/30 [11:08<00:00, 22.27s/it]
-
-Layer 8 restored - Key metrics:
-  Layer 3: Top1=1206.37 (Recovery: 98.5%)
-  Layer 10: Top1=1174.67 (Recovery: 91.9%)
-  Layer 20: Top1=1170.08 (Recovery: 91.2%)
-  Layer 30: Top1=1146.87 (Recovery: 88.8%)
-
-================================================================================
-Testing Layer 9 (restoring its attention heads)
-================================================================================
-loading model opt_7b
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.84s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.07it/s]
-Some parameters are on the meta device because they were offloaded to the cpu.
-Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
-Layer 9 restored:   0%|          | 0/30 [00:00<?, ?it/s]Layer 9 restored:   0%|          | 0/30 [00:00<?, ?it/s]
-Traceback (most recent call last):
-  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp2_single_layer_restoration.py", line 232, in <module>
-    main()
-  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp2_single_layer_restoration.py", line 161, in main
-    results = run_single_layer_experiment(args, restore_layer)
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/exp2_single_layer_restoration.py", line 91, in run_single_layer_experiment
-    _ = model(testseq)
-        ^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/accelerate/hooks.py", line 175, in new_forward
-    output = module._old_forward(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/generic.py", line 918, in wrapper
-    output = func(self, *args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/models/opt/modeling_opt.py", line 818, in forward
-    outputs = self.model.decoder(
-              ^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/generic.py", line 918, in wrapper
-    output = func(self, *args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/models/opt/modeling_opt.py", line 648, in forward
-    layer_outputs = decoder_layer(
-                    ^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/modeling_layers.py", line 94, in __call__
-    return super().__call__(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/ludan/massActive/changeHead_massvieAcitve/monkey_patch/modify_opt.py", line 29, in opt_custom_decoderlayer_forward
-    hidden_states, self_attn_weights = self.self_attn(
-                                       ^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1857, in _call_impl
-    return inner()
-           ^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1805, in inner
-    result = forward_call(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/accelerate/hooks.py", line 175, in new_forward
-    output = module._old_forward(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/models/opt/modeling_opt.py", line 179, in forward
-    attn_output, attn_weights = attention_interface(
-                                ^^^^^^^^^^^^^^^^^^^^
-  File "/home/vicuna/anaconda3/lib/python3.11/site-packages/transformers/models/opt/modeling_opt.py", line 94, in eager_attention_forward
-    attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query.dtype)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 256.00 MiB. GPU 0 has a total capacity of 79.15 GiB of which 59.81 MiB is free. Including non-PyTorch memory, this process has 79.07 GiB memory in use. Of the allocated memory 78.55 GiB is allocated by PyTorch, and 27.66 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

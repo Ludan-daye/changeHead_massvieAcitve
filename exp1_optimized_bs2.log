@@ -1,33 +1,0 @@
-nohup: 忽略输入
-/home/vicuna/anaconda3/lib/python3.11/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.5' currently installed).
-  from pandas.core import (
-
-================================================================================
-EXPERIMENT 1: FEASIBILITY TEST (OPTIMIZED FOR A100)
-================================================================================
-
-Optimizations:
-  ✓ Batch processing (batch_size=2)
-  ✓ Increased samples (nsamples=60)
-  ✓ Reduced CPU-GPU transfers
-  ✓ Memory optimization
-
-Research Question:
-  Do attention heads generate massive activations?
-
-Method:
-  1. Run baseline (no pruning)
-  2. Run with all attention heads disabled
-  3. Compare activation magnitudes
-
-================================================================================
-
-🔵 PHASE 1: Running Baseline Experiment (Optimized)
-
-================================================================================
-Running Experiment (OPTIMIZED): BASELINE
-================================================================================
-
-loading model llama2_13b
-`torch_dtype` is deprecated! Use `dtype` instead!
-Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:03<00:06,  3.00s/it]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:05<00:02,  2.93s/it]Loading checkpoint shards: 100%|██████████| 3/3 [00:07<00:00,  2.38s/it]Loading checkpoint shards: 100%|██████████| 3/3 [00:07<00:00,  2.54s/it]

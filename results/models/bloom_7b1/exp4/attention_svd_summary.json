@@ -1,0 +1,31 @@
+{
+  "experiment": "exp4_attention_svd",
+  "model": "bloom_7b1",
+  "date": "2025-11-27",
+  "method": "对Attention dense层权重进行SVD分解",
+  
+  "layers_analyzed": [0, 7, 12, 26, 27, 28, 29],
+  
+  "summary": {
+    "layer_0": {"sigma1": 10.05, "sigma2": 3.84, "ratio": 2.62, "has_dominant": true},
+    "layer_7": {"sigma1": 6.82, "sigma2": 3.70, "ratio": 1.85, "has_dominant": false},
+    "layer_12": {"sigma1": 2.97, "sigma2": 2.89, "ratio": 1.03, "has_dominant": false},
+    "layer_26": {"sigma1": 12.31, "sigma2": 10.05, "ratio": 1.22, "has_dominant": false},
+    "layer_27": {"sigma1": 18.99, "sigma2": 12.19, "ratio": 1.56, "has_dominant": false},
+    "layer_28": {"sigma1": 18.48, "sigma2": 15.70, "ratio": 1.18, "has_dominant": false},
+    "layer_29": {"sigma1": 22.84, "sigma2": 10.26, "ratio": 2.23, "has_dominant": true}
+  },
+  
+  "key_findings": {
+    "dominant_layers": [0, 29],
+    "ma_source_layer": 28,
+    "ma_layer_has_dominant": false,
+    "interpretation": "产生MA的Layer 28反而没有主导奇异方向"
+  },
+  
+  "conclusion": {
+    "finding": "BLOOM的MA机制不是由SVD主导方向决定",
+    "evidence": "Layer 28 σ₁/σ₂=1.18, 远低于阈值2.0",
+    "implication": "需要其他机制解释（多头协作、ALiBi等）"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "experiment": "exp4b_svd_ma_alignment_detailed",
+  "model": "Mistral-7B-v0.3",
+  "date": "2025-11-27",
+  "method": "分析MLP down_proj的SVD左奇异向量(u1)与实际MA激活的对齐程度",
+  
+  "layer_0": {
+    "sigma1_sigma2_ratio": 1.08,
+    "cos_similarity_with_u1": -0.38,
+    "top_ma_dims": {
+      "dim_1437": {"mean_act": 0.051, "u1": -0.27},
+      "dim_1935": {"mean_act": 0.049, "u1": -0.21},
+      "dim_2070": {"mean_act": 0.045, "u1": 0.45},
+      "dim_2388": {"mean_act": 0.042, "u1": -0.17},
+      "dim_3398": {"mean_act": 0.041, "u1": 0.31}
+    },
+    "finding": "MA维度与u1存在中等对齐，Top MA维度在u1中有显著值"
+  },
+  
+  "layer_31": {
+    "sigma1_sigma2_ratio": 1.77,
+    "cos_similarity_with_u1": 0.29,
+    "top_ma_dims": {
+      "dim_3901": {"mean_act": 11.90, "u1": -0.81, "note": "强对齐！"},
+      "dim_2070": {"mean_act": 7.56, "u1": 0.49},
+      "dim_3719": {"mean_act": 4.12, "u1": 0.005},
+      "dim_53": {"mean_act": 3.68, "u1": -0.04},
+      "dim_2232": {"mean_act": 3.11, "u1": 0.04}
+    },
+    "finding": "Dim 3901展现强对齐：u1=-0.81（主导）对应MA=11.9（最大）"
+  },
+  
+  "conclusions": {
+    "layer_0": "中等对齐(cos=-0.38)，MA维度与u1主导维度有交集",
+    "layer_31": "Dim 3901强对齐，但整体对齐中等(cos=0.29)",
+    "mechanism_insight": "Mistral的MA与SVD存在一定关联，但不如Qwen(cos=0.99)那么直接",
+    "key_finding": "Layer 31的Dim 3901同时是SVD主导维度(u1=0.81)和MA主导维度(act=11.9)"
+  }
+}

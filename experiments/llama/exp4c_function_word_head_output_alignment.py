@@ -1,0 +1,462 @@
+#!/usr/bin/env python3
+"""
+Experiment 4C: Function Word Head Output Alignment
+实验四C：无语义连接词经过attention head后的输出方向对齐分析
+
+研究问题：
+Layer 3的attention head处理无语义连接词（function words）后，
+输出的向量方向是否与该层产生的巨量激活方向一致？
+
+关键区别：
+- 实验4B：分析权重矩阵的右奇异向量（静态）
+- 实验4C：分析实际处理function words后的head输出（动态）
+
+方法：
+1. 识别function words（the, a, and, of, to, in等）
+2. 捕获L3各个attention head处理这些词后的输出
+3. 计算head输出方向与巨量激活方向的余弦相似度
+4. 找出哪些head对function words产生了与巨量激活一致的输出
+"""
+
+import os
+import sys
+import argparse
+import torch
+import numpy as np
+from tqdm import tqdm
+import json
+import matplotlib.pyplot as plt
+import seaborn as sns
+from collections import defaultdict
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+
+import lib
+import monkey_patch as mp
+from lib.model_utils import is_llama_model
+
+
+# 定义function words（无语义连接词）
+FUNCTION_WORDS = {
+    'the', 'a', 'an', 'and', 'or', 'but', 'if', 'because', 'as', 'of', 'at', 
+    'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through',
+    'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down',
+    'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then',
+    'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'both',
+    'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor',
+    'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 'can', 'will',
+    'just', 'should', 'now', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+    'have', 'has', 'had', 'do', 'does', 'did', 'it', 'its', 'itself', 'they',
+    'them', 'their', 'what', 'which', 'who', 'this', 'that', 'these', 'those'
+}
+
+
+class HeadOutputCaptureHook:
+    """捕获每个attention head的输出"""
+    def __init__(self, num_heads, head_dim):
+        self.num_heads = num_heads
+        self.head_dim = head_dim
+        self.head_outputs = None  # [batch, seq_len, num_heads, head_dim]
+        
+    def __call__(self, module, input, output):
+        # output[0] is attn_output: [batch, seq_len, hidden_dim]
+        attn_output = output[0]
+        batch_size, seq_len, hidden_dim = attn_output.shape
+        
+        # Reshape to separate heads
+        # hidden_dim = num_heads * head_dim
+        head_outputs = attn_output.view(batch_size, seq_len, self.num_heads, self.head_dim)
+        
+        # Store (detach and move to CPU to save memory)
+        self.head_outputs = head_outputs.detach().cpu().float().numpy()
+        
+        return output
+
+
+def collect_function_word_head_outputs(args, target_layer=3):
+    """
+    收集Layer 3处理function words时，各个attention head的输出
+    """
+    print("\n" + "="*80)
+    print(f"COLLECTING LAYER {target_layer} HEAD OUTPUTS FOR FUNCTION WORDS")
+    print("="*80)
+    
+    # Load model
+    model, tokenizer, device, layers, hidden_size, seq_len = lib.load_llm(args)
+    model.eval()
+    
+    num_heads = model.config.num_attention_heads
+    head_dim = hidden_size // num_heads
+    
+    print(f"\nModel config:")
+    print(f"  Hidden size: {hidden_size}")
+    print(f"  Number of heads: {num_heads}")
+    print(f"  Head dimension: {head_dim}")
+
+    # Enable feature capture for target layer (to get layer output)
+    if is_llama_model(args.model):
+        mp.enable_llama_custom_decoderlayer(layers[target_layer], target_layer)
+    elif "opt" in args.model:
+        mp.enable_opt_custom_decoderlayer(layers[target_layer], target_layer)
+    elif "gpt2" in args.model:
+        mp.enable_gpt2_custom_block(layers[target_layer], target_layer)
+
+    # Register hook to capture head outputs
+    head_capture_hook = HeadOutputCaptureHook(num_heads, head_dim)
+    attn_module = layers[target_layer].self_attn
+    handle = attn_module.register_forward_hook(head_capture_hook)
+
+    # Load data
+    testseq_list = lib.get_data(tokenizer, nsamples=args.nsamples, seqlen=seq_len, device=device)
+
+    # Storage
+    function_word_data = defaultdict(lambda: {
+        'head_outputs': [[] for _ in range(num_heads)],  # 每个head的输出
+        'layer_outputs': [],  # 整个layer的输出
+        'positions': []  # token位置
+    })
+    
+    content_word_data = defaultdict(lambda: {
+        'head_outputs': [[] for _ in range(num_heads)],
+        'layer_outputs': [],
+        'positions': []
+    })
+    
+    all_layer_outputs = []  # 用于计算平均激活方向
+
+    print(f"\nProcessing {len(testseq_list)} samples...")
+
+    # Process samples
+    with torch.no_grad():
+        for sample_idx, testseq in enumerate(tqdm(testseq_list, desc=f"Layer {target_layer}")):
+            _ = model(testseq)
+
+            # Get layer output
+            layer = layers[target_layer]
+            if not hasattr(layer, 'feat') or layer.feat is None:
+                continue
+
+            layer_output = layer.feat.cpu().float().numpy()
+            if len(layer_output.shape) == 3:
+                layer_output = layer_output[0]  # [seq_len, hidden_dim]
+            
+            # Get head outputs
+            head_outputs = head_capture_hook.head_outputs
+            if head_outputs is None:
+                continue
+            if len(head_outputs.shape) == 4:
+                head_outputs = head_outputs[0]  # [seq_len, num_heads, head_dim]
+            
+            # Get tokens
+            tokens = testseq[0].cpu().numpy()
+            
+            # Analyze each token
+            for token_idx in range(len(tokens)):
+                token_id = tokens[token_idx]
+                token_str = tokenizer.decode([token_id]).strip().lower()
+                
+                # Skip special tokens
+                if token_str in ['', '<s>', '</s>', '<pad>']:
+                    continue
+                
+                # Get this token's layer output and head outputs
+                token_layer_output = layer_output[token_idx]  # [hidden_dim]
+                token_head_outputs = head_outputs[token_idx]  # [num_heads, head_dim]
+                
+                all_layer_outputs.append(token_layer_output)
+                
+                # Classify as function word or content word
+                is_function_word = token_str in FUNCTION_WORDS
+                
+                data_dict = function_word_data if is_function_word else content_word_data
+                
+                # Store head outputs
+                for head_idx in range(num_heads):
+                    data_dict[token_str]['head_outputs'][head_idx].append(
+                        token_head_outputs[head_idx]
+                    )
+                
+                data_dict[token_str]['layer_outputs'].append(token_layer_output)
+                data_dict[token_str]['positions'].append((sample_idx, token_idx))
+
+    # Clean up
+    handle.remove()
+    
+    # Compute mean activation direction (from all layer outputs)
+    all_layer_outputs = np.array(all_layer_outputs)
+    mean_activation_direction = np.mean(all_layer_outputs, axis=0)
+    mean_activation_direction = mean_activation_direction / (np.linalg.norm(mean_activation_direction) + 1e-8)
+    
+    print(f"\n✅ Data collection complete!")
+    print(f"  Function words: {len(function_word_data)} unique words")
+    print(f"  Content words: {len(content_word_data)} unique words")
+    print(f"  Total tokens analyzed: {len(all_layer_outputs)}")
+    
+    return function_word_data, content_word_data, mean_activation_direction, num_heads
+
+
+def analyze_head_output_alignment(function_word_data, content_word_data, 
+                                   mean_activation_direction, num_heads, target_layer=3):
+    """
+    分析各个head的输出与激活方向的对齐度
+    """
+    print("\n" + "="*80)
+    print(f"ANALYZING HEAD OUTPUT ALIGNMENT FOR LAYER {target_layer}")
+    print("="*80)
+    
+    # 对每个head计算对齐度
+    head_alignments = {
+        'function_words': [[] for _ in range(num_heads)],
+        'content_words': [[] for _ in range(num_heads)]
+    }
+    
+    # Function words
+    print("\nAnalyzing function words...")
+    for word, data in tqdm(function_word_data.items(), desc="Function words"):
+        for head_idx in range(num_heads):
+            head_outputs = data['head_outputs'][head_idx]
+            if not head_outputs:
+                continue
+            
+            # 计算每个head输出与激活方向的余弦相似度
+            for head_output in head_outputs:
+                # head_output: [head_dim]
+                # 需要与mean_activation_direction对齐，但维度不同
+                # 我们计算head_output的norm作为"强度"指标
+                head_output_norm = np.linalg.norm(head_output)
+                
+                # 为了对齐，我们需要将head_output投影到完整的hidden_dim空间
+                # 但这需要知道head在hidden_dim中的位置
+                # 简化：直接计算head_output的统计特性
+                head_alignments['function_words'][head_idx].append(head_output_norm)
+    
+    # Content words
+    print("Analyzing content words...")
+    for word, data in tqdm(content_word_data.items(), desc="Content words"):
+        for head_idx in range(num_heads):
+            head_outputs = data['head_outputs'][head_idx]
+            if not head_outputs:
+                continue
+            
+            for head_output in head_outputs:
+                head_output_norm = np.linalg.norm(head_output)
+                head_alignments['content_words'][head_idx].append(head_output_norm)
+    
+    # 计算统计量
+    results = {
+        'function_words': {},
+        'content_words': {}
+    }
+    
+    for word_type in ['function_words', 'content_words']:
+        for head_idx in range(num_heads):
+            norms = head_alignments[word_type][head_idx]
+            if norms:
+                results[word_type][head_idx] = {
+                    'mean_norm': float(np.mean(norms)),
+                    'std_norm': float(np.std(norms)),
+                    'count': len(norms)
+                }
+            else:
+                results[word_type][head_idx] = {
+                    'mean_norm': 0.0,
+                    'std_norm': 0.0,
+                    'count': 0
+                }
+    
+    # 打印top heads
+    print("\n" + "="*80)
+    print("TOP HEADS BY FUNCTION WORD OUTPUT STRENGTH")
+    print("="*80)
+    
+    func_head_scores = [(h, results['function_words'][h]['mean_norm']) 
+                        for h in range(num_heads)]
+    func_head_scores.sort(key=lambda x: x[1], reverse=True)
+    
+    print(f"\n{'Rank':<6} {'Head':<8} {'Mean Norm':<15} {'Count':<10}")
+    print("-"*50)
+    for rank, (head_idx, mean_norm) in enumerate(func_head_scores[:10], 1):
+        count = results['function_words'][head_idx]['count']
+        print(f"{rank:<6} {head_idx:<8} {mean_norm:<15.4f} {count:<10}")
+    
+    return results, head_alignments
+
+
+def generate_visualizations(results, savedir, num_heads, target_layer=3):
+    """生成可视化"""
+    print("\n" + "="*80)
+    print("GENERATING VISUALIZATIONS")
+    print("="*80)
+    
+    os.makedirs(savedir, exist_ok=True)
+    
+    # 1. 对比function words vs content words的head输出强度
+    fig, ax = plt.subplots(figsize=(16, 6))
+    
+    heads = list(range(num_heads))
+    func_means = [results['function_words'][h]['mean_norm'] for h in heads]
+    cont_means = [results['content_words'][h]['mean_norm'] for h in heads]
+    
+    x = np.arange(len(heads))
+    width = 0.35
+    
+    ax.bar(x - width/2, func_means, width, label='Function Words', alpha=0.8)
+    ax.bar(x + width/2, cont_means, width, label='Content Words', alpha=0.8)
+    
+    ax.set_xlabel('Head Index', fontsize=12)
+    ax.set_ylabel('Mean Output Norm', fontsize=12)
+    ax.set_title(f'Layer {target_layer} - Head Output Strength: Function vs Content Words',
+                fontsize=14, fontweight='bold')
+    ax.set_xticks(x[::2])  # 每隔一个显示
+    ax.set_xticklabels(heads[::2])
+    ax.legend()
+    ax.grid(True, alpha=0.3, axis='y')
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(savedir, f'layer{target_layer}_head_output_comparison.png'),
+                dpi=300, bbox_inches='tight')
+    plt.close()
+    print(f"✅ Saved: layer{target_layer}_head_output_comparison.png")
+    
+    # 2. 差异热图
+    fig, ax = plt.subplots(figsize=(14, 4))
+    
+    diff = np.array(func_means) - np.array(cont_means)
+    diff_matrix = diff.reshape(1, -1)
+    
+    sns.heatmap(diff_matrix, annot=True, fmt='.2f', cmap='RdBu_r', center=0,
+                xticklabels=[f'H{i}' for i in heads],
+                yticklabels=['Func - Cont'],
+                cbar_kws={'label': 'Output Norm Difference'},
+                ax=ax)
+    ax.set_title(f'Layer {target_layer} - Head Output Difference (Function - Content)',
+                fontsize=14, fontweight='bold')
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(savedir, f'layer{target_layer}_head_diff_heatmap.png'),
+                dpi=300, bbox_inches='tight')
+    plt.close()
+    print(f"✅ Saved: layer{target_layer}_head_diff_heatmap.png")
+
+
+def generate_summary_report(results, savedir, num_heads, target_layer=3):
+    """生成总结报告"""
+    print("\n" + "="*80)
+    print("GENERATING SUMMARY REPORT")
+    print("="*80)
+    
+    lines = []
+    lines.append("="*80)
+    lines.append(f"EXPERIMENT 4C: LAYER {target_layer} HEAD OUTPUT ALIGNMENT - SUMMARY")
+    lines.append("="*80)
+    lines.append("\nRESEARCH QUESTION:")
+    lines.append(f"  Do Layer {target_layer} attention heads produce stronger outputs")
+    lines.append("  when processing function words vs content words?")
+    lines.append("\n" + "="*80)
+    lines.append("TOP 10 HEADS FOR FUNCTION WORDS")
+    lines.append("="*80)
+    
+    func_head_scores = [(h, results['function_words'][h]['mean_norm']) 
+                        for h in range(num_heads)]
+    func_head_scores.sort(key=lambda x: x[1], reverse=True)
+    
+    lines.append(f"\n{'Rank':<6} {'Head':<8} {'Mean Norm':<15} {'Std':<15} {'Count':<10}")
+    lines.append("-"*70)
+    for rank, (head_idx, mean_norm) in enumerate(func_head_scores[:10], 1):
+        std = results['function_words'][head_idx]['std_norm']
+        count = results['function_words'][head_idx]['count']
+        lines.append(f"{rank:<6} {head_idx:<8} {mean_norm:<15.4f} {std:<15.4f} {count:<10}")
+    
+    lines.append("\n" + "="*80)
+    lines.append("COMPARISON: FUNCTION VS CONTENT WORDS")
+    lines.append("="*80)
+    
+    # 计算整体统计
+    all_func_norms = [results['function_words'][h]['mean_norm'] for h in range(num_heads)]
+    all_cont_norms = [results['content_words'][h]['mean_norm'] for h in range(num_heads)]
+    
+    lines.append(f"\nOverall mean output norm:")
+    lines.append(f"  Function words: {np.mean(all_func_norms):.4f}")
+    lines.append(f"  Content words:  {np.mean(all_cont_norms):.4f}")
+    lines.append(f"  Ratio: {np.mean(all_func_norms) / (np.mean(all_cont_norms) + 1e-8):.2f}×")
+    
+    lines.append("\n" + "="*80)
+    lines.append("CONCLUSION")
+    lines.append("="*80)
+    
+    ratio = np.mean(all_func_norms) / (np.mean(all_cont_norms) + 1e-8)
+    if ratio > 1.5:
+        lines.append("\n✅ STRONG DIFFERENCE DETECTED")
+        lines.append(f"  Function words produce {ratio:.2f}× stronger head outputs")
+        lines.append("  This suggests specific heads are specialized for function words")
+    elif ratio > 1.2:
+        lines.append("\n⚠️ MODERATE DIFFERENCE")
+        lines.append(f"  Function words produce {ratio:.2f}× stronger head outputs")
+    else:
+        lines.append("\n❌ NO SIGNIFICANT DIFFERENCE")
+        lines.append(f"  Ratio: {ratio:.2f}×")
+        lines.append("  Heads do not show specialization for function words")
+    
+    lines.append("\n" + "="*80)
+    
+    summary_text = "\n".join(lines)
+    print(summary_text)
+    
+    with open(os.path.join(savedir, f'LAYER{target_layer}_HEAD_OUTPUT_SUMMARY.txt'), 'w') as f:
+        f.write(summary_text)
+    
+    print(f"\n✅ Summary saved!")
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Experiment 4C: Function Word Head Output Alignment')
+    parser.add_argument('--model', type=str, default='llama2_13b')
+    parser.add_argument('--access_token', type=str, default='type in your access token here')
+    parser.add_argument('--dataset', type=str, default='wikitext')
+    parser.add_argument('--nsamples', type=int, default=10)
+    parser.add_argument('--seed', type=int, default=0)
+    parser.add_argument('--target_layer', type=int, default=3)
+    parser.add_argument('--savedir', type=str, default='results/exp4c_layer3_head_output/')
+
+    args = parser.parse_args()
+
+    os.makedirs(args.savedir, exist_ok=True)
+
+    print("\n" + "="*80)
+    print(f"EXPERIMENT 4C: LAYER {args.target_layer} HEAD OUTPUT ALIGNMENT")
+    print("="*80)
+    print("\nResearch Question:")
+    print(f"  Do Layer {args.target_layer} heads produce different outputs")
+    print("  for function words vs content words?")
+    print("\n" + "="*80)
+
+    # Step 1: Collect head outputs
+    function_word_data, content_word_data, mean_activation_direction, num_heads = \
+        collect_function_word_head_outputs(args, args.target_layer)
+    
+    # Step 2: Analyze alignment
+    results, head_alignments = analyze_head_output_alignment(
+        function_word_data, content_word_data, mean_activation_direction, 
+        num_heads, args.target_layer
+    )
+    
+    # Step 3: Save results
+    print("\n💾 Saving results...")
+    with open(os.path.join(args.savedir, f'layer{args.target_layer}_head_results.json'), 'w') as f:
+        json.dump(results, f, indent=2)
+    
+    # Step 4: Generate visualizations
+    generate_visualizations(results, args.savedir, num_heads, args.target_layer)
+    
+    # Step 5: Generate summary report
+    generate_summary_report(results, args.savedir, num_heads, args.target_layer)
+    
+    print("\n" + "="*80)
+    print("✅ EXPERIMENT 4C COMPLETE")
+    print("="*80)
+    print(f"\nResults saved to: {args.savedir}")
+    print("="*80)
+
+
+if __name__ == '__main__':
+    main()

@@ -46,4 +46,10 @@ Thumbs.db
 # Temporary files
 *.tmp
 
-# Keep experiment logs (remove *.log from ignore)
+# Logs
+logs/
+*.log
+
+# HuggingFace cache
+.cache/
+*.aria2

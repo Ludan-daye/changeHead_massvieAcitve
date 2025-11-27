@@ -5,24 +5,62 @@ import timm
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 from .model_dict import MODEL_DICT_LLMs
+from .model_utils import is_llama_model
+
+
+# 代理必须使用 http://127.0.0.1:7890（Clash HTTP 端口）
+os.environ.setdefault("http_proxy", "http://127.0.0.1:7890")
+os.environ.setdefault("https_proxy", "http://127.0.0.1:7890")
+
+# HF Token（必须预先在终端 export HF_TOKEN="hf_xxx..."）
+HF_TOKEN = os.environ.get("HF_TOKEN", None)
+GLOBAL_TOKEN_KWARGS = {"token": HF_TOKEN} if HF_TOKEN else {}
 
 
 def load_llm(args):
     print(f"loading model {args.model}")
     model_name, cache_dir = MODEL_DICT_LLMs[args.model]["model_id"], MODEL_DICT_LLMs[args.model]["cache_dir"]
 
-    # Only use token if it's not the default placeholder
-    token_kwargs = {} if args.access_token == "type in your access token here" else {"token": args.access_token}
+    # 如果通过命令行显式传入 access_token，则优先使用
+    if hasattr(args, "access_token") and args.access_token != "type in your access token here":
+        token_kwargs = {"token": args.access_token}
+    else:
+        token_kwargs = GLOBAL_TOKEN_KWARGS
 
     # For attention analysis, we need attn_implementation='eager'
     attn_impl = getattr(args, 'attn_implementation', 'eager')
 
+    # 统一的 from_pretrained 参数
+    # 临时禁用代理
+    import os
+    os.environ.pop('HTTP_PROXY', None)
+    os.environ.pop('HTTPS_PROXY', None)
+    os.environ.pop('http_proxy', None)
+    os.environ.pop('https_proxy', None)
+    
+    common_kwargs = dict(
+        torch_dtype=torch.float16,
+        cache_dir=cache_dir,
+        low_cpu_mem_usage=True,
+        device_map="auto",
+        attn_implementation=attn_impl,
+        trust_remote_code=True,
+        force_download=False,  # 不强制下载
+        local_files_only=False,  # 允许在线验证，但会优先使用缓存
+        **token_kwargs,
+    )
+
     if "falcon" in args.model or "mpt" in args.model or "phi" in args.model:
-        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", trust_remote_code=True, attn_implementation=attn_impl, **token_kwargs)
+        model = AutoModelForCausalLM.from_pretrained(model_name, **common_kwargs)
     elif "mistral" in args.model or "pythia" in args.model:
-        model = AutoModelForCausalLM.from_pretrained(model_name, revision=args.revision, torch_dtype=torch.float16, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", attn_implementation=attn_impl, **token_kwargs)
+        revision = getattr(args, 'revision', None)
+        if revision:
+            model = AutoModelForCausalLM.from_pretrained(model_name, revision=revision, **common_kwargs)
+        else:
+            model = AutoModelForCausalLM.from_pretrained(model_name, **common_kwargs)
     else:
-        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", attn_implementation=attn_impl, **token_kwargs)
+        # LLaMA / GPT-2 / OPT 等都会走这里
+        model = AutoModelForCausalLM.from_pretrained(model_name, **common_kwargs)
     model.eval()
 
     if "mpt" in args.model or "pythia" in args.model:
@@ -38,10 +76,10 @@ def load_llm(args):
 
     if "llama2_13b" == args.model:
         # device = torch.device("cuda:"+str(model.hf_device_map["lm_head"]))
-        device = torch.device("cuda:1")
+        device = torch.device("cuda:0")
 
     seq_len=4096
-    if "llama" in args.model or "mistral" in args.model:
+    if is_llama_model(args.model) or "mistral" in args.model:
         layers = model.model.layers
         hidden_size = model.config.hidden_size 
     elif "falcon" in args.model:
@@ -66,6 +104,22 @@ def load_llm(args):
     elif "phi-2" in args.model: 
         layers = model.model.layers 
         hidden_size = model.config.hidden_size 
+    elif "bloom" in args.model:
+        layers = model.transformer.h
+        hidden_size = model.config.hidden_size
+        seq_len = 2048
+    elif "gptj" in args.model:
+        layers = model.transformer.h
+        hidden_size = model.config.hidden_size
+        seq_len = 2048
+    elif "qwen" in args.model:
+        layers = model.model.layers
+        hidden_size = model.config.hidden_size
+        seq_len = 4096
+    elif "deepseek" in args.model:
+        layers = model.model.layers
+        hidden_size = model.config.hidden_size
+        seq_len = 4096
 
     return model, tokenizer, device, layers, hidden_size, seq_len
 

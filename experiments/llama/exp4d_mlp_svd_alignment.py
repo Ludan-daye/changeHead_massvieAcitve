@@ -1,0 +1,532 @@
+#!/usr/bin/env python3
+"""
+Experiment 4D: MLP SVD Alignment Analysis
+实验四D：MLP层SVD对齐分析
+
+研究问题：
+Layer 3的MLP权重矩阵（up_proj, gate_proj, down_proj）的右奇异向量，
+是否与该层产生的巨量激活方向一致？
+
+关键假设：
+既然attention层的分析都显示不对齐，那么大规模激活可能来自MLP层。
+LLaMA使用SwiGLU激活：output = down_proj(SiLU(gate_proj(x)) * up_proj(x))
+
+重点分析：
+1. down_proj的右奇异向量（最终输出方向）
+2. up_proj和gate_proj的组合效应
+3. 与GPT-2的对比（GPT-2在down_proj有R²=0.998的对齐）
+"""
+
+import os
+import sys
+import argparse
+import torch
+import numpy as np
+from tqdm import tqdm
+import json
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+
+import lib
+import monkey_patch as mp
+from lib.model_utils import is_llama_model
+
+
+def compute_mlp_svd(layer, layer_id):
+    """
+    对MLP层的权重矩阵进行SVD分解
+    """
+    print(f"\n{'='*80}")
+    print(f"Computing SVD for Layer {layer_id} MLP Weights")
+    print(f"{'='*80}")
+    
+    svd_results = {}
+    
+    if hasattr(layer, 'mlp'):
+        mlp = layer.mlp
+        
+        # 1. up_proj: [intermediate_dim, hidden_dim]
+        if hasattr(mlp, 'up_proj'):
+            W_up = mlp.up_proj.weight.data.cpu().float().numpy()
+            print(f"\nup_proj shape: {W_up.shape}")
+            U_up, S_up, Vh_up = np.linalg.svd(W_up, full_matrices=False)
+            svd_results['up_proj'] = {
+                'U': U_up,
+                'S': S_up,
+                'Vh': Vh_up,  # [min_dim, hidden_dim] - 右奇异向量在输入空间
+                'shape': W_up.shape
+            }
+            print(f"  Top 5 singular values: {S_up[:5]}")
+            print(f"  σ₁/σ₂ ratio: {S_up[0]/S_up[1]:.4f}")
+        
+        # 2. gate_proj: [intermediate_dim, hidden_dim]
+        if hasattr(mlp, 'gate_proj'):
+            W_gate = mlp.gate_proj.weight.data.cpu().float().numpy()
+            print(f"\ngate_proj shape: {W_gate.shape}")
+            U_gate, S_gate, Vh_gate = np.linalg.svd(W_gate, full_matrices=False)
+            svd_results['gate_proj'] = {
+                'U': U_gate,
+                'S': S_gate,
+                'Vh': Vh_gate,
+                'shape': W_gate.shape
+            }
+            print(f"  Top 5 singular values: {S_gate[:5]}")
+            print(f"  σ₁/σ₂ ratio: {S_gate[0]/S_gate[1]:.4f}")
+        
+        # 3. down_proj: [hidden_dim, intermediate_dim] - 最关键！
+        if hasattr(mlp, 'down_proj'):
+            W_down = mlp.down_proj.weight.data.cpu().float().numpy()
+            print(f"\ndown_proj shape: {W_down.shape}")
+            U_down, S_down, Vh_down = np.linalg.svd(W_down, full_matrices=False)
+            svd_results['down_proj'] = {
+                'U': U_down,  # [hidden_dim, min_dim] - 左奇异向量在输出空间
+                'S': S_down,
+                'Vh': Vh_down,  # [min_dim, intermediate_dim] - 右奇异向量在中间层空间
+                'shape': W_down.shape
+            }
+            print(f"  Top 5 singular values: {S_down[:5]}")
+            print(f"  σ₁/σ₂ ratio: {S_down[0]/S_down[1]:.4f}")
+            print(f"\n  ⚠️ KEY: down_proj的左奇异向量U在输出空间（hidden_dim）")
+            print(f"         这是我们要与激活方向对齐的！")
+    
+    return svd_results
+
+
+def collect_mlp_activations(args, target_layer=3):
+    """
+    收集Layer 3的MLP输入、中间层和输出激活
+    """
+    print("\n" + "="*80)
+    print(f"COLLECTING LAYER {target_layer} MLP ACTIVATIONS")
+    print("="*80)
+    
+    # Load model
+    model, tokenizer, device, layers, hidden_size, seq_len = lib.load_llm(args)
+    model.eval()
+
+    # Enable feature capture
+    if is_llama_model(args.model):
+        mp.enable_llama_custom_decoderlayer(layers[target_layer], target_layer)
+    elif "opt" in args.model:
+        mp.enable_opt_custom_decoderlayer(layers[target_layer], target_layer)
+    elif "gpt2" in args.model:
+        mp.enable_gpt2_custom_block(layers[target_layer], target_layer)
+
+    # Hooks to capture MLP intermediate activations
+    mlp_data = {
+        'mlp_input': [],
+        'up_output': [],
+        'gate_output': [],
+        'intermediate': [],  # gate * up (after SiLU)
+        'mlp_output': [],
+        'layer_output': []
+    }
+    
+    def mlp_input_hook(module, input, output):
+        # input[0] is the MLP input
+        mlp_data['mlp_input'].append(input[0].detach().cpu().float().numpy())
+    
+    def up_proj_hook(module, input, output):
+        mlp_data['up_output'].append(output.detach().cpu().float().numpy())
+    
+    def gate_proj_hook(module, input, output):
+        mlp_data['gate_output'].append(output.detach().cpu().float().numpy())
+    
+    def down_proj_hook(module, input, output):
+        # input[0] is the intermediate activation (after gate * up)
+        mlp_data['intermediate'].append(input[0].detach().cpu().float().numpy())
+        mlp_data['mlp_output'].append(output.detach().cpu().float().numpy())
+    
+    # Register hooks
+    mlp = layers[target_layer].mlp
+    handle_mlp = mlp.register_forward_hook(mlp_input_hook)
+    handle_up = mlp.up_proj.register_forward_hook(up_proj_hook)
+    handle_gate = mlp.gate_proj.register_forward_hook(gate_proj_hook)
+    handle_down = mlp.down_proj.register_forward_hook(down_proj_hook)
+
+    # Load data
+    testseq_list = lib.get_data(tokenizer, nsamples=args.nsamples, seqlen=seq_len, device=device)
+
+    print(f"\nProcessing {len(testseq_list)} samples...")
+
+    # Process samples
+    with torch.no_grad():
+        for testseq in tqdm(testseq_list, desc=f"Layer {target_layer}"):
+            _ = model(testseq)
+
+            # Get layer output
+            layer = layers[target_layer]
+            if hasattr(layer, 'feat') and layer.feat is not None:
+                layer_output = layer.feat.cpu().float().numpy()
+                if len(layer_output.shape) == 3:
+                    layer_output = layer_output[0]
+                mlp_data['layer_output'].append(layer_output)
+
+    # Clean up
+    handle_mlp.remove()
+    handle_up.remove()
+    handle_gate.remove()
+    handle_down.remove()
+
+    # Convert to arrays
+    for key in mlp_data:
+        if mlp_data[key]:
+            arrays = mlp_data[key]
+            # Flatten batch dimension
+            flattened = []
+            for arr in arrays:
+                if len(arr.shape) == 3:
+                    arr = arr[0]  # Remove batch dim
+                if len(arr.shape) == 2:
+                    for i in range(arr.shape[0]):
+                        flattened.append(arr[i])
+            mlp_data[key] = np.array(flattened)
+    
+    print(f"\n✅ Data collection complete!")
+    for key, arr in mlp_data.items():
+        if len(arr) > 0:
+            print(f"  {key}: {arr.shape}")
+    
+    return mlp_data
+
+
+def analyze_mlp_svd_alignment(mlp_data, svd_results, target_layer=3):
+    """
+    分析MLP权重的SVD方向与激活方向的对齐
+    """
+    print("\n" + "="*80)
+    print(f"ANALYZING MLP SVD ALIGNMENT FOR LAYER {target_layer}")
+    print("="*80)
+    
+    # 计算平均激活方向
+    layer_outputs = mlp_data['layer_output']
+    mean_activation = np.mean(layer_outputs, axis=0)
+    mean_activation_norm = mean_activation / (np.linalg.norm(mean_activation) + 1e-8)
+    
+    print(f"\nMean activation norm: {np.linalg.norm(mean_activation):.2f}")
+    print(f"Layer output shape: {layer_outputs.shape}")
+    
+    alignment_results = {}
+    
+    # 重点分析down_proj的左奇异向量U（在输出空间）
+    print(f"\n{'='*80}")
+    print("CRITICAL ANALYSIS: down_proj Left Singular Vectors (Output Space)")
+    print(f"{'='*80}")
+    
+    if 'down_proj' in svd_results:
+        U_down = svd_results['down_proj']['U']  # [hidden_dim, k]
+        S_down = svd_results['down_proj']['S']
+        
+        print(f"\nU_down shape: {U_down.shape}")
+        print(f"mean_activation shape: {mean_activation_norm.shape}")
+        
+        # 计算前20个左奇异向量与平均激活方向的对齐度
+        k = min(20, U_down.shape[1])
+        alignments = []
+        
+        for i in range(k):
+            left_singular_vec = U_down[:, i]  # 第i个左奇异向量
+            
+            # 计算余弦相似度
+            cosine_sim = np.dot(left_singular_vec, mean_activation_norm)
+            alignments.append({
+                'component': i,
+                'singular_value': float(S_down[i]),
+                'cosine_similarity': float(cosine_sim),
+                'abs_cosine_similarity': float(np.abs(cosine_sim))
+            })
+        
+        # 排序
+        sorted_alignments = sorted(alignments, key=lambda x: x['abs_cosine_similarity'], reverse=True)
+        
+        print(f"\nTop 10 aligned components (down_proj left singular vectors):")
+        print(f"{'Rank':<6} {'Component':<12} {'Singular Val':<15} {'Cosine Sim':<15} {'|Cosine|':<15}")
+        print("-"*80)
+        for rank, align in enumerate(sorted_alignments[:10], 1):
+            print(f"{rank:<6} {align['component']:<12} {align['singular_value']:<15.4f} "
+                  f"{align['cosine_similarity']:<15.4f} {align['abs_cosine_similarity']:<15.4f}")
+        
+        alignment_results['down_proj_left'] = {
+            'all_alignments': alignments,
+            'top_alignment': sorted_alignments[0],
+            'mean_abs_alignment': np.mean([a['abs_cosine_similarity'] for a in alignments])
+        }
+        
+        # 线性回归分析：类似GPT-2的R²分析
+        print(f"\n{'='*80}")
+        print("LINEAR REGRESSION ANALYSIS (like GPT-2)")
+        print(f"{'='*80}")
+        
+        # 投影到主奇异向量
+        top_left_vec = U_down[:, sorted_alignments[0]['component']]
+        projections = layer_outputs @ top_left_vec  # [n_samples]
+        
+        # 计算激活强度（使用最大值）
+        max_activations = np.max(np.abs(layer_outputs), axis=1)  # [n_samples]
+        
+        # 线性回归
+        slope, intercept, r_value, p_value, std_err = stats.linregress(projections, max_activations)
+        r_squared = r_value ** 2
+        
+        print(f"\nLinear Model: max_activation = {slope:.4f} × projection + {intercept:.4f}")
+        print(f"R² = {r_squared:.4f}")
+        print(f"p-value = {p_value:.2e}")
+        
+        if r_squared > 0.7:
+            print(f"\n✅ STRONG CAUSAL RELATIONSHIP (R² > 0.7)")
+            print(f"   Similar to GPT-2's mechanism!")
+        elif r_squared > 0.3:
+            print(f"\n⚠️ MODERATE RELATIONSHIP (R² > 0.3)")
+        else:
+            print(f"\n❌ WEAK RELATIONSHIP (R² < 0.3)")
+            print(f"   Different from GPT-2's mechanism")
+        
+        alignment_results['regression'] = {
+            'r_squared': float(r_squared),
+            'slope': float(slope),
+            'intercept': float(intercept),
+            'p_value': float(p_value)
+        }
+    
+    # 分析up_proj和gate_proj的右奇异向量（在输入空间）
+    for proj_name in ['up_proj', 'gate_proj']:
+        if proj_name in svd_results:
+            print(f"\n{'='*80}")
+            print(f"{proj_name.upper()} Right Singular Vectors (Input Space)")
+            print(f"{'='*80}")
+            
+            Vh = svd_results[proj_name]['Vh']  # [k, hidden_dim]
+            S = svd_results[proj_name]['S']
+            
+            # 与MLP输入对齐
+            if len(mlp_data['mlp_input']) > 0:
+                mlp_inputs = mlp_data['mlp_input']
+                mean_mlp_input = np.mean(mlp_inputs, axis=0)
+                mean_mlp_input_norm = mean_mlp_input / (np.linalg.norm(mean_mlp_input) + 1e-8)
+                
+                k = min(10, Vh.shape[0])
+                alignments = []
+                
+                for i in range(k):
+                    right_singular_vec = Vh[i, :]
+                    cosine_sim = np.dot(right_singular_vec, mean_mlp_input_norm)
+                    alignments.append({
+                        'component': i,
+                        'singular_value': float(S[i]),
+                        'cosine_similarity': float(cosine_sim),
+                        'abs_cosine_similarity': float(np.abs(cosine_sim))
+                    })
+                
+                sorted_alignments = sorted(alignments, key=lambda x: x['abs_cosine_similarity'], reverse=True)
+                
+                print(f"\nTop 5 aligned components:")
+                for rank, align in enumerate(sorted_alignments[:5], 1):
+                    print(f"  {rank}. Component {align['component']}: "
+                          f"cosine={align['cosine_similarity']:.4f}, σ={align['singular_value']:.4f}")
+                
+                alignment_results[f'{proj_name}_right'] = {
+                    'top_alignment': sorted_alignments[0],
+                    'mean_abs_alignment': np.mean([a['abs_cosine_similarity'] for a in alignments])
+                }
+    
+    return alignment_results
+
+
+def generate_visualizations(svd_results, alignment_results, savedir, target_layer=3):
+    """生成可视化"""
+    print("\n" + "="*80)
+    print("GENERATING VISUALIZATIONS")
+    print("="*80)
+    
+    os.makedirs(savedir, exist_ok=True)
+    
+    # 1. 奇异值谱
+    fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+    
+    for idx, proj_name in enumerate(['up_proj', 'gate_proj', 'down_proj']):
+        if proj_name in svd_results:
+            S = svd_results[proj_name]['S']
+            axes[idx].plot(range(len(S[:50])), S[:50], marker='o', linewidth=2, markersize=4)
+            axes[idx].set_xlabel('Singular Value Index', fontsize=12)
+            axes[idx].set_ylabel('Singular Value', fontsize=12)
+            axes[idx].set_title(f'{proj_name} Singular Values', fontsize=14, fontweight='bold')
+            axes[idx].grid(True, alpha=0.3)
+            axes[idx].set_yscale('log')
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(savedir, f'layer{target_layer}_mlp_singular_values.png'),
+                dpi=300, bbox_inches='tight')
+    plt.close()
+    print(f"✅ Saved: layer{target_layer}_mlp_singular_values.png")
+    
+    # 2. 对齐度对比
+    if 'down_proj_left' in alignment_results:
+        fig, ax = plt.subplots(figsize=(12, 6))
+        
+        alignments = alignment_results['down_proj_left']['all_alignments'][:20]
+        components = [a['component'] for a in alignments]
+        abs_cosines = [a['abs_cosine_similarity'] for a in alignments]
+        
+        ax.bar(components, abs_cosines, alpha=0.8)
+        ax.set_xlabel('Singular Vector Component', fontsize=12)
+        ax.set_ylabel('|Cosine Similarity|', fontsize=12)
+        ax.set_title(f'Layer {target_layer} down_proj - Left Singular Vector Alignment',
+                    fontsize=14, fontweight='bold')
+        ax.axhline(y=0.5, color='r', linestyle='--', alpha=0.5, label='0.5 threshold')
+        ax.legend()
+        ax.grid(True, alpha=0.3, axis='y')
+        
+        plt.tight_layout()
+        plt.savefig(os.path.join(savedir, f'layer{target_layer}_down_proj_alignment.png'),
+                    dpi=300, bbox_inches='tight')
+        plt.close()
+        print(f"✅ Saved: layer{target_layer}_down_proj_alignment.png")
+
+
+def generate_summary_report(svd_results, alignment_results, savedir, target_layer=3):
+    """生成总结报告"""
+    print("\n" + "="*80)
+    print("GENERATING SUMMARY REPORT")
+    print("="*80)
+    
+    lines = []
+    lines.append("="*80)
+    lines.append(f"EXPERIMENT 4D: LAYER {target_layer} MLP SVD ALIGNMENT - SUMMARY")
+    lines.append("="*80)
+    lines.append("\nRESEARCH QUESTION:")
+    lines.append(f"  Do the singular vectors of Layer {target_layer} MLP weight matrices")
+    lines.append("  align with the direction of massive activations?")
+    lines.append("\n  COMPARISON WITH GPT-2:")
+    lines.append("  GPT-2 showed R² = 0.998 alignment in down_proj")
+    lines.append("\n" + "="*80)
+    lines.append("SINGULAR VALUE ANALYSIS")
+    lines.append("="*80)
+    
+    for proj_name in ['up_proj', 'gate_proj', 'down_proj']:
+        if proj_name in svd_results:
+            S = svd_results[proj_name]['S']
+            lines.append(f"\n{proj_name.upper()}:")
+            lines.append(f"  σ₁: {S[0]:.4f}")
+            lines.append(f"  σ₂: {S[1]:.4f}")
+            lines.append(f"  σ₁/σ₂ ratio: {S[0]/S[1]:.4f}×")
+    
+    lines.append("\n" + "="*80)
+    lines.append("ALIGNMENT ANALYSIS")
+    lines.append("="*80)
+    
+    if 'down_proj_left' in alignment_results:
+        top = alignment_results['down_proj_left']['top_alignment']
+        mean_align = alignment_results['down_proj_left']['mean_abs_alignment']
+        
+        lines.append(f"\nDOWN_PROJ (Left Singular Vectors - Output Space):")
+        lines.append(f"  Best alignment:")
+        lines.append(f"    Component: {top['component']}")
+        lines.append(f"    Cosine similarity: {top['cosine_similarity']:.4f}")
+        lines.append(f"    |Cosine similarity|: {top['abs_cosine_similarity']:.4f}")
+        lines.append(f"    Singular value: {top['singular_value']:.4f}")
+        lines.append(f"  Mean alignment (top 20): {mean_align:.4f}")
+        
+        if 'regression' in alignment_results:
+            r2 = alignment_results['regression']['r_squared']
+            lines.append(f"\n  LINEAR REGRESSION:")
+            lines.append(f"    R² = {r2:.4f}")
+            lines.append(f"    p-value = {alignment_results['regression']['p_value']:.2e}")
+            
+            if r2 > 0.7:
+                lines.append(f"\n  ✅ STRONG ALIGNMENT (R² > 0.7)")
+                lines.append(f"     Similar to GPT-2!")
+            elif r2 > 0.3:
+                lines.append(f"\n  ⚠️ MODERATE ALIGNMENT (R² > 0.3)")
+            else:
+                lines.append(f"\n  ❌ WEAK ALIGNMENT (R² < 0.3)")
+                lines.append(f"     Different from GPT-2")
+    
+    lines.append("\n" + "="*80)
+    lines.append("CONCLUSION")
+    lines.append("="*80)
+    
+    if 'regression' in alignment_results:
+        r2 = alignment_results['regression']['r_squared']
+        if r2 > 0.7:
+            lines.append("\n✅ LLAMA-2 USES SIMILAR MECHANISM TO GPT-2")
+            lines.append(f"   MLP down_proj shows strong SVD alignment (R²={r2:.4f})")
+        else:
+            lines.append("\n❌ LLAMA-2 MECHANISM DIFFERS FROM GPT-2")
+            lines.append(f"   MLP down_proj shows weak alignment (R²={r2:.4f})")
+            lines.append("   Massive activations may arise from:")
+            lines.append("   - SwiGLU non-linearity")
+            lines.append("   - Gate mechanism")
+            lines.append("   - Multi-layer accumulation")
+    
+    lines.append("\n" + "="*80)
+    
+    summary_text = "\n".join(lines)
+    print(summary_text)
+    
+    with open(os.path.join(savedir, f'LAYER{target_layer}_MLP_SVD_SUMMARY.txt'), 'w') as f:
+        f.write(summary_text)
+    
+    print(f"\n✅ Summary saved!")
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Experiment 4D: MLP SVD Alignment')
+    parser.add_argument('--model', type=str, default='llama2_13b')
+    parser.add_argument('--access_token', type=str, default='type in your access token here')
+    parser.add_argument('--dataset', type=str, default='wikitext')
+    parser.add_argument('--nsamples', type=int, default=10)
+    parser.add_argument('--seed', type=int, default=0)
+    parser.add_argument('--target_layer', type=int, default=3)
+    parser.add_argument('--savedir', type=str, default='results/exp4d_layer3_mlp/')
+
+    args = parser.parse_args()
+
+    os.makedirs(args.savedir, exist_ok=True)
+
+    print("\n" + "="*80)
+    print(f"EXPERIMENT 4D: LAYER {args.target_layer} MLP SVD ALIGNMENT")
+    print("="*80)
+    print("\nResearch Question:")
+    print(f"  Do Layer {args.target_layer} MLP weights show SVD alignment")
+    print("  similar to GPT-2's R²=0.998 mechanism?")
+    print("\n" + "="*80)
+
+    # Step 1: Load model to get layers
+    model, tokenizer, device, layers, hidden_size, seq_len = lib.load_llm(args)
+    
+    # Step 2: Collect MLP activations
+    mlp_data = collect_mlp_activations(args, args.target_layer)
+    
+    # Step 3: Compute SVD
+    svd_results = compute_mlp_svd(layers[args.target_layer], args.target_layer)
+    
+    # Step 3: Analyze alignment
+    alignment_results = analyze_mlp_svd_alignment(mlp_data, svd_results, args.target_layer)
+    
+    # Step 4: Save results
+    print("\n💾 Saving results...")
+    with open(os.path.join(args.savedir, f'layer{args.target_layer}_mlp_results.json'), 'w') as f:
+        serializable = {}
+        for key, val in alignment_results.items():
+            if isinstance(val, dict):
+                serializable[key] = {k: v for k, v in val.items() if not isinstance(v, np.ndarray)}
+        json.dump(serializable, f, indent=2)
+    
+    # Step 5: Generate visualizations
+    generate_visualizations(svd_results, alignment_results, args.savedir, args.target_layer)
+    
+    # Step 6: Generate summary
+    generate_summary_report(svd_results, alignment_results, args.savedir, args.target_layer)
+    
+    print("\n" + "="*80)
+    print("✅ EXPERIMENT 4D COMPLETE")
+    print("="*80)
+    print(f"\nResults saved to: {args.savedir}")
+    print("="*80)
+
+
+if __name__ == '__main__':
+    main()

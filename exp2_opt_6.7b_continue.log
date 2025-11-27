@@ -1,21 +1,0 @@
-nohup: 忽略输入
-/home/vicuna/anaconda3/lib/python3.11/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.5' currently installed).
-  from pandas.core import (
-
-================================================================================
-EXPERIMENT 2: SINGLE-LAYER RESTORATION
-================================================================================
-
-Goal: Identify which layers contribute most to massive activations
-Testing layers: 9 to 37
-
-================================================================================
-
-================================================================================
-Testing Layer 9 (restoring its attention heads)
-================================================================================
-loading model opt_7b
-`torch_dtype` is deprecated! Use `dtype` instead!
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:03<00:03,  3.22s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  1.97s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.16s/it]
-Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
-Layer 9 restored:   0%|          | 0/30 [00:00<?, ?it/s]Layer 9 restored:   3%|▎         | 1/30 [00:22<10:53, 22.52s/it]Layer 9 restored:   7%|▋         | 2/30 [00:44<10:19, 22.12s/it]Layer 9 restored:  10%|█         | 3/30 [01:06<10:00, 22.25s/it]Layer 9 restored:  13%|█▎        | 4/30 [01:29<09:48, 22.62s/it]Layer 9 restored:  17%|█▋        | 5/30 [01:51<09:20, 22.41s/it]Layer 9 restored:  20%|██        | 6/30 [02:13<08:51, 22.15s/it]Layer 9 restored:  23%|██▎       | 7/30 [02:36<08:33, 22.32s/it]Layer 9 restored:  27%|██▋       | 8/30 [02:59<08:14, 22.49s/it]

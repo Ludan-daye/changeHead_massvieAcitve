@@ -1,12 +1,0 @@
-nohup: 忽略输入
-/home/vicuna/anaconda3/lib/python3.11/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.5' currently installed).
-  from pandas.core import (
-
-================================================================================
-EXPERIMENT 5: MLP SVD ALIGNMENT - OPT_7B
-================================================================================
-
-Loading model...
-loading model opt_7b
-`torch_dtype` is deprecated! Use `dtype` instead!
-Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]

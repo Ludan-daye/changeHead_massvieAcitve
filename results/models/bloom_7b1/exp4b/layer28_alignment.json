@@ -1,0 +1,28 @@
+{
+  "layer": 28,
+  "experiment": "exp4b_svd_alignment",
+  "model": "bloom_7b1",
+  "date": "2025-11-27",
+  
+  "svd_analysis": {
+    "weight_matrix": "self_attention.dense",
+    "shape": [4096, 4096],
+    "singular_values_top10": [18.48, 15.70, 11.98, 10.67, 9.11, 8.15, 7.02, 6.90, 6.38, 6.26],
+    "ratio_s1_s2": 1.1775,
+    "has_dominant_direction": false
+  },
+  
+  "alignment_results": {
+    "avg_alignment_u1": 0.0500,
+    "avg_alignment_u2": 0.0700,
+    "avg_alignment_u3": 0.4335,
+    "interpretation": "激活与SVD主导方向(u1,u2)几乎无对齐，与u3有中等对齐"
+  },
+  
+  "conclusion": {
+    "alignment_level": "weak",
+    "finding": "BLOOM的Massive Activation不是由Attention dense层的SVD主导方向产生",
+    "mechanism": "可能由多头协作、ALiBi位置编码或累积残差产生",
+    "comparison_with_qwen": "Qwen与u1对齐0.994，BLOOM仅0.050，机制完全不同"
+  }
+}

@@ -1,204 +1,0 @@
-nohup: 忽略输入
-/home/vicuna/anaconda3/lib/python3.11/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.5' currently installed).
-  from pandas.core import (
-
-================================================================================
-EXPERIMENT 4D: LAYER 3 MLP SVD ALIGNMENT
-================================================================================
-
-Research Question:
-  Do Layer 3 MLP weights show SVD alignment
-  similar to GPT-2's R²=0.998 mechanism?
-
-================================================================================
-loading model llama2_13b
-`torch_dtype` is deprecated! Use `dtype` instead!
-Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:03<00:06,  3.08s/it]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:06<00:03,  3.01s/it]Loading checkpoint shards: 100%|██████████| 3/3 [00:07<00:00,  2.46s/it]Loading checkpoint shards: 100%|██████████| 3/3 [00:07<00:00,  2.61s/it]
-
-================================================================================
-COLLECTING LAYER 3 MLP ACTIVATIONS
-================================================================================
-loading model llama2_13b
-Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:03<00:06,  3.06s/it]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:06<00:03,  3.01s/it]Loading checkpoint shards: 100%|██████████| 3/3 [00:07<00:00,  2.46s/it]Loading checkpoint shards: 100%|██████████| 3/3 [00:07<00:00,  2.62s/it]
-Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
-
-Processing 10 samples...
-Layer 3:   0%|          | 0/10 [00:00<?, ?it/s]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
-/home/vicuna/anaconda3/lib/python3.11/site-packages/torch/nn/modules/module.py:1762: FutureWarning: Both `past_key_value` and `past_key_values` are set for `LlamaAttention.forward`. Using `past_key_values=DynamicCache(layers=[DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer, DynamicLayer])` and ignoring deprecated `past_key_value=None`.
-  return forward_call(*args, **kwargs)
-Layer 3:  10%|█         | 1/10 [00:01<00:12,  1.44s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
-Layer 3:  20%|██        | 2/10 [00:03<00:12,  1.52s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
-Layer 3:  30%|███       | 3/10 [00:04<00:10,  1.54s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
-Layer 3:  40%|████      | 4/10 [00:06<00:09,  1.56s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
-Layer 3:  50%|█████     | 5/10 [00:07<00:07,  1.57s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
-Layer 3:  60%|██████    | 6/10 [00:09<00:06,  1.57s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
-Layer 3:  70%|███████   | 7/10 [00:10<00:04,  1.58s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
-Layer 3:  80%|████████  | 8/10 [00:12<00:03,  1.58s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
-Layer 3:  90%|█████████ | 9/10 [00:14<00:01,  1.59s/it]Before input_layernorm: type=<class 'torch.Tensor'>, shape=torch.Size([1, 4096, 5120])
-Layer 3: 100%|██████████| 10/10 [00:15<00:00,  1.59s/it]Layer 3: 100%|██████████| 10/10 [00:15<00:00,  1.57s/it]
-
-✅ Data collection complete!
-  mlp_input: (40960, 5120)
-  up_output: (40960, 13824)
-  gate_output: (40960, 13824)
-  intermediate: (40960, 13824)
-  mlp_output: (40960, 5120)
-  layer_output: (40960, 5120)
-
-================================================================================
-Computing SVD for Layer 3 MLP Weights
-================================================================================
-
-up_proj shape: (13824, 5120)
-  Top 5 singular values: [5.5081553 4.650294  4.5838203 4.400849  4.3700705]
-  σ₁/σ₂ ratio: 1.1845
-
-gate_proj shape: (13824, 5120)
-  Top 5 singular values: [11.62757    9.517422   8.405846   8.037613   7.9993978]
-  σ₁/σ₂ ratio: 1.2217
-
-down_proj shape: (5120, 13824)
-  Top 5 singular values: [7.1030927 5.826996  5.6004043 5.453855  5.4386296]
-  σ₁/σ₂ ratio: 1.2190
-
-  ⚠️ KEY: down_proj的左奇异向量U在输出空间（hidden_dim）
-         这是我们要与激活方向对齐的！
-
-================================================================================
-ANALYZING MLP SVD ALIGNMENT FOR LAYER 3
-================================================================================
-
-Mean activation norm: 3.37
-Layer output shape: (40960, 5120)
-
-================================================================================
-CRITICAL ANALYSIS: down_proj Left Singular Vectors (Output Space)
-================================================================================
-
-U_down shape: (5120, 5120)
-mean_activation shape: (5120,)
-
-Top 10 aligned components (down_proj left singular vectors):
-Rank   Component    Singular Val    Cosine Sim      |Cosine|       
---------------------------------------------------------------------------------
-1      0            7.1031          -0.3842         0.3842         
-2      4            5.4386          0.1103          0.1103         
-3      3            5.4539          -0.0970         0.0970         
-4      2            5.6004          -0.0925         0.0925         
-5      5            5.2714          -0.0628         0.0628         
-6      1            5.8270          0.0570          0.0570         
-7      9            5.0413          -0.0541         0.0541         
-8      16           4.7833          -0.0457         0.0457         
-9      18           4.7313          0.0428          0.0428         
-10     6            5.1884          -0.0309         0.0309         
-
-================================================================================
-LINEAR REGRESSION ANALYSIS (like GPT-2)
-================================================================================
-
-Linear Model: max_activation = 2.5150 × projection + 5.2674
-R² = 0.9880
-p-value = 0.00e+00
-
-✅ STRONG CAUSAL RELATIONSHIP (R² > 0.7)
-   Similar to GPT-2's mechanism!
-
-================================================================================
-UP_PROJ Right Singular Vectors (Input Space)
-================================================================================
-
-Top 5 aligned components:
-  1. Component 4: cosine=-0.2165, σ=4.3701
-  2. Component 6: cosine=-0.1393, σ=4.2402
-  3. Component 3: cosine=0.1266, σ=4.4008
-  4. Component 1: cosine=0.1104, σ=4.6503
-  5. Component 7: cosine=-0.0960, σ=4.1568
-
-================================================================================
-GATE_PROJ Right Singular Vectors (Input Space)
-================================================================================
-
-Top 5 aligned components:
-  1. Component 0: cosine=0.5367, σ=11.6276
-  2. Component 3: cosine=0.0700, σ=8.0376
-  3. Component 1: cosine=-0.0422, σ=9.5174
-  4. Component 2: cosine=-0.0364, σ=8.4058
-  5. Component 7: cosine=-0.0225, σ=7.1600
-
-💾 Saving results...
-
-================================================================================
-GENERATING VISUALIZATIONS
-================================================================================
-✅ Saved: layer3_mlp_singular_values.png
-✅ Saved: layer3_down_proj_alignment.png
-
-================================================================================
-GENERATING SUMMARY REPORT
-================================================================================
-================================================================================
-EXPERIMENT 4D: LAYER 3 MLP SVD ALIGNMENT - SUMMARY
-================================================================================
-
-RESEARCH QUESTION:
-  Do the singular vectors of Layer 3 MLP weight matrices
-  align with the direction of massive activations?
-
-  COMPARISON WITH GPT-2:
-  GPT-2 showed R² = 0.998 alignment in down_proj
-
-================================================================================
-SINGULAR VALUE ANALYSIS
-================================================================================
-
-UP_PROJ:
-  σ₁: 5.5082
-  σ₂: 4.6503
-  σ₁/σ₂ ratio: 1.1845×
-
-GATE_PROJ:
-  σ₁: 11.6276
-  σ₂: 9.5174
-  σ₁/σ₂ ratio: 1.2217×
-
-DOWN_PROJ:
-  σ₁: 7.1031
-  σ₂: 5.8270
-  σ₁/σ₂ ratio: 1.2190×
-
-================================================================================
-ALIGNMENT ANALYSIS
-================================================================================
-
-DOWN_PROJ (Left Singular Vectors - Output Space):
-  Best alignment:
-    Component: 0
-    Cosine similarity: -0.3842
-    |Cosine similarity|: 0.3842
-    Singular value: 7.1031
-  Mean alignment (top 20): 0.0559
-
-  LINEAR REGRESSION:
-    R² = 0.9880
-    p-value = 0.00e+00
-
-  ✅ STRONG ALIGNMENT (R² > 0.7)
-     Similar to GPT-2!
-
-================================================================================
-CONCLUSION
-================================================================================
-
-✅ LLAMA-2 USES SIMILAR MECHANISM TO GPT-2
-   MLP down_proj shows strong SVD alignment (R²=0.9880)
-
-================================================================================
-
-✅ Summary saved!
-
-================================================================================
-✅ EXPERIMENT 4D COMPLETE
-================================================================================
-
-Results saved to: results/exp4d_layer3_mlp/
-================================================================================

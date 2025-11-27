@@ -24,12 +24,15 @@ def llama_custom_decoderlayer_forward(
     use_cache: Optional[bool] = False,
     **kwargs,
 ) -> Tuple[torch.FloatTensor, Optional[Tuple[torch.FloatTensor, torch.FloatTensor]]]:
-    residual = hidden_states
+    # Ensure hidden_states is a tensor, even if it's passed as a tuple
+    if isinstance(hidden_states, tuple):
+        hidden_states = hidden_states[0]
 
+    residual = hidden_states
     hidden_states = self.input_layernorm(hidden_states)
 
     # Self Attention
-    hidden_states, self_attn_weights, present_key_value = self.self_attn(
+    attn_outputs = self.self_attn(
         hidden_states=hidden_states,
         attention_mask=attention_mask,
         position_ids=position_ids,
@@ -38,6 +41,10 @@ def llama_custom_decoderlayer_forward(
         use_cache=use_cache,
         **kwargs,
     )
+
+    hidden_states = attn_outputs[0]
+    self_attn_weights = attn_outputs[1] if output_attentions and len(attn_outputs) > 1 else None
+    present_key_value = attn_outputs[2] if use_cache and len(attn_outputs) > 2 else None
 
     if residual.device.index != hidden_states.device.index:
         residual = residual.to(hidden_states.device)
@@ -51,15 +58,7 @@ def llama_custom_decoderlayer_forward(
 
     self.feat = hidden_states.clone().detach().cpu().double()
 
-    outputs = (hidden_states,)
-
-    if output_attentions:
-        outputs += (self_attn_weights,)
-
-    if use_cache:
-        outputs += (present_key_value,)
-
-    return outputs
+    return hidden_states
 
 def enable_llama_custom_decoderlayer(layer, layer_id):
     """
