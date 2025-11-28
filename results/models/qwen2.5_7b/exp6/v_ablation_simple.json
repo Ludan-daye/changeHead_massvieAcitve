@@ -1,0 +1,32 @@
+{
+  "model": "qwen2.5_7b",
+  "critical_layer": 3,
+  "weight_shape": [
+    3584,
+    18944
+  ],
+  "baseline": {
+    "ma_values": [
+      9192.0,
+      8792.0,
+      9120.0,
+      8256.0,
+      8480.0
+    ],
+    "ma_avg": 8768.0
+  },
+  "v_ablated": {
+    "method": "random_orthogonal_replacement",
+    "ma_values": [
+      67.5,
+      72.0,
+      98.4375,
+      89.0625,
+      56.9375
+    ],
+    "ma_avg": 76.7875,
+    "change_percent": -99.12423015510949
+  },
+  "conclusion": "V\u77e9\u9635\u5bf9MA\u5f71\u54cd\u6781\u5927 (-99.1%)",
+  "timestamp": "2025-11-28T09:31:20.789309"
+}

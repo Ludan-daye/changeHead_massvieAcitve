@@ -1,0 +1,8 @@
+{
+  "model": "falcon_7b",
+  "layer": 0,
+  "attention_output_max": 3.65625,
+  "mlp_output_max": 10.375,
+  "ma_source": "MLP",
+  "ratio": 2.8376068376068377
+}

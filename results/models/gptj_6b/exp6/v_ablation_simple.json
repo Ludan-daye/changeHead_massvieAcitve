@@ -1,0 +1,32 @@
+{
+  "model": "gptj_6b",
+  "critical_layer": 0,
+  "weight_shape": [
+    4096,
+    16384
+  ],
+  "baseline": {
+    "ma_values": [
+      29.453125,
+      32.59375,
+      29.6875,
+      27.125,
+      28.796875
+    ],
+    "ma_avg": 29.53125
+  },
+  "v_ablated": {
+    "method": "random_orthogonal_replacement",
+    "ma_values": [
+      7.484375,
+      10.53125,
+      7.31640625,
+      9.5703125,
+      8.296875
+    ],
+    "ma_avg": 8.63984375,
+    "change_percent": -70.74338624338624
+  },
+  "conclusion": "V\u77e9\u9635\u5bf9MA\u5f71\u54cd\u6781\u5927 (-70.7%)",
+  "timestamp": "2025-11-28T09:29:51.656161"
+}

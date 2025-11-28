@@ -1,0 +1,8 @@
+{
+  "model": "qwen2.5_7b",
+  "layer": 3,
+  "attention_output_max": 2.623046875,
+  "mlp_output_max": 9160.0,
+  "ma_source": "MLP",
+  "ratio": 3492.122114668652
+}

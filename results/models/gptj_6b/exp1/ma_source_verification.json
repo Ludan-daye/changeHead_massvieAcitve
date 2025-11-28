@@ -1,0 +1,8 @@
+{
+  "model": "gptj_6b",
+  "layer": 0,
+  "attention_output_max": 3.607421875,
+  "mlp_output_max": 30.328125,
+  "ma_source": "MLP",
+  "ratio": 8.407146724417975
+}

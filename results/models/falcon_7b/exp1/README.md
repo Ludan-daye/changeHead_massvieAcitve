@@ -34,3 +34,19 @@
 - `all_heads_disabled/results.json` - 禁用头部测试数据
 - `comparison/exp1_top1_comparison.png` - 对比图
 - `comparison/EXPERIMENT_1_SUMMARY.txt` - 详细报告
+
+---
+
+## 补充实验: MA来源验证
+
+### 方法
+Hook关键层的Attention和MLP输出，对比最大激活值
+
+### 结果
+| 模块 | 输出Max |
+|------|---------|
+| Attention | 3.65625 |
+| **MLP** | **10.375** |
+
+### 结论
+**MA来自MLP输出，Attention只提供触发输入。**

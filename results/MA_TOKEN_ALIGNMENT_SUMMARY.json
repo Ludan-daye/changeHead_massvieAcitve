@@ -1,0 +1,562 @@
+{
+  "gptj_6b": {
+    "ma_position": {
+      "token": 77,
+      "dim": 3019
+    },
+    "ma_value": -29.453125,
+    "critical_layer": 0,
+    "top20_similar_tokens": [
+      {
+        "token_id": 19311,
+        "token": " sperm",
+        "similarity": 0.04836282134056091
+      },
+      {
+        "token_id": 10852,
+        "token": " slot",
+        "similarity": 0.041943956166505814
+      },
+      {
+        "token_id": 29490,
+        "token": " Sega",
+        "similarity": 0.040739960968494415
+      },
+      {
+        "token_id": 28002,
+        "token": " Spin",
+        "similarity": 0.04005379229784012
+      },
+      {
+        "token_id": 19147,
+        "token": " Nazis",
+        "similarity": 0.03983412683010101
+      },
+      {
+        "token_id": 33391,
+        "token": " Amer",
+        "similarity": 0.03953166306018829
+      },
+      {
+        "token_id": 20444,
+        "token": " COL",
+        "similarity": 0.03930459916591644
+      },
+      {
+        "token_id": 3140,
+        "token": " ens",
+        "similarity": 0.03930448368191719
+      },
+      {
+        "token_id": 45947,
+        "token": " HERO",
+        "similarity": 0.038429565727710724
+      },
+      {
+        "token_id": 35970,
+        "token": " dart",
+        "similarity": 0.03832623362541199
+      },
+      {
+        "token_id": 6955,
+        "token": " Cop",
+        "similarity": 0.038233354687690735
+      },
+      {
+        "token_id": 38186,
+        "token": " clad",
+        "similarity": 0.037840336561203
+      },
+      {
+        "token_id": 45801,
+        "token": " Oo",
+        "similarity": 0.03774593770503998
+      },
+      {
+        "token_id": 39557,
+        "token": "hemer",
+        "similarity": 0.0376717783510685
+      },
+      {
+        "token_id": 13373,
+        "token": " toy",
+        "similarity": 0.03765545040369034
+      },
+      {
+        "token_id": 1382,
+        "token": " build",
+        "similarity": 0.03744254633784294
+      },
+      {
+        "token_id": 25132,
+        "token": "ulet",
+        "similarity": 0.037107862532138824
+      },
+      {
+        "token_id": 9943,
+        "token": " perm",
+        "similarity": 0.03703371435403824
+      },
+      {
+        "token_id": 27562,
+        "token": " sprink",
+        "similarity": 0.036789413541555405
+      },
+      {
+        "token_id": 27372,
+        "token": "blocks",
+        "similarity": 0.03660427778959274
+      }
+    ],
+    "max_similarity": 0.04836282134056091,
+    "semantic_meaning": "无明确语义"
+  },
+  "bloom_7b1": {
+    "ma_position": {
+      "token": 43,
+      "dim": 3448
+    },
+    "ma_value": 92.5,
+    "critical_layer": 0,
+    "top20_similar_tokens": [
+      {
+        "token_id": 15,
+        "token": ",",
+        "similarity": 0.4381392002105713
+      },
+      {
+        "token_id": 17,
+        "token": ".",
+        "similarity": 0.4246719777584076
+      },
+      {
+        "token_id": 630,
+        "token": " ,",
+        "similarity": 0.4206876754760742
+      },
+      {
+        "token_id": 283,
+        "token": " de",
+        "similarity": 0.4103192090988159
+      },
+      {
+        "token_id": 355,
+        "token": "，",
+        "similarity": 0.4039430022239685
+      },
+      {
+        "token_id": 420,
+        "token": "。",
+        "similarity": 0.40076425671577454
+      },
+      {
+        "token_id": 336,
+        "token": ".\n",
+        "similarity": 0.39924898743629456
+      },
+      {
+        "token_id": 503,
+        "token": " .",
+        "similarity": 0.38655319809913635
+      },
+      {
+        "token_id": 375,
+        "token": " (",
+        "similarity": 0.38303142786026
+      },
+      {
+        "token_id": 189,
+        "token": "\n",
+        "similarity": 0.38045409321784973
+      },
+      {
+        "token_id": 267,
+        "token": " a",
+        "similarity": 0.37679553031921387
+      },
+      {
+        "token_id": 368,
+        "token": " the",
+        "similarity": 0.37679070234298706
+      },
+      {
+        "token_id": 461,
+        "token": " of",
+        "similarity": 0.37571561336517334
+      },
+      {
+        "token_id": 687,
+        "token": "،",
+        "similarity": 0.37564992904663086
+      },
+      {
+        "token_id": 530,
+        "token": " and",
+        "similarity": 0.3712042570114136
+      },
+      {
+        "token_id": 408,
+        "token": " que",
+        "similarity": 0.36677980422973633
+      },
+      {
+        "token_id": 12,
+        "token": ")",
+        "similarity": 0.36226439476013184
+      },
+      {
+        "token_id": 210,
+        "token": " ",
+        "similarity": 0.3589583933353424
+      },
+      {
+        "token_id": 527,
+        "token": "।",
+        "similarity": 0.3555329442024231
+      },
+      {
+        "token_id": 594,
+        "token": "、",
+        "similarity": 0.3545955419540405
+      }
+    ],
+    "max_similarity": 0.4381392002105713,
+    "semantic_meaning": "标点/分隔符"
+  },
+  "qwen2.5_7b": {
+    "ma_position": {
+      "token": 0,
+      "dim": 458
+    },
+    "ma_value": -9176.0,
+    "critical_layer": 3,
+    "top20_similar_tokens": [
+      {
+        "token_id": 141279,
+        "token": " المحلي",
+        "similarity": 0.0791485384106636
+      },
+      {
+        "token_id": 35956,
+        "token": "LINK",
+        "similarity": 0.0745433121919632
+      },
+      {
+        "token_id": 29067,
+        "token": " BP",
+        "similarity": 0.07407817989587784
+      },
+      {
+        "token_id": 45568,
+        "token": "leston",
+        "similarity": 0.07081375271081924
+      },
+      {
+        "token_id": 147702,
+        "token": "롸",
+        "similarity": 0.0704999640583992
+      },
+      {
+        "token_id": 127581,
+        "token": "事を",
+        "similarity": 0.07030568271875381
+      },
+      {
+        "token_id": 100899,
+        "token": "泪",
+        "similarity": 0.06909045577049255
+      },
+      {
+        "token_id": 73536,
+        "token": " lieutenant",
+        "similarity": 0.06834760308265686
+      },
+      {
+        "token_id": 100995,
+        "token": "躺",
+        "similarity": 0.0675731673836708
+      },
+      {
+        "token_id": 48784,
+        "token": " Starbucks",
+        "similarity": 0.06745196878910065
+      },
+      {
+        "token_id": 51964,
+        "token": " stain",
+        "similarity": 0.06698071956634521
+      },
+      {
+        "token_id": 1423,
+        "token": "());\n",
+        "similarity": 0.06681951880455017
+      },
+      {
+        "token_id": 25469,
+        "token": " fb",
+        "similarity": 0.06662838906049728
+      },
+      {
+        "token_id": 62048,
+        "token": "goo",
+        "similarity": 0.06638702750205994
+      },
+      {
+        "token_id": 101724,
+        "token": "淋",
+        "similarity": 0.06556908041238785
+      },
+      {
+        "token_id": 107199,
+        "token": "运营商",
+        "similarity": 0.06535026431083679
+      },
+      {
+        "token_id": 62905,
+        "token": " indicative",
+        "similarity": 0.06515499204397202
+      },
+      {
+        "token_id": 102598,
+        "token": "泵",
+        "similarity": 0.06500587612390518
+      },
+      {
+        "token_id": 145232,
+        "token": "😳",
+        "similarity": 0.06488116085529327
+      },
+      {
+        "token_id": 87520,
+        "token": " drawback",
+        "similarity": 0.06477593630552292
+      }
+    ],
+    "max_similarity": 0.0791485384106636,
+    "semantic_meaning": "无明确语义"
+  },
+  "falcon_7b": {
+    "ma_position": {
+      "token": 8,
+      "dim": 2002
+    },
+    "ma_value": 12.4296875,
+    "critical_layer": 0,
+    "top20_similar_tokens": [
+      {
+        "token_id": 9447,
+        "token": " deux",
+        "similarity": 0.08315322548151016
+      },
+      {
+        "token_id": 6588,
+        "token": " comme",
+        "similarity": 0.08260952681303024
+      },
+      {
+        "token_id": 25,
+        "token": ".",
+        "similarity": 0.08050061762332916
+      },
+      {
+        "token_id": 37917,
+        "token": "ATER",
+        "similarity": 0.07993750274181366
+      },
+      {
+        "token_id": 2368,
+        "token": " une",
+        "similarity": 0.07938601076602936
+      },
+      {
+        "token_id": 6975,
+        "token": "ATE",
+        "similarity": 0.07817278802394867
+      },
+      {
+        "token_id": 1358,
+        "token": " à",
+        "similarity": 0.07801017165184021
+      },
+      {
+        "token_id": 18760,
+        "token": " trois",
+        "similarity": 0.07770959287881851
+      },
+      {
+        "token_id": 20643,
+        "token": " présent",
+        "similarity": 0.07747841626405716
+      },
+      {
+        "token_id": 15331,
+        "token": "ICK",
+        "similarity": 0.07481935620307922
+      },
+      {
+        "token_id": 2070,
+        "token": " pour",
+        "similarity": 0.0746532678604126
+      },
+      {
+        "token_id": 11976,
+        "token": "ILL",
+        "similarity": 0.07350250333547592
+      },
+      {
+        "token_id": 10283,
+        "token": "ORT",
+        "similarity": 0.07294174283742905
+      },
+      {
+        "token_id": 12367,
+        "token": "ounding",
+        "similarity": 0.07096683233976364
+      },
+      {
+        "token_id": 11609,
+        "token": " o�",
+        "similarity": 0.07061402499675751
+      },
+      {
+        "token_id": 41167,
+        "token": " présente",
+        "similarity": 0.07055492699146271
+      },
+      {
+        "token_id": 58382,
+        "token": "cepter",
+        "similarity": 0.07043939083814621
+      },
+      {
+        "token_id": 9329,
+        "token": "INE",
+        "similarity": 0.07020794600248337
+      },
+      {
+        "token_id": 623,
+        "token": "IMA",
+        "similarity": 0.06962752342224121
+      },
+      {
+        "token_id": 9424,
+        "token": "ECT",
+        "similarity": 0.0695779025554657
+      }
+    ],
+    "max_similarity": 0.08315322548151016,
+    "semantic_meaning": "无明确语义"
+  },
+  "mistral_7b_v03": {
+    "ma_position": {
+      "token": 0,
+      "dim": 3878
+    },
+    "ma_value": -1.173828125,
+    "critical_layer": 0,
+    "top20_similar_tokens": [
+      {
+        "token_id": 1,
+        "token": "<s>",
+        "similarity": 0.2800111174583435
+      },
+      {
+        "token_id": 32004,
+        "token": "\u001d",
+        "similarity": 0.08407649397850037
+      },
+      {
+        "token_id": 27175,
+        "token": "};\r",
+        "similarity": 0.08040645718574524
+      },
+      {
+        "token_id": 12961,
+        "token": ");\r",
+        "similarity": 0.06718413531780243
+      },
+      {
+        "token_id": 19527,
+        "token": "';\r",
+        "similarity": 0.06112727150321007
+      },
+      {
+        "token_id": 6,
+        "token": "[AVAILABLE_TOOLS]",
+        "similarity": 0.055629536509513855
+      },
+      {
+        "token_id": 28939,
+        "token": "]);\r",
+        "similarity": 0.05515774339437485
+      },
+      {
+        "token_id": 19294,
+        "token": ".’",
+        "similarity": 0.04924692213535309
+      },
+      {
+        "token_id": 31902,
+        "token": "\u001c",
+        "similarity": 0.04743887484073639
+      },
+      {
+        "token_id": 8376,
+        "token": "*/\r",
+        "similarity": 0.0468255952000618
+      },
+      {
+        "token_id": 17711,
+        "token": "');\r",
+        "similarity": 0.04671866446733475
+      },
+      {
+        "token_id": 11046,
+        "token": "',\r",
+        "similarity": 0.045716747641563416
+      },
+      {
+        "token_id": 30451,
+        "token": "\f",
+        "similarity": 0.04430301487445831
+      },
+      {
+        "token_id": 781,
+        "token": "\n",
+        "similarity": 0.043085865676403046
+      },
+      {
+        "token_id": 995,
+        "token": "�",
+        "similarity": 0.04191794991493225
+      },
+      {
+        "token_id": 14191,
+        "token": "».",
+        "similarity": 0.041535910218954086
+      },
+      {
+        "token_id": 20587,
+        "token": "cigarette",
+        "similarity": 0.04003315418958664
+      },
+      {
+        "token_id": 12740,
+        "token": "})\\",
+        "similarity": 0.03995567560195923
+      },
+      {
+        "token_id": 1123,
+        "token": "    ",
+        "similarity": 0.03971445932984352
+      },
+      {
+        "token_id": 1027,
+        "token": " ",
+        "similarity": 0.03931255266070366
+      }
+    ],
+    "max_similarity": 0.2800111174583435,
+    "semantic_meaning": "无明确语义"
+  }
+}
