@@ -1,0 +1,8 @@
+{
+  "model": "mistral_7b_v03",
+  "layer": 0,
+  "attention_output_max": 0.08441162109375,
+  "mlp_output_max": 1.1689453125,
+  "ma_source": "MLP",
+  "ratio": 13.84815618221258
+}
