@@ -1,0 +1,119 @@
+================================================================================
+EXPERIMENT 1: FEASIBILITY TEST - SUMMARY REPORT
+================================================================================
+Generated: 2025-11-23 19:15:43
+
+RESEARCH QUESTION:
+  Do attention heads generate massive activations?
+
+METHODOLOGY:
+  1. Baseline: Run model with all attention heads active
+  2. All Disabled: Run model with all 144 attention heads zeroed out
+  3. Compare massive activation magnitudes
+
+================================================================================
+KEY FINDINGS
+================================================================================
+
+1️⃣ DIMENSION 447 (Primary Massive Activation Dimension)
+----------------------------------------------------------------------
+  Baseline Peak Value:       12.89 (Layer 47)
+  All Heads Disabled Value:  9.43
+  Absolute Change:           -3.46
+  Percentage Change:         -26.84%
+
+  Conclusion: ⚠️ SIGNIFICANT DECREASE - Heads may contribute to generation
+
+2️⃣ DIMENSION 138 (Secondary Massive Activation Dimension)
+----------------------------------------------------------------------
+  Baseline Peak Value:       12.08 (Layer 47)
+  All Heads Disabled Value:  9.97
+  Absolute Change:           -2.11
+  Percentage Change:         -17.48%
+
+  Conclusion: 🔍 MODERATE CHANGE - Partial contribution from heads
+
+3️⃣ OVERALL TOP1 ACTIVATION
+----------------------------------------------------------------------
+  Baseline Peak Value:       982.67 (Layer 16)
+  All Heads Disabled Value:  393.01
+  Absolute Change:           -589.66
+  Percentage Change:         -60.01%
+
+
+================================================================================
+LAYER-WISE DETAILED ANALYSIS
+================================================================================
+
+Layer   Baseline Top1   Disabled Top1   Change       % Change    
+----------------------------------------------------------------------
+0       659.37          233.50          -425.86      -64.59      %
+1       800.72          259.62          -541.10      -67.58      %
+2       892.97          256.66          -636.31      -71.26      %
+3       920.00          263.60          -656.40      -71.35      %
+4       935.52          276.12          -659.40      -70.48      %
+5       945.90          281.84          -664.06      -70.20      %
+6       953.85          288.70          -665.15      -69.73      %
+7       959.07          296.40          -662.67      -69.09      %
+8       963.78          306.58          -657.20      -68.19      %
+9       969.47          311.65          -657.82      -67.85      %
+10      973.70          314.95          -658.75      -67.65      %
+11      977.52          313.82          -663.69      -67.90      %
+12      979.77          311.44          -668.33      -68.21      %
+13      981.32          309.60          -671.71      -68.45      %
+14      982.32          306.30          -676.02      -68.82      %
+15      982.62          302.07          -680.54      -69.26      %
+16      982.67          298.50          -684.17      -69.62      %
+17      982.63          294.25          -688.38      -70.05      %
+18      982.42          289.83          -692.59      -70.50      %
+19      981.98          282.95          -699.03      -71.19      %
+20      981.18          274.95          -706.23      -71.98      %
+21      979.95          269.69          -710.26      -72.48      %
+22      978.43          266.07          -712.37      -72.81      %
+23      976.58          264.40          -712.19      -72.93      %
+24      974.25          262.71          -711.54      -73.03      %
+25      971.22          260.75          -710.47      -73.15      %
+26      968.22          257.79          -710.42      -73.37      %
+27      964.65          256.34          -708.31      -73.43      %
+28      959.93          253.28          -706.66      -73.62      %
+29      953.85          251.09          -702.76      -73.68      %
+30      947.50          249.05          -698.45      -73.72      %
+31      938.72          244.23          -694.49      -73.98      %
+32      926.73          241.69          -685.05      -73.92      %
+33      913.82          239.46          -674.36      -73.80      %
+34      894.85          237.38          -657.47      -73.47      %
+35      872.13          235.98          -636.15      -72.94      %
+36      845.87          234.67          -611.20      -72.26      %
+37      815.28          235.41          -579.87      -71.13      %
+38      777.90          238.30          -539.60      -69.37      %
+39      731.55          242.72          -488.83      -66.82      %
+40      679.37          249.33          -430.03      -63.30      %
+41      634.02          259.75          -374.26      -59.03      %
+42      585.48          269.13          -316.35      -54.03      %
+43      532.17          278.27          -253.90      -47.71      %
+44      476.68          291.02          -185.67      -38.95      %
+45      411.43          311.46          -99.97       -24.30      %
+46      283.40          359.47          76.07        26.84       %
+47      277.65          393.01          115.36       41.55       %
+
+================================================================================
+OVERALL CONCLUSION
+================================================================================
+
+
+⚠️ ATTENTION HEADS SIGNIFICANTLY CONTRIBUTE TO MASSIVE ACTIVATIONS
+
+The experiment shows that disabling all attention heads reduces massive
+activations by >20% on average. This suggests:
+
+  1. Attention heads DO participate in generating massive activations
+  2. Further experiments needed to identify which specific heads are responsible
+  3. Possible multi-head cooperation effects
+
+NEXT STEPS:
+  → Proceed to Experiment 2: Single-layer restoration
+  → Identify critical layers
+  → Then proceed to Experiment 3: Single-head restoration within critical layers
+
+
+================================================================================

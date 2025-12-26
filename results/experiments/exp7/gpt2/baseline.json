@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_decomposed_baseline",
+  "model": "gpt2",
+  "layer": 3,
+  "date": "2025-12-24T00:41:49.934424",
+  "n_samples": 5,
+  "summary": {
+    "mean": 414.75,
+    "std": 0.0,
+    "min": 414.75,
+    "max": 414.75,
+    "values": [
+      414.75,
+      414.75,
+      414.75,
+      414.75,
+      414.75
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 414.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "1": {
+      "mean": 414.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "2": {
+      "mean": 414.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "3": {
+      "mean": 414.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "4": {
+      "mean": 414.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    }
+  }
+}

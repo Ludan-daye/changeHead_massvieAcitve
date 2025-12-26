@@ -1,0 +1,20 @@
+{
+  "model": "qwen2.5_7b",
+  "layer": 3,
+  "date": "2025-12-25T20:04:01.203703",
+  "n_samples": 5,
+  "attribution": {
+    "baseline": 9176.0,
+    "ablate_u_mean": 688.5,
+    "ablate_v_mean": 65.1875,
+    "ablate_both_mean": 64.4375,
+    "u_main_effect": 9110.8125,
+    "v_main_effect": 8487.5,
+    "interaction_effect": 8486.75,
+    "u_attribution_pct": 99.28958696599825,
+    "v_attribution_pct": 92.49673060156931,
+    "interaction_pct": 92.48855710549259,
+    "total_explained": 284.27487467306014,
+    "interpretation": "synergistic"
+  }
+}

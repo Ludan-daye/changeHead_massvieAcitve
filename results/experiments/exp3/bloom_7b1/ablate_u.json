@@ -1,0 +1,47 @@
+{
+  "experiment": "exp5_uv_interaction_ablate_u",
+  "model": "bloom_7b1",
+  "layer": 28,
+  "date": "2025-12-24T13:43:29.049280",
+  "n_samples": 5,
+  "summary": {
+    "mean": 428.75,
+    "std": 0.0,
+    "min": 428.75,
+    "max": 428.75,
+    "values": [
+      428.75,
+      428.75,
+      428.75,
+      428.75,
+      428.75
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 428.75,
+      "n_samples": 1,
+      "intervention": "ablate_u"
+    },
+    "1": {
+      "mean": 428.75,
+      "n_samples": 1,
+      "intervention": "ablate_u"
+    },
+    "2": {
+      "mean": 428.75,
+      "n_samples": 1,
+      "intervention": "ablate_u"
+    },
+    "3": {
+      "mean": 428.75,
+      "n_samples": 1,
+      "intervention": "ablate_u"
+    },
+    "4": {
+      "mean": 428.75,
+      "n_samples": 1,
+      "intervention": "ablate_u"
+    }
+  }
+}

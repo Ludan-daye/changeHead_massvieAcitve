@@ -9,6 +9,11 @@ def set_seed(seed):
 
 def get_data(tokenizer, nsamples=50, seqlen=2048, device=None):
     # Use wikitext as a fallback since RedPajama dataset has compatibility issues
+    # 获取tokenizer的最大长度限制
+    max_length = getattr(tokenizer, 'model_max_length', 131072)
+    if max_length > 1000000:  # 如果是默认的超大值，使用131072
+        max_length = 131072
+
     try:
         valdata = load_dataset("togethercomputer/RedPajama-Data-1T-Sample", trust_remote_code=True)
         num_seq = len(valdata["train"])
@@ -16,11 +21,14 @@ def get_data(tokenizer, nsamples=50, seqlen=2048, device=None):
         seq_list = []
         for seq_ind in seq_indices:
             seq_list.append(valdata["train"][seq_ind]['text'])
-        testenc = tokenizer("\n\n".join(seq_list), return_tensors='pt', add_special_tokens=False).input_ids
+        testenc = tokenizer("\n\n".join(seq_list), return_tensors='pt', add_special_tokens=False,
+                           truncation=True, max_length=max_length).input_ids
     except Exception as e:
         print(f"Failed to load RedPajama dataset ({e}), using wikitext instead")
         valdata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='train')
-        testenc = tokenizer("\n\n".join(valdata['text']), return_tensors='pt', add_special_tokens=False).input_ids
+        # 使用truncation限制token长度而不是减少文本
+        testenc = tokenizer("\n\n".join(valdata['text']), return_tensors='pt', add_special_tokens=False,
+                           truncation=True, max_length=max_length).input_ids
 
     testseq_list = []
     for i in range(nsamples):

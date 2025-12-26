@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_baseline",
+  "model": "opt_7b",
+  "layer": 3,
+  "date": "2025-12-26T03:37:05.299927",
+  "n_samples": 5,
+  "summary": {
+    "mean": 215.525,
+    "std": 20.73122644707737,
+    "min": 174.75,
+    "max": 230.25,
+    "values": [
+      174.75,
+      223.625,
+      219.875,
+      230.25,
+      229.125
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 174.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "1": {
+      "mean": 223.625,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "2": {
+      "mean": 219.875,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "3": {
+      "mean": 230.25,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "4": {
+      "mean": 229.125,
+      "n_samples": 1,
+      "intervention": "baseline"
+    }
+  }
+}

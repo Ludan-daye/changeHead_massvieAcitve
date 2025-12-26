@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_ablate_both",
+  "model": "gpt2",
+  "layer": 3,
+  "date": "2025-12-24T00:46:04.758178",
+  "n_samples": 5,
+  "summary": {
+    "mean": 401.5,
+    "std": 0.0,
+    "min": 401.5,
+    "max": 401.5,
+    "values": [
+      401.5,
+      401.5,
+      401.5,
+      401.5,
+      401.5
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 401.5,
+      "n_samples": 1,
+      "intervention": "ablate_both"
+    },
+    "1": {
+      "mean": 401.5,
+      "n_samples": 1,
+      "intervention": "ablate_both"
+    },
+    "2": {
+      "mean": 401.5,
+      "n_samples": 1,
+      "intervention": "ablate_both"
+    },
+    "3": {
+      "mean": 401.5,
+      "n_samples": 1,
+      "intervention": "ablate_both"
+    },
+    "4": {
+      "mean": 401.5,
+      "n_samples": 1,
+      "intervention": "ablate_both"
+    }
+  }
+}

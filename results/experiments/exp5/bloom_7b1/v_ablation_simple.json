@@ -1,0 +1,42 @@
+{
+  "model": "bloom_7b1",
+  "critical_layer": 28,
+  "weight_shape": [4096, 16384],
+  "baseline": {
+    "ma_values": [425.25, 349.5, 406.75, 404.5, 385.0],
+    "ma_avg": 394.2
+  },
+  "v_ablated": {
+    "method": "random_orthogonal_replacement",
+    "ma_values": [314.5, 308.0, 340.5, 323.0, 314.25],
+    "ma_avg": 320.05,
+    "change_percent": -18.81
+  },
+  "layer_comparison": {
+    "description": "不同层V消融效果对比",
+    "layer_0": {
+      "baseline_ma": 92.5,
+      "ablated_ma": 27.0,
+      "change_percent": -70.8
+    },
+    "layer_28": {
+      "baseline_ma": 320.2,
+      "ablated_ma": 275.2,
+      "change_percent": -14.1
+    }
+  },
+  "analysis": {
+    "finding": "BLOOM的V依赖性因层而异：早期层(L0)依赖强(-70.8%)，后期层(L28)依赖弱(-14.1%)",
+    "mechanism": "MA通过residual connection从早期层传递到后期层，消融后期层V只影响MLP增量贡献，不影响residual中已有的MA",
+    "ma_propagation": {
+      "L0": 92.5,
+      "L1": 119.6,
+      "L10": 3286.0,
+      "L15": 3352.0,
+      "L20": 3340.0,
+      "L28": 320.2
+    }
+  },
+  "conclusion": "V矩阵对MA有一定影响(-18.8%)，但因关键层在L28(后期层)，MA主要通过residual传递而非MLP产生，故V消融影响较小。若消融L0的V，影响达-70.8%。",
+  "timestamp": "2025-11-28T09:34:45.909864"
+}

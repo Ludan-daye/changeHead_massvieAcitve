@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_ablate_magnitude",
+  "model": "mistral_7b_v03",
+  "layer": 31,
+  "date": "2025-12-24T01:42:02.955276",
+  "n_samples": 5,
+  "summary": {
+    "mean": 25.140625,
+    "std": 0.0,
+    "min": 25.140625,
+    "max": 25.140625,
+    "values": [
+      25.140625,
+      25.140625,
+      25.140625,
+      25.140625,
+      25.140625
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 25.140625,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "1": {
+      "mean": 25.140625,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "2": {
+      "mean": 25.140625,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "3": {
+      "mean": 25.140625,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "4": {
+      "mean": 25.140625,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    }
+  }
+}

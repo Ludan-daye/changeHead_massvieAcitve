@@ -1,0 +1,89 @@
+================================================================================
+EXPERIMENT 4B: LAYER 3 ATTENTION SVD ALIGNMENT - SUMMARY
+================================================================================
+
+RESEARCH QUESTION:
+  Do the right singular vectors of Layer 3 attention weight matrices
+  align with the direction of massive activations?
+
+================================================================================
+SINGULAR VALUE ANALYSIS
+================================================================================
+
+Q_PROJ:
+  σ₁ (largest): 18.9674
+  σ₂: 13.0703
+  σ₃: 11.5796
+  σ₁/σ₂ ratio: 1.4512×
+  ⚠ No dominant singular direction
+
+K_PROJ:
+  σ₁ (largest): 19.2121
+  σ₂: 11.7415
+  σ₃: 11.1610
+  σ₁/σ₂ ratio: 1.6363×
+  ⚠ No dominant singular direction
+
+V_PROJ:
+  σ₁ (largest): 3.7310
+  σ₂: 3.6478
+  σ₃: 3.4680
+  σ₁/σ₂ ratio: 1.0228×
+  ⚠ No dominant singular direction
+
+O_PROJ:
+  σ₁ (largest): 7.7662
+  σ₂: 5.6594
+  σ₃: 3.2190
+  σ₁/σ₂ ratio: 1.3723×
+  ⚠ No dominant singular direction
+
+================================================================================
+ALIGNMENT ANALYSIS
+================================================================================
+
+Q_PROJ:
+  Best alignment:
+    Component: 1
+    Cosine similarity: -0.3480
+    |Cosine similarity|: 0.3480
+    Singular value: 13.0703
+  Mean alignment (top 20 components): 0.0649
+  ⚠️ MODERATE ALIGNMENT
+
+K_PROJ:
+  Best alignment:
+    Component: 0
+    Cosine similarity: 0.1259
+    |Cosine similarity|: 0.1259
+    Singular value: 19.2121
+  Mean alignment (top 20 components): 0.0402
+  ❌ WEAK ALIGNMENT
+
+V_PROJ:
+  Best alignment:
+    Component: 0
+    Cosine similarity: -0.0288
+    |Cosine similarity|: 0.0288
+    Singular value: 3.7310
+  Mean alignment (top 20 components): 0.0037
+  ❌ WEAK ALIGNMENT
+
+O_PROJ:
+  Best alignment:
+    Component: 3
+    Cosine similarity: 0.0142
+    |Cosine similarity|: 0.0142
+    Singular value: 3.2028
+  Mean alignment (top 20 components): 0.0065
+  ❌ WEAK ALIGNMENT
+
+================================================================================
+CONCLUSION
+================================================================================
+
+⚠️ MODERATE ALIGNMENT
+  Maximum alignment: 0.3480
+  Some alignment detected, but not as strong as GPT-2.
+
+================================================================================

@@ -3,7 +3,9 @@ from .modify_mistral import *
 from .modify_vit import *
 from .modify_phi2 import *
 from .modify_gpt2 import *
+from .modify_gptj import *
 from .modify_mpt import *
 from .modify_opt import *
 from .modify_bloom import *
+from .modify_falcon import *
 from .modify_qwen import *

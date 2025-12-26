@@ -1,0 +1,47 @@
+{
+  "experiment": "exp5_uv_interaction_ablate_v",
+  "model": "gpt2",
+  "layer": 3,
+  "date": "2025-12-24T00:25:50.219331",
+  "n_samples": 5,
+  "summary": {
+    "mean": 402.5,
+    "std": 0.0,
+    "min": 402.5,
+    "max": 402.5,
+    "values": [
+      402.5,
+      402.5,
+      402.5,
+      402.5,
+      402.5
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 402.5,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    },
+    "1": {
+      "mean": 402.5,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    },
+    "2": {
+      "mean": 402.5,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    },
+    "3": {
+      "mean": 402.5,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    },
+    "4": {
+      "mean": 402.5,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    }
+  }
+}

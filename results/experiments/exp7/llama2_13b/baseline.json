@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_decomposed_baseline",
+  "model": "llama2_13b",
+  "layer": 3,
+  "date": "2025-12-24T20:16:12.902373",
+  "n_samples": 5,
+  "summary": {
+    "mean": 272.75,
+    "std": 0.0,
+    "min": 272.75,
+    "max": 272.75,
+    "values": [
+      272.75,
+      272.75,
+      272.75,
+      272.75,
+      272.75
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 272.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "1": {
+      "mean": 272.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "2": {
+      "mean": 272.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "3": {
+      "mean": 272.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "4": {
+      "mean": 272.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    }
+  }
+}

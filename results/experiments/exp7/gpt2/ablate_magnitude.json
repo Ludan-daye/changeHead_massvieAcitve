@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_ablate_magnitude",
+  "model": "gpt2",
+  "layer": 3,
+  "date": "2025-12-24T00:44:40.335957",
+  "n_samples": 5,
+  "summary": {
+    "mean": 422.0,
+    "std": 0.0,
+    "min": 422.0,
+    "max": 422.0,
+    "values": [
+      422.0,
+      422.0,
+      422.0,
+      422.0,
+      422.0
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 422.0,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "1": {
+      "mean": 422.0,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "2": {
+      "mean": 422.0,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "3": {
+      "mean": 422.0,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "4": {
+      "mean": 422.0,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    }
+  }
+}

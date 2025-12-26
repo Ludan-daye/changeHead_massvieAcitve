@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_decomposed_baseline",
+  "model": "falcon_7b",
+  "layer": 3,
+  "date": "2025-12-24T13:40:46.277415",
+  "n_samples": 5,
+  "summary": {
+    "mean": 245.0,
+    "std": 0.0,
+    "min": 245.0,
+    "max": 245.0,
+    "values": [
+      245.0,
+      245.0,
+      245.0,
+      245.0,
+      245.0
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 245.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "1": {
+      "mean": 245.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "2": {
+      "mean": 245.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "3": {
+      "mean": 245.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "4": {
+      "mean": 245.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    }
+  }
+}

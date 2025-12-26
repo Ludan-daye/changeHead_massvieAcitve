@@ -1,0 +1,47 @@
+{
+  "experiment": "exp5_uv_interaction_baseline",
+  "model": "qwen2.5_7b",
+  "layer": 3,
+  "date": "2025-12-25T19:57:54.397899",
+  "n_samples": 5,
+  "summary": {
+    "mean": 9176.0,
+    "std": 0.0,
+    "min": 9176.0,
+    "max": 9176.0,
+    "values": [
+      9176.0,
+      9176.0,
+      9176.0,
+      9176.0,
+      9176.0
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 9176.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "1": {
+      "mean": 9176.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "2": {
+      "mean": 9176.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "3": {
+      "mean": 9176.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "4": {
+      "mean": 9176.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    }
+  }
+}

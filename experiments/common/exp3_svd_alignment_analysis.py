@@ -32,8 +32,10 @@ from collections import defaultdict, Counter
 import json
 from datetime import datetime
 
-# Add lib to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+# Add lib to path - 需要添加项目根目录
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(os.path.dirname(script_dir))  # 从experiments/common回到根目录
+sys.path.insert(0, project_root)
 
 import lib
 import monkey_patch as mp
@@ -45,11 +47,29 @@ def resolve_layer_components(model, args):
     Return (layers, target_layer, final_projection_module) for the requested model.
     """
     if is_llama_model(args.model):
+        # LLaMA family: LLaMA, Mistral, Qwen
         layers = model.model.layers
         proj_attr = 'down_proj'
     elif "gpt2" in args.model:
+        # GPT-2
         layers = model.transformer.h
         proj_attr = 'c_proj'
+    elif "gptj" in args.model:
+        # GPT-J
+        layers = model.transformer.h
+        proj_attr = 'fc_out'
+    elif "bloom" in args.model:
+        # BLOOM
+        layers = model.transformer.h
+        proj_attr = 'dense_4h_to_h'
+    elif "falcon" in args.model:
+        # Falcon
+        layers = model.transformer.h
+        proj_attr = 'dense_4h_to_h'
+    elif "opt" in args.model:
+        # OPT
+        layers = model.model.decoder.layers
+        proj_attr = 'fc2'
     else:
         raise ValueError(f"Model {args.model} is not supported for Experiment 3.")
 
@@ -57,7 +77,12 @@ def resolve_layer_components(model, args):
         raise ValueError(f"Layer id {args.layer_id} out of range for model with {len(layers)} layers.")
 
     target_layer = layers[args.layer_id]
-    proj_module = getattr(target_layer.mlp, proj_attr)
+
+    # OPT has fc2 directly on the layer, not in an mlp submodule
+    if "opt" in args.model:
+        proj_module = getattr(target_layer, proj_attr)
+    else:
+        proj_module = getattr(target_layer.mlp, proj_attr)
 
     return layers, target_layer, proj_module
 
@@ -235,9 +260,8 @@ def perform_svd_analysis(model, args):
     # BUT: The actual stored shape might be [3072, 768] depending on implementation
 
     _, target_layer, proj_module = resolve_layer_components(model, args)
-    W2_weight = proj_module.weight.detach().cpu().double()
 
-    # Determine in/out feature sizes for proper orientation
+    # Determine in/out feature sizes first (needed for meta tensor handling)
     if hasattr(proj_module, "in_features") and hasattr(proj_module, "out_features"):
         in_features = proj_module.in_features
         out_features = proj_module.out_features
@@ -245,8 +269,118 @@ def perform_svd_analysis(model, args):
         in_features = proj_module.nx
         out_features = proj_module.nf
     else:
-        in_features = W2_weight.shape[0]
-        out_features = W2_weight.shape[1]
+        # Fallback: infer from weight shape if accessible
+        if proj_module.weight.device.type != 'meta':
+            in_features = proj_module.weight.shape[0]
+            out_features = proj_module.weight.shape[1]
+        else:
+            # Default for common architectures
+            in_features = 3072
+            out_features = 768
+            print(f"  警告: 无法确定特征维度，使用默认值 in={in_features}, out={out_features}")
+
+    # 处理meta tensor的情况（device_map="auto"时可能发生）
+    if proj_module.weight.device.type == 'meta':
+        # 权重在meta device时，直接从checkpoint加载
+        print(f"  警告: 权重在meta device，直接从checkpoint加载...")
+
+        try:
+            from transformers import AutoConfig
+            from lib.model_dict import MODEL_DICT_LLMs
+
+            # 获取模型配置
+            model_info = MODEL_DICT_LLMs[args.model]
+            model_name = model_info["model_id"]
+            cache_dir = model_info["cache_dir"]
+
+            # 构建权重文件的键名
+            # 例如: "model.layers.2.mlp.down_proj.weight"
+            if is_llama_model(args.model):
+                weight_key = f"model.layers.{args.layer_id}.mlp.down_proj.weight"
+            elif "gpt2" in args.model:
+                weight_key = f"transformer.h.{args.layer_id}.mlp.c_proj.weight"
+            elif "gptj" in args.model:
+                weight_key = f"transformer.h.{args.layer_id}.mlp.fc_out.weight"
+            elif "bloom" in args.model:
+                weight_key = f"transformer.h.{args.layer_id}.mlp.dense_4h_to_h.weight"
+            elif "falcon" in args.model:
+                weight_key = f"transformer.h.{args.layer_id}.mlp.dense_4h_to_h.weight"
+            elif "opt" in args.model:
+                weight_key = f"model.decoder.layers.{args.layer_id}.fc2.weight"
+            else:
+                raise ValueError(f"Unknown model architecture for {args.model}")
+
+            print(f"  尝试加载权重键: {weight_key}")
+
+            # 方法1: 使用torch.load直接加载safetensors
+            import os
+            import glob
+            from safetensors import safe_open
+
+            # 查找checkpoint文件
+            if cache_dir is None:
+                # 本地模型：直接在model_id目录下查找
+                print(f"  本地模型，在 {model_name} 查找checkpoint...")
+                checkpoint_pattern = os.path.join(model_name, "model*.safetensors")
+                checkpoint_files = glob.glob(checkpoint_pattern)
+
+                if not checkpoint_files:
+                    # 尝试pytorch_model.bin
+                    checkpoint_pattern = os.path.join(model_name, "pytorch_model*.bin")
+                    checkpoint_files = glob.glob(checkpoint_pattern)
+            else:
+                # HuggingFace缓存模型
+                print(f"  HF缓存模型，在 {cache_dir} 查找checkpoint...")
+                checkpoint_pattern = os.path.join(cache_dir, "models--*/snapshots/*/model*.safetensors")
+                checkpoint_files = glob.glob(checkpoint_pattern)
+
+                if not checkpoint_files:
+                    # 尝试其他模式
+                    checkpoint_pattern = os.path.join(cache_dir, "snapshots/*/model*.safetensors")
+                    checkpoint_files = glob.glob(checkpoint_pattern)
+
+            if not checkpoint_files:
+                raise FileNotFoundError(f"找不到checkpoint文件在 {cache_dir or model_name}")
+
+            print(f"  找到 {len(checkpoint_files)} 个checkpoint文件")
+
+            # 遍历checkpoint文件查找目标权重
+            W2_weight = None
+            for ckpt_file in checkpoint_files:
+                try:
+                    if ckpt_file.endswith('.safetensors'):
+                        # 使用safetensors加载
+                        with safe_open(ckpt_file, framework="pt", device="cpu") as f:
+                            if weight_key in f.keys():
+                                print(f"  从 {os.path.basename(ckpt_file)} 加载权重")
+                                W2_weight = f.get_tensor(weight_key).double()
+                                break
+                    elif ckpt_file.endswith('.bin'):
+                        # 使用torch.load加载
+                        print(f"  尝试从 {os.path.basename(ckpt_file)} 加载权重...")
+                        state_dict = torch.load(ckpt_file, map_location='cpu')
+                        if weight_key in state_dict:
+                            print(f"  从 {os.path.basename(ckpt_file)} 加载权重")
+                            W2_weight = state_dict[weight_key].double()
+                            break
+                except Exception as e:
+                    print(f"  跳过 {os.path.basename(ckpt_file)}: {e}")
+                    continue
+
+            if W2_weight is None:
+                print(f"  可用的checkpoint文件:")
+                for f in checkpoint_files:
+                    print(f"    - {f}")
+                raise RuntimeError(f"在所有checkpoint文件中都找不到权重键: {weight_key}")
+
+        except Exception as e:
+            print(f"  ❌ 从checkpoint加载失败: {e}")
+            raise RuntimeError(f"无法从meta device模型获取权重: {e}")
+    elif proj_module.weight.device.type == 'cpu':
+        W2_weight = proj_module.weight.detach().double()
+    else:
+        # 在GPU上，先复制到CPU
+        W2_weight = proj_module.weight.detach().cpu().double()
 
     print(f"W₂ weight shape (as stored): {W2_weight.shape}")
 
@@ -328,6 +462,14 @@ def collect_token_activations(model, tokenizer, left_v1, right_v1, args):
         mp.enable_llama_custom_decoderlayer(target_layer, args.layer_id)
     elif "gpt2" in args.model:
         mp.enable_gpt2_custom_block(target_layer, args.layer_id)
+    elif "gptj" in args.model:
+        mp.enable_gptj_custom_block(target_layer, args.layer_id)
+    elif "bloom" in args.model:
+        mp.enable_bloom_custom_block(target_layer, args.layer_id)
+    elif "falcon" in args.model:
+        mp.enable_falcon_custom_decoderlayer(target_layer, args.layer_id)
+    elif "opt" in args.model:
+        mp.enable_opt_custom_decoderlayer(target_layer, args.layer_id)
     else:
         raise ValueError(f"Model {args.model} not supported for activation tracking.")
 
@@ -419,18 +561,18 @@ def collect_token_activations(model, tokenizer, left_v1, right_v1, args):
 
 def analyze_function_vs_content_words(alignment_data, args):
     """
-    Phase 3: Compare function words vs content words
+    Phase 3: Compare function words vs content words (使用RIGHT singular vector)
     """
     print(f"\n{'='*80}")
-    print(f"PHASE 3: FUNCTION WORDS VS CONTENT WORDS ANALYSIS")
+    print(f"PHASE 3: FUNCTION WORDS VS CONTENT WORDS ANALYSIS (RIGHT SINGULAR VECTOR)")
     print(f"{'='*80}\n")
 
-    # Separate by category
-    function_alignments = [d['alignment'] for d in alignment_data if d['is_function']]
-    content_alignments = [d['alignment'] for d in alignment_data if not d['is_function']]
+    # Separate by category - 使用right_alignment（output与v₁的对齐度）
+    function_alignments = [d['right_alignment'] for d in alignment_data if d['is_function']]
+    content_alignments = [d['right_alignment'] for d in alignment_data if not d['is_function']]
 
-    function_projections = [d['projection'] for d in alignment_data if d['is_function']]
-    content_projections = [d['projection'] for d in alignment_data if not d['is_function']]
+    function_projections = [d['right_projection'] for d in alignment_data if d['is_function']]
+    content_projections = [d['right_projection'] for d in alignment_data if not d['is_function']]
 
     function_dim447 = [d['dim447'] for d in alignment_data if d['is_function']]
     content_dim447 = [d['dim447'] for d in alignment_data if not d['is_function']]
@@ -440,7 +582,7 @@ def analyze_function_vs_content_words(alignment_data, args):
 
     # Statistics
     print(f"\n{'─'*60}")
-    print(f"ALIGNMENT WITH v₁ (cosine similarity)")
+    print(f"RIGHT ALIGNMENT WITH v₁ (output与v₁余弦相似度)")
     print(f"{'─'*60}")
     print(f"Function words: μ={np.mean(function_alignments):.3f} ± {np.std(function_alignments):.3f}")
     print(f"Content words:  μ={np.mean(content_alignments):.3f} ± {np.std(content_alignments):.3f}")
@@ -479,7 +621,7 @@ def analyze_function_vs_content_words(alignment_data, args):
     print(f"TOP 30 MOST ALIGNED TOKENS")
     print(f"{'─'*60}")
 
-    sorted_data = sorted(alignment_data, key=lambda x: x['alignment'], reverse=True)
+    sorted_data = sorted(alignment_data, key=lambda x: x['right_alignment'], reverse=True)
 
     function_count = 0
     content_count = 0
@@ -490,7 +632,7 @@ def analyze_function_vs_content_words(alignment_data, args):
             function_count += 1
         else:
             content_count += 1
-        print(f"{i+1:2d}. {marker} '{item['token'][:20]}' - alignment={item['alignment']:.3f}, dim447={item['dim447']:.1f}")
+        print(f"{i+1:2d}. {marker} '{item['token'][:20]}' - right_alignment={item['right_alignment']:.3f}, dim447={item['dim447']:.1f}")
 
     print(f"\nIn top 30: {function_count} function words ({function_count/30:.1%}), "
           f"{content_count} content words ({content_count/30:.1%})")
@@ -560,29 +702,37 @@ def analyze_linking_word_alignment(alignment_data):
 
 def causal_regression_analysis(alignment_data, args):
     """
-    Phase 4: Regression analysis - Does alignment predict massive activation?
+    Phase 4: Regression analysis - Does RIGHT singular vector alignment predict massive activation?
+    Testing: output与v₁(右奇异向量)的投影强度是否预测MA
     """
     print(f"\n{'='*80}")
-    print(f"PHASE 4: CAUSAL REGRESSION ANALYSIS")
+    print(f"PHASE 4: CAUSAL REGRESSION ANALYSIS (RIGHT SINGULAR VECTOR)")
     print(f"{'='*80}\n")
 
-    # Extract data
-    projections = np.array([d['projection'] for d in alignment_data])
+    # Extract data - 使用right_projection（output与v₁的投影）
+    projections = np.array([d['right_projection'] for d in alignment_data])
     dim447_values = np.array([d['dim447'] for d in alignment_data])
 
     # Linear regression
     slope, intercept, r_value, p_value, std_err = stats.linregress(projections, dim447_values)
 
-    print(f"Linear Regression: Dim447 ~ projection")
+    print(f"Linear Regression: Dim447 ~ right_projection (output · v₁)")
     print(f"{'─'*60}")
-    print(f"  y = {slope:.4f} × projection + {intercept:.4f}")
+    print(f"  y = {slope:.4f} × (output · v₁) + {intercept:.4f}")
     print(f"  R² = {r_value**2:.4f}")
     print(f"  p-value = {p_value:.2e}")
     print(f"  std_err = {std_err:.4f}")
 
     if r_value**2 > 0.7:
         print(f"\n✓ Strong linear relationship (R² > 0.7)")
-        print(f"  Projection strength explains {r_value**2:.1%} of variance in massive activations")
+        print(f"  Right projection strength explains {r_value**2:.1%} of variance in massive activations")
+        print(f"  → V矩阵的第一右奇异向量控制MA产生")
+    elif r_value**2 > 0.3:
+        print(f"\n○ Moderate linear relationship (R² > 0.3)")
+        print(f"  Right projection explains {r_value**2:.1%} of variance")
+    else:
+        print(f"\n✗ Weak linear relationship (R² < 0.3)")
+        print(f"  Right singular vector does NOT predict MA well")
 
     regression_results = {
         'slope': float(slope),
@@ -755,7 +905,7 @@ def generate_visualizations(alignment_data, svd_results, stats_results,
     # ===== Figure 4: Top Tokens Analysis =====
     print("Generating Figure 4: Top tokens analysis...")
 
-    sorted_data = sorted(alignment_data, key=lambda x: x['alignment'], reverse=True)
+    sorted_data = sorted(alignment_data, key=lambda x: x['right_alignment'], reverse=True)
 
     fig = plt.figure(figsize=(20, 12))
     gs = GridSpec(2, 2, figure=fig, hspace=0.3, wspace=0.3)
@@ -921,6 +1071,14 @@ def generate_report(alignment_data, svd_results, stats_results,
 
     savedir = args.savedir
 
+    # Handle division by zero for trigger rate ratio
+    if stats_results['content_trigger_rate'] > 0:
+        trigger_ratio_text = f"{stats_results['function_trigger_rate']/stats_results['content_trigger_rate']:.2f}×"
+        trigger_conclusion = f"✓ Function words trigger massive activations {stats_results['function_trigger_rate']/stats_results['content_trigger_rate']:.1f}× more frequently"
+    else:
+        trigger_ratio_text = "N/A (no content word triggers)"
+        trigger_conclusion = "⚠ Content words had zero trigger rate (possibly weak MA in this layer)"
+
     report = f"""{'='*80}
 EXPERIMENT 3: SVD ALIGNMENT ANALYSIS
 {'='*80}
@@ -987,10 +1145,10 @@ TRIGGER RATE (|Dim 447| > 100):
   Function words: {stats_results['function_trigger_rate']:.1%}
   Content words:  {stats_results['content_trigger_rate']:.1%}
 
-  Ratio: {stats_results['function_trigger_rate']/stats_results['content_trigger_rate']:.2f}×
+  Ratio: {trigger_ratio_text}
 
 CONCLUSION:
-  ✓ Function words trigger massive activations {stats_results['function_trigger_rate']/stats_results['content_trigger_rate']:.1f}× more frequently
+  {trigger_conclusion}
 
 {'='*80}
 PART 4: CAUSAL REGRESSION ANALYSIS
@@ -1115,12 +1273,19 @@ def main():
     parser.add_argument('--layer_id', type=int, default=2, help='Target layer for analysis')
     parser.add_argument('--nsamples', type=int, default=50, help='Number of samples')
     parser.add_argument('--seqlen', type=int, default=1024, help='Sequence length')
-    parser.add_argument('--savedir', type=str, default='results/exp3_svd_alignment/',
-                       help='Save directory')
+    parser.add_argument('--savedir', type=str, default=None,
+                       help='Save directory (default: results/experiments/exp3/{model}/layer_{layer_id}/)')
     parser.add_argument('--access_token', type=str, default='type in your access token here',
                        help='Hugging Face access token')
 
     args = parser.parse_args()
+
+    # Set default savedir based on model and layer if not specified
+    if args.savedir is None:
+        args.savedir = f'results/experiments/exp3/{args.model}/layer_{args.layer_id}'
+
+    # Create output directory
+    os.makedirs(args.savedir, exist_ok=True)
 
     print(f"\n{'='*80}")
     print(f"EXPERIMENT 3: SVD ALIGNMENT ANALYSIS - LAYER {args.layer_id}")

@@ -1,0 +1,20 @@
+{
+  "model": "llama2_13b",
+  "layer": 3,
+  "date": "2025-12-24T19:50:55.491111",
+  "n_samples": 5,
+  "attribution": {
+    "baseline": 272.75,
+    "ablate_u_mean": 92.125,
+    "ablate_v_mean": 101.75,
+    "ablate_both_mean": 163.25,
+    "u_main_effect": 171.0,
+    "v_main_effect": 180.625,
+    "interaction_effect": 242.125,
+    "u_attribution_pct": 62.69477543538039,
+    "v_attribution_pct": 66.22364802933089,
+    "interaction_pct": 88.7717690192484,
+    "total_explained": 217.69019248395966,
+    "interpretation": "synergistic"
+  }
+}

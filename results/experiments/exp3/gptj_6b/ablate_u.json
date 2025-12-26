@@ -1,0 +1,47 @@
+{
+  "experiment": "exp5_uv_interaction_ablate_u",
+  "model": "gptj_6b",
+  "layer": 3,
+  "date": "2025-12-24T00:51:07.416230",
+  "n_samples": 5,
+  "summary": {
+    "mean": 782.0,
+    "std": 0.0,
+    "min": 782.0,
+    "max": 782.0,
+    "values": [
+      782.0,
+      782.0,
+      782.0,
+      782.0,
+      782.0
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 782.0,
+      "n_samples": 1,
+      "intervention": "ablate_u"
+    },
+    "1": {
+      "mean": 782.0,
+      "n_samples": 1,
+      "intervention": "ablate_u"
+    },
+    "2": {
+      "mean": 782.0,
+      "n_samples": 1,
+      "intervention": "ablate_u"
+    },
+    "3": {
+      "mean": 782.0,
+      "n_samples": 1,
+      "intervention": "ablate_u"
+    },
+    "4": {
+      "mean": 782.0,
+      "n_samples": 1,
+      "intervention": "ablate_u"
+    }
+  }
+}

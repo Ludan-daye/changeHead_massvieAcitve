@@ -1,0 +1,24 @@
+{
+  "experiment": "exp4_attention_svd",
+  "model": "Mistral-7B-v0.3",
+  "date": "2025-11-27",
+  "method": "对各层Attention o_proj权重进行SVD分解，分析是否存在主导奇异方向",
+  "layers_analyzed": [0, 1, 16, 30, 31],
+  "summary": {
+    "layer_0": {"sigma1": 0.87, "ratio_s1_s2": 1.10, "has_dominant": false},
+    "layer_1": {"sigma1": 0.97, "ratio_s1_s2": 1.42, "has_dominant": false},
+    "layer_16": {"sigma1": 0.71, "ratio_s1_s2": 1.10, "has_dominant": false},
+    "layer_30": {"sigma1": 1.35, "ratio_s1_s2": 1.56, "has_dominant": "weak"},
+    "layer_31": {"sigma1": 2.96, "ratio_s1_s2": 2.19, "has_dominant": true}
+  },
+  "analysis": {
+    "layer0_finding": "Layer 0是产生MA的关键层，但σ₁/σ₂=1.10，无主导奇异方向",
+    "layer31_finding": "Layer 31的σ₁/σ₂=2.19最高，存在主导方向",
+    "mechanism_insight": "Mistral的MA机制可能不是简单的SVD对齐"
+  },
+  "conclusions": {
+    "main_finding": "关键层Layer 0无主导奇异方向，末层Layer 31有",
+    "difference_from_others": "与Qwen(Layer 3 σ₁/σ₂=14.5)相比，Mistral的SVD结构更均匀",
+    "next_step": "需要进一步分析Layer 31的抑制机制"
+  }
+}

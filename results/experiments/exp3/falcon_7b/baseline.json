@@ -1,0 +1,47 @@
+{
+  "experiment": "exp5_uv_interaction_baseline",
+  "model": "falcon_7b",
+  "layer": 3,
+  "date": "2025-12-24T01:15:04.735371",
+  "n_samples": 5,
+  "summary": {
+    "mean": 244.75,
+    "std": 0.0,
+    "min": 244.75,
+    "max": 244.75,
+    "values": [
+      244.75,
+      244.75,
+      244.75,
+      244.75,
+      244.75
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 244.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "1": {
+      "mean": 244.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "2": {
+      "mean": 244.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "3": {
+      "mean": 244.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "4": {
+      "mean": 244.75,
+      "n_samples": 1,
+      "intervention": "baseline"
+    }
+  }
+}

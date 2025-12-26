@@ -1,0 +1,51 @@
+{
+  "experiment": "exp7_direction_superposition",
+  "model": "gptj_6b",
+  "layer": 3,
+  "k": 2,
+  "date": "2025-12-24T01:02:16.935694",
+  "n_samples": 5,
+  "summary": {
+    "mean": 326.25,
+    "std": 0.0,
+    "min": 326.25,
+    "max": 326.25,
+    "values": [
+      326.25,
+      326.25,
+      326.25,
+      326.25,
+      326.25
+    ],
+    "k": 2,
+    "kept_sigma_sum": 14.561080932617188,
+    "kept_sigma_ratio": 0.0022999197244644165
+  },
+  "results": {
+    "0": {
+      "mean": 326.25,
+      "n_samples": 1,
+      "k": 2
+    },
+    "1": {
+      "mean": 326.25,
+      "n_samples": 1,
+      "k": 2
+    },
+    "2": {
+      "mean": 326.25,
+      "n_samples": 1,
+      "k": 2
+    },
+    "3": {
+      "mean": 326.25,
+      "n_samples": 1,
+      "k": 2
+    },
+    "4": {
+      "mean": 326.25,
+      "n_samples": 1,
+      "k": 2
+    }
+  }
+}

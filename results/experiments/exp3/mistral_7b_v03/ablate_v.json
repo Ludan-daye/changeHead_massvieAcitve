@@ -1,0 +1,47 @@
+{
+  "experiment": "exp5_uv_interaction_ablate_v",
+  "model": "mistral_7b_v03",
+  "layer": 31,
+  "date": "2025-12-24T14:25:20.227673",
+  "n_samples": 5,
+  "summary": {
+    "mean": 27.359375,
+    "std": 0.0,
+    "min": 27.359375,
+    "max": 27.359375,
+    "values": [
+      27.359375,
+      27.359375,
+      27.359375,
+      27.359375,
+      27.359375
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 27.359375,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    },
+    "1": {
+      "mean": 27.359375,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    },
+    "2": {
+      "mean": 27.359375,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    },
+    "3": {
+      "mean": 27.359375,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    },
+    "4": {
+      "mean": 27.359375,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    }
+  }
+}

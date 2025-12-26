@@ -1,0 +1,8 @@
+{
+  "model": "bloom_7b1",
+  "layer": 0,
+  "attention_output_max": 26.96875,
+  "mlp_output_max": 92.5,
+  "ma_source": "MLP",
+  "ratio": 3.4298957126303593
+}

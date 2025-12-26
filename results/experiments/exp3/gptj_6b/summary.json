@@ -1,0 +1,20 @@
+{
+  "model": "gptj_6b",
+  "layer": 3,
+  "date": "2025-12-24T00:58:45.018728",
+  "n_samples": 5,
+  "attribution": {
+    "baseline": 333.75,
+    "ablate_u_mean": 782.0,
+    "ablate_v_mean": 921.0,
+    "ablate_both_mean": 899.0,
+    "u_main_effect": -587.25,
+    "v_main_effect": -448.25,
+    "interaction_effect": -470.25,
+    "u_attribution_pct": -175.95505617977528,
+    "v_attribution_pct": -134.30711610486892,
+    "interaction_pct": -140.8988764044944,
+    "total_explained": -451.16104868913857,
+    "interpretation": "synergistic"
+  }
+}

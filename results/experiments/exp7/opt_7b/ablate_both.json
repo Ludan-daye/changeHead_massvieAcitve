@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_ablate_both",
+  "model": "opt_7b",
+  "layer": 3,
+  "date": "2025-12-26T03:38:06.272472",
+  "n_samples": 5,
+  "summary": {
+    "mean": 214.025,
+    "std": 21.039902566314325,
+    "min": 173.625,
+    "max": 231.25,
+    "values": [
+      173.625,
+      214.25,
+      222.25,
+      231.25,
+      228.75
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 173.625,
+      "n_samples": 1,
+      "intervention": "ablate_both"
+    },
+    "1": {
+      "mean": 214.25,
+      "n_samples": 1,
+      "intervention": "ablate_both"
+    },
+    "2": {
+      "mean": 222.25,
+      "n_samples": 1,
+      "intervention": "ablate_both"
+    },
+    "3": {
+      "mean": 231.25,
+      "n_samples": 1,
+      "intervention": "ablate_both"
+    },
+    "4": {
+      "mean": 228.75,
+      "n_samples": 1,
+      "intervention": "ablate_both"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "model": "gpt2",
+  "layer": 3,
+  "date": "2025-12-24T00:27:13.723948",
+  "n_samples": 5,
+  "attribution": {
+    "baseline": 415.0,
+    "ablate_u_mean": 389.5,
+    "ablate_v_mean": 402.5,
+    "ablate_both_mean": 387.75,
+    "u_main_effect": 12.5,
+    "v_main_effect": 25.5,
+    "interaction_effect": 10.75,
+    "u_attribution_pct": 3.0120481927710845,
+    "v_attribution_pct": 6.144578313253012,
+    "interaction_pct": 2.5903614457831328,
+    "total_explained": 11.74698795180723,
+    "interpretation": "independent"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_ablate_direction",
+  "model": "qwen2.5_7b",
+  "layer": 3,
+  "date": "2025-12-26T03:42:19.478066",
+  "n_samples": 5,
+  "summary": {
+    "mean": 63.24375,
+    "std": 2.5740896449036117,
+    "min": 58.875,
+    "max": 66.4375,
+    "values": [
+      62.28125,
+      64.875,
+      66.4375,
+      63.75,
+      58.875
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 62.28125,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    },
+    "1": {
+      "mean": 64.875,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    },
+    "2": {
+      "mean": 66.4375,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    },
+    "3": {
+      "mean": 63.75,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    },
+    "4": {
+      "mean": 58.875,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    }
+  }
+}

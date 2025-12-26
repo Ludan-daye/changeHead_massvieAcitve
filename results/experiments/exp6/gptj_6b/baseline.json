@@ -1,0 +1,42 @@
+{
+  "experiment": "exp7_direction_superposition_baseline",
+  "model": "gptj_6b",
+  "layer": 3,
+  "date": "2025-12-24T00:59:15.676260",
+  "n_samples": 5,
+  "summary": {
+    "mean": 333.75,
+    "std": 0.0,
+    "min": 333.75,
+    "max": 333.75,
+    "values": [
+      333.75,
+      333.75,
+      333.75,
+      333.75,
+      333.75
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 333.75,
+      "n_samples": 1
+    },
+    "1": {
+      "mean": 333.75,
+      "n_samples": 1
+    },
+    "2": {
+      "mean": 333.75,
+      "n_samples": 1
+    },
+    "3": {
+      "mean": 333.75,
+      "n_samples": 1
+    },
+    "4": {
+      "mean": 333.75,
+      "n_samples": 1
+    }
+  }
+}

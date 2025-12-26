@@ -1,0 +1,51 @@
+{
+  "experiment": "exp7_direction_superposition",
+  "model": "falcon_7b",
+  "layer": 3,
+  "k": 100,
+  "date": "2025-12-24T01:30:21.207990",
+  "n_samples": 5,
+  "summary": {
+    "mean": 245.0,
+    "std": 0.0,
+    "min": 245.0,
+    "max": 245.0,
+    "values": [
+      245.0,
+      245.0,
+      245.0,
+      245.0,
+      245.0
+    ],
+    "k": 100,
+    "kept_sigma_sum": 520.724365234375,
+    "kept_sigma_ratio": 0.049322959035634995
+  },
+  "results": {
+    "0": {
+      "mean": 245.0,
+      "n_samples": 1,
+      "k": 100
+    },
+    "1": {
+      "mean": 245.0,
+      "n_samples": 1,
+      "k": 100
+    },
+    "2": {
+      "mean": 245.0,
+      "n_samples": 1,
+      "k": 100
+    },
+    "3": {
+      "mean": 245.0,
+      "n_samples": 1,
+      "k": 100
+    },
+    "4": {
+      "mean": 245.0,
+      "n_samples": 1,
+      "k": 100
+    }
+  }
+}

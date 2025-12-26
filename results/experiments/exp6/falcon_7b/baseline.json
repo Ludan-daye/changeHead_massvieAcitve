@@ -1,0 +1,42 @@
+{
+  "experiment": "exp7_direction_superposition_baseline",
+  "model": "falcon_7b",
+  "layer": 3,
+  "date": "2025-12-24T01:14:59.713627",
+  "n_samples": 5,
+  "summary": {
+    "mean": 244.75,
+    "std": 0.0,
+    "min": 244.75,
+    "max": 244.75,
+    "values": [
+      244.75,
+      244.75,
+      244.75,
+      244.75,
+      244.75
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 244.75,
+      "n_samples": 1
+    },
+    "1": {
+      "mean": 244.75,
+      "n_samples": 1
+    },
+    "2": {
+      "mean": 244.75,
+      "n_samples": 1
+    },
+    "3": {
+      "mean": 244.75,
+      "n_samples": 1
+    },
+    "4": {
+      "mean": 244.75,
+      "n_samples": 1
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "model": "falcon_7b",
+  "layer": 3,
+  "date": "2025-12-24T01:23:04.053993",
+  "n_samples": 5,
+  "attribution": {
+    "baseline": 244.75,
+    "ablate_u_mean": 163.375,
+    "ablate_v_mean": 165.75,
+    "ablate_both_mean": 165.125,
+    "u_main_effect": 79.0,
+    "v_main_effect": 81.375,
+    "interaction_effect": 80.75,
+    "u_attribution_pct": 32.27783452502553,
+    "v_attribution_pct": 33.24821246169561,
+    "interaction_pct": 32.99284984678243,
+    "total_explained": 98.51889683350356,
+    "interpretation": "synergistic"
+  }
+}

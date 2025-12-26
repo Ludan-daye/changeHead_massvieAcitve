@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_ablate_direction",
+  "model": "mistral_7b_v03",
+  "layer": 31,
+  "date": "2025-12-24T01:39:09.561757",
+  "n_samples": 5,
+  "summary": {
+    "mean": 26.953125,
+    "std": 0.0,
+    "min": 26.953125,
+    "max": 26.953125,
+    "values": [
+      26.953125,
+      26.953125,
+      26.953125,
+      26.953125,
+      26.953125
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 26.953125,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    },
+    "1": {
+      "mean": 26.953125,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    },
+    "2": {
+      "mean": 26.953125,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    },
+    "3": {
+      "mean": 26.953125,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    },
+    "4": {
+      "mean": 26.953125,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    }
+  }
+}

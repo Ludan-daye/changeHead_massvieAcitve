@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-12-23T23:13:18.936860",
+  "total_tasks": 1,
+  "completed": 1,
+  "failed": 0,
+  "success_rate": 100.0,
+  "max_memory_gb": 75,
+  "peak_memory_gb": 75.330078125,
+  "completed_tasks": [
+    "exp6_llama2_13b"
+  ],
+  "failed_tasks": []
+}

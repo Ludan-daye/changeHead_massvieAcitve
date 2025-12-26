@@ -1,0 +1,32 @@
+{
+  "model": "gptj_6b",
+  "experiment": "exp4b_svd_ma_alignment",
+  "date": "2025-11-27",
+  "layers_analyzed": [0, 27],
+  "results": {
+    "layer_0": {
+      "ma_norm": 60.30,
+      "cosine_similarity": -0.6917,
+      "top10_overlap": 8,
+      "sigma1": 6.35,
+      "sigma2": 3.33,
+      "sigma_ratio": 1.91,
+      "alignment": "strong"
+    },
+    "layer_27": {
+      "ma_norm": 515.97,
+      "cosine_similarity": -0.0600,
+      "top10_overlap": 5,
+      "sigma1": 27.53,
+      "sigma2": 15.19,
+      "sigma_ratio": 1.81,
+      "alignment": "none"
+    }
+  },
+  "conclusion": {
+    "mechanism": "SVD-aligned generation",
+    "critical_layer": 0,
+    "alignment_strength": "strong",
+    "notes": "GPT-J shows strong alignment between MA and SVD principal direction in Layer 0"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "model": "bloom_7b1",
+  "layer": 28,
+  "date": "2025-12-24T13:48:36.161120",
+  "n_samples": 5,
+  "attribution": {
+    "baseline": 441.25,
+    "ablate_u_mean": 428.75,
+    "ablate_v_mean": 430.0,
+    "ablate_both_mean": 420.75,
+    "u_main_effect": 11.25,
+    "v_main_effect": 12.5,
+    "interaction_effect": 3.25,
+    "u_attribution_pct": 2.5495750708215295,
+    "v_attribution_pct": 2.8328611898017,
+    "interaction_pct": 0.7365439093484419,
+    "total_explained": 6.118980169971672,
+    "interpretation": "independent"
+  }
+}

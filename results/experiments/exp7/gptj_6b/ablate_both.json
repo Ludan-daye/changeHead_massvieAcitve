@@ -1,0 +1,23 @@
+{
+  "experiment": "exp8_ablate_both",
+  "model": "gptj_6b",
+  "layer": 0,
+  "date": "2025-12-26T03:43:22.305739",
+  "n_samples": 5,
+  "summary": {
+    "mean": 7.6484375,
+    "std": 0.0,
+    "min": 7.6484375,
+    "max": 7.6484375,
+    "values": [
+      7.6484375
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 7.6484375,
+      "n_samples": 1,
+      "intervention": "ablate_both"
+    }
+  }
+}

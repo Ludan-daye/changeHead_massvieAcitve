@@ -1,0 +1,51 @@
+{
+  "experiment": "exp7_direction_superposition",
+  "model": "mistral_7b_v03",
+  "layer": 31,
+  "k": 50,
+  "date": "2025-12-24T01:58:56.982525",
+  "n_samples": 5,
+  "summary": {
+    "mean": 48.8125,
+    "std": 0.0,
+    "min": 48.8125,
+    "max": 48.8125,
+    "values": [
+      48.8125,
+      48.8125,
+      48.8125,
+      48.8125,
+      48.8125
+    ],
+    "k": 50,
+    "kept_sigma_sum": 33.95338439941406,
+    "kept_sigma_ratio": 0.025466494262218475
+  },
+  "results": {
+    "0": {
+      "mean": 48.8125,
+      "n_samples": 1,
+      "k": 50
+    },
+    "1": {
+      "mean": 48.8125,
+      "n_samples": 1,
+      "k": 50
+    },
+    "2": {
+      "mean": 48.8125,
+      "n_samples": 1,
+      "k": 50
+    },
+    "3": {
+      "mean": 48.8125,
+      "n_samples": 1,
+      "k": 50
+    },
+    "4": {
+      "mean": 48.8125,
+      "n_samples": 1,
+      "k": 50
+    }
+  }
+}

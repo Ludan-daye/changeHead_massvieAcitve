@@ -1,0 +1,43 @@
+{
+  "model": "gpt2",
+  "layer": 3,
+  "date": "2025-12-24T00:46:04.758513",
+  "n_samples": 5,
+  "attribution": {
+    "baseline": 414.75,
+    "ablate_direction_mean": 387.75,
+    "ablate_magnitude_mean": 422.0,
+    "ablate_both_mean": 401.5,
+    "direction_effect": 27.0,
+    "magnitude_effect": -7.25,
+    "interaction_effect": 6.5,
+    "direction_attribution_pct": 6.50994575045208,
+    "magnitude_attribution_pct": -1.7480409885473176,
+    "interaction_pct": 1.567209162145871,
+    "total_explained": 6.329113924050634,
+    "interpretation": {
+      "direction_dominance": "low",
+      "magnitude_dominance": "low"
+    }
+  },
+  "svd_info": {
+    "sigma_stats": {
+      "min": 0.4607942998409271,
+      "mean": 4.5300211906433105,
+      "max": 40.80309295654297
+    },
+    "sigma_ratio": 3.051410436630249,
+    "sigma_top10": [
+      40.80309295654297,
+      13.371879577636719,
+      12.183440208435059,
+      11.731583595275879,
+      11.369218826293945,
+      11.085280418395996,
+      10.80903434753418,
+      10.707046508789062,
+      10.49748420715332,
+      10.274288177490234
+    ]
+  }
+}

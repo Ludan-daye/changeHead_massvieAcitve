@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_ablate_magnitude",
+  "model": "falcon_7b",
+  "layer": 3,
+  "date": "2025-12-24T13:46:00.419215",
+  "n_samples": 5,
+  "summary": {
+    "mean": 379.5,
+    "std": 0.0,
+    "min": 379.5,
+    "max": 379.5,
+    "values": [
+      379.5,
+      379.5,
+      379.5,
+      379.5,
+      379.5
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 379.5,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "1": {
+      "mean": 379.5,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "2": {
+      "mean": 379.5,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "3": {
+      "mean": 379.5,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "4": {
+      "mean": 379.5,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    }
+  }
+}

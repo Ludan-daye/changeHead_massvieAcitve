@@ -1,0 +1,23 @@
+{
+  "experiment": "exp8_baseline",
+  "model": "gptj_6b",
+  "layer": 0,
+  "date": "2025-12-26T03:42:23.141976",
+  "n_samples": 5,
+  "summary": {
+    "mean": 29.453125,
+    "std": 0.0,
+    "min": 29.453125,
+    "max": 29.453125,
+    "values": [
+      29.453125
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 29.453125,
+      "n_samples": 1,
+      "intervention": "baseline"
+    }
+  }
+}

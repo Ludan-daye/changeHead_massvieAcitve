@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_ablate_magnitude",
+  "model": "llama2_13b",
+  "layer": 3,
+  "date": "2025-12-24T20:21:05.169703",
+  "n_samples": 5,
+  "summary": {
+    "mean": 225.75,
+    "std": 0.0,
+    "min": 225.75,
+    "max": 225.75,
+    "values": [
+      225.75,
+      225.75,
+      225.75,
+      225.75,
+      225.75
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 225.75,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "1": {
+      "mean": 225.75,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "2": {
+      "mean": 225.75,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "3": {
+      "mean": 225.75,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "4": {
+      "mean": 225.75,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    }
+  }
+}

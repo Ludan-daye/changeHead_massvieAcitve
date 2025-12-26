@@ -1,0 +1,43 @@
+{
+  "model": "opt_7b",
+  "layer": 3,
+  "date": "2025-12-26T03:38:06.272990",
+  "n_samples": 5,
+  "attribution": {
+    "baseline": 215.525,
+    "ablate_direction_mean": 214.2,
+    "ablate_magnitude_mean": 216.275,
+    "ablate_both_mean": 214.025,
+    "direction_effect": 1.325000000000017,
+    "magnitude_effect": -0.75,
+    "interaction_effect": 0.924999999999983,
+    "direction_attribution_pct": 0.61477786799676,
+    "magnitude_attribution_pct": -0.34798747245099176,
+    "interaction_pct": 0.4291845493562153,
+    "total_explained": 0.6959749449019836,
+    "interpretation": {
+      "direction_dominance": "low",
+      "magnitude_dominance": "low"
+    }
+  },
+  "svd_info": {
+    "sigma_stats": {
+      "min": 0.4303467869758606,
+      "mean": 1.7946012020111084,
+      "max": 17.131479263305664
+    },
+    "sigma_ratio": 2.6718673706054688,
+    "sigma_top10": [
+      17.131479263305664,
+      6.411799907684326,
+      5.513167858123779,
+      5.114446640014648,
+      5.048098087310791,
+      4.846493721008301,
+      4.610076427459717,
+      4.54703426361084,
+      4.398045063018799,
+      4.353036403656006
+    ]
+  }
+}

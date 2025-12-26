@@ -1,0 +1,51 @@
+{
+  "experiment": "exp7_direction_superposition",
+  "model": "bloom_7b1",
+  "layer": 28,
+  "k": 2,
+  "date": "2025-12-24T01:01:59.559882",
+  "n_samples": 5,
+  "summary": {
+    "mean": 477.75,
+    "std": 0.0,
+    "min": 477.75,
+    "max": 477.75,
+    "values": [
+      477.75,
+      477.75,
+      477.75,
+      477.75,
+      477.75
+    ],
+    "k": 2,
+    "kept_sigma_sum": 30.77165985107422,
+    "kept_sigma_ratio": 0.0029687408823519945
+  },
+  "results": {
+    "0": {
+      "mean": 477.75,
+      "n_samples": 1,
+      "k": 2
+    },
+    "1": {
+      "mean": 477.75,
+      "n_samples": 1,
+      "k": 2
+    },
+    "2": {
+      "mean": 477.75,
+      "n_samples": 1,
+      "k": 2
+    },
+    "3": {
+      "mean": 477.75,
+      "n_samples": 1,
+      "k": 2
+    },
+    "4": {
+      "mean": 477.75,
+      "n_samples": 1,
+      "k": 2
+    }
+  }
+}

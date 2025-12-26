@@ -1,0 +1,31 @@
+{
+  "timestamp": "2025-12-23T23:25:01.795563",
+  "total_tasks": 21,
+  "completed": 0,
+  "failed": 21,
+  "success_rate": 0.0,
+  "completed_tasks": [],
+  "failed_tasks": [
+    "exp5_gpt2",
+    "exp7_gpt2",
+    "exp8_gpt2",
+    "exp5_gptj_6b",
+    "exp7_gptj_6b",
+    "exp8_gptj_6b",
+    "exp5_falcon_7b",
+    "exp7_falcon_7b",
+    "exp8_falcon_7b",
+    "exp5_bloom_7b1",
+    "exp7_bloom_7b1",
+    "exp8_bloom_7b1",
+    "exp5_opt_6.7b",
+    "exp7_opt_6.7b",
+    "exp8_opt_6.7b",
+    "exp5_mistral_7b_v03",
+    "exp7_mistral_7b_v03",
+    "exp8_mistral_7b_v03",
+    "exp5_qwen2.5_7b",
+    "exp7_qwen2.5_7b",
+    "exp8_qwen2.5_7b"
+  ]
+}

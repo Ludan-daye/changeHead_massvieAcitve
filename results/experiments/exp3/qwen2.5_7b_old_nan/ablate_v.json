@@ -1,0 +1,47 @@
+{
+  "experiment": "exp5_uv_interaction_ablate_v",
+  "model": "qwen2.5_7b",
+  "layer": 3,
+  "date": "2025-12-24T13:47:10.239387",
+  "n_samples": 5,
+  "summary": {
+    "mean": NaN,
+    "std": NaN,
+    "min": NaN,
+    "max": NaN,
+    "values": [
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      NaN
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": NaN,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    },
+    "1": {
+      "mean": NaN,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    },
+    "2": {
+      "mean": NaN,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    },
+    "3": {
+      "mean": NaN,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    },
+    "4": {
+      "mean": NaN,
+      "n_samples": 1,
+      "intervention": "ablate_v"
+    }
+  }
+}

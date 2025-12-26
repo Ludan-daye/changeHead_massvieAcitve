@@ -1,0 +1,20 @@
+{
+  "model": "mistral_7b_v03",
+  "layer": 31,
+  "date": "2025-12-24T14:28:19.366921",
+  "n_samples": 5,
+  "attribution": {
+    "baseline": 48.875,
+    "ablate_u_mean": 26.28125,
+    "ablate_v_mean": 27.359375,
+    "ablate_both_mean": 26.953125,
+    "u_main_effect": 21.515625,
+    "v_main_effect": 22.59375,
+    "interaction_effect": 22.1875,
+    "u_attribution_pct": 44.02173913043478,
+    "v_attribution_pct": 46.227621483375955,
+    "interaction_pct": 45.39641943734015,
+    "total_explained": 135.6457800511509,
+    "interpretation": "synergistic"
+  }
+}

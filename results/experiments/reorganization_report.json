@@ -1,0 +1,146 @@
+{
+  "timestamp": "2025-12-19 15:45",
+  "total_moves": 50,
+  "by_experiment": {
+    "exp1": [
+      "gpt2",
+      "falcon_7b",
+      "qwen2.5_7b",
+      "llama2_7b_chat",
+      "mistral_7b",
+      "mistral_7b_v03",
+      "bloom_7b1",
+      "gptj_6b",
+      "opt_6.7b",
+      "deepseek_v2_lite",
+      "llama2_13b"
+    ],
+    "exp2": [
+      "gpt2",
+      "falcon_7b",
+      "qwen2.5_7b",
+      "mistral_7b_v03",
+      "bloom_7b1",
+      "gptj_6b",
+      "opt_6.7b",
+      "opt_7b",
+      "llama2_13b"
+    ],
+    "exp6": [
+      "gpt2",
+      "falcon_7b",
+      "qwen2.5_7b",
+      "mistral_7b_v03",
+      "bloom_7b1",
+      "gptj_6b",
+      "opt_6.7b",
+      "llama2_13b"
+    ],
+    "exp3": [
+      "gpt2",
+      "opt_6.7b"
+    ],
+    "exp4b": [
+      "falcon_7b",
+      "qwen2.5_7b",
+      "mistral_7b_v03",
+      "mistral_7b_v03",
+      "bloom_7b1",
+      "gptj_6b",
+      "llama2_13b"
+    ],
+    "exp1a": [
+      "falcon_7b",
+      "qwen2.5_7b",
+      "mistral_7b_v03",
+      "bloom_7b1",
+      "gptj_6b",
+      "opt_6.7b",
+      "llama2_13b"
+    ],
+    "exp4": [
+      "falcon_7b",
+      "qwen2.5_7b",
+      "mistral_7b_v03",
+      "bloom_7b1",
+      "gptj_6b",
+      "opt_6.7b"
+    ]
+  },
+  "by_model": {
+    "gpt2": [
+      "exp1",
+      "exp2",
+      "exp6",
+      "exp3"
+    ],
+    "falcon_7b": [
+      "exp4b",
+      "exp1",
+      "exp2",
+      "exp6",
+      "exp1a",
+      "exp4"
+    ],
+    "qwen2.5_7b": [
+      "exp4b",
+      "exp1",
+      "exp2",
+      "exp6",
+      "exp1a",
+      "exp4"
+    ],
+    "llama2_7b_chat": [
+      "exp1"
+    ],
+    "mistral_7b": [
+      "exp1"
+    ],
+    "mistral_7b_v03": [
+      "exp4b",
+      "exp4b",
+      "exp1",
+      "exp2",
+      "exp6",
+      "exp1a",
+      "exp4"
+    ],
+    "bloom_7b1": [
+      "exp4b",
+      "exp1",
+      "exp2",
+      "exp6",
+      "exp1a",
+      "exp4"
+    ],
+    "gptj_6b": [
+      "exp4b",
+      "exp1",
+      "exp2",
+      "exp6",
+      "exp1a",
+      "exp4"
+    ],
+    "opt_6.7b": [
+      "exp4",
+      "exp1",
+      "exp3",
+      "exp2",
+      "exp1a",
+      "exp6"
+    ],
+    "opt_7b": [
+      "exp2"
+    ],
+    "deepseek_v2_lite": [
+      "exp1"
+    ],
+    "llama2_13b": [
+      "exp1",
+      "exp1a",
+      "exp4b",
+      "exp2",
+      "exp6"
+    ]
+  }
+}

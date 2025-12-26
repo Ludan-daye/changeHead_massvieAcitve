@@ -1,0 +1,20 @@
+{
+  "model": "qwen2.5_7b",
+  "layer": 3,
+  "date": "2025-12-24T13:49:20.515649",
+  "n_samples": 5,
+  "attribution": {
+    "baseline": NaN,
+    "ablate_u_mean": NaN,
+    "ablate_v_mean": NaN,
+    "ablate_both_mean": NaN,
+    "u_main_effect": NaN,
+    "v_main_effect": NaN,
+    "interaction_effect": NaN,
+    "u_attribution_pct": NaN,
+    "v_attribution_pct": NaN,
+    "interaction_pct": NaN,
+    "total_explained": NaN,
+    "interpretation": "synergistic"
+  }
+}

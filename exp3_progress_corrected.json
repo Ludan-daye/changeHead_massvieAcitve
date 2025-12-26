@@ -1,0 +1,33 @@
+{
+  "timestamp": "2025-12-22T23:50:09.261616",
+  "completed": [
+    "qwen2.5_7b_L1",
+    "qwen2.5_7b_L2",
+    "qwen2.5_7b_L3",
+    "mistral_7b_v03_L0",
+    "mistral_7b_v03_L1",
+    "mistral_7b_v03_L3",
+    "falcon_7b_L1",
+    "falcon_7b_L2",
+    "falcon_7b_L3",
+    "gptj_6b_L1",
+    "gptj_6b_L2",
+    "gptj_6b_L3",
+    "gpt2_L0",
+    "gpt2_L2",
+    "gpt2_L3",
+    "bloom_7b1_L3",
+    "bloom_7b1_L4",
+    "bloom_7b1_L5",
+    "llama2_13b_L0",
+    "llama2_13b_L1",
+    "llama2_13b_L3"
+  ],
+  "failed": [
+    "opt_6.7b_L1",
+    "opt_6.7b_L2",
+    "opt_6.7b_L3"
+  ],
+  "total": 24,
+  "completion_rate": "87.5%"
+}

@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_ablate_direction",
+  "model": "gpt2",
+  "layer": 3,
+  "date": "2025-12-24T00:43:17.764189",
+  "n_samples": 5,
+  "summary": {
+    "mean": 387.75,
+    "std": 0.0,
+    "min": 387.75,
+    "max": 387.75,
+    "values": [
+      387.75,
+      387.75,
+      387.75,
+      387.75,
+      387.75
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 387.75,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    },
+    "1": {
+      "mean": 387.75,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    },
+    "2": {
+      "mean": 387.75,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    },
+    "3": {
+      "mean": 387.75,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    },
+    "4": {
+      "mean": 387.75,
+      "n_samples": 1,
+      "intervention": "ablate_direction"
+    }
+  }
+}

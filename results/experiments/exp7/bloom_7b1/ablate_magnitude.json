@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_ablate_magnitude",
+  "model": "bloom_7b1",
+  "layer": 28,
+  "date": "2025-12-23T23:42:58.247257",
+  "n_samples": 5,
+  "summary": {
+    "mean": 391.5,
+    "std": 0.0,
+    "min": 391.5,
+    "max": 391.5,
+    "values": [
+      391.5,
+      391.5,
+      391.5,
+      391.5,
+      391.5
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 391.5,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "1": {
+      "mean": 391.5,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "2": {
+      "mean": 391.5,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "3": {
+      "mean": 391.5,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    },
+    "4": {
+      "mean": 391.5,
+      "n_samples": 1,
+      "intervention": "ablate_magnitude"
+    }
+  }
+}

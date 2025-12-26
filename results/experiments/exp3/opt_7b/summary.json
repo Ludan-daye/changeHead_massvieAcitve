@@ -1,0 +1,20 @@
+{
+  "model": "opt_7b",
+  "layer": 3,
+  "date": "2025-12-24T01:47:06.197180",
+  "n_samples": 5,
+  "attribution": {
+    "baseline": 8000.0,
+    "ablate_u_mean": 8000.0,
+    "ablate_v_mean": 8000.0,
+    "ablate_both_mean": 8000.0,
+    "u_main_effect": 0.0,
+    "v_main_effect": 0.0,
+    "interaction_effect": 0.0,
+    "u_attribution_pct": 0.0,
+    "v_attribution_pct": 0.0,
+    "interaction_pct": 0.0,
+    "total_explained": 0.0,
+    "interpretation": "independent"
+  }
+}

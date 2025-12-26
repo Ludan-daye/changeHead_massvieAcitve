@@ -1,0 +1,34 @@
+{
+  "experiment": "exp4b_svd_ma_alignment",
+  "model": "Falcon-7B",
+  "date": "2025-11-27",
+  "layer_0": {
+    "cosine_similarity": 0.1083,
+    "ma_max": 12.44,
+    "ma_norm": 27.38,
+    "top_ma_dims": [[2002, 12.44], [3080, -11.03], [774, -10.96], [1673, 9.45], [262, -7.18]],
+    "top_u1_dims": [[2138, 0.1166], [3950, -0.0926], [1673, 0.0869], [2160, 0.0739], [3124, -0.063]],
+    "dim_overlap_count": 5,
+    "overlapping_dims": [774, 1673, 3950, 3124, 2138]
+  },
+  "layer_31": {
+    "cosine_similarity": -0.1445,
+    "ma_max": 244.75,
+    "ma_norm": 628.28,
+    "top_ma_dims": [[2954, -244.75], [82, -204.25], [3925, 197.75], [350, -173.25], [174, 171.0]],
+    "top_u1_dims": [[3080, 0.5979], [2002, -0.591], [350, 0.4328], [3775, -0.2449], [2242, -0.0866]],
+    "dim_overlap_count": 4,
+    "overlapping_dims": [350, 1781, 174, 3775]
+  },
+  "analysis": {
+    "layer_0_alignment": "弱对齐 (cos=0.11)",
+    "layer_31_alignment": "弱对齐 (cos=-0.14)",
+    "key_finding": "维度交集存在: L0有5个, L31有4个",
+    "shared_dim_350": "Dim 350同时是Layer31的MA主导维度和u1主导维度"
+  },
+  "conclusions": {
+    "main_finding": "Falcon的SVD与MA对齐程度较弱",
+    "detail": "整体余弦相似度低(0.1/-0.14)，但Top维度有部分交集",
+    "comparison": "与Mistral类似，整体对齐较弱但存在维度级交集"
+  }
+}

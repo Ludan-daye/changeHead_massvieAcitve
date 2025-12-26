@@ -1,0 +1,47 @@
+{
+  "experiment": "exp5_uv_interaction_baseline",
+  "model": "gpt2",
+  "layer": 3,
+  "date": "2025-12-24T00:23:03.234144",
+  "n_samples": 5,
+  "summary": {
+    "mean": 415.0,
+    "std": 0.0,
+    "min": 415.0,
+    "max": 415.0,
+    "values": [
+      415.0,
+      415.0,
+      415.0,
+      415.0,
+      415.0
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 415.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "1": {
+      "mean": 415.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "2": {
+      "mean": 415.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "3": {
+      "mean": 415.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "4": {
+      "mean": 415.0,
+      "n_samples": 1,
+      "intervention": "baseline"
+    }
+  }
+}

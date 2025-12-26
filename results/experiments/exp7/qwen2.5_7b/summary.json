@@ -1,0 +1,43 @@
+{
+  "model": "qwen2.5_7b",
+  "layer": 3,
+  "date": "2025-12-26T03:42:59.444216",
+  "n_samples": 5,
+  "attribution": {
+    "baseline": 8768.0,
+    "ablate_direction_mean": 63.24375,
+    "ablate_magnitude_mean": 1127.8,
+    "ablate_both_mean": 52.98125,
+    "direction_effect": 8704.75625,
+    "magnitude_effect": 7640.2,
+    "interaction_effect": -7629.937500000001,
+    "direction_attribution_pct": 99.27869810675183,
+    "magnitude_attribution_pct": 87.13731751824817,
+    "interaction_pct": -87.0202725821168,
+    "total_explained": 99.3957430428832,
+    "interpretation": {
+      "direction_dominance": "high",
+      "magnitude_dominance": "high"
+    }
+  },
+  "svd_info": {
+    "sigma_stats": {
+      "min": 0.5447303652763367,
+      "mean": 2.0968737602233887,
+      "max": 17.0335750579834
+    },
+    "sigma_ratio": 2.6405811309814453,
+    "sigma_top10": [
+      17.0335750579834,
+      6.4506916999816895,
+      6.273236274719238,
+      5.362955093383789,
+      5.117944717407227,
+      4.94847297668457,
+      4.76632022857666,
+      4.622193336486816,
+      4.567894458770752,
+      4.498753070831299
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "model": "falcon_7b",
+  "critical_layer": 0,
+  "weight_shape": [
+    4544,
+    18176
+  ],
+  "baseline": {
+    "ma_values": [
+      12.4296875,
+      12.1796875,
+      12.2890625,
+      12.1484375,
+      12.09375
+    ],
+    "ma_avg": 12.228125
+  },
+  "v_ablated": {
+    "method": "random_orthogonal_replacement",
+    "ma_values": [
+      3.556640625,
+      2.326171875,
+      2.427734375,
+      2.26953125,
+      2.396484375
+    ],
+    "ma_avg": 2.5953125,
+    "change_percent": -78.7758752875032
+  },
+  "conclusion": "V\u77e9\u9635\u5bf9MA\u5f71\u54cd\u6781\u5927 (-78.8%)",
+  "timestamp": "2025-11-28T09:33:14.705389"
+}

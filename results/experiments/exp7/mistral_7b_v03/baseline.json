@@ -1,0 +1,47 @@
+{
+  "experiment": "exp8_decomposed_baseline",
+  "model": "mistral_7b_v03",
+  "layer": 31,
+  "date": "2025-12-24T01:30:37.820552",
+  "n_samples": 5,
+  "summary": {
+    "mean": 48.875,
+    "std": 0.0,
+    "min": 48.875,
+    "max": 48.875,
+    "values": [
+      48.875,
+      48.875,
+      48.875,
+      48.875,
+      48.875
+    ]
+  },
+  "results": {
+    "0": {
+      "mean": 48.875,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "1": {
+      "mean": 48.875,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "2": {
+      "mean": 48.875,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "3": {
+      "mean": 48.875,
+      "n_samples": 1,
+      "intervention": "baseline"
+    },
+    "4": {
+      "mean": 48.875,
+      "n_samples": 1,
+      "intervention": "baseline"
+    }
+  }
+}
