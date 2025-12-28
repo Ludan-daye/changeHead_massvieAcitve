@@ -30,23 +30,38 @@ MODEL_CONFIGS = [
     {'key': 'llama2_13b', 'display': 'LLaMA2-13B'},
 ]
 
-def pdf_to_image_cropped(pdf_path, dpi=200, crop_top=0.15, crop_bottom=0.1):
+def pdf_to_image_cropped(pdf_path, dpi=400):
     """
-    将PDF的第一页转换为PIL Image并裁剪掉标题和图例部分
-
-    crop_top: 裁剪顶部比例（去掉标题）
-    crop_bottom: 裁剪底部比例（去掉图例）
+    将PDF的第一页转换为PIL Image并精确裁剪掉标题和图例部分
+    使用PyMuPDF的坐标系统进行精确裁剪
     """
     try:
         doc = fitz.open(str(pdf_path))
         page = doc[0]  # 获取第一页
 
-        # 设置缩放以获得更高分辨率
+        # 获取原始页面尺寸
+        rect = page.rect
+        page_width = rect.width
+        page_height = rect.height
+
+        # 根据分析，不同模型图例位置不同：
+        # GPT-2: 底部右侧(Y=79%, X=73%)
+        # GPT-J: 顶部右侧(Y=3%, X=73%)
+        # BLOOM: 顶部左侧(Y=3%, X=12%)
+        # 解决方案：只保留中间核心区域（去掉所有边缘）
+        crop_rect = fitz.Rect(
+            page_width * 0.02,          # 左边界（去掉左侧2%）
+            page_height * 0.15,         # 上边界（去掉顶部15%包括所有顶部图例）
+            page_width * 0.70,          # 右边界（去掉右侧30%避免右侧图例）
+            page_height * 0.75          # 下边界（去掉底部25%避免底部图例）
+        )
+
+        # 设置更高缩放以获得更清晰的坐标轴
         zoom = dpi / 72  # 默认72 DPI
         mat = fitz.Matrix(zoom, zoom)
 
-        # 渲染页面为图像
-        pix = page.get_pixmap(matrix=mat)
+        # 渲染裁剪后的区域
+        pix = page.get_pixmap(matrix=mat, clip=crop_rect)
 
         # 转换为PIL Image
         img_data = pix.tobytes("png")
@@ -54,15 +69,7 @@ def pdf_to_image_cropped(pdf_path, dpi=200, crop_top=0.15, crop_bottom=0.1):
 
         doc.close()
 
-        # 裁剪图像（去掉标题和图例）
-        width, height = img.size
-        crop_y_top = int(height * crop_top)
-        crop_y_bottom = int(height * (1 - crop_bottom))
-
-        # 裁剪
-        img_cropped = img.crop((0, crop_y_top, width, crop_y_bottom))
-
-        return np.array(img_cropped)
+        return np.array(img)
     except Exception as e:
         print(f"Error reading {pdf_path}: {e}")
         return None
@@ -92,7 +99,7 @@ def create_combined_figure():
             continue
 
         # 读取PDF并转换为图像（裁剪掉标题和图例）
-        img = pdf_to_image_cropped(pdf_file, dpi=200, crop_top=0.15, crop_bottom=0.12)
+        img = pdf_to_image_cropped(pdf_file, dpi=400)
 
         if img is None:
             ax.text(0.5, 0.5, f'{model_display}\nFailed to Load',
