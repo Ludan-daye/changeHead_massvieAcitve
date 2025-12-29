@@ -969,7 +969,6 @@ results/experiments/
 **报告版本**: v1.0
 **最后更新**: 2025-12-24
 **作者**: Massive Activations研究组
-**联系方式**: [项目GitHub仓库]
 
 ---
 

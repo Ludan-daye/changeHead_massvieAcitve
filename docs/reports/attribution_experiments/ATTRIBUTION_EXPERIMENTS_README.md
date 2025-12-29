@@ -463,9 +463,9 @@ def create_random_orthogonal(shape, device='cpu'):
 ```bibtex
 @software{attribution_experiments,
   title={Attribution Experiments Framework for Massive Activation Analysis},
-  author={Your Name},
+  author={Anonymous Research Team},
   year={2025},
-  url={https://github.com/your/repo}
+  note={Attribution analysis framework for massive activation mechanisms}
 }
 ```
 
@@ -501,4 +501,3 @@ A: 模型配置文件使用'opt_7b'，需要在运行时指定：
 
 **文档版本**: v1.0
 **更新日期**: 2025-12-23
-**维护者**: Claude Code Assistant

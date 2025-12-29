@@ -615,19 +615,11 @@ cat TASK_COMPLETION_TREE.md
 ```bibtex
 @misc{massive_activation_2025,
   title={Investigating Massive Activations in Large Language Models},
-  author={Your Name},
+  author={Anonymous Research Team},
   year={2025},
-  note={https://github.com/your-repo}
+  note={Research project on massive activation mechanisms in LLMs}
 }
 ```
-
----
-
-## 📞 联系方式
-
-- **项目维护者**：[Your Name]
-- **问题反馈**：[GitHub Issues]
-- **邮箱**：[your.email@example.com]
 
 ---
 
