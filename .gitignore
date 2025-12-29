@@ -53,3 +53,33 @@ logs/
 # HuggingFace cache
 .cache/
 *.aria2
+
+# Incomplete downloads
+*.incomplete
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Privacy backups
+privacy_backup*/
+
+# Temporary result files
+results/temp/
+results/tmp/
+
+# Large result archives
+results/archive/by_model/
+results/archive/old_experiments/
+
+# Development artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+*.prof
+
+# Editor temp files
+.*.sw[op]
+*~
+\#*\#
