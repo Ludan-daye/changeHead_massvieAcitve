@@ -54,8 +54,8 @@ def load_exp2_data(model_key):
 def create_combined_figure():
     """创建合并图"""
 
-    # 创建2行4列的子图
-    fig, axes = plt.subplots(2, 4, figsize=(28, 14))
+    # 创建2行4列的子图 - 增大尺寸
+    fig, axes = plt.subplots(2, 4, figsize=(32, 16))
     axes = axes.flatten()
 
     for idx, model_config in enumerate(MODEL_CONFIGS):
@@ -68,7 +68,8 @@ def create_combined_figure():
         data = load_exp2_data(model_key)
         if data is None:
             ax.text(0.5, 0.5, f'{model_display}\nData Not Available',
-                   ha='center', va='center', fontsize=18, color='red')
+                   ha='center', va='center', fontsize=24, color='red',
+                   fontweight='bold')
             ax.axis('off')
             continue
 
@@ -76,7 +77,8 @@ def create_combined_figure():
         ablation = data.get('ablation', {})
         if not ablation:
             ax.text(0.5, 0.5, f'{model_display}\nNo Data',
-                   ha='center', va='center', fontsize=18, color='red')
+                   ha='center', va='center', fontsize=24, color='red',
+                   fontweight='bold')
             ax.axis('off')
             continue
 
@@ -88,60 +90,61 @@ def create_combined_figure():
         baseline = max(ma_ablated)
         ma_baseline = [baseline] * len(layers)
 
-        # 绘制图形
-        ax.plot(layers, ma_baseline, color=COLOR_BASELINE, linewidth=3,
-               linestyle='--', label='Baseline (All MLP Active)', zorder=3)
-        ax.plot(layers, ma_ablated, color=COLOR_ABLATED, linewidth=3,
-               label='Layer Disabled (Final MA)', zorder=4)
+        # 绘制图形 - 加粗线条
+        ax.plot(layers, ma_baseline, color=COLOR_BASELINE, linewidth=4,
+               linestyle='--', label='Baseline', zorder=3)
+        ax.plot(layers, ma_ablated, color=COLOR_ABLATED, linewidth=4,
+               label='Ablated', zorder=4)
 
         # 填充区域
         ax.fill_between(layers, ma_baseline, ma_ablated,
-                        color=COLOR_FILL, alpha=0.3, zorder=1)
+                        color=COLOR_FILL, alpha=0.4, zorder=1)
 
         # 标记关键层
         if critical_layer < len(layers):
-            ax.axvline(x=critical_layer, color='gray', linestyle=':',
-                      linewidth=2, alpha=0.7, zorder=2)
+            ax.axvline(x=critical_layer, color='darkgray', linestyle=':',
+                      linewidth=3, alpha=0.8, zorder=2)
 
-        # 设置坐标轴
-        ax.set_xlabel('Layer Index', fontsize=20, fontweight='bold')
-        ax.set_ylabel('MA Value (Top1)', fontsize=20, fontweight='bold')
+        # 设置坐标轴标签 - 超大字号
+        ax.set_xlabel('Layer Index', fontsize=26, fontweight='bold', labelpad=10)
+        ax.set_ylabel('MA Value', fontsize=26, fontweight='bold', labelpad=10)
 
-        # 稀疏的横坐标刻度（每5层显示一次）
+        # 横坐标刻度 - 更稀疏、更大字号
         n_layers = len(layers)
-        if n_layers <= 15:
-            tick_step = 2
+        if n_layers <= 12:
+            tick_step = 3
         elif n_layers <= 30:
-            tick_step = 5
+            tick_step = 6
         else:
-            tick_step = 8
+            tick_step = 10
 
         tick_positions = list(range(0, n_layers, tick_step))
         if (n_layers - 1) not in tick_positions:
             tick_positions.append(n_layers - 1)
 
         ax.set_xticks(tick_positions)
-        ax.set_xticklabels(tick_positions, fontsize=18)
+        ax.set_xticklabels(tick_positions, fontsize=24, fontweight='bold')
 
-        # 纵坐标字体
-        ax.tick_params(axis='y', labelsize=16)
+        # 纵坐标字体 - 加大加粗
+        ax.tick_params(axis='y', labelsize=22, width=2, length=8)
+        ax.tick_params(axis='x', width=2, length=8)
 
-        # 设置标题（模型名称）
-        ax.set_title(model_display, fontsize=22, fontweight='bold', pad=15)
+        # 设置标题 - 超大字号
+        ax.set_title(model_display, fontsize=28, fontweight='bold', pad=20)
 
-        # 网格
-        ax.grid(True, alpha=0.3, linestyle='--', linewidth=0.8)
+        # 加强网格
+        ax.grid(True, alpha=0.4, linestyle='-', linewidth=1.2, color='gray')
 
-        # 边框
+        # 加粗边框
         for spine in ax.spines.values():
             spine.set_edgecolor('black')
-            spine.set_linewidth(2)
+            spine.set_linewidth(3)
 
         print(f"✓ Plotted {model_display}")
 
-    # 调整布局
-    plt.subplots_adjust(left=0.04, right=0.98, top=0.96, bottom=0.06,
-                       hspace=0.35, wspace=0.25)
+    # 调整布局 - 增大子图间距
+    plt.subplots_adjust(left=0.05, right=0.98, top=0.95, bottom=0.08,
+                       hspace=0.4, wspace=0.3)
 
     # 保存
     output_file_png = OUTPUT_DIR / 'exp2_combined_8models_clean.png'
