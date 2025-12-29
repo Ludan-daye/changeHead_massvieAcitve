@@ -129,8 +129,8 @@ def create_combined_figure():
         ax.tick_params(axis='y', labelsize=22, width=2, length=8)
         ax.tick_params(axis='x', width=2, length=8)
 
-        # 设置标题 - 超大字号
-        ax.set_title(model_display, fontsize=28, fontweight='bold', pad=20)
+        # 不显示标题（按要求去掉模型名称）
+        # ax.set_title(model_display, fontsize=28, fontweight='bold', pad=20)
 
         # 加强网格
         ax.grid(True, alpha=0.4, linestyle='-', linewidth=1.2, color='gray')
@@ -142,13 +142,13 @@ def create_combined_figure():
 
         print(f"✓ Plotted {model_display}")
 
-    # 调整布局 - 增大子图间距
-    plt.subplots_adjust(left=0.05, right=0.98, top=0.95, bottom=0.08,
-                       hspace=0.4, wspace=0.3)
+    # 调整布局 - 去掉标题后减少顶部边距
+    plt.subplots_adjust(left=0.05, right=0.98, top=0.98, bottom=0.08,
+                       hspace=0.25, wspace=0.3)
 
-    # 保存
-    output_file_png = OUTPUT_DIR / 'exp2_combined_8models_clean.png'
-    output_file_pdf = OUTPUT_DIR / 'exp2_combined_8models_clean.pdf'
+    # 保存为 exp2_combined_all_models_final
+    output_file_png = OUTPUT_DIR / 'exp2_combined_all_models_final.png'
+    output_file_pdf = OUTPUT_DIR / 'exp2_combined_all_models_final.pdf'
 
     plt.savefig(output_file_png, dpi=300, bbox_inches='tight', facecolor='white')
     plt.savefig(output_file_pdf, bbox_inches='tight', facecolor='white')
