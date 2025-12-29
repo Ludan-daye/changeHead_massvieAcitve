@@ -27,9 +27,9 @@ MODEL_CONFIGS = [
     {'key': 'llama2_13b', 'display': 'LLaMA2-13B', 'critical_layer': 30},
 ]
 
-# 颜色配置
-COLOR_BASELINE = '#7BA5D5'    # 蓝色 - Baseline
-COLOR_ABLATED = '#D97E73'     # 红色 - Layer Disabled
+# 颜色配置 - 使用2d_comparison的配色方案
+COLOR_BASELINE = '#2ECC71'    # 绿色 - Baseline (All MLP Active)
+COLOR_ABLATED = '#E74C3C'     # 红色 - Layer Disabled
 COLOR_FILL = '#FFB6B0'        # 浅红色 - 填充区域
 
 def load_exp2_data(model_key):
@@ -90,10 +90,14 @@ def create_combined_figure():
         baseline = max(ma_ablated)
         ma_baseline = [baseline] * len(layers)
 
-        # 绘制图形 - 加粗线条
+        # 绘制图形 - 加粗线条，添加散点标记（模仿2d_comparison样式）
         ax.plot(layers, ma_baseline, color=COLOR_BASELINE, linewidth=4,
-               linestyle='--', label='Baseline', zorder=3)
+               linestyle='-', marker='o', markersize=8, markerfacecolor=COLOR_BASELINE,
+               markeredgecolor=COLOR_BASELINE, markeredgewidth=2,
+               label='Baseline', zorder=3)
         ax.plot(layers, ma_ablated, color=COLOR_ABLATED, linewidth=4,
+               linestyle='-', marker='o', markersize=8, markerfacecolor=COLOR_ABLATED,
+               markeredgecolor=COLOR_ABLATED, markeredgewidth=2,
                label='Ablated', zorder=4)
 
         # 填充区域
@@ -146,9 +150,9 @@ def create_combined_figure():
     plt.subplots_adjust(left=0.05, right=0.98, top=0.98, bottom=0.08,
                        hspace=0.25, wspace=0.3)
 
-    # 保存为 exp2_combined_all_models_final
-    output_file_png = OUTPUT_DIR / 'exp2_combined_all_models_final.png'
-    output_file_pdf = OUTPUT_DIR / 'exp2_combined_all_models_final.pdf'
+    # 保存为 exp2_combined_2d_heatmap (2d comparison style)
+    output_file_png = OUTPUT_DIR / 'exp2_combined_2d_heatmap.png'
+    output_file_pdf = OUTPUT_DIR / 'exp2_combined_2d_heatmap.pdf'
 
     plt.savefig(output_file_png, dpi=300, bbox_inches='tight', facecolor='white')
     plt.savefig(output_file_pdf, bbox_inches='tight', facecolor='white')
