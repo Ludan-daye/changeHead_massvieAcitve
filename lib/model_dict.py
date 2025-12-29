@@ -1,5 +1,5 @@
 CACHE_DIR_BASE = "./model_weights"
-LOCAL_MODELS_DIR = "/home/vicuna/ludan/models"
+LOCAL_MODELS_DIR = "LOCAL_MODELS_DIR"
 
 MODEL_DICT_LLMs = {
     ### ============ 新下载的模型 (本地路径) ============ ###

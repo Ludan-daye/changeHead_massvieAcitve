@@ -17,8 +17,8 @@ plt.rcParams['axes.unicode_minus'] = False
 
 # 数据路径
 MODEL = 'gpt2'
-EXP3_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp3')
-OUTPUT_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/exp3_figures/gpt2')
+EXP3_DIR = Path('PROJECT_ROOT/results/experiments/exp3')
+OUTPUT_DIR = Path('PROJECT_ROOT/results/plot_results/exp3_figures/gpt2')
 
 # 读取数据
 model_dir = EXP3_DIR / MODEL

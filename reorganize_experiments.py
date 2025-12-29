@@ -8,7 +8,7 @@ from pathlib import Path
 import json
 
 # 当前工作目录
-BASE_DIR = Path("/home/vicuna/ludan/massActive/changeHead_massvieAcitve/results")
+BASE_DIR = Path("PROJECT_ROOT/results")
 MODELS_DIR = BASE_DIR / "models"
 NEW_EXPERIMENTS_DIR = BASE_DIR / "experiments"
 

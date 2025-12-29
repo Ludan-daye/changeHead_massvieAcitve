@@ -17,8 +17,8 @@ plt.rcParams['axes.unicode_minus'] = False
 # 数据路径
 MODEL = 'qwen2.5_7b'
 MODEL_DISPLAY = 'Qwen2.5-7B'
-DATA_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp6')
-OUTPUT_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/exp6_figures') / MODEL
+DATA_DIR = Path('PROJECT_ROOT/results/experiments/exp6')
+OUTPUT_DIR = Path('PROJECT_ROOT/results/plot_results/exp6_figures') / MODEL
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # 加载数据

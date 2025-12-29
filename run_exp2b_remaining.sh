@@ -7,7 +7,7 @@ echo "========================================="
 echo "🔄 运行剩余的3个模型"
 echo "========================================="
 
-PROJECT_ROOT="/home/vicuna/ludan/massActive/changeHead_massvieAcitve"
+PROJECT_ROOT="PROJECT_ROOT"
 SCRIPT="$PROJECT_ROOT/experiments/common/exp2b_mlp_layer_ablation.py"
 NSAMPLES=10
 

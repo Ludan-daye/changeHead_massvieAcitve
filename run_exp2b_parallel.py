@@ -20,7 +20,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 import time
 
-PROJECT_ROOT = "/home/vicuna/ludan/massActive/changeHead_massvieAcitve"
+PROJECT_ROOT = "PROJECT_ROOT"
 SCRIPT = f"{PROJECT_ROOT}/experiments/common/exp2b_mlp_layer_ablation.py"
 
 # 模型配置

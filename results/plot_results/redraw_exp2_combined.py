@@ -12,8 +12,8 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 # 配置
-RESULTS_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp2')
-OUTPUT_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/exp2_figures')
+RESULTS_DIR = Path('PROJECT_ROOT/results/experiments/exp2')
+OUTPUT_DIR = Path('PROJECT_ROOT/results/plot_results/exp2_figures')
 
 # 模型配置
 MODEL_CONFIGS = [
@@ -38,7 +38,7 @@ def load_exp2_data(model_key):
 
     # 特殊情况：LLaMA2数据在另一个位置
     if not summary_file.exists() and 'llama' in model_key:
-        alt_path = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/models/llama2_13b/exp2b_mlp_layer_ablation/summary.json')
+        alt_path = Path('PROJECT_ROOT/results/models/llama2_13b/exp2b_mlp_layer_ablation/summary.json')
         if alt_path.exists():
             summary_file = alt_path
 

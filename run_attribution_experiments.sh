@@ -10,7 +10,7 @@ echo "=========================================="
 echo ""
 
 # 项目根目录
-PROJECT_ROOT="/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve"
+PROJECT_ROOT="PROJECT_ROOT"
 cd "$PROJECT_ROOT"
 
 # 默认配置

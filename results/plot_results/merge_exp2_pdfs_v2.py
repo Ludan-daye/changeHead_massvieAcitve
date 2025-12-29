@@ -15,7 +15,7 @@ from pathlib import Path
 import numpy as np
 
 # 配置
-FIGURES_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/exp2_figures')
+FIGURES_DIR = Path('PROJECT_ROOT/results/plot_results/exp2_figures')
 OUTPUT_DIR = FIGURES_DIR
 
 # 模型配置（8个模型完整列表）
@@ -50,10 +50,10 @@ def pdf_to_image_cropped(pdf_path, dpi=400):
         # BLOOM: 顶部左侧(Y=3%, X=12%)
         # 解决方案：只保留中间核心区域（去掉所有边缘）
         crop_rect = fitz.Rect(
-            page_width * 0.02,          # 左边界（去掉左侧2%）
-            page_height * 0.15,         # 上边界（去掉顶部15%包括所有顶部图例）
-            page_width * 0.70,          # 右边界（去掉右侧30%避免右侧图例）
-            page_height * 0.75          # 下边界（去掉底部25%避免底部图例）
+            page_width * 0.02,          # 左边界
+            page_height * 0.15,         # 上边界
+            page_width * 0.70,          # 右边界
+            page_height * 0.68          # 下边界（裁掉更多底部白边）
         )
 
         # 设置更高缩放以获得更清晰的坐标轴
@@ -78,7 +78,7 @@ def create_combined_figure():
     """合并PDF图为大图"""
 
     # 创建2行4列的子图
-    fig, axes = plt.subplots(2, 4, figsize=(24, 12))
+    fig, axes = plt.subplots(2, 4, figsize=(20, 8))
     axes = axes.flatten()
 
     # 为每个模型加载并显示PDF
@@ -99,7 +99,7 @@ def create_combined_figure():
             continue
 
         # 读取PDF并转换为图像（裁剪掉标题和图例）
-        img = pdf_to_image_cropped(pdf_file, dpi=400)
+        img = pdf_to_image_cropped(pdf_file, dpi=500)
 
         if img is None:
             ax.text(0.5, 0.5, f'{model_display}\nFailed to Load',
@@ -109,26 +109,23 @@ def create_combined_figure():
 
         # 显示图片
         ax.imshow(img)
-        ax.axis('off')
+        ax.set_xticks([])
+        ax.set_yticks([])
 
-        # 添加模型名称作为标题（在子图外部）
-        ax.set_title(model_display, fontsize=16, fontweight='bold', pad=10)
+        # 在底部添加模型名称
+        ax.set_xlabel(model_display, fontsize=11, fontweight='bold', labelpad=2)
 
         # 添加边框
         for spine in ax.spines.values():
             spine.set_visible(True)
             spine.set_edgecolor('black')
-            spine.set_linewidth(2)
+            spine.set_linewidth(1.5)
 
         print(f"✓ Loaded {model_display}")
 
-    # 调整布局
-    plt.subplots_adjust(left=0.02, right=0.98, top=0.95, bottom=0.02,
-                       hspace=0.25, wspace=0.08)
-
-    # 添加总标题
-    fig.suptitle('Exp2: MLP Layer-wise Ablation Analysis - 2D Heatmap Comparison',
-                fontsize=24, fontweight='bold', y=0.98)
+    # 调整布局（紧凑排列，减少留白）
+    plt.subplots_adjust(left=0.01, right=0.99, top=0.99, bottom=0.05,
+                       hspace=0.12, wspace=0.03)
 
     # 保存
     output_file_png = OUTPUT_DIR / 'exp2_combined_8models.png'

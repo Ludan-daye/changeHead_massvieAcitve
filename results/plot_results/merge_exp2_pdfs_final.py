@@ -14,7 +14,7 @@ from pathlib import Path
 import numpy as np
 
 # 配置
-FIGURES_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/exp2_figures')
+FIGURES_DIR = Path('PROJECT_ROOT/results/plot_results/exp2_figures')
 OUTPUT_DIR = FIGURES_DIR
 
 # 8个模型配置

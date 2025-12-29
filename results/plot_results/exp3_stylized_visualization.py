@@ -17,8 +17,8 @@ plt.rcParams['font.size'] = 11
 plt.rcParams['axes.unicode_minus'] = False
 
 # 数据路径
-EXP3_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp3')
-OUTPUT_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/exp3_figures')
+EXP3_DIR = Path('PROJECT_ROOT/results/experiments/exp3')
+OUTPUT_DIR = Path('PROJECT_ROOT/results/plot_results/exp3_figures')
 
 # 所有模型列表
 MODELS = ['gpt2', 'gptj_6b', 'bloom_7b1', 'falcon_7b', 'opt_7b', 'mistral_7b_v03', 'qwen2.5_7b', 'llama2_13b']

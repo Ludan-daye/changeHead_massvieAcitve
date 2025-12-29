@@ -306,7 +306,7 @@ Exp6: 因果干预 - V矩阵消融
 
 ## 📞 项目联系信息
 
-**项目路径**: `/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive`
+**项目路径**: `PROJECT_ROOT`
 
 **关键目录**:
 - 实验代码: `changeHead_massvieAcitve/experiments/common/`

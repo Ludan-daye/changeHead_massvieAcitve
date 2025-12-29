@@ -15,9 +15,9 @@ plt.rcParams['font.size'] = 11
 plt.rcParams['axes.unicode_minus'] = False
 
 # 数据路径
-EXP4_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp4')
-EXP1_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp1')
-OUTPUT_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/exp4_figures')
+EXP4_DIR = Path('PROJECT_ROOT/results/experiments/exp4')
+EXP1_DIR = Path('PROJECT_ROOT/results/experiments/exp1')
+OUTPUT_DIR = Path('PROJECT_ROOT/results/plot_results/exp4_figures')
 
 MODEL_DISPLAY_NAMES = {
     'gpt2': 'GPT-2',

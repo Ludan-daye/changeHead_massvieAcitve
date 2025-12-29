@@ -31,8 +31,8 @@ MODEL_CONFIGS = {
     'llama2_13b': {'display_name': 'LLaMA2-13B'}
 }
 
-DATA_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp7')
-OUTPUT_BASE = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/exp7_figures')
+DATA_DIR = Path('PROJECT_ROOT/results/experiments/exp7')
+OUTPUT_BASE = Path('PROJECT_ROOT/results/plot_results/exp7_figures')
 
 
 def create_ma_comparison(data, model_display, output_dir):

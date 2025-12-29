@@ -17,8 +17,8 @@ plt.rcParams['font.sans-serif'] = ['Arial', 'DejaVu Sans']
 plt.rcParams['axes.unicode_minus'] = False
 
 # 配置
-RESULTS_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp2')
-OUTPUT_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/exp2_figures')
+RESULTS_DIR = Path('PROJECT_ROOT/results/experiments/exp2')
+OUTPUT_DIR = Path('PROJECT_ROOT/results/plot_results/exp2_figures')
 
 # 模型配置（按特定顺序排列，只包含有数据的7个模型）
 MODEL_CONFIGS = [

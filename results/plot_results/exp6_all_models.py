@@ -16,8 +16,8 @@ plt.rcParams['font.sans-serif'] = ['Arial Unicode MS', 'SimHei', 'DejaVu Sans']
 plt.rcParams['axes.unicode_minus'] = False
 
 # 数据路径
-DATA_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp6')
-OUTPUT_BASE = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/exp6_figures')
+DATA_DIR = Path('PROJECT_ROOT/results/experiments/exp6')
+OUTPUT_BASE = Path('PROJECT_ROOT/results/plot_results/exp6_figures')
 
 # 模型配置
 MODEL_CONFIGS = {

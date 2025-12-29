@@ -12,7 +12,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-PROJECT_ROOT = '/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve'
+PROJECT_ROOT = 'PROJECT_ROOT'
 SCRIPTS_DIR = os.path.join(PROJECT_ROOT, 'scripts')
 sys.path.insert(0, PROJECT_ROOT)
 sys.path.insert(0, SCRIPTS_DIR)

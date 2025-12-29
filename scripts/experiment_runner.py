@@ -69,7 +69,7 @@ def run_exp3_u_ablation(model_name, savedir, nsamples=5, k_values=None):
 
     try:
         # 导入实验模块（延迟导入避免提前加载模型）
-        sys.path.insert(0, '/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve')
+        sys.path.insert(0, 'PROJECT_ROOT')
 
         from experiments.common.exp3_u_ablation import run_ablation_experiment
         import argparse
@@ -132,7 +132,7 @@ def run_exp6_v_ablation(model_name, savedir, nsamples=5, k_values=None):
     print(f"{'='*80}\n")
 
     try:
-        sys.path.insert(0, '/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve')
+        sys.path.insert(0, 'PROJECT_ROOT')
 
         from experiments.common.exp6_v_ablation import run_ablation_experiment
         import argparse

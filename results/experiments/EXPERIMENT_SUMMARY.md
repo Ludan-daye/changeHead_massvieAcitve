@@ -13,7 +13,7 @@
 
 ## 完成的实验
 - ✅ exp6_llama2_13b
-  - 结果目录: `/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp6/llama2_13b`
+  - 结果目录: `PROJECT_ROOT/changeHead_massvieAcitve/results/experiments/exp6/llama2_13b`
 
 ---
 *生成时间: 2025-12-23 23:13:18*

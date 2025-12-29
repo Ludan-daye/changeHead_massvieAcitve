@@ -6,7 +6,7 @@ echo "🧪 批量实验系统测试"
 echo "=========================================="
 echo ""
 
-PROJECT_ROOT="/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve"
+PROJECT_ROOT="PROJECT_ROOT"
 cd "$PROJECT_ROOT"
 
 # 测试1: GPU监控

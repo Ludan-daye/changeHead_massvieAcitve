@@ -6,7 +6,7 @@
 
 所有结果位于：
 ```
-\\wsl.localhost\Ubuntu\home\ludandaye\reaserch\massvieActive\massive-activations\results\
+\\wsl.localhost\Ubuntu\home\RESEARCHER\reaserch\massvieActive\massive-activations\results\
 ```
 
 ---
@@ -15,7 +15,7 @@
 
 ### 文件位置
 ```
-\\wsl.localhost\Ubuntu\home\ludandaye\reaserch\massvieActive\massive-activations\results\llm\3d_feat_vis\gpt2_layer_2.png
+\\wsl.localhost\Ubuntu\home\RESEARCHER\reaserch\massvieActive\massive-activations\results\llm\3d_feat_vis\gpt2_layer_2.png
 ```
 
 ### 实验内容
@@ -34,7 +34,7 @@
 
 ### 文件位置
 ```
-\\wsl.localhost\Ubuntu\home\ludandaye\reaserch\massvieActive\massive-activations\results\llm\layerwise\gpt2.png
+\\wsl.localhost\Ubuntu\home\RESEARCHER\reaserch\massvieActive\massive-activations\results\llm\layerwise\gpt2.png
 ```
 
 ### 实验内容
@@ -65,17 +65,17 @@
 
 **头重要性热图**:
 ```
-\\wsl.localhost\Ubuntu\home\ludandaye\reaserch\massvieActive\massive-activations\results\head_analysis\gpt2_head_analysis.png
+\\wsl.localhost\Ubuntu\home\RESEARCHER\reaserch\massvieActive\massive-activations\results\head_analysis\gpt2_head_analysis.png
 ```
 
 **头排名对比**:
 ```
-\\wsl.localhost\Ubuntu\home\ludandaye\reaserch\massvieActive\massive-activations\results\head_analysis\gpt2_head_ranking.png
+\\wsl.localhost\Ubuntu\home\RESEARCHER\reaserch\massvieActive\massive-activations\results\head_analysis\gpt2_head_ranking.png
 ```
 
 **剪枝配置**:
 ```
-\\wsl.localhost\Ubuntu\home\ludandaye\reaserch\massvieActive\massive-activations\results\head_analysis\gpt2_pruning_config.txt
+\\wsl.localhost\Ubuntu\home\RESEARCHER\reaserch\massvieActive\massive-activations\results\head_analysis\gpt2_pruning_config.txt
 ```
 
 ### 实验内容
@@ -116,22 +116,22 @@
 
 **总结对比**:
 ```
-\\wsl.localhost\Ubuntu\home\ludandaye\reaserch\massvieActive\massive-activations\results\head_pruning_massive\summary_comparison.png
+\\wsl.localhost\Ubuntu\home\RESEARCHER\reaserch\massvieActive\massive-activations\results\head_pruning_massive\summary_comparison.png
 ```
 
 **剪枝TOP头详细结果**:
 ```
-\\wsl.localhost\Ubuntu\home\ludandaye\reaserch\massvieActive\massive-activations\results\head_pruning_massive\Prune_TOP_Heads_comparison.png
+\\wsl.localhost\Ubuntu\home\RESEARCHER\reaserch\massvieActive\massive-activations\results\head_pruning_massive\Prune_TOP_Heads_comparison.png
 ```
 
 **剪枝BOTTOM头详细结果**:
 ```
-\\wsl.localhost\Ubuntu\home\ludandaye\reaserch\massvieActive\massive-activations\results\head_pruning_massive\Prune_BOTTOM_Heads_comparison.png
+\\wsl.localhost\Ubuntu\home\RESEARCHER\reaserch\massvieActive\massive-activations\results\head_pruning_massive\Prune_BOTTOM_Heads_comparison.png
 ```
 
 **数值结果**:
 ```
-\\wsl.localhost\Ubuntu\home\ludandaye\reaserch\massvieActive\massive-activations\results\head_pruning_massive\pruning_results_summary.txt
+\\wsl.localhost\Ubuntu\home\RESEARCHER\reaserch\massvieActive\massive-activations\results\head_pruning_massive\pruning_results_summary.txt
 ```
 
 ### 实验设计
@@ -297,4 +297,4 @@ Layer    变化%
 
 **生成时间**: 2025-10-26
 **实验者**: Claude Code + User
-**项目路径**: `/home/ludandaye/reaserch/massvieActive/massive-activations/`
+**项目路径**: `PROJECT_ROOT/`

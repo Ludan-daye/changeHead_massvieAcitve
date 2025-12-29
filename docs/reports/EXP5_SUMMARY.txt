@@ -165,7 +165,7 @@ Waiting for:     Real data execution on actual GPT-2
 PROJECT FILES
 ================================================================================
 
-/home/ludandaye/reaserch/massvieActive/massive-activations/
+PROJECT_ROOT/
 ├── exp5_function_words_svd_mapping.py       # Main experiment (27KB)
 ├── exp5_validation_report.py                # Validation script
 ├── exp5_mock_validation.py                  # Mock test

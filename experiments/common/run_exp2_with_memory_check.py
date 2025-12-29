@@ -129,7 +129,7 @@ def run_experiment(model_name, nsamples=None, force=False):
     print("="*80)
 
     # 运行实验
-    result = subprocess.run(cmd, cwd='/home/vicuna/ludan/massActive/changeHead_massvieAcitve')
+    result = subprocess.run(cmd, cwd='PROJECT_ROOT')
 
     return result.returncode == 0
 
