@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-生成Exp2的3D对比图：每层抑制 vs Baseline
-参考风格：3D散点图 + 曲面
+Generate Exp2 3D comparison plots: Layer-wise suppression vs Baseline
+Reference style: 3D scatter plot + surface
 """
 
 import json
@@ -15,7 +15,7 @@ from pathlib import Path
 
 
 def setup_style():
-    """设置学术风格"""
+    """Setup academic style"""
     plt.rcParams.update({
         'font.family': 'serif',
         'font.serif': ['Times New Roman', 'DejaVu Serif'],
@@ -32,7 +32,7 @@ def setup_style():
 
 
 def load_exp2_data(model_name, base_dir='results/models'):
-    """加载Exp2数据：每层禁用后的值 + baseline每层的MA值"""
+    """Load Exp2 data: disabled layer values + baseline MA values for each layer"""
     summary_path = Path(base_dir) / model_name / 'exp2b_mlp_layer_ablation' / 'summary.json'
     baseline_path = Path(base_dir) / model_name / 'exp2b_mlp_layer_ablation' / 'baseline.json'
 
@@ -47,12 +47,12 @@ def load_exp2_data(model_name, base_dir='results/models'):
     with open(baseline_path, 'r') as f:
         baseline_data = json.load(f)
 
-    # 解析ablation数据（每层被禁用后的最终MA值）
+    # Parse ablation data (final MA value after disabling each layer)
     ablation = summary_data.get('ablation', {})
     layers = sorted([int(k) for k in ablation.keys()])
     disabled_values = np.array([ablation[str(l)] for l in layers])
 
-    # 解析baseline数据（每层正常工作时的MA值，显示逐层累积过程）
+    # Parse baseline data (MA value for each layer during normal operation, showing layer-by-layer accumulation)
     baseline_values = []
     if 'results' in baseline_data:
         results = baseline_data['results']
@@ -60,12 +60,12 @@ def load_exp2_data(model_name, base_dir='results/models'):
             layer_data = results.get(str(layer), {})
             if isinstance(layer_data, dict) and 'mean' in layer_data:
                 value = layer_data['mean']
-                # 过滤nan值
+                # Filter out nan values
                 if np.isfinite(value):
                     baseline_values.append(value)
                 else:
                     baseline_values.append(0)
-                    print(f"⚠️  Warning: Layer {layer} baseline is non-finite, using 0")
+                    print(f"Warning: Layer {layer} baseline is non-finite, using 0")
             else:
                 baseline_values.append(0)
     else:
@@ -83,52 +83,52 @@ def load_exp2_data(model_name, base_dir='results/models'):
 
 def plot_3d_comparison_surface(data, outdir, style='surface'):
     """
-    生成3D对比图：每层抑制 vs Baseline
+    Generate 3D comparison plot: Layer-wise suppression vs Baseline
 
     Args:
-        data: 包含layers, disabled_values, baseline_values的字典
-        outdir: 输出目录
-        style: 'surface' 或 'scatter' 或 'both'
+        data: Dictionary containing layers, disabled_values, baseline_values
+        outdir: Output directory
+        style: 'surface' or 'scatter' or 'both'
     """
     model = data['model']
     layers = data['layers']
     disabled_values = data['disabled_values']
     baseline_values = data['baseline_values']
 
-    # 计算相对baseline的变化百分比
+    # Calculate percentage change relative to baseline
     baseline_mean = baseline_values.mean()
     drop_percentage = ((disabled_values - baseline_mean) / baseline_mean) * 100
 
     fig = plt.figure(figsize=(14, 10), dpi=300)
     ax = fig.add_subplot(111, projection='3d')
 
-    # 创建网格数据用于曲面
+    # Create grid data for surface
     x = layers  # Layer Index
     y = disabled_values  # MA Value (Disabled)
     z = drop_percentage  # Drop from Baseline (%)
 
     if style in ['scatter', 'both']:
-        # 绘制散点
+        # Plot scatter points
         scatter = ax.scatter(x, y, z, c=z, cmap='coolwarm',
                            s=120, alpha=0.9, edgecolors='black', linewidth=0.8)
         plt.colorbar(scatter, ax=ax, shrink=0.6, aspect=15,
                     label='Drop from Baseline (%)', pad=0.1)
 
     if style in ['surface', 'both']:
-        # 创建曲面网格
+        # Create surface grid
         xi = np.linspace(x.min(), x.max(), 50)
         yi = np.linspace(y.min(), y.max(), 50)
         Xi, Yi = np.meshgrid(xi, yi)
 
-        # 使用griddata插值
+        # Use griddata interpolation
         Zi = griddata((x, y), z, (Xi, Yi), method='cubic')
 
-        # 绘制曲面
+        # Plot surface
         surf = ax.plot_surface(Xi, Yi, Zi, cmap='viridis',
                               alpha=0.5, edgecolor='none',
                               linewidth=0, antialiased=True)
 
-    # 添加baseline参考平面
+    # Add baseline reference plane
     baseline_x = np.array([layers.min(), layers.max()])
     baseline_y = np.array([baseline_mean, baseline_mean])
     baseline_z = np.array([0, 0])
@@ -136,37 +136,37 @@ def plot_3d_comparison_surface(data, outdir, style='surface'):
            color='red', linewidth=3.5, linestyle='--',
            label=f'Baseline Mean (MA={baseline_mean:.1f})', alpha=0.9)
 
-    # 设置标签和标题
+    # Set labels and title
     ax.set_xlabel('Layer Index', fontsize=13, labelpad=12)
     ax.set_ylabel('MA Value (Disabled)', fontsize=13, labelpad=12)
     ax.set_zlabel('Drop from Baseline (%)', fontsize=13, labelpad=12)
 
-    # 调整坐标轴比例
-    # 计算数据范围
+    # Adjust axis scale
+    # Calculate data ranges
     x_range = x.max() - x.min()
     y_range = y.max() - y.min()
     z_range = z.max() - z.min()
 
-    # 设置合理的坐标轴比例 (避免某个轴过于扁平或拉长)
+    # Set reasonable axis aspect ratio (avoid extremely flat or elongated axes)
     max_range = max(x_range, y_range, z_range)
     ax.set_box_aspect([x_range/max_range * 1.2,
                        y_range/max_range * 1.0,
                        z_range/max_range * 0.8])
 
-    # 优化视角：提高俯仰角，调整方位角
-    # elev: 俯仰角 (0-90度，越大越俯视)
-    # azim: 方位角 (0-360度，绕z轴旋转)
+    # Optimize viewing angle: increase elevation, adjust azimuth
+    # elev: elevation angle (0-90 degrees, higher = more top-down view)
+    # azim: azimuth angle (0-360 degrees, rotation around z-axis)
     ax.view_init(elev=25, azim=135)
 
-    # 添加图例
+    # Add legend
     ax.legend(loc='upper left', fontsize=10, framealpha=0.9)
 
-    # 添加网格
+    # Add grid
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
 
-    # 保存
+    # Save
     outfile_png = outdir / f'{model}_exp2_3d_comparison_{style}.png'
     outfile_pdf = outdir / f'{model}_exp2_3d_comparison_{style}.pdf'
     fig.savefig(outfile_png, dpi=400, bbox_inches='tight')
@@ -178,40 +178,40 @@ def plot_3d_comparison_surface(data, outdir, style='surface'):
 
 def plot_cumulative_contribution(data, outdir):
     """
-    生成累积贡献曲线图（拆分为2个独立图）
-    - 图1：按贡献度排序的累积曲线
-    - 图2：按层序列顺序的累积曲线
+    Generate cumulative contribution curve plots (split into 2 independent plots)
+    - Plot 1: Cumulative curve sorted by contribution
+    - Plot 2: Cumulative curve in layer sequence order
     """
     model = data['model']
     layers = data['layers']
     disabled_values = data['disabled_values']
     baseline_values = data['baseline_values']
 
-    # 确定baseline最终值
+    # Determine baseline final value
     valid_baseline_values = baseline_values[:-1] if baseline_values[-1] < baseline_values[-2] * 0.5 else baseline_values
     baseline_final = valid_baseline_values.max()
 
-    # 计算每层的绝对贡献
+    # Calculate absolute contribution of each layer
     absolute_contribution = baseline_final - disabled_values
 
-    # 按贡献度排序（从大到小）
+    # Sort by contribution (descending)
     sorted_indices = np.argsort(absolute_contribution)[::-1]
     sorted_layers = layers[sorted_indices]
     sorted_contribution = absolute_contribution[sorted_indices]
 
-    # 计算累积贡献
+    # Calculate cumulative contribution
     cumulative_contribution = np.cumsum(sorted_contribution)
     cumulative_percentage = (cumulative_contribution / baseline_final) * 100
 
-    # 同时计算按层索引顺序的累积贡献
+    # Also calculate cumulative contribution in layer index order
     sequential_cumulative = np.cumsum(absolute_contribution)
     sequential_percentage = (sequential_cumulative / baseline_final) * 100
 
-    # 早期层统计
+    # Early layer statistics
     early_layers_end = min(3, len(layers) - 1)
     early_contrib_pct = sequential_percentage[early_layers_end]
 
-    # ========== 图1：按贡献度排序的累积曲线 ==========
+    # ========== Plot 1: Cumulative curve sorted by contribution ==========
     fig1, ax1 = plt.subplots(figsize=(10, 7), dpi=300)
 
     ax1.plot(range(len(sorted_layers)), cumulative_percentage, '-o',
@@ -219,12 +219,12 @@ def plot_cumulative_contribution(data, outdir):
             markerfacecolor='white', markeredgewidth=2.5,
             label='Cumulative Contribution', zorder=3)
 
-    # 填充区域
+    # Fill area
     ax1.fill_between(range(len(sorted_layers)), 0, cumulative_percentage,
                     alpha=0.25, color='#e74c3c', hatch='///',
                     edgecolor='#e74c3c', linewidth=1.0, zorder=1)
 
-    # 添加关键阈值线
+    # Add key threshold lines
     thresholds = [50, 70, 90]
     threshold_colors = ['#f39c12', '#3498db', '#2ecc71']
     threshold_layers = []
@@ -233,7 +233,7 @@ def plot_cumulative_contribution(data, outdir):
         ax1.axhline(threshold, color=color, linestyle='--', linewidth=2.0,
                    alpha=0.7, label=f'{threshold}% threshold', zorder=2)
 
-        # 找到达到该阈值的层
+        # Find layer reaching this threshold
         idx = np.where(cumulative_percentage >= threshold)[0]
         if len(idx) > 0:
             first_idx = idx[0]
@@ -242,14 +242,14 @@ def plot_cumulative_contribution(data, outdir):
                        edgecolors='white', linewidth=2, zorder=4, marker='*')
             threshold_layers.append((threshold, first_idx + 1, sorted_layers[first_idx]))
 
-            # 添加文本标注
+            # Add text annotation
             ax1.text(first_idx, threshold + 3,
                     f'{first_idx + 1} layers\n(Layer {sorted_layers[first_idx]})',
                     fontsize=10, color=color, fontweight='bold',
                     ha='center', bbox=dict(boxstyle='round,pad=0.5',
                                           facecolor='white', alpha=0.8, edgecolor=color))
 
-    # 添加0轴参考线（如果有负值数据）
+    # Add zero-axis reference line (if there are negative values)
     if cumulative_percentage.min() < 0:
         ax1.axhline(0, color='black', linestyle='-', linewidth=2.0, alpha=0.8, zorder=2)
 
@@ -260,19 +260,19 @@ def plot_cumulative_contribution(data, outdir):
     ax1.grid(alpha=0.3, linestyle='--', linewidth=0.8)
     ax1.set_xlim(-0.5, len(sorted_layers) - 0.5)
 
-    # 动态设置y轴范围，支持负值数据
+    # Dynamically set y-axis range, supporting negative values
     y_min_sorted = min(cumulative_percentage.min(), 0)
     y_max_sorted = max(cumulative_percentage.max(), 105)
-    # 为正负值都添加边距
+    # Add margin for both positive and negative values
     y_min_margin = y_min_sorted * 1.1 if y_min_sorted < 0 else y_min_sorted - abs(y_max_sorted) * 0.05
     y_max_margin = y_max_sorted * 1.05
     ax1.set_ylim(y_min_margin, y_max_margin)
 
-    # 美化边框
+    # Beautify borders
     for spine in ax1.spines.values():
         spine.set_linewidth(1.3)
 
-    # 添加统计信息文本框（放在右中部，避免与曲线重叠）
+    # Add statistics info box (placed in right-center to avoid curve overlap)
     if threshold_layers:
         textstr = 'Key Milestones:\n'
         for threshold, n_layers, critical_layer in threshold_layers:
@@ -282,14 +282,14 @@ def plot_cumulative_contribution(data, outdir):
         textstr = f'Early layers (0-{early_layers_end}): {early_contrib_pct:.1f}%'
 
     props = dict(boxstyle='round', facecolor='wheat', alpha=0.85, edgecolor='gray', linewidth=1.5)
-    # 根据层数动态调整文本框位置（层数多时放在右下角，层数少时放在右中部）
+    # Dynamically adjust text box position based on number of layers (bottom-right for many layers, center-right for fewer)
     text_y_pos = 0.25 if len(sorted_layers) > 30 else 0.45
     ax1.text(0.98, text_y_pos, textstr, transform=ax1.transAxes, fontsize=10,
             verticalalignment='center', horizontalalignment='right', bbox=props, fontweight='bold')
 
     plt.tight_layout()
 
-    # 保存图1
+    # Save Plot 1
     outfile1_png = outdir / f'{model}_cumulative_contribution_sorted.png'
     outfile1_pdf = outdir / f'{model}_cumulative_contribution_sorted.pdf'
     fig1.savefig(outfile1_png, dpi=400, bbox_inches='tight')
@@ -297,7 +297,7 @@ def plot_cumulative_contribution(data, outdir):
     plt.close(fig1)
     print(f"✅ Generated: {outfile1_png.name}")
 
-    # ========== 图2：按层序列顺序的累积曲线 ==========
+    # ========== Plot 2: Cumulative curve in layer sequence order ==========
     fig2, ax2 = plt.subplots(figsize=(10, 7), dpi=300)
 
     ax2.plot(layers, sequential_percentage, '-o',
@@ -305,12 +305,12 @@ def plot_cumulative_contribution(data, outdir):
             markerfacecolor='white', markeredgewidth=2.5,
             label='Sequential Cumulative', zorder=3)
 
-    # 填充区域
+    # Fill area
     ax2.fill_between(layers, 0, sequential_percentage,
                     alpha=0.25, color='#3498db', hatch='\\\\\\',
                     edgecolor='#3498db', linewidth=1.0, zorder=1)
 
-    # 标注早期层（Layer 0-3）的累积贡献
+    # Mark early layers (Layer 0-3) cumulative contribution
     ax2.axvline(early_layers_end, color='#e74c3c', linestyle='--',
                linewidth=2.0, alpha=0.7, label=f'Layer 0-{early_layers_end}', zorder=2)
     ax2.axhline(early_contrib_pct, color='#e74c3c', linestyle=':',
@@ -318,14 +318,14 @@ def plot_cumulative_contribution(data, outdir):
     ax2.scatter([early_layers_end], [early_contrib_pct], s=200, color='#e74c3c',
                edgecolors='white', linewidth=2, zorder=4, marker='D')
 
-    # 根据层数和累积贡献值动态调整标注位置
-    # 如果early_contrib_pct接近或超过y轴上限，则向下偏移（放在点下方）
-    # 否则向上偏移（放在点上方）
+    # Dynamically adjust annotation position based on number of layers and cumulative contribution value
+    # If early_contrib_pct is near or exceeds y-axis upper limit, shift downward (place below point)
+    # Otherwise shift upward (place above point)
     text_fontsize = 10 if len(layers) > 30 else 11
-    if early_contrib_pct > 180:  # 贡献值很高，标注放在下方
+    if early_contrib_pct > 180:  # Very high contribution, place annotation below
         text_offset_y = -15
         va_align = 'top'
-    else:  # 正常情况，标注放在上方
+    else:  # Normal case, place annotation above
         text_offset_y = 8 if len(layers) > 30 else 3
         va_align = 'bottom'
 
@@ -335,7 +335,7 @@ def plot_cumulative_contribution(data, outdir):
             ha='center', va=va_align, bbox=dict(boxstyle='round,pad=0.5',
                                   facecolor='yellow', alpha=0.8, edgecolor='#e74c3c'))
 
-    # 添加0轴参考线
+    # Add zero-axis reference line
     ax2.axhline(0, color='black', linestyle='-', linewidth=1.5, alpha=0.5)
 
     ax2.set_xlabel('Layer Index (Sequential)', fontsize=14, fontweight='bold')
@@ -344,19 +344,19 @@ def plot_cumulative_contribution(data, outdir):
               edgecolor='gray', fancybox=True, shadow=True)
     ax2.grid(alpha=0.3, linestyle='--', linewidth=0.8)
 
-    # 调整x轴范围
+    # Adjust x-axis range
     x_min = layers.min()
     x_max = layers.max()
     x_range = x_max - x_min
     ax2.set_xlim(x_min - x_range * 0.05, x_max + x_range * 0.05)
 
-    # 美化边框
+    # Beautify borders
     for spine in ax2.spines.values():
         spine.set_linewidth(1.3)
 
     plt.tight_layout()
 
-    # 保存图2
+    # Save Plot 2
     outfile2_png = outdir / f'{model}_cumulative_contribution_sequential.png'
     outfile2_pdf = outdir / f'{model}_cumulative_contribution_sequential.pdf'
     fig2.savefig(outfile2_png, dpi=400, bbox_inches='tight')
@@ -364,7 +364,7 @@ def plot_cumulative_contribution(data, outdir):
     plt.close(fig2)
     print(f"✅ Generated: {outfile2_png.name}")
 
-    # 返回关键统计信息
+    # Return key statistics
     return {
         'threshold_50_layers': threshold_layers[0][1] if len(threshold_layers) > 0 else None,
         'threshold_70_layers': threshold_layers[1][1] if len(threshold_layers) > 1 else None,
@@ -375,10 +375,10 @@ def plot_cumulative_contribution(data, outdir):
 
 def plot_suppression_effect(data, outdir):
     """
-    生成抑制/促进作用对比图
-    - 横坐标：层索引
-    - 纵坐标：抑制/促进效果（相对于baseline最终值的变化）
-    - 0轴居中，正值=促进，负值=抑制
+    Generate suppression/promotion effect comparison plot
+    - X-axis: Layer index
+    - Y-axis: Suppression/promotion effect (change relative to baseline final value)
+    - Zero-axis centered, positive=promotion, negative=suppression
     """
     from scipy.interpolate import make_interp_spline
 
@@ -387,104 +387,104 @@ def plot_suppression_effect(data, outdir):
     disabled_values = data['disabled_values']
     baseline_values = data['baseline_values']
 
-    # 确定baseline最终值（取倒数第二层，因为最后一层可能是输出层）
-    # 过滤掉异常值（最后一层如果太小则不使用）
+    # Determine baseline final value (use second-to-last layer as last layer might be output layer)
+    # Filter out outliers (don't use last layer if it's too small)
     valid_baseline_values = baseline_values[:-1] if baseline_values[-1] < baseline_values[-2] * 0.5 else baseline_values
     baseline_final = valid_baseline_values.max()
 
-    # 计算每层的抑制/促进效果
+    # Calculate suppression/promotion effect of each layer
     # effect = baseline_final - disabled_value
-    # 正值：禁用该层后MA下降，说明该层有促进作用
-    # 负值：禁用该层后MA上升，说明该层有抑制作用
+    # Positive: MA decreases after disabling layer, indicating layer has promotion effect
+    # Negative: MA increases after disabling layer, indicating layer has suppression effect
     effects = baseline_final - disabled_values
 
     fig, ax = plt.subplots(figsize=(14, 8), dpi=300)
 
-    # 创建平滑曲线
+    # Create smooth curve
     if len(layers) > 3:
         layers_smooth = np.linspace(layers.min(), layers.max(), 300)
         try:
-            # 检查是否有无效值
+            # Check for invalid values
             if np.any(~np.isfinite(effects)):
-                print(f"⚠️  Warning: effects contains non-finite values, skipping interpolation")
+                print(f"Warning: effects contains non-finite values, skipping interpolation")
                 layers_smooth = layers
                 effects_smooth = effects
             else:
                 spl_effects = make_interp_spline(layers, effects, k=3)
                 effects_smooth = spl_effects(layers_smooth)
-                # 验证插值结果
+                # Verify interpolation result
                 if np.any(~np.isfinite(effects_smooth)):
-                    print(f"⚠️  Warning: interpolation produced non-finite values, using original data")
+                    print(f"Warning: interpolation produced non-finite values, using original data")
                     layers_smooth = layers
                     effects_smooth = effects
         except Exception as e:
-            print(f"⚠️  Warning: interpolation failed ({e}), using original data")
+            print(f"Warning: interpolation failed ({e}), using original data")
             layers_smooth = layers
             effects_smooth = effects
     else:
         layers_smooth = layers
         effects_smooth = effects
 
-    # 绘制主曲线
+    # Plot main curve
     ax.plot(layers_smooth, effects_smooth, '-', color='#3498db',
            linewidth=3.5, label='Suppression/Promotion Effect', alpha=0.95, zorder=3)
 
-    # 在原始数据点上添加标记
+    # Add markers on original data points
     colors = ['#2ecc71' if e > 0 else '#e74c3c' for e in effects]
     ax.scatter(layers, effects, s=120, c=colors,
               edgecolors='white', linewidth=2.0, zorder=4, alpha=0.95)
 
-    # 绘制0轴参考线
+    # Plot zero-axis reference line
     ax.axhline(0, color='black', linestyle='-', linewidth=2.0, alpha=0.8, zorder=2)
 
-    # 填充正负区域（带斜线纹理）
-    # 促进区域（正值，绿色）
+    # Fill positive/negative regions (with diagonal hatching)
+    # Promotion region (positive, green)
     ax.fill_between(layers_smooth, 0, effects_smooth,
                     where=(effects_smooth > 0),
                     color='#2ecc71', alpha=0.25, hatch='///',
                     edgecolor='#2ecc71', linewidth=1.0,
                     label='Promotion (Layer contributes to MA)', zorder=1)
 
-    # 抑制区域（负值，红色）
+    # Suppression region (negative, red)
     ax.fill_between(layers_smooth, 0, effects_smooth,
                     where=(effects_smooth <= 0),
                     color='#e74c3c', alpha=0.25, hatch='\\\\\\',
                     edgecolor='#e74c3c', linewidth=1.0,
                     label='Suppression (Layer inhibits MA)', zorder=1)
 
-    # 调整y轴范围，根据实际数据范围设置（不强制对称）
+    # Adjust y-axis range based on actual data range (not enforcing symmetry)
     y_min_data = effects.min()
     y_max_data = effects.max()
     y_range = y_max_data - y_min_data
-    # 添加30%边距，确保所有数据点完全在图内且有充足空间
+    # Add 30% margin to ensure all data points are fully within plot with ample space
     y_margin = y_range * 0.30
     ax.set_ylim(y_min_data - y_margin, y_max_data + y_margin)
 
-    # 调整x轴范围
+    # Adjust x-axis range
     x_min = layers.min()
     x_max = layers.max()
     x_range = x_max - x_min
     ax.set_xlim(x_min - x_range * 0.05, x_max + x_range * 0.05)
 
-    # 添加网格，突出0轴
+    # Add grid, emphasize zero-axis
     ax.grid(axis='y', alpha=0.3, linestyle='--', linewidth=0.8)
     ax.grid(axis='x', alpha=0.2, linestyle=':', linewidth=0.6)
 
-    # 标签
+    # Labels
     ax.set_xlabel('Layer Index', fontsize=15, fontweight='bold')
     ax.set_ylabel('Effect on MA (Baseline - Disabled)', fontsize=15, fontweight='bold')
 
-    # 图例
+    # Legend
     ax.legend(loc='best', framealpha=0.95, fontsize=12,
              edgecolor='gray', fancybox=True, shadow=True)
 
-    # 美化边框
+    # Beautify borders
     ax.spines['top'].set_visible(True)
     ax.spines['right'].set_visible(True)
     for spine in ax.spines.values():
         spine.set_linewidth(1.3)
 
-    # 统计信息文本框已移除（用户要求）
+    # Statistics info box removed (per user request)
     # n_promotion = (effects > 0).sum()
     # n_suppression = (effects <= 0).sum()
     # avg_promotion = effects[effects > 0].mean() if n_promotion > 0 else 0
@@ -501,7 +501,7 @@ def plot_suppression_effect(data, outdir):
 
     plt.tight_layout()
 
-    # 保存
+    # Save
     outfile_png = outdir / f'{model}_exp2_suppression_effect.png'
     outfile_pdf = outdir / f'{model}_exp2_suppression_effect.pdf'
     fig.savefig(outfile_png, dpi=400, bbox_inches='tight')
@@ -512,7 +512,7 @@ def plot_suppression_effect(data, outdir):
 
 
 def plot_2d_comparison(data, outdir):
-    """生成传统2D对比图（优化版）"""
+    """Generate traditional 2D comparison plot (optimized version)"""
     from scipy.interpolate import make_interp_spline
 
     model = data['model']
@@ -522,35 +522,35 @@ def plot_2d_comparison(data, outdir):
 
     fig, ax = plt.subplots(figsize=(12, 7), dpi=300)
 
-    # 创建平滑曲线（使用样条插值）
+    # Create smooth curves (using spline interpolation)
     if len(layers) > 3:
-        # 生成更多的点用于平滑
+        # Generate more points for smoothing
         layers_smooth = np.linspace(layers.min(), layers.max(), 300)
 
         try:
-            # 检查数据有效性
+            # Check data validity
             if np.any(~np.isfinite(disabled_values)) or np.any(~np.isfinite(baseline_values)):
-                print(f"⚠️  Warning: data contains non-finite values, skipping interpolation")
+                print(f"Warning: data contains non-finite values, skipping interpolation")
                 layers_smooth = layers
                 disabled_smooth = disabled_values
                 baseline_smooth = baseline_values
             else:
-                # 平滑禁用值曲线
+                # Smooth disabled values curve
                 spl_disabled = make_interp_spline(layers, disabled_values, k=3)
                 disabled_smooth = spl_disabled(layers_smooth)
 
-                # 平滑baseline曲线
+                # Smooth baseline curve
                 spl_baseline = make_interp_spline(layers, baseline_values, k=3)
                 baseline_smooth = spl_baseline(layers_smooth)
 
-                # 验证结果
+                # Verify results
                 if np.any(~np.isfinite(disabled_smooth)) or np.any(~np.isfinite(baseline_smooth)):
-                    print(f"⚠️  Warning: interpolation produced non-finite values, using original data")
+                    print(f"Warning: interpolation produced non-finite values, using original data")
                     layers_smooth = layers
                     disabled_smooth = disabled_values
                     baseline_smooth = baseline_values
         except Exception as e:
-            print(f"⚠️  Warning: interpolation failed ({e}), using original data")
+            print(f"Warning: interpolation failed ({e}), using original data")
             layers_smooth = layers
             disabled_smooth = disabled_values
             baseline_smooth = baseline_values
@@ -559,23 +559,23 @@ def plot_2d_comparison(data, outdir):
         disabled_smooth = disabled_values
         baseline_smooth = baseline_values
 
-    # 绘制baseline曲线（每层正常工作时的MA值，显示逐层累积过程）
+    # Plot baseline curve (MA value for each layer during normal operation, showing layer-by-layer accumulation)
     ax.plot(layers_smooth, baseline_smooth, '-', color='#2ecc71',
            linewidth=3.0, label='Baseline (All MLP Active)', alpha=0.95, zorder=2)
 
-    # 在baseline原始数据点上添加标记
+    # Add markers on baseline original data points
     ax.scatter(layers, baseline_values, s=80, color='#2ecc71',
               edgecolors='white', linewidth=1.5, zorder=3, alpha=0.9)
 
-    # 绘制禁用值曲线（禁用某层后的最终MA值）
+    # Plot disabled values curve (final MA value after disabling a layer)
     ax.plot(layers_smooth, disabled_smooth, '-', color='#e74c3c',
            linewidth=3.0, label='Layer Disabled (Final MA)', alpha=0.95, zorder=2)
 
-    # 在禁用值原始数据点上添加标记
+    # Add markers on disabled values original data points
     ax.scatter(layers, disabled_values, s=80, color='#e74c3c',
               edgecolors='white', linewidth=1.5, zorder=3, alpha=0.9)
 
-    # 填充区域表示差异（添加斜线纹理，增强可见性）
+    # Fill area to show difference (add diagonal hatching to enhance visibility)
     ax.fill_between(layers_smooth, baseline_smooth, disabled_smooth,
                     where=(disabled_smooth > baseline_smooth),
                     color='#e74c3c', alpha=0.25, hatch='///',
@@ -587,16 +587,16 @@ def plot_2d_comparison(data, outdir):
                     color='#2ecc71', alpha=0.25, hatch='\\\\\\',
                     edgecolor='#2ecc71', linewidth=1.0, zorder=0)
 
-    # 调整y轴范围，确保所有数据点和线条完整显示
+    # Adjust y-axis range to ensure all data points and curves are fully displayed
     all_values = np.concatenate([disabled_values, baseline_values, disabled_smooth, baseline_smooth])
     y_min = all_values.min()
     y_max = all_values.max()
     y_range = y_max - y_min
 
-    # 增加上下边距，确保曲线完全在画面内
+    # Increase top and bottom margins to ensure curves are completely within frame
     ax.set_ylim(y_min - y_range * 0.15, y_max + y_range * 0.15)
 
-    # 调整x轴范围，确保所有点完整显示
+    # Adjust x-axis range to ensure all points are fully displayed
     x_min = layers.min()
     x_max = layers.max()
     x_range = x_max - x_min
@@ -608,7 +608,7 @@ def plot_2d_comparison(data, outdir):
              edgecolor='gray', fancybox=True, shadow=True)
     ax.grid(alpha=0.25, linestyle='-', linewidth=0.5)
 
-    # 美化边框
+    # Beautify borders
     ax.spines['top'].set_visible(True)
     ax.spines['right'].set_visible(True)
     for spine in ax.spines.values():
@@ -626,33 +626,33 @@ def plot_2d_comparison(data, outdir):
 
 
 def process_model(model_name, base_results_dir, base_output_dir, enable_3d=True, style_3d='both'):
-    """处理单个模型，生成对比图"""
+    """Process a single model and generate comparison plots"""
     print(f"\n{'='*60}")
     print(f"Processing: {model_name}")
     print(f"{'='*60}")
 
-    # 创建输出目录
+    # Create output directory
     outdir = Path(base_output_dir) / 'exp2_figures' / model_name
     outdir.mkdir(parents=True, exist_ok=True)
 
     try:
-        # 加载数据
+        # Load data
         data = load_exp2_data(model_name, base_results_dir)
 
-        # 生成累积贡献曲线图
+        # Generate cumulative contribution curves
         cumulative_stats = plot_cumulative_contribution(data, outdir)
 
-        # 生成抑制/促进效果图
+        # Generate suppression/promotion effect plot
         plot_suppression_effect(data, outdir)
 
-        # 生成2D对比图
+        # Generate 2D comparison plot
         plot_2d_comparison(data, outdir)
 
-        # 生成3D图（可选）
+        # Generate 3D plot (optional)
         if enable_3d:
             plot_3d_comparison_surface(data, outdir, style=style_3d)
 
-        # 打印累积贡献统计
+        # Print cumulative contribution statistics
         if cumulative_stats:
             print(f"   📊 50% contribution: Top {cumulative_stats['threshold_50_layers']} layers")
             print(f"   📊 Early layers (0-3): {cumulative_stats['early_layers_contribution']:.1f}%")
@@ -679,7 +679,7 @@ def main():
                        help='3D plot style: surface, scatter, or both')
     args = parser.parse_args()
 
-    # 配置
+    # Configuration
     BASE_RESULTS_DIR = 'results/models'
     BASE_OUTPUT_DIR = 'results/plot_results'
 
@@ -694,7 +694,7 @@ def main():
         'llama2_13b',
     ]
 
-    # 确定要处理的模型
+    # Determine models to process
     if args.model:
         MODELS = [args.model]
         print(f"\n🎯 Mode: Single model ({args.model})")

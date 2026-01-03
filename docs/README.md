@@ -1,52 +1,62 @@
 # Documentation Index
 
-This directory contains all project documentation organized by topic.
+This directory contains project documentation for the Massive Activation research.
 
 ## Directory Structure
 
-### `/reports/` - Research Reports and Analysis
-Detailed experimental reports and analysis organized by category:
+### `/reports/` - Research Reports
 
-- **`attribution_experiments/`** - Attribution mechanism experiments (Exp7, Exp8)
-- **`exp5/`** - UV interaction and SVD mapping experiments
-- **`exp6/`** - V matrix ablation experiments
-- **`model_analysis/`** - Model-specific analysis reports (LLaMA2-13B, OPT-6.7B)
-- **`project_status/`** - Project status reports and cleanup summaries
-- **`archive/`** - Archived documentation
+- **`model_analysis/`** - Model-specific analysis
+  - `OPT_6.7B_MECHANISM_ANALYSIS.md` - Detailed analysis of OPT-6.7B architecture
 
-#### Core Summary Reports (in `/reports/` root)
-- `EXPERIMENTS_SYSTEMATIC_OVERVIEW.md` - Overview of all experiments
-- `FINAL_REPORT.md` - Final project report
-- `MA_ORIGIN_ANALYSIS_TABLE.md` - MA origin analysis across models
-- `RESULTS_SUMMARY.md` - Summary of experimental results
-
-### `/guides/` - User Guides and Instructions
-- `INSTALL.md` - Installation instructions
-- `exp5_*.md` - Experiment 5 detailed guides and derivations
+- **`README_STRUCTURED.md`** - Structured overview of all reports
 
 ## Quick Links
 
-### For New Contributors
-1. Start with: `EXPERIMENTS_SYSTEMATIC_OVERVIEW.md`
-2. Read: `FINAL_REPORT.md` for overall findings
-3. See: Project root `README.md` for setup
+### For New Users
+1. Start with the main project **[README.md](../README.md)** in the repository root
+2. Review **[Experiment Guide](../experiments/README.md)** for experimental protocols
+3. Check **[Script Documentation](../scripts/README.md)** for visualization tools
 
 ### For Researchers
-- **Experiment Results**: `/reports/` subdirectories
-- **Model Analysis**: `/reports/model_analysis/`
-- **Methodology**: Individual experiment guides in `/guides/`
+- **Experimental Results**: See `results/experiments/` directory in repository root
+- **Model Analysis**: `reports/model_analysis/OPT_6.7B_MECHANISM_ANALYSIS.md`
+- **Methodology**: Detailed in main README and paper
 
 ### For Developers
-- **Setup**: `/guides/INSTALL.md`
-- **Code Structure**: Project root `README.md`
+- **Installation**: See main README.md for setup instructions
+- **Code Structure**: Repository follows standard Python package structure
+  - `lib/` - Core library (model loading, data processing, utilities)
+  - `experiments/` - Experiment implementations (exp1-exp8)
+  - `scripts/` - Visualization and analysis scripts
+  - `results/` - Experimental data and figures
 
-## Document Naming Convention
+## Key Findings
 
-- `*_REPORT.md` - Detailed experimental reports
-- `*_SUMMARY.md` - Concise summaries
-- `*_ANALYSIS.md` - In-depth analysis documents
-- `*_GUIDE.md` - How-to guides and instructions
+All experimental findings are summarized in the main **[README.md](../README.md)**, organized around 5 research questions (RQ1-RQ5):
+
+1. **RQ1**: Attention mechanisms as regulators (not generators)
+2. **RQ2**: MLP layers as physical source of MA
+3. **RQ3**: Function words as primary triggers
+4. **RQ4**: SVD geometric amplification mechanism
+5. **RQ5**: V-matrix causal necessity
+
+## Data Organization
+
+Experimental data is stored in `results/` directory:
+
+```
+results/
+├── experiments/          # Organized by experiment (exp1-exp8)
+│   ├── exp1/ exp2/ exp3/ exp4/ exp4b/
+│   ├── exp6/ exp7/ exp8/
+│   └── Each contains JSON results for all models
+├── plot_results/         # Generated figures
+└── archive/              # Archived data
+```
 
 ---
 
-Last Updated: 2025-12-29
+**Last Updated**: 2026-01-03
+**Project**: Investigating Massive Activations in Large Language Models
+**Repository**: https://github.com/Ludan-daye/changeHead_massvieAcitve

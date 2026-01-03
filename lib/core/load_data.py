@@ -9,9 +9,9 @@ def set_seed(seed):
 
 def get_data(tokenizer, nsamples=50, seqlen=2048, device=None):
     # Use wikitext as a fallback since RedPajama dataset has compatibility issues
-    # 获取tokenizer的最大长度限制
+    # Get the tokenizer's maximum length limit
     max_length = getattr(tokenizer, 'model_max_length', 131072)
-    if max_length > 1000000:  # 如果是默认的超大值，使用131072
+    if max_length > 1000000:  # If it's a default very large value, use 131072
         max_length = 131072
 
     try:
@@ -26,7 +26,7 @@ def get_data(tokenizer, nsamples=50, seqlen=2048, device=None):
     except Exception as e:
         print(f"Failed to load RedPajama dataset ({e}), using wikitext instead")
         valdata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='train')
-        # 使用truncation限制token长度而不是减少文本
+        # Use truncation to limit token length instead of reducing text
         testenc = tokenizer("\n\n".join(valdata['text']), return_tensors='pt', add_special_tokens=False,
                            truncation=True, max_length=max_length).input_ids
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Experiment 2: Single-Layer Restoration
-实验二：单层恢复 - 找出哪些层的注意力头对大规模激活贡献最大
+Experiment 2: Single-layer restoration - Identify which layers' attention heads contribute most to massive activations
 
-基于实验一的结果，我们知道禁用所有注意力头会显著降低激活值。
-现在我们逐层恢复注意力头，找出关键层。
+Based on Experiment 1 results, we know that disabling all attention heads significantly reduces activation values.
+Now we restore attention heads layer by layer to identify critical layers.
 """
 
 import os
@@ -27,14 +27,14 @@ class SelectiveHeadDisableHook:
     def __init__(self, layer_id, num_heads, target_layer_id):
         self.layer_id = layer_id
         self.num_heads = num_heads
-        self.target_layer_id = target_layer_id  # 只有这一层的头会被启用
+        self.target_layer_id = target_layer_id  # Only this layer's heads will be enabled
 
     def __call__(self, module, input, output):
-        # 如果是目标层，不做任何修改（保持头启用）
+        # If this is the target layer, don't modify (keep heads enabled)
         if self.layer_id == self.target_layer_id:
             return output
-        
-        # 否则禁用所有头
+
+        # Otherwise disable all heads
         attn_output = output[0]
         batch_size, seq_len, hidden_dim = attn_output.shape
         head_dim = hidden_dim // self.num_heads
@@ -45,7 +45,7 @@ class SelectiveHeadDisableHook:
 
 
 def run_single_layer_experiment(args, restore_layer_id):
-    """运行单层恢复实验：禁用所有层的头，只恢复指定层"""
+    """Run single-layer restoration experiment: disable all layers' heads, restore only the specified layer"""
     
     # Load model
     model, tokenizer, device, layers, hidden_size, seq_len = lib.load_llm(args)
@@ -194,7 +194,7 @@ def main():
     
     recovery_rates = {}
     for restore_layer in range(args.start_layer, args.end_layer + 1):
-        # 计算该层自身的恢复率
+        # Calculate this layer's own recovery rate
         results = all_results[restore_layer]
         top1 = results[restore_layer]['top1_mean']
         baseline_top1 = float(baseline_results[str(restore_layer)]['top1_mean'])

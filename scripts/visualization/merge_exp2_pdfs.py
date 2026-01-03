@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-合并Exp2的PDF图为一个大图
-使用PyMuPDF读取PDF并转换为图像
-布局：2行 × 4列
+Merge Exp2 PDF figures into one large figure
+Use PyMuPDF to read PDF and convert to images
+Layout: 2 rows × 4 columns
 """
 
 import fitz  # PyMuPDF
@@ -12,11 +12,11 @@ import io
 from pathlib import Path
 import numpy as np
 
-# 配置
+# Configuration
 FIGURES_DIR = Path('PROJECT_ROOT/results/plot_results/exp2_figures')
 OUTPUT_DIR = FIGURES_DIR
 
-# 模型配置（按特定顺序排列）
+# Model configuration (arranged in specific order)
 MODEL_CONFIGS = [
     {'key': 'gpt2', 'display': 'GPT-2'},
     {'key': 'gptj_6b', 'display': 'GPT-J-6B'},
@@ -28,19 +28,19 @@ MODEL_CONFIGS = [
 ]
 
 def pdf_to_image(pdf_path, dpi=150):
-    """将PDF的第一页转换为PIL Image"""
+    """Convert first page of PDF to PIL Image"""
     try:
         doc = fitz.open(str(pdf_path))
-        page = doc[0]  # 获取第一页
+        page = doc[0]  # Get first page
 
-        # 设置缩放以获得更高分辨率
-        zoom = dpi / 72  # 默认72 DPI
+        # Set zoom to get higher resolution
+        zoom = dpi / 72  # Default 72 DPI
         mat = fitz.Matrix(zoom, zoom)
 
-        # 渲染页面为图像
+        # Render page as image
         pix = page.get_pixmap(matrix=mat)
 
-        # 转换为PIL Image
+        # Convert to PIL Image
         img_data = pix.tobytes("png")
         img = Image.open(io.BytesIO(img_data))
 
@@ -51,19 +51,19 @@ def pdf_to_image(pdf_path, dpi=150):
         return None
 
 def create_combined_figure():
-    """合并PDF图为大图"""
+    """Merge PDF figures into large figure"""
 
-    # 创建2行4列的子图
+    # Create 2 rows × 4 columns subplots
     fig, axes = plt.subplots(2, 4, figsize=(24, 12))
     axes = axes.flatten()
 
-    # 为每个模型加载并显示PDF
+    # Load and display PDF for each model
     for idx, model_config in enumerate(MODEL_CONFIGS):
         ax = axes[idx]
         model_key = model_config['key']
         model_display = model_config['display']
 
-        # 查找对应的PDF文件
+        # Find corresponding PDF file
         pdf_file = FIGURES_DIR / model_key / f"{model_key}_exp2_2d_comparison.pdf"
 
         if not pdf_file.exists():
@@ -74,7 +74,7 @@ def create_combined_figure():
             ax.axis('off')
             continue
 
-        # 读取PDF并转换为图像
+        # Read PDF and convert to image
         img = pdf_to_image(pdf_file, dpi=150)
 
         if img is None:
@@ -83,11 +83,11 @@ def create_combined_figure():
             ax.axis('off')
             continue
 
-        # 显示图片
+        # Display image
         ax.imshow(img)
         ax.axis('off')
 
-        # 添加边框
+        # Add borders
         for spine in ax.spines.values():
             spine.set_visible(True)
             spine.set_edgecolor('black')
@@ -95,11 +95,11 @@ def create_combined_figure():
 
         print(f"✓ Loaded {model_display}")
 
-    # 最后一个子图添加说明
+    # Add description to last subplot
     ax = axes[7]
     ax.axis('off')
 
-    # 添加图例说明
+    # Add legend description
     legend_text = """
     Exp2 Analysis Summary
 
@@ -121,15 +121,15 @@ def create_combined_figure():
                     edgecolor='#4682b4', linewidth=2.5),
            family='monospace')
 
-    # 调整布局
+    # Adjust layout
     plt.subplots_adjust(left=0.02, right=0.98, top=0.94, bottom=0.08,
                        hspace=0.2, wspace=0.1)
 
-    # 添加总标题
+    # Add main title
     fig.suptitle('Exp2: MLP Layer-wise Ablation Analysis - 2D Heatmap Comparison',
                 fontsize=24, fontweight='bold', y=0.97)
 
-    # 添加底部说明
+    # Add bottom description
     caption = ('Figure: Layer-wise ablation heatmaps for 7 LLM architectures. '
               'Each subplot shows the Massive Activation (MA) values when individual MLP layers are ablated. '
               'Darker/cooler colors indicate larger MA suppression.')
@@ -139,7 +139,7 @@ def create_combined_figure():
             bbox=dict(boxstyle='round,pad=0.8', facecolor='lightyellow',
                      alpha=0.9, edgecolor='gray'))
 
-    # 保存
+    # Save
     output_file_png = OUTPUT_DIR / 'exp2_combined_all_models_final.png'
     output_file_pdf = OUTPUT_DIR / 'exp2_combined_all_models_final.pdf'
 

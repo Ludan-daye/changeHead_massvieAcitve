@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-实验5: U×V交互归因分析
-测试MA生成是U和V独立贡献还是需要协同作用
+Experiment 5: U x V Interaction Attribution Analysis
+Test whether MA generation is independent contribution from U and V or requires synergy
 
-存储格式遵循exp2b标准:
-- baseline.json: 原始模型
-- ablate_u.json: 消融U (U_random @ Σ @ Vᵀ)
-- ablate_v.json: 消融V (U @ Σ @ V_random)
-- ablate_both.json: 同时消融 (U_random @ Σ @ V_random)
-- summary.json: 归因百分比汇总
+Storage format follows exp2b standard:
+- baseline.json: Original model
+- ablate_u.json: Ablate U (U_random @ Sigma @ V^T)
+- ablate_v.json: Ablate V (U @ Sigma @ V_random)
+- ablate_both.json: Ablate both (U_random @ Sigma @ V_random)
+- summary.json: Attribution percentage summary
 """
 
 import os
@@ -31,34 +31,34 @@ import lib
 
 def compute_top1_massive_activation_percentage(model, tokenizer, device, layer_id, seq_len=2048, nsamples=1, seed=42):
     """
-    计算Top1 Massive Activation值
-    基于exp3的run_and_collect_ma逻辑
+    Calculate Top1 Massive Activation value
+    Based on exp3's run_and_collect_ma logic
 
     Args:
-        layer_id: 要监测的层ID
+        layer_id: Layer ID to monitor
     """
     import random
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
 
-    # 获取测试数据
+    # Get test data
     testseq_list = lib.get_data(tokenizer, nsamples=nsamples, seqlen=min(seq_len, 2048), device=device)
     if not isinstance(testseq_list, list):
         testseq_list = [testseq_list]
 
-    # 收集所有样本的MA
+    # Collect MA from all samples
     all_top1 = []
 
     for testseq in testseq_list:
-        # Hook收集指定层的MLP输出
+        # Hook to collect MLP output from specified layer
         capture = {'mlp': None}
 
         def hook_mlp(m, inp, out):
             out0 = out[0] if isinstance(out, (tuple, list)) else out
             capture['mlp'] = out0.detach().float().abs().max().item()
 
-        # 获取layers
+        # Get layers
         if hasattr(model, 'transformer'):
             layers = model.transformer.h
         elif hasattr(model, 'model') and hasattr(model.model, 'layers'):
@@ -66,13 +66,13 @@ def compute_top1_massive_activation_percentage(model, tokenizer, device, layer_i
         elif hasattr(model, 'gpt_neox'):
             layers = model.gpt_neox.layers
         else:
-            # 无法获取layers，返回默认值
+            # Cannot get layers, return default value
             return 8000.0
 
-        # 使用指定的层
+        # Use specified layer
         layer = layers[layer_id]
 
-        # 获取MLP输出模块
+        # Get MLP output module
         mlp_mod = None
         if hasattr(layer, 'mlp'):
             if hasattr(layer.mlp, 'down_proj'):
@@ -85,7 +85,7 @@ def compute_top1_massive_activation_percentage(model, tokenizer, device, layer_i
                 mlp_mod = layer.mlp.dense_4h_to_h
 
         if mlp_mod is None:
-            # 如果无法找到MLP模块，返回默认值
+            # If cannot find MLP module, return default value
             all_top1.append(8000.0)
             continue
 
@@ -96,24 +96,24 @@ def compute_top1_massive_activation_percentage(model, tokenizer, device, layer_i
 
         handle.remove()
 
-        # 收集MA
+        # Collect MA
         if capture['mlp'] is not None:
             all_top1.append(capture['mlp'])
         else:
             all_top1.append(8000.0)
 
-    # 返回平均值
+    # Return average
     return float(np.mean(all_top1))
 
 def create_random_orthogonal(shape, device='cpu'):
-    """创建随机正交矩阵"""
+    """Create random orthogonal matrix"""
     random_matrix = torch.randn(shape, device=device, dtype=torch.float32)
     Q, _ = torch.linalg.qr(random_matrix)
     return Q
 
 
 def get_mlp_layer(model, layer_id, model_type):
-    """获取指定层的MLP模块"""
+    """Get MLP module of specified layer"""
     if hasattr(model, 'transformer'):
         return model.transformer.h[layer_id]
     elif hasattr(model, 'model'):
@@ -127,7 +127,7 @@ def get_mlp_layer(model, layer_id, model_type):
 
 
 def get_w2_weight(layer, model_type):
-    """获取W2权重矩阵（处理GPT-2的Conv1D转置）"""
+    """Get W2 weight matrix (handles GPT-2 Conv1D transpose)"""
     weight = None
     if hasattr(layer, 'mlp'):
         if hasattr(layer.mlp, 'down_proj'):
@@ -146,7 +146,7 @@ def get_w2_weight(layer, model_type):
 
 
 def set_w2_weight(layer, model_type, new_weight):
-    """设置W2权重矩阵（处理GPT-2的Conv1D转置）"""
+    """Set W2 weight matrix (handles GPT-2 Conv1D transpose)"""
     if hasattr(layer, 'mlp'):
         if hasattr(layer.mlp, 'down_proj'):
             layer.mlp.down_proj.weight.data = new_weight
@@ -164,36 +164,36 @@ def set_w2_weight(layer, model_type, new_weight):
 def run_intervention(model, tokenizer, device, layer_id, model_type,
                      seq_len, ablate_u=False, ablate_v=False, n_samples=5):
     """
-    运行干预实验
+    Run intervention experiment
 
     Args:
-        ablate_u: 是否用随机正交矩阵替换U
-        ablate_v: 是否用随机正交矩阵替换V
+        ablate_u: Whether to replace U with random orthogonal matrix
+        ablate_v: Whether to replace V with random orthogonal matrix
     """
     layer = get_mlp_layer(model, layer_id, model_type)
     original_weight = get_w2_weight(layer, model_type).detach().clone()
 
-    # SVD分解
+    # SVD decomposition
     W = original_weight.detach().cpu().float().numpy()
-    # GPT-2使用Conv1D，权重需要转置
+    # GPT-2 uses Conv1D, weight needs transpose
     if "gpt2" in model_type:
         W = W.T
     U, S, Vh = np.linalg.svd(W, full_matrices=False)
 
-    # 构建干预后的权重
+    # Build intervened weight
     if ablate_u and ablate_v:
-        # 同时消融
+        # Ablate both
         U_new = create_random_orthogonal(U.shape, device='cpu').numpy()
         V_new = create_random_orthogonal(Vh.T.shape, device='cpu').numpy().T
         W_new = U_new @ np.diag(S) @ V_new
         intervention_type = "ablate_both"
     elif ablate_u:
-        # 只消融U
+        # Ablate U only
         U_new = create_random_orthogonal(U.shape, device='cpu').numpy()
         W_new = U_new @ np.diag(S) @ Vh
         intervention_type = "ablate_u"
     elif ablate_v:
-        # 只消融V
+        # Ablate V only
         V_new = create_random_orthogonal(Vh.T.shape, device='cpu').numpy().T
         W_new = U @ np.diag(S) @ V_new
         intervention_type = "ablate_v"
@@ -202,14 +202,14 @@ def run_intervention(model, tokenizer, device, layer_id, model_type,
         W_new = W
         intervention_type = "baseline"
 
-    # 设置新权重
-    # GPT-2需要转置回Conv1D格式
+    # Set new weight
+    # GPT-2 needs transpose back to Conv1D format
     if "gpt2" in model_type:
         W_new = W_new.T
     new_weight_tensor = torch.from_numpy(W_new).to(device).to(original_weight.dtype)
     set_w2_weight(layer, model_type, new_weight_tensor)
 
-    # 运行评估
+    # Run evaluation
     results = {}
     for sample_id in range(n_samples):
         ma_pct = compute_top1_massive_activation_percentage(
@@ -222,10 +222,10 @@ def run_intervention(model, tokenizer, device, layer_id, model_type,
             "intervention": intervention_type
         }
 
-    # 恢复原始权重
+    # Restore original weight
     set_w2_weight(layer, model_type, original_weight)
 
-    # 计算统计
+    # Calculate statistics
     values = [results[str(i)]["mean"] for i in range(n_samples)]
     summary = {
         "mean": float(np.mean(values)),
@@ -240,27 +240,27 @@ def run_intervention(model, tokenizer, device, layer_id, model_type,
 
 def compute_attribution(baseline, ablate_u, ablate_v, ablate_both):
     """
-    计算归因百分比
+    Calculate attribution percentages
 
     MA = U_contribution + V_contribution + Interaction
 
-    U_only = baseline - ablate_v  (保留U，移除V)
-    V_only = baseline - ablate_u  (保留V，移除U)
+    U_only = baseline - ablate_v  (keep U, remove V)
+    V_only = baseline - ablate_u  (keep V, remove U)
     Interaction = baseline - U_only - V_only + ablate_both
     """
     baseline_val = baseline['mean']
 
-    # 主效应
-    u_main_effect = baseline_val - ablate_v['mean']  # V被破坏，看U的作用
-    v_main_effect = baseline_val - ablate_u['mean']  # U被破坏，看V的作用
+    # Main effects
+    u_main_effect = baseline_val - ablate_v['mean']  # V destroyed, see U's effect
+    v_main_effect = baseline_val - ablate_u['mean']  # U destroyed, see V's effect
 
-    # 交互效应
-    # 如果U和V完全独立: ablate_both ≈ baseline - U_main - V_main
-    # 交互项 = 实际差异
+    # Interaction effect
+    # If U and V completely independent: ablate_both approx baseline - U_main - V_main
+    # Interaction term = actual difference
     expected_both = baseline_val - u_main_effect - v_main_effect
     interaction = ablate_both['mean'] - expected_both
 
-    # 归因百分比（相对于baseline）
+    # Attribution percentages (relative to baseline)
     u_attribution = (u_main_effect / baseline_val) * 100 if baseline_val != 0 else 0
     v_attribution = (v_main_effect / baseline_val) * 100 if baseline_val != 0 else 0
     interaction_attribution = (interaction / baseline_val) * 100 if baseline_val != 0 else 0
@@ -282,9 +282,9 @@ def compute_attribution(baseline, ablate_u, ablate_v, ablate_both):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='实验5: U×V交互归因分析')
+    parser = argparse.ArgumentParser(description='Experiment 5: U x V Interaction Attribution Analysis')
     parser.add_argument('--model', type=str, required=True)
-    parser.add_argument('--layer', type=int, required=True, help='要分析的层')
+    parser.add_argument('--layer', type=int, required=True, help='Layer to analyze')
     parser.add_argument('--nsamples', type=int, default=5)
     parser.add_argument('--savedir', type=str, required=True)
     args = parser.parse_args()
@@ -292,29 +292,29 @@ def main():
     os.makedirs(args.savedir, exist_ok=True)
 
     print("="*80)
-    print("实验5: U×V交互归因分析")
+    print("Experiment 5: U x V Interaction Attribution Analysis")
     print("="*80)
-    print(f"模型: {args.model}")
-    print(f"关键层: {args.layer}")
-    print(f"样本数: {args.nsamples}")
-    print(f"保存目录: {args.savedir}")
+    print(f"Model: {args.model}")
+    print(f"Critical layer: {args.layer}")
+    print(f"Samples: {args.nsamples}")
+    print(f"Save directory: {args.savedir}")
     print("="*80)
 
-    # 加载模型
-    print("\n正在加载模型...")
+    # Load model
+    print("\nLoading model...")
     model, tokenizer, device, layers, hidden_size, seq_len = lib.load_llm(args)
-    print(f"✓ 模型加载完成")
+    print(f"Model loaded successfully")
 
-    # 运行四种条件
+    # Run four conditions
     print("\n" + "="*80)
-    print("1. Baseline (原始模型)")
+    print("1. Baseline (original model)")
     print("="*80)
     baseline_summary, baseline_results = run_intervention(
         model, tokenizer, device, args.layer, args.model,
         seq_len,
         ablate_u=False, ablate_v=False, n_samples=args.nsamples
     )
-    print(f"  MA平均: {baseline_summary['mean']:.2f}%")
+    print(f"  MA average: {baseline_summary['mean']:.2f}%")
 
     with open(os.path.join(args.savedir, 'baseline.json'), 'w') as f:
         json.dump({
@@ -328,14 +328,14 @@ def main():
         }, f, indent=2)
 
     print("\n" + "="*80)
-    print("2. 消融U矩阵 (U_random @ Σ @ Vᵀ)")
+    print("2. Ablate U matrix (U_random @ Sigma @ V^T)")
     print("="*80)
     ablate_u_summary, ablate_u_results = run_intervention(
         model, tokenizer, device, args.layer, args.model,
         seq_len,
         ablate_u=True, ablate_v=False, n_samples=args.nsamples
     )
-    print(f"  MA平均: {ablate_u_summary['mean']:.2f}% (变化: {ablate_u_summary['mean']-baseline_summary['mean']:.2f}%)")
+    print(f"  MA average: {ablate_u_summary['mean']:.2f}% (change: {ablate_u_summary['mean']-baseline_summary['mean']:.2f}%)")
 
     with open(os.path.join(args.savedir, 'ablate_u.json'), 'w') as f:
         json.dump({
@@ -349,14 +349,14 @@ def main():
         }, f, indent=2)
 
     print("\n" + "="*80)
-    print("3. 消融V矩阵 (U @ Σ @ V_random)")
+    print("3. Ablate V matrix (U @ Sigma @ V_random)")
     print("="*80)
     ablate_v_summary, ablate_v_results = run_intervention(
         model, tokenizer, device, args.layer, args.model,
         seq_len,
         ablate_u=False, ablate_v=True, n_samples=args.nsamples
     )
-    print(f"  MA平均: {ablate_v_summary['mean']:.2f}% (变化: {ablate_v_summary['mean']-baseline_summary['mean']:.2f}%)")
+    print(f"  MA average: {ablate_v_summary['mean']:.2f}% (change: {ablate_v_summary['mean']-baseline_summary['mean']:.2f}%)")
 
     with open(os.path.join(args.savedir, 'ablate_v.json'), 'w') as f:
         json.dump({
@@ -370,14 +370,14 @@ def main():
         }, f, indent=2)
 
     print("\n" + "="*80)
-    print("4. 同时消融U和V (U_random @ Σ @ V_random)")
+    print("4. Ablate both U and V (U_random @ Sigma @ V_random)")
     print("="*80)
     ablate_both_summary, ablate_both_results = run_intervention(
         model, tokenizer, device, args.layer, args.model,
         seq_len,
         ablate_u=True, ablate_v=True, n_samples=args.nsamples
     )
-    print(f"  MA平均: {ablate_both_summary['mean']:.2f}% (变化: {ablate_both_summary['mean']-baseline_summary['mean']:.2f}%)")
+    print(f"  MA average: {ablate_both_summary['mean']:.2f}% (change: {ablate_both_summary['mean']-baseline_summary['mean']:.2f}%)")
 
     with open(os.path.join(args.savedir, 'ablate_both.json'), 'w') as f:
         json.dump({
@@ -390,26 +390,26 @@ def main():
             'results': ablate_both_results
         }, f, indent=2)
 
-    # 计算归因
+    # Calculate attribution
     print("\n" + "="*80)
-    print("归因分析")
+    print("Attribution Analysis")
     print("="*80)
     attribution = compute_attribution(
         baseline_summary, ablate_u_summary, ablate_v_summary, ablate_both_summary
     )
 
-    print(f"\n基线MA: {attribution['baseline']:.2f}%")
-    print(f"\nU矩阵贡献: {attribution['u_attribution_pct']:.2f}%")
-    print(f"V矩阵贡献: {attribution['v_attribution_pct']:.2f}%")
-    print(f"交互效应: {attribution['interaction_pct']:.2f}%")
-    print(f"总解释率: {attribution['total_explained']:.2f}%")
-    print(f"\n机制类型: {attribution['interpretation']}")
+    print(f"\nBaseline MA: {attribution['baseline']:.2f}%")
+    print(f"\nU matrix contribution: {attribution['u_attribution_pct']:.2f}%")
+    print(f"V matrix contribution: {attribution['v_attribution_pct']:.2f}%")
+    print(f"Interaction effect: {attribution['interaction_pct']:.2f}%")
+    print(f"Total explained: {attribution['total_explained']:.2f}%")
+    print(f"\nMechanism type: {attribution['interpretation']}")
     if attribution['interpretation'] == 'independent':
-        print("  → U和V近似独立贡献 (SVD对齐型)")
+        print("  -> U and V approximately independent contribution (SVD-aligned)")
     else:
-        print("  → U和V需要协同作用 (多方向型)")
+        print("  -> U and V require synergy (multi-directional)")
 
-    # 保存汇总
+    # Save summary
     summary_data = {
         'model': args.model,
         'layer': args.layer,
@@ -421,9 +421,9 @@ def main():
     with open(os.path.join(args.savedir, 'summary.json'), 'w') as f:
         json.dump(summary_data, f, indent=2)
 
-    print(f"\n✓ 所有结果已保存至: {args.savedir}")
+    print(f"\nAll results saved to: {args.savedir}")
 
-    # 清理
+    # Cleanup
     import gc
     del model
     torch.cuda.empty_cache()

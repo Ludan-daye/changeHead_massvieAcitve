@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Experiment 1: Feasibility Test - OPTIMIZED for A100 GPU
-优化版本：充分利用 A100 显存，使用批处理加速计算
+Optimized version: Fully utilize A100 VRAM, use batch processing to accelerate computation
 """
 
 import os
@@ -51,7 +51,7 @@ class HeadDisableHook:
 
 def get_data_batched(tokenizer, nsamples=50, seqlen=2048, batch_size=4, device=None):
     """
-    优化的数据加载：支持批处理
+    Optimized data loading: supports batch processing
     """
     from datasets import load_dataset
     
@@ -68,9 +68,9 @@ def get_data_batched(tokenizer, nsamples=50, seqlen=2048, batch_size=4, device=N
         test_seq = testenc[:, (i * seqlen):((i+1) * seqlen)]
         batch.append(test_seq)
         
-        # 当达到 batch_size 或是最后一个样本时，组成一个 batch
+        # When reaching batch_size or the last sample, form a batch
         if len(batch) == batch_size or i == nsamples - 1:
-            # 将 batch 拼接成 [batch_size, seqlen]
+            # Concatenate batch to [batch_size, seqlen]
             batched_seq = torch.cat(batch, dim=0).to(device)
             testseq_list.append(batched_seq)
             batch = []
@@ -81,10 +81,10 @@ def get_data_batched(tokenizer, nsamples=50, seqlen=2048, batch_size=4, device=N
 
 def run_experiment_optimized(args, mode='baseline', enable_heads_dict=None):
     """
-    优化版实验运行函数：
-    1. 使用批处理
-    2. 减少 CPU-GPU 数据传输
-    3. 优化内存使用
+    Optimized experiment run function:
+    1. Use batch processing
+    2. Reduce CPU-GPU data transfers
+    3. Optimize memory usage
     """
     print(f"\n{'='*80}")
     print(f"Running Experiment (OPTIMIZED): {mode.upper()}")
@@ -133,13 +133,13 @@ def run_experiment_optimized(args, mode='baseline', enable_heads_dict=None):
             handle = target_module.register_forward_hook(hook)
             hooks.append(handle)
 
-    # Load data with batching - 优化点1：使用批处理
+    # Load data with batching - Optimization 1: Use batch processing
     print("\nLoading dataset with batching...")
     testseq_list = get_data_batched(
-        tokenizer, 
-        nsamples=args.nsamples, 
-        seqlen=seq_len, 
-        batch_size=args.batch_size,  # 新增参数
+        tokenizer,
+        nsamples=args.nsamples,
+        seqlen=seq_len,
+        batch_size=args.batch_size,  # New parameter
         device=device
     )
 
@@ -159,10 +159,10 @@ def run_experiment_optimized(args, mode='baseline', enable_heads_dict=None):
 
     print(f"\nProcessing {len(testseq_list)} batches...")
 
-    # Process samples - 优化点2：批处理推理
+    # Process samples - Optimization 2: Batch inference
     with torch.no_grad():
         for idx, testseq_batch in enumerate(tqdm(testseq_list, desc=f"Processing ({mode})")):
-            # Forward pass - batch 推理
+            # Forward pass - batch inference
             _ = model(testseq_batch)
 
             # Analyze each layer
@@ -173,10 +173,10 @@ def run_experiment_optimized(args, mode='baseline', enable_heads_dict=None):
                     continue
 
                 # Get features: [batch, seq_len, hidden_dim]
-                # 优化点3：直接在 GPU 上计算，减少 CPU-GPU 传输
+                # Optimization 3: Compute directly on GPU, reduce CPU-GPU transfers
                 feat = layer.feat
                 if isinstance(feat, torch.Tensor) and feat.device.type == 'cpu':
-                    # 如果已经在 CPU，转回 GPU 计算
+                    # If already on CPU, move back to GPU for computation
                     feat = feat.to(device)
                 
                 feat_abs = feat.abs()
@@ -185,10 +185,10 @@ def run_experiment_optimized(args, mode='baseline', enable_heads_dict=None):
                 if len(feat_abs.shape) == 3:
                     feat_abs = feat_abs.view(-1, feat_abs.shape[-1])
 
-                # Get top-k values - 在 GPU 上计算
+                # Get top-k values - compute on GPU
                 sorted_vals, _ = torch.sort(feat_abs.flatten(), descending=True)
 
-                # 只在最后转到 CPU 并转为 Python 数值
+                # Only transfer to CPU and convert to Python values at the end
                 layer_stats[layer_id]['top1'].append(sorted_vals[0].item())
                 layer_stats[layer_id]['top2'].append(sorted_vals[1].item())
                 layer_stats[layer_id]['top3'].append(sorted_vals[2].item())
@@ -198,8 +198,8 @@ def run_experiment_optimized(args, mode='baseline', enable_heads_dict=None):
                 if feat_abs.shape[1] > 447:
                     layer_stats[layer_id]['dim138'].append(torch.max(feat_abs[:, 138]).item())
                     layer_stats[layer_id]['dim447'].append(torch.max(feat_abs[:, 447]).item())
-            
-            # 优化点4：定期清理 GPU 缓存
+
+            # Optimization 4: Periodically clear GPU cache
             if (idx + 1) % 10 == 0:
                 torch.cuda.empty_cache()
 
@@ -235,7 +235,7 @@ def run_experiment_optimized(args, mode='baseline', enable_heads_dict=None):
     return results, layer_stats
 
 
-# 导入原版的可视化和报告生成函数
+# Import visualization and report generation functions from original version
 from exp1_feasibility_test import generate_visualizations, generate_summary_report
 
 
@@ -252,9 +252,9 @@ def main():
     # Data arguments
     parser.add_argument('--dataset', type=str, default='wikitext',
                         choices=['wikitext', 'c4', 'RedPajama'], help='Dataset name')
-    parser.add_argument('--nsamples', type=int, default=100,  # 增加到 100
+    parser.add_argument('--nsamples', type=int, default=100,  # Increased to 100
                         help='Number of samples to analyze')
-    parser.add_argument('--batch_size', type=int, default=8,  # 新增：批处理大小
+    parser.add_argument('--batch_size', type=int, default=8,  # New: batch size
                         help='Batch size for processing (higher = faster but more memory)')
     parser.add_argument('--seed', type=int, default=0, help='Random seed')
 

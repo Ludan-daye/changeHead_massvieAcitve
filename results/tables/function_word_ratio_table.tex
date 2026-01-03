@@ -1,0 +1,28 @@
+
+\begin{table}[htbp]
+\centering
+\caption{Token Type Distribution at Massive Activation Positions}
+\label{tab:function_word_ratio}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Model} & \textbf{Function} & \textbf{Punctuation} & \textbf{Whitespace} & \textbf{Content} & \textbf{Semantic-Free} & \textbf{Samples} \\
+ & \textbf{Words (\%)} & \textbf{(\%)} & \textbf{(\%)} & \textbf{Words (\%)} & \textbf{Total (\%)} & \\
+\midrule
+GPT-2 & 40.4 & 0.0 & 0.0 & 59.6 & \textbf{40.4} & 50 \\
+GPT-J-6B & 58.0 & 0.0 & 0.0 & 42.0 & \textbf{58.0} & 50 \\
+BLOOM-7B1 & 52.0 & 46.0 & 0.0 & 2.0 & \textbf{98.0} & 50 \\
+Falcon-7B & 0.0 & 0.0 & 100.0 & 0.0 & \textbf{100.0} & 50 \\
+OPT-6.7B & 0.0 & 96.0 & 0.0 & 4.0 & \textbf{96.0} & 50 \\
+Mistral-7B & 90.0 & 0.0 & 10.0 & 0.0 & \textbf{100.0} & 50 \\
+Qwen2.5-7B & 20.0 & 0.0 & 20.0 & 60.0 & \textbf{40.0} & 50 \\
+LLaMA2-13B & 34.5 & 0.0 & 0.0 & 65.5 & \textbf{34.5} & 50 \\
+\midrule
+\textbf{Average} & - & - & - & - & \textbf{79.2} & - \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item Note: ``Semantic-Free Total'' = Function Words + Punctuation + Whitespace. 
+\item Higher values indicate MA positions are dominated by non-semantic tokens.
+\end{tablenotes}
+\end{table}

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-最小化测试：加载 LLaMA-2-13B 并做一次简单前向推理
-用于验证当前代理 + token 配置下，能否正常从 HuggingFace 拉取模型
+Minimal test: Load LLaMA-2-13B and perform a simple forward pass
+Used to verify that the current proxy + token configuration can successfully pull models from HuggingFace
 """
 
 import argparse
@@ -13,10 +13,10 @@ def main():
     print("TEST: Load LLaMA-2-13B and run simple forward pass")
     print("="*80)
     
-    # 构造参数（和实验脚本一样的方式）
+    # Construct arguments (same way as experiment scripts)
     args = argparse.Namespace(
         model='llama2_13b',
-        access_token='type in your access token here',  # 会自动用 HF_TOKEN 环境变量
+        access_token='type in your access token here',  # Will automatically use HF_TOKEN environment variable
         attn_implementation='eager',
         revision='main',
     )

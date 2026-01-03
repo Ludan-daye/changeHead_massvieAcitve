@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Experiment 1: Phase 2 Only - 只运行第二阶段（All Heads Disabled）
-复用已有的 baseline 结果，直接跑第二阶段，节省时间
+Experiment 1: Phase 2 Only - Run only the second phase (All Heads Disabled)
+Reuse existing baseline results and run only the second phase to save time
 """
 
 import os
@@ -32,13 +32,13 @@ class HeadDisableHook:
         batch_size, seq_len, hidden_dim = attn_output.shape
         head_dim = hidden_dim // self.num_heads
         attn_output_reshaped = attn_output.view(batch_size, seq_len, self.num_heads, head_dim)
-        attn_output_reshaped[:, :, :, :] = 0  # 禁用所有头
+        attn_output_reshaped[:, :, :, :] = 0  # Disable all heads
         modified_output = attn_output_reshaped.view(batch_size, seq_len, hidden_dim)
         return (modified_output,) + output[1:]
 
 
 def run_phase2(args):
-    """只运行第二阶段：All Heads Disabled"""
+    """Run only the second phase: All Heads Disabled"""
     print(f"\n{'='*80}")
     print(f"Running Phase 2 Only: ALL HEADS DISABLED")
     print(f"{'='*80}\n")

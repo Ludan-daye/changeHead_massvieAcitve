@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-从数据重新绘制Exp2合并图
-- 无总标题
-- 大字号横坐标轴
-- 稀疏刻度
+Redraw Exp2 combined figure from data
+- No main title
+- Large font for x-axis
+- Sparse ticks
 """
 
 import json
@@ -11,11 +11,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-# 配置
+# Configuration
 RESULTS_DIR = Path('PROJECT_ROOT/results/experiments/exp2')
 OUTPUT_DIR = Path('PROJECT_ROOT/results/plot_results/exp2_figures')
 
-# 模型配置
+# Model configuration
 MODEL_CONFIGS = [
     {'key': 'gpt2', 'display': 'GPT-2', 'critical_layer': 3},
     {'key': 'gptj_6b', 'display': 'GPT-J-6B', 'critical_layer': 22},
@@ -27,16 +27,16 @@ MODEL_CONFIGS = [
     {'key': 'llama2_13b', 'display': 'LLaMA2-13B', 'critical_layer': 30},
 ]
 
-# 颜色配置 - 使用2d_comparison的配色方案
-COLOR_BASELINE = '#2ECC71'    # 绿色 - Baseline (All MLP Active)
-COLOR_ABLATED = '#E74C3C'     # 红色 - Layer Disabled
-COLOR_FILL = '#FFB6B0'        # 浅红色 - 填充区域
+# Color configuration - using 2d_comparison color scheme
+COLOR_BASELINE = '#2ECC71'    # Green - Baseline (All MLP Active)
+COLOR_ABLATED = '#E74C3C'     # Red - Layer Disabled
+COLOR_FILL = '#FFB6B0'        # Light red - Fill area
 
 def load_exp2_data(model_key):
-    """加载Exp2数据"""
+    """Load Exp2 data"""
     summary_file = RESULTS_DIR / model_key / 'summary.json'
 
-    # 特殊情况：LLaMA2数据在另一个位置
+    # Special case: LLaMA2 data is in another location
     if not summary_file.exists() and 'llama' in model_key:
         alt_path = Path('PROJECT_ROOT/results/models/llama2_13b/exp2b_mlp_layer_ablation/summary.json')
         if alt_path.exists():
@@ -52,9 +52,9 @@ def load_exp2_data(model_key):
     return data
 
 def create_combined_figure():
-    """创建合并图"""
+    """Create combined figure"""
 
-    # 创建2行4列的子图 - 增大尺寸
+    # Create 2 rows × 4 columns subplots - increase size
     fig, axes = plt.subplots(2, 4, figsize=(32, 16))
     axes = axes.flatten()
 
@@ -64,7 +64,7 @@ def create_combined_figure():
         model_display = model_config['display']
         critical_layer = model_config['critical_layer']
 
-        # 加载数据
+        # Load data
         data = load_exp2_data(model_key)
         if data is None:
             ax.text(0.5, 0.5, f'{model_display}\nData Not Available',
@@ -73,7 +73,7 @@ def create_combined_figure():
             ax.axis('off')
             continue
 
-        # 提取消融数据
+        # Extract ablation data
         ablation = data.get('ablation', {})
         if not ablation:
             ax.text(0.5, 0.5, f'{model_display}\nNo Data',
@@ -82,15 +82,15 @@ def create_combined_figure():
             ax.axis('off')
             continue
 
-        # 排序层并获取MA值
+        # Sort layers and get MA values
         layers = sorted([int(k) for k in ablation.keys()])
         ma_ablated = [ablation[str(layer)] for layer in layers]
 
-        # 计算baseline（假设为最大MA值）
+        # Calculate baseline (assume maximum MA value)
         baseline = max(ma_ablated)
         ma_baseline = [baseline] * len(layers)
 
-        # 绘制图形 - 加粗线条，添加散点标记（模仿2d_comparison样式）
+        # Draw figure - bold lines, add scatter markers (mimic 2d_comparison style)
         ax.plot(layers, ma_baseline, color=COLOR_BASELINE, linewidth=4,
                linestyle='-', marker='o', markersize=8, markerfacecolor=COLOR_BASELINE,
                markeredgecolor=COLOR_BASELINE, markeredgewidth=2,
@@ -100,20 +100,20 @@ def create_combined_figure():
                markeredgecolor=COLOR_ABLATED, markeredgewidth=2,
                label='Ablated', zorder=4)
 
-        # 填充区域
+        # Fill area
         ax.fill_between(layers, ma_baseline, ma_ablated,
                         color=COLOR_FILL, alpha=0.4, zorder=1)
 
-        # 标记关键层
+        # Mark critical layer
         if critical_layer < len(layers):
             ax.axvline(x=critical_layer, color='darkgray', linestyle=':',
                       linewidth=3, alpha=0.8, zorder=2)
 
-        # 设置坐标轴标签 - 超大字号
+        # Set axes labels - extra large font
         ax.set_xlabel('Layer Index', fontsize=26, fontweight='bold', labelpad=10)
         ax.set_ylabel('MA Value', fontsize=26, fontweight='bold', labelpad=10)
 
-        # 横坐标刻度 - 更稀疏、更大字号
+        # X-axis ticks - more sparse, larger font
         n_layers = len(layers)
         if n_layers <= 12:
             tick_step = 3
@@ -129,28 +129,28 @@ def create_combined_figure():
         ax.set_xticks(tick_positions)
         ax.set_xticklabels(tick_positions, fontsize=24, fontweight='bold')
 
-        # 纵坐标字体 - 加大加粗
+        # Y-axis font - larger and bold
         ax.tick_params(axis='y', labelsize=22, width=2, length=8)
         ax.tick_params(axis='x', width=2, length=8)
 
-        # 不显示标题（按要求去掉模型名称）
+        # Do not display title (remove model name as requested)
         # ax.set_title(model_display, fontsize=28, fontweight='bold', pad=20)
 
-        # 加强网格
+        # Strengthen grid
         ax.grid(True, alpha=0.4, linestyle='-', linewidth=1.2, color='gray')
 
-        # 加粗边框
+        # Bold borders
         for spine in ax.spines.values():
             spine.set_edgecolor('black')
             spine.set_linewidth(3)
 
         print(f"✓ Plotted {model_display}")
 
-    # 调整布局 - 去掉标题后减少顶部边距
+    # Adjust layout - Remove title then reduce top margin
     plt.subplots_adjust(left=0.05, right=0.98, top=0.98, bottom=0.08,
                        hspace=0.25, wspace=0.3)
 
-    # 保存为 exp2_combined_2d_heatmap (2d comparison style)
+    # Save as exp2_combined_2d_heatmap (2d comparison style)
     output_file_png = OUTPUT_DIR / 'exp2_combined_2d_heatmap.png'
     output_file_pdf = OUTPUT_DIR / 'exp2_combined_2d_heatmap.pdf'
 

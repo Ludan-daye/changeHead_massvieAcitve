@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Exp 5 Logic Validation & Mock Test
-演示Exp 5的核心逻辑，使用合成数据验证分析方法
+Demonstrates the core logic of Exp 5, validates analysis methods using synthetic data
 """
 
 import numpy as np
@@ -15,19 +15,19 @@ import seaborn as sns
 # ============================================================================
 
 def generate_mock_data():
-    """生成模拟数据来演示Exp 5的分析逻辑"""
+    """Generate mock data to demonstrate Exp 5's analysis logic"""
 
     np.random.seed(42)
 
-    # SVD参数 (模拟W₂的SVD分解)
-    n_sv = 50  # 保留前50个奇异向量
+    # SVD parameters (simulating SVD decomposition of W2)
+    n_sv = 50  # Keep top 50 singular vectors
     n_intermediate = 3072
 
-    # 创建模拟的U矩阵和奇异值
+    # Create simulated U matrix and singular values
     U = np.random.randn(n_intermediate, n_sv)
-    U, _ = np.linalg.qr(U)  # 正交化
+    U, _ = np.linalg.qr(U)  # Orthogonalize
 
-    S = np.array([10.0 - i*0.15 for i in range(n_sv)])  # 衰减的奇异值
+    S = np.array([10.0 - i*0.15 for i in range(n_sv)])  # Decaying singular values
 
     print("="*80)
     print("EXP 5 LOGIC VALIDATION - MOCK TEST")
@@ -37,7 +37,7 @@ def generate_mock_data():
     print(f"  - Singular values (S): {S.shape}")
     print(f"  - σ₁/σ₂ ratio: {S[0]/S[1]:.3f}")
 
-    # 模拟数据：函数词 vs 内容词
+    # Mock data: function words vs content words
     function_words = {
         'the': {'occurrences': 50, 'type': 'function'},
         'and': {'occurrences': 40, 'type': 'function'},
@@ -55,7 +55,7 @@ def generate_mock_data():
 
     all_words = {**function_words, **content_words}
 
-    # 生成h2向量 (中间激活)
+    # Generate h2 vectors (intermediate activations)
     h2_data = {}
 
     for word, info in all_words.items():
@@ -63,26 +63,26 @@ def generate_mock_data():
         word_type = info['type']
 
         if word_type == 'function':
-            # 函数词：高度集中在前几个奇异向量方向上
-            # 创建h2向量使其在U的前2-3个列上有大投影
+            # Function words: highly concentrated in first few singular vector directions
+            # Create h2 vectors with large projections on first 2-3 columns of U
             projections = np.zeros((n_occur, n_sv))
 
-            # 集中在前3个奇异向量
+            # Concentrated in first 3 singular vectors
             for i in range(n_occur):
-                projections[i, 0] = np.random.normal(5.0, 0.5)  # 强v₁对齐
+                projections[i, 0] = np.random.normal(5.0, 0.5)  # Strong v1 alignment
                 projections[i, 1] = np.random.normal(2.0, 0.3)
                 projections[i, 2] = np.random.normal(1.0, 0.2)
-                # 其他向量很小
+                # Other vectors very small
                 projections[i, 3:] = np.random.normal(0, 0.1, n_sv-3)
 
-            # 重构h2
+            # Reconstruct h2
             h2_vecs = projections @ U.T  # [n_occur, 3072]
 
         else:
-            # 内容词：分散在多个奇异向量方向上
+            # Content words: distributed across multiple singular vector directions
             projections = np.zeros((n_occur, n_sv))
 
-            # 均匀分布在所有向量上
+            # Uniformly distributed across all vectors
             for i in range(n_occur):
                 projections[i, :] = np.random.normal(0.5, 0.3, n_sv)
 
@@ -102,7 +102,7 @@ def generate_mock_data():
 # ============================================================================
 
 def analyze_concentration(h2_data, U):
-    """分析投影在奇异向量上的集中性"""
+    """Analyze concentration of projections on singular vectors"""
     print("\n" + "="*80)
     print("ANALYSIS 1: CONCENTRATION ON SINGULAR VECTORS")
     print("="*80)
@@ -112,10 +112,10 @@ def analyze_concentration(h2_data, U):
     for word, data in h2_data.items():
         h2 = data['h2']  # [n_occur, 3072]
 
-        # 投影到左奇异空间
+        # Project to left singular space
         left_proj = h2 @ U  # [n_occur, n_sv]
 
-        # 计算方差
+        # Calculate variance
         var_per_sv = left_proj.var(axis=0)
         total_var = var_per_sv.sum()
 
@@ -125,7 +125,7 @@ def analyze_concentration(h2_data, U):
         var_ratio = var_per_sv / total_var
         sorted_var = sorted(var_ratio, reverse=True)
 
-        # 集中度
+        # Concentration
         conc_top1 = sorted_var[0]
         conc_top3 = sum(sorted_var[:3])
         conc_top5 = sum(sorted_var[:5])
@@ -137,15 +137,15 @@ def analyze_concentration(h2_data, U):
             'type': data['type'],
         }
 
-    # 打印结果
-    print("\nFunction Words (预期: 高集中度, >0.7):")
+    # Print results
+    print("\nFunction Words (Expected: high concentration, >0.7):")
     for word in sorted([w for w, v in results.items() if v['type'] == 'function'],
                        key=lambda w: results[w]['concentration_top5'], reverse=True):
         r = results[word]
         print(f"  {word:10s}: top1={r['concentration_top1']:.3f}, "
               f"top3={r['concentration_top3']:.3f}, top5={r['concentration_top5']:.3f}")
 
-    print("\nContent Words (预期: 低集中度, <0.3):")
+    print("\nContent Words (Expected: low concentration, <0.3):")
     for word in sorted([w for w, v in results.items() if v['type'] == 'content'],
                        key=lambda w: results[w]['concentration_top5'], reverse=True):
         r = results[word]
@@ -160,7 +160,7 @@ def analyze_concentration(h2_data, U):
 # ============================================================================
 
 def analyze_asymmetry(h2_data, U, S):
-    """分析左右奇异空间的不对称性"""
+    """Analyze left-right asymmetry in singular spaces"""
     print("\n" + "="*80)
     print("ANALYSIS 2: LEFT-RIGHT SPACE ASYMMETRY")
     print("="*80)
@@ -170,15 +170,15 @@ def analyze_asymmetry(h2_data, U, S):
     for word, data in h2_data.items():
         h2 = data['h2']  # [n_occur, 3072]
 
-        # 左奇异空间投影
+        # Left singular space projection
         left_proj = h2 @ U  # [n_occur, n_sv]
 
-        # 右奇异空间：通过权重变换
-        # W₂ = U @ diag(S) @ Vt
-        # 输出 ≈ (h₂ @ U) @ diag(S)
+        # Right singular space: through weight transformation
+        # W2 = U @ diag(S) @ Vt
+        # output approx (h2 @ U) @ diag(S)
         scaled_proj = left_proj * S.reshape(1, -1)  # [n_occur, n_sv]
 
-        # 计算浓度
+        # Calculate concentration
         left_var = left_proj.var(axis=0)
         right_var = scaled_proj.var(axis=0)
 
@@ -188,7 +188,7 @@ def analyze_asymmetry(h2_data, U, S):
         if left_total < 1e-6 or right_total < 1e-6:
             continue
 
-        # 前3个维度的浓度
+        # Concentration in top 3 dimensions
         left_top3 = sorted(left_var, reverse=True)[:3].sum() / left_total
         right_top3 = sorted(right_var, reverse=True)[:3].sum() / right_total
 
@@ -201,9 +201,9 @@ def analyze_asymmetry(h2_data, U, S):
             'type': data['type'],
         }
 
-    # 打印结果
+    # Print results
     print("\nAsymmetry Ratio (Left/Right):")
-    print("(预期: 函数词 ratio > 1.5, 内容词 ratio < 1.0)")
+    print("(Expected: function words ratio > 1.5, content words ratio < 1.0)")
     print()
 
     for word in sorted(results.keys(), key=lambda w: results[w]['asymmetry_ratio'], reverse=True):
@@ -221,7 +221,7 @@ def analyze_asymmetry(h2_data, U, S):
 # ============================================================================
 
 def analyze_stability(h2_data):
-    """分析跨句子稳定性"""
+    """Analyze cross-context stability"""
     print("\n" + "="*80)
     print("ANALYSIS 3: CROSS-CONTEXT STABILITY")
     print("="*80)
@@ -234,11 +234,11 @@ def analyze_stability(h2_data):
         if len(h2) < 2:
             continue
 
-        # 归一化
+        # Normalize
         norms = np.linalg.norm(h2, axis=1, keepdims=True)
         h2_norm = h2 / (norms + 1e-8)
 
-        # 计算所有对的余弦相似度
+        # Calculate pairwise cosine similarities
         sims = []
         for i in range(len(h2_norm)):
             for j in range(i+1, len(h2_norm)):
@@ -253,9 +253,9 @@ def analyze_stability(h2_data):
             'type': data['type'],
         }
 
-    # 打印结果
+    # Print results
     print("\nMean Stability (Cosine Similarity):")
-    print("(预期: 函数词 > 0.8, 内容词 < 0.6)")
+    print("(Expected: function words > 0.8, content words < 0.6)")
     print()
 
     for word in sorted(results.keys(), key=lambda w: results[w]['mean_stability'], reverse=True):
@@ -272,12 +272,12 @@ def analyze_stability(h2_data):
 # ============================================================================
 
 def analyze_v1_alignment(h2_data, U):
-    """分析与主奇异向量v₁的对齐"""
+    """Analyze alignment with principal singular vector v1"""
     print("\n" + "="*80)
-    print("ANALYSIS 4: PRINCIPAL DIRECTION (v₁) ALIGNMENT")
+    print("ANALYSIS 4: PRINCIPAL DIRECTION (v1) ALIGNMENT")
     print("="*80)
 
-    v1 = U[:, 0]  # 最强的左奇异向量 [3072]
+    v1 = U[:, 0]  # Strongest left singular vector [3072]
     v1_norm = v1 / np.linalg.norm(v1)
 
     results = {}
@@ -300,9 +300,9 @@ def analyze_v1_alignment(h2_data, U):
             'type': data['type'],
         }
 
-    # 打印结果
-    print("\nAlignment with v₁ (Principal Singular Vector):")
-    print("(预期: 函数词强对齐 > 0.5, 内容词弱对齐 < 0.3)")
+    # Print results
+    print("\nAlignment with v1 (Principal Singular Vector):")
+    print("(Expected: function words strong alignment > 0.5, content words weak alignment < 0.3)")
     print()
 
     for word in sorted(results.keys(), key=lambda w: results[w]['mean_alignment'], reverse=True):
@@ -319,12 +319,12 @@ def analyze_v1_alignment(h2_data, U):
 # ============================================================================
 
 def plot_results(conc_results, asym_results, stab_results, align_results):
-    """生成可视化"""
+    """Generate visualizations"""
     print("\n" + "="*80)
     print("GENERATING VISUALIZATIONS")
     print("="*80)
 
-    # 分离函数词和内容词
+    # Separate function words and content words
     func_words = [w for w, r in conc_results.items() if r['type'] == 'function']
     cont_words = [w for w, r in conc_results.items() if r['type'] == 'content']
 
@@ -414,7 +414,7 @@ def plot_results(conc_results, asym_results, stab_results, align_results):
 # ============================================================================
 
 def generate_summary(conc_results, asym_results, stab_results, align_results):
-    """生成汇总报告"""
+    """Generate summary report"""
 
     report = """
 ================================================================================
@@ -423,7 +423,7 @@ EXPERIMENT 5: FUNCTION WORDS SVD MAPPING - MOCK DATA VALIDATION REPORT
 
 OBJECTIVE:
   Investigate whether function words have massive activations in left vs right
-  singular vector spaces of W₂ (MLP down-projection matrix)
+  singular vector spaces of W2 (MLP down-projection matrix)
 
 ================================================================================
 KEY FINDINGS
@@ -432,7 +432,7 @@ KEY FINDINGS
 """
 
     # Finding 1: Concentration
-    report += "\n1️⃣ VARIANCE CONCENTRATION (Low-Dimensionality)\n"
+    report += "\n1. VARIANCE CONCENTRATION (Low-Dimensionality)\n"
     report += "-" * 80 + "\n"
 
     func_conc = [conc_results[w]['concentration_top5'] for w in conc_results
@@ -448,13 +448,13 @@ KEY FINDINGS
     report += f"Difference: {avg_func - avg_cont:.3f}\n\n"
 
     if avg_func > 0.7 and avg_cont < 0.3:
-        report += "✅ STRONG EVIDENCE: Function words are highly concentrated (low-dimensional)\n"
-        report += "                   Content words are spread across dimensions (high-dimensional)\n"
+        report += "STRONG EVIDENCE: Function words are highly concentrated (low-dimensional)\n"
+        report += "                 Content words are spread across dimensions (high-dimensional)\n"
     else:
-        report += "⚠️ WEAK EVIDENCE: Patterns not as clear as expected\n"
+        report += "WEAK EVIDENCE: Patterns not as clear as expected\n"
 
     # Finding 2: Asymmetry
-    report += "\n2️⃣ LEFT-RIGHT SPACE ASYMMETRY (Information Determination)\n"
+    report += "\n2. LEFT-RIGHT SPACE ASYMMETRY (Information Determination)\n"
     report += "-" * 80 + "\n"
 
     func_asym = [asym_results[w]['asymmetry_ratio'] for w in asym_results
@@ -469,15 +469,15 @@ KEY FINDINGS
     report += f"Content Words Avg Asymmetry Ratio:   {avg_cont_asym:.3f}\n\n"
 
     if avg_func_asym > 1.5:
-        report += "✅ STRONG EVIDENCE: Function words show left-biased concentration\n"
-        report += "                   Information determined in Linear1 (expansion phase)\n"
+        report += "STRONG EVIDENCE: Function words show left-biased concentration\n"
+        report += "                 Information determined in Linear1 (expansion phase)\n"
     elif avg_func_asym > 1.0:
-        report += "⚠️ MODERATE EVIDENCE: Left-biased but not dominant\n"
+        report += "MODERATE EVIDENCE: Left-biased but not dominant\n"
     else:
-        report += "❌ WEAK EVIDENCE: No left-side dominance detected\n"
+        report += "WEAK EVIDENCE: No left-side dominance detected\n"
 
     # Finding 3: Stability
-    report += "\n3️⃣ CROSS-CONTEXT STABILITY (Fixed Representation)\n"
+    report += "\n3. CROSS-CONTEXT STABILITY (Fixed Representation)\n"
     report += "-" * 80 + "\n"
 
     func_stab = [stab_results[w]['mean_stability'] for w in stab_results
@@ -493,13 +493,13 @@ KEY FINDINGS
     report += f"Difference: {avg_func_stab - avg_cont_stab:.3f}\n\n"
 
     if avg_func_stab > 0.85 and avg_cont_stab < 0.6:
-        report += "✅ STRONG EVIDENCE: Function words have stable, context-independent representations\n"
-        report += "                   Content words show high context-dependency\n"
+        report += "STRONG EVIDENCE: Function words have stable, context-independent representations\n"
+        report += "                 Content words show high context-dependency\n"
     else:
-        report += "⚠️ MODERATE EVIDENCE: Stability difference present but not extreme\n"
+        report += "MODERATE EVIDENCE: Stability difference present but not extreme\n"
 
     # Finding 4: V1 Alignment
-    report += "\n4️⃣ PRINCIPAL DIRECTION (v₁) ALIGNMENT (Massive Activation Driver)\n"
+    report += "\n4. PRINCIPAL DIRECTION (v1) ALIGNMENT (Massive Activation Driver)\n"
     report += "-" * 80 + "\n"
 
     func_align = [align_results[w]['mean_alignment'] for w in align_results
@@ -515,10 +515,10 @@ KEY FINDINGS
     report += f"Difference: {avg_func_align - avg_cont_align:.3f}\n\n"
 
     if avg_func_align > 0.5 and avg_cont_align < 0.3:
-        report += "✅ STRONG EVIDENCE: Function words preferentially align with v₁\n"
-        report += "                   This explains why they trigger massive activations!\n"
+        report += "STRONG EVIDENCE: Function words preferentially align with v1\n"
+        report += "                 This explains why they trigger massive activations!\n"
     else:
-        report += "⚠️ MODERATE EVIDENCE: Alignment preference present\n"
+        report += "MODERATE EVIDENCE: Alignment preference present\n"
 
     # Overall conclusion
     report += "\n\n" + "="*80
@@ -536,25 +536,25 @@ KEY FINDINGS
         evidence_count += 1
 
     if evidence_count == 4:
-        report += "🎯 DEFINITIVE DISCOVERY:\n"
+        report += "DEFINITIVE DISCOVERY:\n"
         report += "   Function words have MASSIVE ACTIVATIONS in both left and right SVD spaces!\n\n"
         report += "Theory Confirmed:\n"
-        report += "  1. Low-dimensional projections → concentrated on few singular vectors\n"
-        report += "  2. Left-biased asymmetry → information determined early (Linear1)\n"
-        report += "  3. High stability → fixed semantic role, context-independent\n"
-        report += "  4. Strong v₁ alignment → drives massive activations through σ₁ amplification\n\n"
+        report += "  1. Low-dimensional projections -> concentrated on few singular vectors\n"
+        report += "  2. Left-biased asymmetry -> information determined early (Linear1)\n"
+        report += "  3. High stability -> fixed semantic role, context-independent\n"
+        report += "  4. Strong v1 alignment -> drives massive activations through sigma1 amplification\n\n"
         report += "Mechanism:\n"
-        report += "  output ≈ (h₂ · v₁) × σ₁ × u₁\n"
-        report += "  where function words have large (h₂ · v₁) → massive output!\n"
+        report += "  output approx (h2 * v1) x sigma1 x u1\n"
+        report += "  where function words have large (h2 * v1) -> massive output!\n"
 
     elif evidence_count >= 3:
-        report += "✅ STRONG EVIDENCE:\n"
+        report += "STRONG EVIDENCE:\n"
         report += "   Most key patterns confirmed. Function words show specialized behavior.\n"
     elif evidence_count >= 2:
-        report += "⚠️ MODERATE EVIDENCE:\n"
+        report += "MODERATE EVIDENCE:\n"
         report += "   Some patterns confirmed, but more analysis needed.\n"
     else:
-        report += "❌ WEAK EVIDENCE:\n"
+        report += "WEAK EVIDENCE:\n"
         report += "   Patterns not clearly visible. Check data quality or hypotheses.\n"
 
     return report
@@ -589,7 +589,7 @@ if __name__ == '__main__':
         f.write(summary)
 
     print("\n" + "="*80)
-    print("✅ MOCK VALIDATION COMPLETE")
+    print("MOCK VALIDATION COMPLETE")
     print("="*80)
     print("\nFiles saved:")
     print("  - results/exp5_test/exp5_mock_analysis.png")

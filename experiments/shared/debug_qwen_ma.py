@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-调试qwen2.5_7b的MA计算问题
-对比不同hook方法的结果
+Debug Qwen2.5_7b MA calculation issues
+Compare results from different hook methods
 """
 
 import os
@@ -23,32 +23,32 @@ class Args:
 args = Args()
 
 print("="*80)
-print("调试 Qwen2.5-7B MA 计算")
+print("Debug Qwen2.5-7B MA Calculation")
 print("="*80)
 
-# 加载模型
+# Load model
 model, tokenizer, device, layers, hidden_size, seq_len = lib.load_llm(args)
 model.eval()
 
-# 获取测试数据
+# Get test data
 testseq_list = lib.get_data(tokenizer, nsamples=1, seqlen=2048, device=device)
 testseq = testseq_list[0]
 
-print(f"\n模型层数: {len(layers)}")
-print(f"测试序列形状: {testseq.shape}")
+print(f"\nModel layer count: {len(layers)}")
+print(f"Test sequence shape: {testseq.shape}")
 
-# 测试不同层
-test_layers = [3, 14, 27]  # 前、中、后
+# Test different layers
+test_layers = [3, 14, 27]  # Early, middle, late
 
 for layer_id in test_layers:
     print(f"\n{'='*80}")
-    print(f"测试 Layer {layer_id}")
+    print(f"Testing Layer {layer_id}")
     print(f"{'='*80}")
 
     layer = layers[layer_id]
 
-    # 方法1：Hook整个layer输出（Exp5当前方法）
-    print("\n方法1: Hook整个layer输出")
+    # Method 1: Hook entire layer output (current Exp5 method)
+    print("\nMethod 1: Hook entire layer output")
     activations = {}
 
     def hook_layer(module, input, output):
@@ -68,12 +68,12 @@ for layer_id in test_layers:
     if 'layer' in activations:
         feat = activations['layer'].numpy()
         max_val = float(np.abs(feat).max())
-        print(f"  最大激活值: {max_val:.2f}")
+        print(f"  Maximum activation value: {max_val:.2f}")
     else:
-        print(f"  ❌ 未捕获到激活值")
+        print(f"  Failed to capture activation")
 
-    # 方法2：Hook MLP输出（Exp1方法）
-    print("\n方法2: Hook MLP输出模块")
+    # Method 2: Hook MLP output (Exp1 method)
+    print("\nMethod 2: Hook MLP output module")
     capture = {'mlp': None}
 
     mlp_mod = None
@@ -95,22 +95,22 @@ for layer_id in test_layers:
         h.remove()
 
         if capture['mlp'] is not None:
-            print(f"  最大激活值: {capture['mlp']:.2f}")
+            print(f"  Maximum activation value: {capture['mlp']:.2f}")
         else:
-            print(f"  ❌ 未捕获到激活值")
+            print(f"  Failed to capture activation")
     else:
-        print(f"  ❌ 无法找到MLP模块")
+        print(f"  Cannot find MLP module")
 
-    # 方法3：Hook MLP中间激活（after activation function）
-    print("\n方法3: Hook MLP中间激活 (after act_fn)")
+    # Method 3: Hook MLP intermediate activation (after activation function)
+    print("\nMethod 3: Hook MLP intermediate activation (after act_fn)")
     capture_mid = {'act': None}
 
-    # Qwen使用SwiGLU，需要hook gate_proj/up_proj组合后
+    # Qwen uses SwiGLU, need to hook after gate_proj/up_proj combination
     if hasattr(layer.mlp, 'up_proj'):
-        print(f"  检测到MLP结构: gate_proj + up_proj + down_proj (SwiGLU)")
+        print(f"  Detected MLP structure: gate_proj + up_proj + down_proj (SwiGLU)")
 
         def hook_before_down(m, inp, out):
-            # inp是down_proj的输入，即activation后的值
+            # inp is down_proj input, i.e., value after activation
             in0 = inp[0] if isinstance(inp, (tuple, list)) else inp
             capture_mid['act'] = in0.detach().float().abs().max().item()
 
@@ -122,10 +122,10 @@ for layer_id in test_layers:
         h_down.remove()
 
         if capture_mid['act'] is not None:
-            print(f"  中间激活最大值: {capture_mid['act']:.2f}")
+            print(f"  Intermediate activation maximum value: {capture_mid['act']:.2f}")
         else:
-            print(f"  ❌ 未捕获到中间激活")
+            print(f"  Failed to capture intermediate activation")
 
 print(f"\n{'='*80}")
-print("调试完成")
+print("Debug Complete")
 print(f"{'='*80}")

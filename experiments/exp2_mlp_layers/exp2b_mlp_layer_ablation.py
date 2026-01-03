@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-Experiment 2B: MLP Layer-wise Ablation (逐层MLP抑制实验)
+Experiment 2B: MLP Layer-wise Ablation
 
-实验目的：
-  找出哪一层的MLP对Massive Activation贡献最大
+Objective:
+  Identify which MLP layer contributes most to Massive Activation
 
-实验方法：
-  1. Baseline: 所有MLP正常
-  2. 逐层抑制: 每次抑制一层MLP，其他层正常，测量激活值下降
-  3. 对比: 找出抑制后影响最大的关键层
+Method:
+  1. Baseline: All MLPs normal
+  2. Layer-wise ablation: Suppress one MLP layer at a time, keep others normal, measure activation decrease
+  3. Comparison: Find the critical layer with maximum impact after suppression
 
-数据保存：
+Data saved to:
   results/models/{model}/exp2b_mlp_layer_ablation/
     ├── baseline.json
     ├── layer_0_disabled.json
@@ -32,7 +32,7 @@ import multiprocessing as mp
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 sys.path.insert(0, PROJECT_ROOT)
 
-# 禁用代理
+# Disable proxy
 for key in ['http_proxy', 'https_proxy', 'HTTP_PROXY', 'HTTPS_PROXY']:
     os.environ.pop(key, None)
 
@@ -41,52 +41,52 @@ from lib.model_utils import is_llama_model
 
 
 class MLPLayerDisableHook:
-    """MLP逐层禁用Hook"""
+    """MLP layer-wise disable hook"""
     def __init__(self, target_layer_id, mode='disable'):
         self.target_layer_id = target_layer_id
         self.mode = mode  # 'disable' or 'normal'
 
     def __call__(self, module, input, output):
         if self.mode == 'disable':
-            # 将该层MLP输出置零
+            # Zero out this layer's MLP output
             return torch.zeros_like(output)
         return output
 
 
 def get_mlp_modules(model_name, layer):
-    """获取不同模型的MLP模块列表"""
+    """Get MLP module list for different models"""
     if "opt" in model_name:
-        # OPT模型的FFN是fc1+fc2
+        # OPT model's FFN is fc1+fc2
         return [layer.fc1, layer.fc2]
     else:
-        # 其他模型有统一的mlp模块
+        # Other models have unified mlp module
         return [layer.mlp]
 
 
 def run_single_layer_experiment(args, disabled_layer_id=None):
     """
-    运行单次实验
+    Run single experiment
 
     Args:
-        disabled_layer_id: 要禁用的MLP层ID，None表示baseline
+        disabled_layer_id: MLP layer ID to disable, None means baseline
 
     Returns:
-        dict: 每层的激活值统计
+        dict: Activation statistics for each layer
     """
-    # 强制清理显存
+    # Force cleanup VRAM
     import gc
     gc.collect()
     torch.cuda.empty_cache()
 
-    # 加载模型
+    # Load model
     model, tokenizer, device, layers, hidden_size, seq_len = lib.load_llm(args)
     model.eval()
     n_layers = len(layers)
 
-    # 注册Hook
+    # Register hooks
     hooks = []
     if disabled_layer_id is not None:
-        # 禁用指定层的MLP
+        # Disable specified layer's MLP
         target_layer = layers[disabled_layer_id]
         mlp_modules = get_mlp_modules(args.model, target_layer)
         hook = MLPLayerDisableHook(disabled_layer_id, mode='disable')
@@ -94,18 +94,18 @@ def run_single_layer_experiment(args, disabled_layer_id=None):
             handle = mlp_module.register_forward_hook(hook)
             hooks.append(handle)
 
-    # 加载数据 - 放在CPU上
-    print("加载数据到CPU...")
+    # Load data - keep on CPU
+    print("Loading data to CPU...")
     testseq_list = lib.get_data(tokenizer=tokenizer, nsamples=args.nsamples, seqlen=seq_len, device='cpu')
 
-    # 强制清理一次
+    # Force cleanup once
     gc.collect()
     torch.cuda.empty_cache()
 
-    # 显存使用阈值 (70GB)
+    # VRAM usage threshold (70GB)
     VRAM_THRESHOLD = 70 * 1024 * 1024 * 1024  # 70GB in bytes
 
-    # 收集激活值
+    # Collect activations
     layer_activations = {i: [] for i in range(n_layers)}
     failed_samples = 0
 

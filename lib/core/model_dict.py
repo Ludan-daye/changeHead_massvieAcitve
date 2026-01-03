@@ -2,51 +2,51 @@ CACHE_DIR_BASE = "./model_weights"
 LOCAL_MODELS_DIR = "LOCAL_MODELS_DIR"
 
 MODEL_DICT_LLMs = {
-    ### ============ 新下载的模型 (本地路径) ============ ###
-    
-    # Qwen2.5-7B (GQA架构)
+    ### ============ Newly downloaded models (local paths) ============ ###
+
+    # Qwen2.5-7B (GQA architecture)
     "qwen2.5_7b": {
         "model_id": f"{LOCAL_MODELS_DIR}/Qwen2.5-7B",
-        "cache_dir": None,  # 本地模型不需要cache
+        "cache_dir": None,  # Local models do not need cache
     },
-    
-    # DeepSeek-V2-Lite (MoE架构)
+
+    # DeepSeek-V2-Lite (MoE architecture)
     "deepseek_v2_lite": {
         "model_id": f"{LOCAL_MODELS_DIR}/DeepSeek-V2-Lite",
         "cache_dir": None,
     },
-    
+
     # Mistral-7B-v0.3 (Sliding Window + GQA)
     "mistral_7b_v03": {
         "model_id": f"{LOCAL_MODELS_DIR}/Mistral-7B-v0.3",
         "cache_dir": None,
     },
-    
+
     # Falcon-7B (Multi-Query + ALiBi + Parallel)
     "falcon_7b_local": {
         "model_id": f"{LOCAL_MODELS_DIR}/Falcon-7B",
         "cache_dir": None,
     },
-    
-    # BLOOM-7B1 (ALiBi位置编码)
+
+    # BLOOM-7B1 (ALiBi positional encoding)
     "bloom_7b1": {
         "model_id": f"{LOCAL_MODELS_DIR}/BLOOM-7B1",
         "cache_dir": None,
     },
-    
+
     # GPT-J-6B (Parallel Attn+FFN + RoPE)
     "gptj_6b": {
         "model_id": f"{LOCAL_MODELS_DIR}/GPT-J-6B",
         "cache_dir": None,
     },
-    
-    ### ============ 原有模型 (HuggingFace缓存) ============ ###
+
+    ### ============ Original models (HuggingFace cache) ============ ###
     ### llama2 model
     "llama2_7b": {
         "model_id": "meta-llama/Llama-2-7b-hf",
         "cache_dir": CACHE_DIR_BASE
     },
-    "llma2b": {  # Alias spelling requested by users
+    "llma2b": {  # Alias for llama2_7b
         "model_id": "meta-llama/Llama-2-7b-hf",
         "cache_dir": CACHE_DIR_BASE
     },

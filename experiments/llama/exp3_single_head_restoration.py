@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Experiment 3: Single-Head Restoration
-实验三：单头恢复 - 在关键层中找出哪些注意力头对大规模激活贡献最大
+Experiment 3: Single-head restoration - Identify which attention heads in critical layers contribute most to massive activations
 
-基于实验二的结果，我们已经知道哪些层是关键的。
-现在在这些关键层中，逐个恢复单个注意力头，找出最关键的头。
+Based on Experiment 2 results, we already know which layers are critical.
+Now within these critical layers, restore individual attention heads one by one to find the most critical heads.
 """
 
 import os
@@ -52,7 +52,7 @@ class SingleHeadRestoreHook:
 
 
 class SingleHeadRestoreHookV2:
-    """改进版：先保存原始输出，再选择性恢复"""
+    """Improved version: save original output first, then selectively restore"""
     def __init__(self, layer_id, num_heads, target_layer_id, target_head_id):
         self.layer_id = layer_id
         self.num_heads = num_heads
@@ -60,21 +60,21 @@ class SingleHeadRestoreHookV2:
         self.target_head_id = target_head_id
 
     def __call__(self, module, input, output):
-        attn_output = output[0].clone()  # 保存原始输出
+        attn_output = output[0].clone()  # Save original output
         batch_size, seq_len, hidden_dim = attn_output.shape
         head_dim = hidden_dim // self.num_heads
-        
+
         # Reshape to separate heads
         attn_output_reshaped = attn_output.view(batch_size, seq_len, self.num_heads, head_dim)
-        
+
         if self.layer_id == self.target_layer_id:
-            # 在目标层：保存原始值，然后禁用所有头
+            # In target layer: save original values, then disable all heads
             original_head = attn_output_reshaped[:, :, self.target_head_id, :].clone()
             attn_output_reshaped[:, :, :, :] = 0
-            # 恢复目标头
+            # Restore target head
             attn_output_reshaped[:, :, self.target_head_id, :] = original_head
         else:
-            # 其他层：禁用所有头
+            # Other layers: disable all heads
             attn_output_reshaped[:, :, :, :] = 0
         
         modified_output = attn_output_reshaped.view(batch_size, seq_len, hidden_dim)
@@ -82,7 +82,7 @@ class SingleHeadRestoreHookV2:
 
 
 def run_single_head_experiment(args, target_layer_id, target_head_id):
-    """运行单头恢复实验：禁用所有头，只恢复指定层的指定头"""
+    """Run single-head restoration experiment: disable all heads, restore only the specified head in the specified layer"""
     
     # Load model
     model, tokenizer, device, layers, hidden_size, seq_len = lib.load_llm(args)

@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """
 Experiment 4: SVD Direction Alignment Analysis
-实验四：奇异值分解方向对齐分析
+Experiment 4: Singular Value Decomposition direction alignment analysis
 
-研究问题：
-产生大规模激活的权重矩阵的右奇异向量，是否与巨量激活的向量方向一致？
+Research Question:
+Do the right singular vectors of weight matrices that produce massive activations
+align with the direction vectors of massive activations?
 
-方法：
-1. 识别产生大规模激活的层和维度
-2. 对该层的权重矩阵进行SVD分解
-3. 提取右奇异向量（输入空间的主方向）
-4. 计算右奇异向量与实际激活向量的余弦相似度
-5. 分析对齐程度
+Methodology:
+1. Identify layers and dimensions that produce massive activations
+2. Perform SVD decomposition on weight matrices of these layers
+3. Extract right singular vectors (principal directions in input space)
+4. Calculate cosine similarity between right singular vectors and actual activation vectors
+5. Analyze alignment degree
 """
 
 import os
@@ -33,16 +34,16 @@ from lib.model_utils import is_llama_model
 
 def compute_svd_for_layer(layer, layer_id, model_type='llama'):
     """
-    对层的权重矩阵进行SVD分解
-    返回：U, S, Vh (右奇异向量在Vh中)
+    Perform SVD decomposition on layer weight matrices
+    Returns: U, S, Vh (right singular vectors are in Vh)
     """
     print(f"\nComputing SVD for Layer {layer_id}...")
     
     svd_results = {}
     
     if model_type == 'llama' or model_type == 'opt':
-        # LLaMA/OPT: 分析 MLP 的权重
-        # MLP有两个线性层：up_proj (或gate_proj) 和 down_proj
+        # LLaMA/OPT: Analyze MLP weights
+        # MLP has two linear layers: up_proj (or gate_proj) and down_proj
         
         # 1. MLP up_proj/gate_proj: [hidden_dim, intermediate_dim]
         if hasattr(layer.mlp, 'up_proj'):
@@ -56,7 +57,7 @@ def compute_svd_for_layer(layer, layer_id, model_type='llama'):
                 'shape': W_up.shape
             }
         
-        # 2. MLP gate_proj (LLaMA特有)
+        # 2. MLP gate_proj (LLaMA-specific)
         if hasattr(layer.mlp, 'gate_proj'):
             W_gate = layer.mlp.gate_proj.weight.data.cpu().float().numpy()
             print(f"  gate_proj shape: {W_gate.shape}")
@@ -93,8 +94,8 @@ def compute_svd_for_layer(layer, layer_id, model_type='llama'):
             }
     
     elif model_type == 'gpt2':
-        # GPT-2: 分析 MLP 的权重
-        W_fc = layer.mlp.c_fc.weight.data.cpu().float().numpy().T  # GPT-2的权重是转置的
+        # GPT-2: Analyze MLP weights
+        W_fc = layer.mlp.c_fc.weight.data.cpu().float().numpy().T  # GPT-2 weights are transposed
         U_fc, S_fc, Vh_fc = np.linalg.svd(W_fc, full_matrices=False)
         svd_results['c_fc'] = {
             'U': U_fc,
@@ -117,7 +118,7 @@ def compute_svd_for_layer(layer, layer_id, model_type='llama'):
 
 def collect_activations_with_directions(args):
     """
-    收集激活值及其方向向量
+    Collect activation values and their direction vectors
     """
     print("\n" + "="*80)
     print("COLLECTING ACTIVATIONS AND DIRECTIONS")
@@ -145,10 +146,10 @@ def collect_activations_with_directions(args):
     
     for layer_id in range(n_layers):
         activation_data[layer_id] = {
-            'max_activations': [],  # 每个样本的最大激活值
-            'max_positions': [],    # 最大激活值的位置 (token_idx, dim_idx)
-            'activation_vectors': [],  # 完整的激活向量
-            'max_activation_vectors': []  # 产生最大激活的那个token的向量
+            'max_activations': [],  # Maximum activation value for each sample
+            'max_positions': [],    # Position of maximum activation (token_idx, dim_idx)
+            'activation_vectors': [],  # Complete activation vectors
+            'max_activation_vectors': []  # Vector of the token that produces maximum activation
         }
 
     print(f"\nProcessing {len(testseq_list)} samples...")
@@ -169,13 +170,13 @@ def collect_activations_with_directions(args):
                 if len(feat.shape) == 3:
                     feat = feat[0]  # [seq_len, hidden_dim]
                 
-                # 找到最大激活值及其位置
+                # Find maximum activation value and its position
                 feat_abs = np.abs(feat)
                 max_val = np.max(feat_abs)
                 max_pos = np.unravel_index(np.argmax(feat_abs), feat_abs.shape)
                 token_idx, dim_idx = max_pos
                 
-                # 保存数据
+                # Save data
                 activation_data[layer_id]['max_activations'].append(max_val)
                 activation_data[layer_id]['max_positions'].append((token_idx, dim_idx))
                 activation_data[layer_id]['activation_vectors'].append(feat)
@@ -186,7 +187,7 @@ def collect_activations_with_directions(args):
 
 def analyze_svd_alignment(activation_data, layers, args):
     """
-    分析SVD方向与激活方向的对齐程度
+    Analyze alignment degree between SVD directions and activation directions
     """
     print("\n" + "="*80)
     print("ANALYZING SVD-ACTIVATION ALIGNMENT")
@@ -196,7 +197,7 @@ def analyze_svd_alignment(activation_data, layers, args):
     
     alignment_results = {}
     
-    # 重点分析产生大规模激活的层（从实验一的结果）
+    # Focus on analyzing layers that produce massive activations (from Experiment 1 results)
     critical_layers = list(range(3, 38))  # Layer 3-37
     
     for layer_id in tqdm(critical_layers, desc="Analyzing layers"):
@@ -204,33 +205,33 @@ def analyze_svd_alignment(activation_data, layers, args):
         print(f"Layer {layer_id}")
         print(f"{'='*60}")
         
-        # 1. 对该层进行SVD
+        # 1. Perform SVD on this layer
         svd_results = compute_svd_for_layer(layers[layer_id], layer_id, model_type)
-        
-        # 2. 获取该层的激活向量
+
+        # 2. Get activation vectors for this layer
         max_act_vectors = np.array(activation_data[layer_id]['max_activation_vectors'])  # [n_samples, hidden_dim]
-        
-        # 3. 计算平均激活方向
+
+        # 3. Calculate mean activation direction
         mean_activation = np.mean(max_act_vectors, axis=0)  # [hidden_dim]
-        mean_activation = mean_activation / (np.linalg.norm(mean_activation) + 1e-8)  # 归一化
-        
-        # 4. 对每个权重矩阵，计算右奇异向量与激活方向的对齐度
+        mean_activation = mean_activation / (np.linalg.norm(mean_activation) + 1e-8)  # Normalize
+
+        # 4. For each weight matrix, calculate alignment between right singular vectors and activation direction
         layer_alignments = {}
         
         for weight_name, svd_data in svd_results.items():
-            Vh = svd_data['Vh']  # [k, input_dim]，每一行是一个右奇异向量
-            S = svd_data['S']    # 奇异值
-            
-            # 计算前k个右奇异向量与平均激活方向的余弦相似度
-            k = min(10, Vh.shape[0])  # 取前10个主成分
+            Vh = svd_data['Vh']  # [k, input_dim], each row is a right singular vector
+            S = svd_data['S']    # Singular values
+
+            # Calculate cosine similarity between top k right singular vectors and mean activation direction
+            k = min(10, Vh.shape[0])  # Take top 10 principal components
             alignments = []
             
             for i in range(k):
-                right_singular_vec = Vh[i, :]  # 第i个右奇异向量
-                
-                # 确保维度匹配
+                right_singular_vec = Vh[i, :]  # i-th right singular vector
+
+                # Ensure dimension matching
                 if right_singular_vec.shape[0] == mean_activation.shape[0]:
-                    # 计算余弦相似度
+                    # Calculate cosine similarity
                     cosine_sim = np.dot(right_singular_vec, mean_activation) / (
                         np.linalg.norm(right_singular_vec) * np.linalg.norm(mean_activation) + 1e-8
                     )
@@ -243,7 +244,7 @@ def analyze_svd_alignment(activation_data, layers, args):
             
             layer_alignments[weight_name] = alignments
             
-            # 打印最对齐的成分
+            # Print best aligned component
             if alignments:
                 best_alignment = max(alignments, key=lambda x: x['abs_cosine_similarity'])
                 print(f"  {weight_name}:")
@@ -262,19 +263,19 @@ def analyze_svd_alignment(activation_data, layers, args):
 
 
 def generate_visualizations(alignment_results, savedir):
-    """生成可视化"""
+    """Generate visualizations"""
     print("\n" + "="*80)
     print("GENERATING VISUALIZATIONS")
     print("="*80)
     
     os.makedirs(savedir, exist_ok=True)
     
-    # 1. 绘制每层的最大对齐度
+    # 1. Plot maximum alignment for each layer
     fig, axes = plt.subplots(2, 2, figsize=(16, 12))
-    
+
     layers = sorted(alignment_results.keys())
-    
-    # 为每个权重类型绘制对齐度
+
+    # Plot alignment for each weight type
     weight_types = ['up_proj', 'gate_proj', 'down_proj', 'o_proj']
     
     for idx, weight_type in enumerate(weight_types):
@@ -306,10 +307,10 @@ def generate_visualizations(alignment_results, savedir):
     
     print(f"✅ Saved: exp4_svd_alignment_by_weight.png")
     
-    # 2. 绘制热图：层 vs 奇异值成分
+    # 2. Plot heatmap: layer vs singular value component
     fig, ax = plt.subplots(figsize=(14, 10))
-    
-    # 使用 down_proj 作为示例
+
+    # Use down_proj as example
     heatmap_data = []
     for layer_id in layers:
         if 'down_proj' in alignment_results[layer_id]['alignments']:
@@ -337,7 +338,7 @@ def generate_visualizations(alignment_results, savedir):
 
 
 def generate_summary_report(alignment_results, savedir):
-    """生成总结报告"""
+    """Generate summary report"""
     print("\n" + "="*80)
     print("GENERATING SUMMARY REPORT")
     print("="*80)
@@ -353,7 +354,7 @@ def generate_summary_report(alignment_results, savedir):
     lines.append("KEY FINDINGS")
     lines.append("="*80)
     
-    # 统计高对齐度的层
+    # Count layers with high alignment
     high_alignment_layers = {}
     weight_types = ['up_proj', 'gate_proj', 'down_proj', 'o_proj']
     
@@ -364,7 +365,7 @@ def generate_summary_report(alignment_results, savedir):
                 alignments = alignment_results[layer_id]['alignments'][weight_type]
                 if alignments:
                     max_align = max([a['abs_cosine_similarity'] for a in alignments])
-                    if max_align > 0.5:  # 阈值
+                    if max_align > 0.5:  # Threshold
                         high_layers.append((layer_id, max_align))
         high_alignment_layers[weight_type] = high_layers
     
@@ -384,7 +385,7 @@ def generate_summary_report(alignment_results, savedir):
     lines.append("CONCLUSION")
     lines.append("="*80)
     
-    # 判断整体对齐情况
+    # Judge overall alignment situation
     total_high_alignment = sum(len(v) for v in high_alignment_layers.values())
     total_tested = len(alignment_results) * len(weight_types)
     alignment_ratio = total_high_alignment / total_tested if total_tested > 0 else 0
@@ -444,9 +445,9 @@ def main():
     alignment_results = analyze_svd_alignment(activation_data, layers, args)
     
     # Step 3: Save results
-    print("\n💾 Saving results...")
+    print("\n Saving results...")
     with open(os.path.join(args.savedir, 'alignment_results.json'), 'w') as f:
-        # 只保存可序列化的部分
+        # Only save serializable parts
         serializable_results = {}
         for layer_id, data in alignment_results.items():
             serializable_results[layer_id] = {

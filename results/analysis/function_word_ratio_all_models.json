@@ -1,0 +1,284 @@
+{
+  "gpt2": {
+    "critical_layer": 2,
+    "total_samples": 50,
+    "type_statistics": {
+      "功能词": {
+        "count": 20,
+        "percentage": 40.4
+      },
+      "实义词": {
+        "count": 29,
+        "percentage": 59.6
+      }
+    },
+    "semantic_free_percentage": 40.4
+  },
+  "gptj_6b": {
+    "critical_layer": 0,
+    "total_samples": 50,
+    "type_statistics": {
+      "功能词": {
+        "count": 29,
+        "percentage": 58.0
+      },
+      "实义词": {
+        "count": 21,
+        "percentage": 42.0
+      }
+    },
+    "top10_tokens": [
+      {
+        "token": " the",
+        "count": 28
+      },
+      {
+        "token": " Sega",
+        "count": 5
+      },
+      {
+        "token": " Fuj",
+        "count": 4
+      },
+      {
+        "token": "�",
+        "count": 1
+      },
+      {
+        "token": " Sak",
+        "count": 1
+      },
+      {
+        "token": " Cro",
+        "count": 1
+      },
+      {
+        "token": " Kurt",
+        "count": 1
+      },
+      {
+        "token": " The",
+        "count": 1
+      },
+      {
+        "token": " Nag",
+        "count": 1
+      },
+      {
+        "token": " Miy",
+        "count": 1
+      }
+    ],
+    "semantic_free_percentage": 58.0
+  },
+  "bloom_7b1": {
+    "critical_layer": 0,
+    "total_samples": 50,
+    "type_statistics": {
+      "功能词": {
+        "count": 26,
+        "percentage": 52.0
+      },
+      "标点符号": {
+        "count": 23,
+        "percentage": 46.0
+      },
+      "实义词": {
+        "count": 1,
+        "percentage": 2.0
+      }
+    },
+    "top10_tokens": [
+      {
+        "token": " the",
+        "count": 16
+      },
+      {
+        "token": " ,",
+        "count": 13
+      },
+      {
+        "token": " (",
+        "count": 5
+      },
+      {
+        "token": " and",
+        "count": 5
+      },
+      {
+        "token": " .",
+        "count": 4
+      },
+      {
+        "token": " of",
+        "count": 2
+      },
+      {
+        "token": " =",
+        "count": 1
+      },
+      {
+        "token": " that",
+        "count": 1
+      },
+      {
+        "token": " by",
+        "count": 1
+      },
+      {
+        "token": " to",
+        "count": 1
+      }
+    ],
+    "semantic_free_percentage": 98.0
+  },
+  "falcon_7b": {
+    "critical_layer": 0,
+    "total_samples": 50,
+    "type_statistics": {
+      "空白/换行": {
+        "count": 50,
+        "percentage": 100.0
+      }
+    },
+    "top10_tokens": [
+      {
+        "token": " ",
+        "count": 50
+      }
+    ],
+    "semantic_free_percentage": 100.0
+  },
+  "opt_6.7b": {
+    "critical_layer": 0,
+    "total_samples": 50,
+    "type_statistics": {
+      "标点符号": {
+        "count": 48,
+        "percentage": 96.0
+      },
+      "实义词": {
+        "count": 2,
+        "percentage": 4.0
+      }
+    },
+    "semantic_free_percentage": 96.0
+  },
+  "mistral_7b_v03": {
+    "critical_layer": 0,
+    "total_samples": 50,
+    "type_statistics": {
+      "功能词": {
+        "count": 45,
+        "percentage": 90.0
+      },
+      "空白/换行": {
+        "count": 5,
+        "percentage": 10.0
+      }
+    },
+    "top10_tokens": [
+      {
+        "token": "and",
+        "count": 15
+      },
+      {
+        "token": "to",
+        "count": 15
+      },
+      {
+        "token": "",
+        "count": 5
+      },
+      {
+        "token": "that",
+        "count": 5
+      },
+      {
+        "token": "of",
+        "count": 5
+      },
+      {
+        "token": "in",
+        "count": 5
+      }
+    ],
+    "semantic_free_percentage": 100.0
+  },
+  "qwen2.5_7b": {
+    "critical_layer": 3,
+    "total_samples": 50,
+    "type_statistics": {
+      "实义词": {
+        "count": 30,
+        "percentage": 60.0
+      },
+      "空白/换行": {
+        "count": 10,
+        "percentage": 20.0
+      },
+      "功能词": {
+        "count": 10,
+        "percentage": 20.0
+      }
+    },
+    "top10_tokens": [
+      {
+        "token": "\n\n",
+        "count": 5
+      },
+      {
+        "token": " story",
+        "count": 5
+      },
+      {
+        "token": " which",
+        "count": 5
+      },
+      {
+        "token": " that",
+        "count": 5
+      },
+      {
+        "token": " original",
+        "count": 5
+      },
+      {
+        "token": " concept",
+        "count": 5
+      },
+      {
+        "token": " in",
+        "count": 5
+      },
+      {
+        "token": " demo",
+        "count": 5
+      },
+      {
+        "token": " regained",
+        "count": 5
+      },
+      {
+        "token": " ",
+        "count": 5
+      }
+    ],
+    "semantic_free_percentage": 40.0
+  },
+  "llama2_13b": {
+    "critical_layer": 1,
+    "total_samples": 50,
+    "type_statistics": {
+      "功能词": {
+        "count": 17,
+        "percentage": 34.5
+      },
+      "实义词": {
+        "count": 32,
+        "percentage": 65.5
+      }
+    },
+    "semantic_free_percentage": 34.5
+  }
+}

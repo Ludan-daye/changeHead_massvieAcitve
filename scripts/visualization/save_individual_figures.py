@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-保存exp2和exp4的16张单独小图到combined_figures_16文件夹
+Save 16 individual figures from exp2 and exp4 to combined_figures_16 folder
 """
 
 import json
@@ -8,13 +8,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.interpolate import make_interp_spline
 from pathlib import Path
+import os
 
-# 配置
-OUTPUT_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/combined_figures_16')
-BASE_RESULTS_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/models')
-EXP4_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp4')
+# Configuration - use relative paths from repository root
+REPO_ROOT = Path(__file__).resolve().parents[2]  # Go up to repository root
+OUTPUT_DIR = REPO_ROOT / 'results' / 'plot_results' / 'combined_figures_16'
+BASE_RESULTS_DIR = REPO_ROOT / 'results' / 'models'
+EXP4_DIR = REPO_ROOT / 'results' / 'experiments' / 'exp4'
 
-# Exp2模型配置
+# Exp2 model configuration
 EXP2_MODELS = [
     {'key': 'gpt2', 'display': 'GPT-2'},
     {'key': 'gptj_6b', 'display': 'GPT-J-6B'},
@@ -26,7 +28,7 @@ EXP2_MODELS = [
     {'key': 'llama2_13b', 'display': 'LLaMA2-13B'},
 ]
 
-# Exp4模型配置
+# Exp4 model configuration
 EXP4_MODELS = [
     {'key': 'gpt2', 'display': 'GPT-2', 'ma_layer': 11,
      'file': 'svd_analysis.json', 'data_path': 'svd_analysis', 'sv_key': 'singular_values'},
@@ -47,10 +49,10 @@ EXP4_MODELS = [
 ]
 
 
-# ==================== Exp2 函数 ====================
+# ==================== Exp2 Functions ====================
 
 def load_exp2_data(model_name):
-    """加载Exp2数据"""
+    """Load Exp2 data from summary and baseline JSON files"""
     summary_path = BASE_RESULTS_DIR / model_name / 'exp2b_mlp_layer_ablation' / 'summary.json'
     baseline_path = BASE_RESULTS_DIR / model_name / 'exp2b_mlp_layer_ablation' / 'baseline.json'
 
@@ -86,10 +88,10 @@ def load_exp2_data(model_name):
 
 
 def save_exp2_single(model_config):
-    """保存单个exp2模型的图"""
+    """Save individual exp2 model figure"""
     model_key = model_config['key']
     model_display = model_config['display']
-    
+
     data = load_exp2_data(model_key)
     if data is None:
         print(f"  ⚠ {model_display}: Data not found")
@@ -101,7 +103,7 @@ def save_exp2_single(model_config):
 
     fig, ax = plt.subplots(figsize=(5, 3.5), dpi=300)
 
-    # 创建平滑曲线
+    # Create smooth curves
     if len(layers) > 3:
         layers_smooth = np.linspace(layers.min(), layers.max(), 300)
         try:
@@ -123,26 +125,26 @@ def save_exp2_single(model_config):
         disabled_smooth = disabled_values
         baseline_smooth = baseline_values
 
-    # 绘制曲线
+    # Plot curves
     ax.plot(layers_smooth, baseline_smooth, '-', color='#2ecc71', linewidth=2.5, alpha=0.95)
     ax.scatter(layers, baseline_values, s=40, color='#2ecc71', edgecolors='white', linewidth=1.0, alpha=0.9)
     ax.plot(layers_smooth, disabled_smooth, '-', color='#e74c3c', linewidth=2.5, alpha=0.95)
     ax.scatter(layers, disabled_values, s=40, color='#e74c3c', edgecolors='white', linewidth=1.0, alpha=0.9)
 
-    # 填充区域
+    # Fill area between curves
     ax.fill_between(layers_smooth, baseline_smooth, disabled_smooth,
                     where=(disabled_smooth > baseline_smooth), color='#e74c3c', alpha=0.2)
     ax.fill_between(layers_smooth, baseline_smooth, disabled_smooth,
                     where=(disabled_smooth <= baseline_smooth), color='#2ecc71', alpha=0.2)
 
-    # 设置坐标轴
+    # Set axis limits
     all_values = np.concatenate([disabled_values, baseline_values])
     y_min, y_max = all_values.min(), all_values.max()
     y_range = y_max - y_min
     ax.set_ylim(y_min - y_range * 0.1, y_max + y_range * 0.1)
     ax.set_xlim(layers.min() - 1, layers.max() + 1)
 
-    # 稀疏刻度
+    # Sparse ticks
     n_layers = len(layers)
     x_tick_step = max(1, n_layers // 5)
     ax.set_xticks(np.arange(0, layers.max() + 1, x_tick_step))
@@ -165,10 +167,10 @@ def save_exp2_single(model_config):
     return True
 
 
-# ==================== Exp4 函数 ====================
+# ==================== Exp4 Functions ====================
 
 def load_exp4_data(model_config):
-    """加载Exp4数据"""
+    """Load Exp4 data from SVD analysis JSON"""
     svd_file = EXP4_DIR / model_config['key'] / model_config['file']
     if not svd_file.exists():
         return None
@@ -177,7 +179,7 @@ def load_exp4_data(model_config):
 
 
 def get_layer_sv(data, layer_id, config):
-    """获取指定层的奇异值"""
+    """Get singular values for specified layer"""
     try:
         layer_str = str(layer_id)
         if config.get('data_path'):
@@ -192,7 +194,7 @@ def get_layer_sv(data, layer_id, config):
 
 
 def get_all_layers(data, config):
-    """获取所有层ID"""
+    """Get all layer IDs from data"""
     if config.get('data_path'):
         all_keys = list(data[config['data_path']].keys())
     else:
@@ -201,7 +203,7 @@ def get_all_layers(data, config):
 
 
 def select_layers(layer_ids, ma_layer):
-    """选择要展示的层"""
+    """Select layers to display (max 4)"""
     if len(layer_ids) <= 4:
         return layer_ids
     selected = [layer_ids[0]]
@@ -216,10 +218,10 @@ def select_layers(layer_ids, ma_layer):
 
 
 def save_exp4_single(model_config):
-    """保存单个exp4模型的图"""
+    """Save individual exp4 model figure"""
     model_key = model_config['key']
     model_display = model_config['display']
-    
+
     data = load_exp4_data(model_config)
     if data is None:
         print(f"  ⚠ {model_display}: Data not found")
@@ -272,20 +274,20 @@ def save_exp4_single(model_config):
     return True
 
 
-# ==================== 主程序 ====================
+# ==================== Main Program ====================
 
 if __name__ == '__main__':
     print("="*60)
-    print("保存16张单独小图到 combined_figures_16")
+    print("Saving 16 individual figures to combined_figures_16")
     print("="*60)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    print("\n--- Exp2 (8张) ---")
+    print("\n--- Exp2 (8 figures) ---")
     for model in EXP2_MODELS:
         save_exp2_single(model)
 
-    print("\n--- Exp4 (8张) ---")
+    print("\n--- Exp4 (8 figures) ---")
     for model in EXP4_MODELS:
         save_exp4_single(model)
 

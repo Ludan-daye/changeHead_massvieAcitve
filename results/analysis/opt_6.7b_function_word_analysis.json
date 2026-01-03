@@ -1,0 +1,16 @@
+{
+  "model": "OPT-6.7B",
+  "total_samples": 50,
+  "ma_token_count": 50,
+  "type_statistics": {
+    "标点符号": {
+      "count": 48,
+      "percentage": 96.0
+    },
+    "实义词": {
+      "count": 2,
+      "percentage": 4.0
+    }
+  },
+  "semantic_free_percentage": 96.0
+}

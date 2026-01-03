@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Worker script for single layer restoration
-只负责测试单独的一层，用完即毁，确保显存不泄漏
+Only responsible for testing a single layer, disposable after use to ensure no memory leaks
 """
 import os
 import sys
@@ -11,7 +11,7 @@ import numpy as np
 import json
 from tqdm import tqdm
 
-# 添加路径以便导入lib
+# Add path to import lib
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 import lib
 import monkey_patch as mp_patch
@@ -46,11 +46,11 @@ def main():
 
     print(f"Worker started for Layer {args.layer}")
     
-    # 设置随机种子
+    # Set random seed
     np.random.seed(0)
     torch.manual_seed(0)
 
-    # 加载模型
+    # Load model
     class ModelArgs:
         def __init__(self):
             self.model = args.model
@@ -61,7 +61,7 @@ def main():
     model_args = ModelArgs()
     model, tokenizer, device, layers, hidden_size, seq_len = lib.load_llm(model_args)
 
-    # 启用 Feature Capture
+    # Enable Feature Capture
     if "opt" in args.model:
         for i, layer in enumerate(layers):
             mp_patch.enable_opt_custom_decoderlayer(layer, i)
@@ -69,7 +69,7 @@ def main():
         for i, layer in enumerate(layers):
             mp_patch.enable_llama_custom_decoderlayer(layer, i)
 
-    # 注册 Hook
+    # Register Hook
     if hasattr(layers[0].self_attn, 'num_heads'):
         num_heads = layers[0].self_attn.num_heads
     else:
@@ -83,11 +83,11 @@ def main():
             )
             hooks.append(hook)
 
-    # 加载数据
+    # Load data
     print(f"Layer {args.layer}: Loading data...")
     dataloader = lib.get_data(tokenizer, nsamples=args.nsamples, seqlen=seq_len, device=device)
 
-    # 收集数据
+    # Collect data
     layer_stats = {i: {'top1_values': [], 'median_values': [], 
                        'dim_138_values': [], 'dim_447_values': []} 
                    for i in range(len(layers))}
@@ -104,14 +104,14 @@ def main():
 
             for i, layer in enumerate(layers):
                 if hasattr(layer, 'feat'):
-                    feat = layer.feat.float() # 转float省内存
+                    feat = layer.feat.float() # Convert to float to save memory
                     top1 = torch.topk(feat.abs().flatten(), k=1)[0].mean().item()
                     median = torch.median(feat.abs()).item()
                     
                     layer_stats[i]['top1_values'].append(top1)
                     layer_stats[i]['median_values'].append(median)
 
-    # 保存结果
+    # Save results
     results = {}
     for i in range(len(layers)):
         results[i] = {
@@ -123,7 +123,7 @@ def main():
     os.makedirs(args.savedir, exist_ok=True)
     output_file = os.path.join(args.savedir, f'layer_{args.layer}_results.json')
     
-    # 转换numpy float
+    # Convert numpy float
     def convert(o):
         if isinstance(o, (np.float32, np.float64)): return float(o)
         raise TypeError
@@ -133,7 +133,7 @@ def main():
 
     print(f"✅ Layer {args.layer} Done!")
     
-    # 显式删除
+    # Explicitly delete
     del model
     torch.cuda.empty_cache()
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-合并Exp2的PDF图为一个大图 - V2版本
-- 8个模型完整展示
-- 去掉每个小图的图例和标题（裁剪PDF）
-- 模型名称作为子图标题
-布局：2行 × 4列
+Merge Exp2 PDF figures into one large figure - V2 version
+- Complete display of 8 models
+- Remove legend and title from each subplot (crop PDF)
+- Model names as subplot titles
+Layout: 2 rows × 4 columns
 """
 
 import fitz  # PyMuPDF
@@ -14,11 +14,11 @@ import io
 from pathlib import Path
 import numpy as np
 
-# 配置
+# Configuration
 FIGURES_DIR = Path('PROJECT_ROOT/results/plot_results/exp2_figures')
 OUTPUT_DIR = FIGURES_DIR
 
-# 模型配置（8个模型完整列表）
+# Model configuration(8 models complete list)
 MODEL_CONFIGS = [
     {'key': 'gpt2', 'display': 'GPT-2'},
     {'key': 'gptj_6b', 'display': 'GPT-J-6B'},
@@ -32,38 +32,38 @@ MODEL_CONFIGS = [
 
 def pdf_to_image_cropped(pdf_path, dpi=400):
     """
-    将PDF的第一页转换为PIL Image并精确裁剪掉标题和图例部分
-    使用PyMuPDF的坐标系统进行精确裁剪
+    Convert first page of PDF to PIL Image and precisely crop title and legend sections
+    Use PyMuPDF coordinate system for precise cropping
     """
     try:
         doc = fitz.open(str(pdf_path))
-        page = doc[0]  # 获取第一页
+        page = doc[0]  # Get first page
 
-        # 获取原始页面尺寸
+        # Get original page dimensions
         rect = page.rect
         page_width = rect.width
         page_height = rect.height
 
-        # 根据分析，不同模型图例位置不同：
-        # GPT-2: 底部右侧(Y=79%, X=73%)
-        # GPT-J: 顶部右侧(Y=3%, X=73%)
-        # BLOOM: 顶部左侧(Y=3%, X=12%)
-        # 解决方案：只保留中间核心区域（去掉所有边缘）
+        # According to analysis, legend positions differ for different models：
+        # GPT-2: Bottom right(Y=79%, X=73%)
+        # GPT-J: Top right(Y=3%, X=73%)
+        # BLOOM: Top left(Y=3%, X=12%)
+        # Solution: Keep only central core region (remove all edges)
         crop_rect = fitz.Rect(
-            page_width * 0.02,          # 左边界
-            page_height * 0.15,         # 上边界
-            page_width * 0.70,          # 右边界
-            page_height * 0.68          # 下边界（裁掉更多底部白边）
+            page_width * 0.02,          # Left border
+            page_height * 0.15,         # Top border
+            page_width * 0.70,          # Right border
+            page_height * 0.68          # Bottom border (crop more bottom white space)
         )
 
-        # 设置更高缩放以获得更清晰的坐标轴
-        zoom = dpi / 72  # 默认72 DPI
+        # Set higher zoom to get clearer axes
+        zoom = dpi / 72  # Default 72 DPI
         mat = fitz.Matrix(zoom, zoom)
 
-        # 渲染裁剪后的区域
+        # Render cropped region
         pix = page.get_pixmap(matrix=mat, clip=crop_rect)
 
-        # 转换为PIL Image
+        # Convert to PIL Image
         img_data = pix.tobytes("png")
         img = Image.open(io.BytesIO(img_data))
 
@@ -75,19 +75,19 @@ def pdf_to_image_cropped(pdf_path, dpi=400):
         return None
 
 def create_combined_figure():
-    """合并PDF图为大图"""
+    """Merge PDF figures into large figure"""
 
-    # 创建2行4列的子图
+    # Create 2 rows × 4 columns subplots
     fig, axes = plt.subplots(2, 4, figsize=(20, 8))
     axes = axes.flatten()
 
-    # 为每个模型加载并显示PDF
+    # Load and display PDF for each model
     for idx, model_config in enumerate(MODEL_CONFIGS):
         ax = axes[idx]
         model_key = model_config['key']
         model_display = model_config['display']
 
-        # 查找对应的PDF文件
+        # Find corresponding PDF file
         pdf_file = FIGURES_DIR / model_key / f"{model_key}_exp2_2d_comparison.pdf"
 
         if not pdf_file.exists():
@@ -98,7 +98,7 @@ def create_combined_figure():
             ax.axis('off')
             continue
 
-        # 读取PDF并转换为图像（裁剪掉标题和图例）
+        # Read PDF and convert to image(crop title and legend)
         img = pdf_to_image_cropped(pdf_file, dpi=500)
 
         if img is None:
@@ -107,15 +107,15 @@ def create_combined_figure():
             ax.axis('off')
             continue
 
-        # 显示图片
+        # Display image
         ax.imshow(img)
         ax.set_xticks([])
         ax.set_yticks([])
 
-        # 在底部添加模型名称
+        # Add model name at bottom
         ax.set_xlabel(model_display, fontsize=11, fontweight='bold', labelpad=2)
 
-        # 添加边框
+        # Add borders
         for spine in ax.spines.values():
             spine.set_visible(True)
             spine.set_edgecolor('black')
@@ -123,11 +123,11 @@ def create_combined_figure():
 
         print(f"✓ Loaded {model_display}")
 
-    # 调整布局（紧凑排列，减少留白）
+    # Adjust layout(compact arrangement, reduce white space)
     plt.subplots_adjust(left=0.01, right=0.99, top=0.99, bottom=0.05,
                        hspace=0.12, wspace=0.03)
 
-    # 保存
+    # Save
     output_file_png = OUTPUT_DIR / 'exp2_combined_8models.png'
     output_file_pdf = OUTPUT_DIR / 'exp2_combined_8models.pdf'
 

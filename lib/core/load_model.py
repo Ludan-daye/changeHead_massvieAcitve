@@ -8,11 +8,11 @@ from .model_dict import MODEL_DICT_LLMs
 from .model_utils import is_llama_model
 
 
-# 代理必须使用 http://127.0.0.1:7890（Clash HTTP 端口）
+# Proxy must use http://127.0.0.1:7890 (Clash HTTP port)
 os.environ.setdefault("http_proxy", "http://127.0.0.1:7890")
 os.environ.setdefault("https_proxy", "http://127.0.0.1:7890")
 
-# HF Token（必须预先在终端 export HF_TOKEN="hf_xxx..."）
+# HF Token (must be exported in terminal beforehand: export HF_TOKEN="hf_xxx...")
 HF_TOKEN = os.environ.get("HF_TOKEN", None)
 GLOBAL_TOKEN_KWARGS = {"token": HF_TOKEN} if HF_TOKEN else {}
 
@@ -21,7 +21,7 @@ def load_llm(args):
     print(f"loading model {args.model}")
     model_name, cache_dir = MODEL_DICT_LLMs[args.model]["model_id"], MODEL_DICT_LLMs[args.model]["cache_dir"]
 
-    # 如果通过命令行显式传入 access_token，则优先使用
+    # If access_token is explicitly passed via command line, use it with priority
     if hasattr(args, "access_token") and args.access_token != "type in your access token here":
         token_kwargs = {"token": args.access_token}
     else:
@@ -30,14 +30,14 @@ def load_llm(args):
     # For attention analysis, we need attn_implementation='eager'
     attn_impl = getattr(args, 'attn_implementation', 'eager')
 
-    # 统一的 from_pretrained 参数
-    # 临时禁用代理
+    # Unified from_pretrained parameters
+    # Temporarily disable proxy
     import os
     os.environ.pop('HTTP_PROXY', None)
     os.environ.pop('HTTPS_PROXY', None)
     os.environ.pop('http_proxy', None)
     os.environ.pop('https_proxy', None)
-    
+
     common_kwargs = dict(
         torch_dtype=torch.float16,
         cache_dir=cache_dir,
@@ -45,8 +45,8 @@ def load_llm(args):
         device_map="auto",
         attn_implementation=attn_impl,
         trust_remote_code=True,
-        force_download=False,  # 不强制下载
-        local_files_only=False,  # 允许在线验证，但会优先使用缓存
+        force_download=False,  # Do not force download
+        local_files_only=False,  # Allow online validation, but prefer using cache
         **token_kwargs,
     )
 
@@ -59,7 +59,7 @@ def load_llm(args):
         else:
             model = AutoModelForCausalLM.from_pretrained(model_name, **common_kwargs)
     else:
-        # LLaMA / GPT-2 / OPT 等都会走这里
+        # LLaMA / GPT-2 / OPT etc. will all go through here
         model = AutoModelForCausalLM.from_pretrained(model_name, **common_kwargs)
     model.eval()
 
@@ -71,7 +71,7 @@ def load_llm(args):
     device = torch.device("cuda:0")
     if "mpt_30b" in args.model:
         device = model.hf_device_map["transformer.wte"]
-    elif "30b" in args.model or "65b" in args.model or "70b" in args.model or "40b" in args.model: # for 30b and 65b we use device_map to load onto multiple A6000 GPUs, thus the processing here.
+    elif "30b" in args.model or "65b" in args.model or "70b" in args.model or "40b" in args.model: # For 30b and 65b we use device_map to load onto multiple A6000 GPUs, thus the processing here
         device = torch.device("cuda:"+str(model.hf_device_map["lm_head"]))
 
     if "llama2_13b" == args.model:
