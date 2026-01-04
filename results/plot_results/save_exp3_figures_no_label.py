@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Exp3: 生成UV归因堆叠柱状图（不带模型名称、无图例、大字体、稀疏坐标）
-为每个模型生成单独的小图
+Exp3: Generate UV attribution stacked bar chart (no model names, no legend, large font, sparse axes)
+Generate individual figures for each model
 """
 
 import json
@@ -9,11 +9,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-# 配置
-DATA_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp3')
-OUTPUT_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/combined_figures_no_label')
+# Configuration
+DATA_DIR = Path(__file__).resolve().parents[2] / 'results/experiments/exp3'
+OUTPUT_DIR = Path(__file__).resolve().parents[2] / 'results/plot_results/combined_figures_no_label'
 
-# 模型配置
+# Model configuration
 MODEL_CONFIGS = [
     {'key': 'gpt2', 'display': 'GPT-2'},
     {'key': 'gptj_6b', 'display': 'GPT-J-6B'},
@@ -48,7 +48,7 @@ def save_exp3_single(model_config):
     attribution = data.get('attribution', {})
     
     # 检查数据有效性
-    baseline = attribution.get('baseline')
+    baseline = attribution.get('baseline'
     if baseline is None or (isinstance(baseline, float) and np.isnan(baseline)):
         print(f"  ⚠ {model_display}: Invalid data")
         return False
@@ -81,13 +81,13 @@ def save_exp3_single(model_config):
     # 添加百分比标签
     if u_prop > 10:
         ax.text(0, u_prop/2, f'{u_prop:.1f}%', ha='center', va='center',
-               fontsize=11, fontweight='bold', color='white')
+               fontsize=11, fontweight='bold', color='white'
     if v_prop > 10:
         ax.text(0, u_prop + v_prop/2, f'{v_prop:.1f}%', ha='center', va='center',
-               fontsize=11, fontweight='bold', color='white')
+               fontsize=11, fontweight='bold', color='white'
     if inter_prop > 10:
         ax.text(0, u_prop + v_prop + inter_prop/2, f'{inter_prop:.1f}%', ha='center', va='center',
-               fontsize=11, fontweight='bold', color='white')
+               fontsize=11, fontweight='bold', color='white'
 
     # 设置坐标轴
     ax.set_xticks([])
@@ -108,7 +108,7 @@ def save_exp3_single(model_config):
 
     plt.tight_layout()
     output_file = OUTPUT_DIR / f'exp3_{model_display}.png'
-    plt.savefig(output_file, dpi=600, bbox_inches='tight', facecolor='white')
+    plt.savefig(output_file, dpi=600, bbox_inches='tight', facecolor='white'
     plt.close()
     print(f"  ✓ {model_display}: exp3_{model_display}.png")
     return True

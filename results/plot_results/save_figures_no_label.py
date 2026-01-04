@@ -9,13 +9,13 @@ import numpy as np
 from scipy.interpolate import make_interp_spline
 from pathlib import Path
 
-# 配置
-OUTPUT_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/combined_figures_no_label')
-EXP2_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp2')
-EXP2_ARCHIVE_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/archive/by_model')
-EXP4_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp4')
+# Configuration
+OUTPUT_DIR = Path(__file__).resolve().parents[2] / 'results/plot_results/combined_figures_no_label'
+EXP2_DIR = Path(__file__).resolve().parents[2] / 'results/experiments/exp2'
+EXP2_ARCHIVE_DIR = Path(__file__).resolve().parents[2] / 'results/archive/by_model'
+EXP4_DIR = Path(__file__).resolve().parents[2] / 'results/experiments/exp4'
 
-# Exp2模型配置
+# Exp2模型Configuration
 EXP2_MODELS = [
     {'key': 'gpt2', 'display': 'GPT-2'},
     {'key': 'gptj_6b', 'display': 'GPT-J-6B'},
@@ -27,7 +27,7 @@ EXP2_MODELS = [
     {'key': 'llama2_13b', 'display': 'LLaMA2-13B'},
 ]
 
-# Exp4模型配置
+# Exp4模型Configuration
 EXP4_MODELS = [
     {'key': 'gpt2', 'display': 'GPT-2', 'ma_layer': 11,
      'file': 'svd_analysis.json', 'data_path': 'svd_analysis', 'sv_key': 'singular_values'},
@@ -167,7 +167,7 @@ def save_exp2_single(model_config):
     plt.tight_layout()
     # 文件名使用模型显示名称
     output_file = OUTPUT_DIR / f'exp2_{model_display}.png'
-    plt.savefig(output_file, dpi=600, bbox_inches='tight', facecolor='white')
+    plt.savefig(output_file, dpi=600, bbox_inches='tight', facecolor='white'
     plt.close()
     print(f"  ✓ {model_display}: exp2_{model_display}.png")
     return True
@@ -265,7 +265,7 @@ def save_exp4_single(model_config):
     ax.set_xticks(np.linspace(0, max_x, 5, dtype=int))
     ax.set_yticks([0, 25, 50, 75, 100])
     ax.tick_params(axis='both', which='major', labelsize=11)
-    ax.grid(True, alpha=0.2, linestyle='--')
+    ax.grid(True, alpha=0.2, linestyle='--'
 
     for spine in ax.spines.values():
         spine.set_linewidth(1.0)
@@ -275,7 +275,7 @@ def save_exp4_single(model_config):
     plt.tight_layout()
     # 文件名使用模型显示名称
     output_file = OUTPUT_DIR / f'exp4_{model_display}.png'
-    plt.savefig(output_file, dpi=600, bbox_inches='tight', facecolor='white')
+    plt.savefig(output_file, dpi=600, bbox_inches='tight', facecolor='white'
     plt.close()
     print(f"  ✓ {model_display}: exp4_{model_display}.png")
     return True

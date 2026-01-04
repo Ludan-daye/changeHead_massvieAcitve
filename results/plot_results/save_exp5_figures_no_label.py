@@ -9,11 +9,11 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from scipy.interpolate import make_interp_spline
 
-# 配置
-DATA_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp5')
-OUTPUT_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/combined_figures_no_label')
+# Configuration
+DATA_DIR = Path(__file__).resolve().parents[2] / 'results/experiments/exp5'
+OUTPUT_DIR = Path(__file__).resolve().parents[2] / 'results/plot_results/combined_figures_no_label'
 
-# 模型配置
+# Model configuration
 MODEL_CONFIGS = [
     {'key': 'gpt2', 'display': 'GPT-2'},
     {'key': 'gptj_6b', 'display': 'GPT-J-6B'},
@@ -58,12 +58,12 @@ def save_exp5_single(model_config):
     # Remove Top-k (取绝对值)
     remove_abs = [abs(c) for c in remove_changes]
     bars1 = ax.bar(x - width/2, remove_abs, width,
-                   color='#5B9BD5', alpha=0.7, edgecolor='none')
+                   color='#5B9BD5', alpha=0.7, edgecolor='none'
 
     # Keep Top-k (取绝对值)
     keep_abs = [abs(c) for c in keep_changes]
     bars2 = ax.bar(x + width/2, keep_abs, width,
-                   color='#ED7D31', alpha=0.7, edgecolor='none')
+                   color='#ED7D31', alpha=0.7, edgecolor='none'
 
     # 添加平滑趋势线
     if len(x) >= 3:
@@ -100,7 +100,7 @@ def save_exp5_single(model_config):
 
     plt.tight_layout()
     output_file = OUTPUT_DIR / f'exp5_{model_display}.png'
-    plt.savefig(output_file, dpi=600, bbox_inches='tight', facecolor='white')
+    plt.savefig(output_file, dpi=600, bbox_inches='tight', facecolor='white'
     plt.close()
     print(f"  ✓ {model_display}: exp5_{model_display}.png")
     return True

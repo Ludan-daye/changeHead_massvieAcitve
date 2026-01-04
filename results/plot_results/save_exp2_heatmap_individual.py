@@ -16,7 +16,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RESULTS_DIR = PROJECT_ROOT / 'results/experiments/exp2'
 OUTPUT_DIR = PROJECT_ROOT / 'results/plot_results/exp2_heatmap_individual'
 
-# 模型配置
+# Model configuration
 MODEL_CONFIGS = [
     {'key': 'gpt2', 'display': 'GPT-2', 'critical_layer': 3},
     {'key': 'gptj_6b', 'display': 'GPT-J-6B', 'critical_layer': 22},
@@ -117,7 +117,7 @@ def create_heatmap_figure(model_config):
                 suppression = 1 - (values[idx] / baseline)
                 colors[i, j] = [0.9, 0.5 - suppression * 0.3, 0.5 - suppression * 0.3]  # 红色
 
-    ax.imshow(colors, aspect='equal')
+    ax.imshow(colors, aspect='equal'
 
     # 添加层编号标注
     for i in range(grid_size):
@@ -145,7 +145,7 @@ def create_heatmap_figure(model_config):
 
     # 添加边框
     for spine in ax.spines.values():
-        spine.set_edgecolor('black')
+        spine.set_edgecolor('black'
         spine.set_linewidth(2)
 
     # 调整布局
@@ -155,8 +155,8 @@ def create_heatmap_figure(model_config):
     output_file_png = OUTPUT_DIR / f'exp2_heatmap_{model_key}.png'
     output_file_pdf = OUTPUT_DIR / f'exp2_heatmap_{model_key}.pdf'
 
-    plt.savefig(output_file_png, dpi=300, bbox_inches='tight', facecolor='white')
-    plt.savefig(output_file_pdf, bbox_inches='tight', facecolor='white')
+    plt.savefig(output_file_png, dpi=300, bbox_inches='tight', facecolor='white'
+    plt.savefig(output_file_pdf, bbox_inches='tight', facecolor='white'
     
     print(f"✓ {model_display} saved: {output_file_png.name}")
 
@@ -179,16 +179,16 @@ def create_legend():
         rect = plt.Rectangle((0.1, 0.7 - i * 0.25), 0.15, 0.15, 
                              facecolor=color, edgecolor='black', linewidth=1)
         ax.add_patch(rect)
-        ax.text(0.3, 0.775 - i * 0.25, label, fontsize=12, va='center')
+        ax.text(0.3, 0.775 - i * 0.25, label, fontsize=12, va='center'
     
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
-    ax.axis('off')
+    ax.axis('off'
     
     plt.tight_layout()
     
     output_file = OUTPUT_DIR / 'legend.png'
-    plt.savefig(output_file, dpi=300, bbox_inches='tight', facecolor='white')
+    plt.savefig(output_file, dpi=300, bbox_inches='tight', facecolor='white'
     plt.close()
     print(f"✓ Legend saved: {output_file.name}")
 

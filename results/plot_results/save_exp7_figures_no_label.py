@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from scipy.interpolate import make_interp_spline
 
-# 配置
-DATA_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp7')
-OUTPUT_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/combined_figures_no_label')
+# Configuration
+DATA_DIR = Path(__file__).resolve().parents[2] / 'results/experiments/exp7'
+OUTPUT_DIR = Path(__file__).resolve().parents[2] / 'results/plot_results/combined_figures_no_label'
 
 # 配色
 COLOR_BLUE = '#7BA5D5'
@@ -19,7 +19,7 @@ COLOR_RED = '#D97E73'
 COLOR_RED_DARK = '#B95E53'
 COLOR_BLUE_DARK = '#5B85B5'
 
-# 模型配置
+# Model configuration
 MODEL_CONFIGS = [
     {'key': 'gpt2', 'display': 'GPT-2'},
     {'key': 'gptj_6b', 'display': 'GPT-J-6B'},
@@ -80,12 +80,12 @@ def save_exp7_single(model_config):
     for bar in bars1:
         height = bar.get_height()
         ax.text(bar.get_x() + bar.get_width()/2., height + baseline*0.01,
-               f'{height:.1f}', ha='center', va='bottom', fontsize=14, fontweight='bold')
+               f'{height:.1f}', ha='center', va='bottom', fontsize=14, fontweight='bold'
 
     for bar, val in zip(bars2, ablated_vals):
         height = bar.get_height()
         ax.text(bar.get_x() + bar.get_width()/2., height + baseline*0.01,
-               f'{val:.1f}', ha='center', va='bottom', fontsize=14, fontweight='bold')
+               f'{val:.1f}', ha='center', va='bottom', fontsize=14, fontweight='bold'
 
     # 趋势线
     x_smooth = np.linspace(x[0] - width/2, x[-1] - width/2, 50)
@@ -103,7 +103,7 @@ def save_exp7_single(model_config):
 
     # 设置坐标轴（放大X轴标签）
     ax.set_xticks(x)
-    ax.set_xticklabels(categories, fontsize=18, fontweight='bold')
+    ax.set_xticklabels(categories, fontsize=18, fontweight='bold'
     ax.tick_params(axis='y', labelsize=16)
     ax.set_ylim(0, max(baseline_vals + ablated_vals) * 1.15)
     
@@ -118,13 +118,13 @@ def save_exp7_single(model_config):
         spine.set_linewidth(1.0)
 
     # 网格
-    ax.grid(True, alpha=0.2, axis='y')
+    ax.grid(True, alpha=0.2, axis='y'
 
     # 不添加图例和模型名称
 
     plt.tight_layout()
     output_file = OUTPUT_DIR / f'exp7_{model_display}.png'
-    plt.savefig(output_file, dpi=600, bbox_inches='tight', facecolor='white')
+    plt.savefig(output_file, dpi=600, bbox_inches='tight', facecolor='white'
     plt.close()
     print(f"  ✓ {model_display}: exp7_{model_display}.png")
     return True

@@ -15,7 +15,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RESULTS_DIR = PROJECT_ROOT / 'results/experiments/exp2'
 OUTPUT_DIR = PROJECT_ROOT / 'results/plot_results/exp2_figures'
 
-# 模型配置
+# Model configuration
 MODEL_CONFIGS = [
     {'key': 'gpt2', 'display': 'GPT-2', 'critical_layer': 3},
     {'key': 'gptj_6b', 'display': 'GPT-J-6B', 'critical_layer': 22},
@@ -27,7 +27,7 @@ MODEL_CONFIGS = [
     {'key': 'llama2_13b', 'display': 'LLaMA2-13B', 'critical_layer': 30},
 ]
 
-# 颜色配置
+# 颜色Configuration
 COLOR_BASELINE = '#2ECC71'    # 绿色 - Baseline
 COLOR_ABLATED = '#E74C3C'     # 红色 - Ablated
 COLOR_FILL = '#FFB6B0'        # 浅红色 - 填充区域
@@ -133,18 +133,18 @@ def create_individual_figure(model_config):
             tick_positions.append(max_layer)
 
     ax.set_xticks(tick_positions)
-    ax.set_xticklabels(tick_positions, fontsize=12, fontweight='bold')
+    ax.set_xticklabels(tick_positions, fontsize=12, fontweight='bold'
 
     # 纵坐标字体
     ax.tick_params(axis='y', labelsize=12, width=1.5, length=6)
     ax.tick_params(axis='x', width=1.5, length=6)
 
     # 网格
-    ax.grid(True, alpha=0.3, linestyle='-', linewidth=1, color='gray')
+    ax.grid(True, alpha=0.3, linestyle='-', linewidth=1, color='gray'
 
     # 边框
     for spine in ax.spines.values():
-        spine.set_edgecolor('black')
+        spine.set_edgecolor('black'
         spine.set_linewidth(2)
 
     # 调整布局
@@ -154,8 +154,8 @@ def create_individual_figure(model_config):
     output_file_png = OUTPUT_DIR / f'exp2_{model_key}.png'
     output_file_pdf = OUTPUT_DIR / f'exp2_{model_key}.pdf'
 
-    plt.savefig(output_file_png, dpi=300, bbox_inches='tight', facecolor='white')
-    plt.savefig(output_file_pdf, bbox_inches='tight', facecolor='white')
+    plt.savefig(output_file_png, dpi=300, bbox_inches='tight', facecolor='white'
+    plt.savefig(output_file_pdf, bbox_inches='tight', facecolor='white'
     
     print(f"✓ {model_display} saved: {output_file_png.name}")
 

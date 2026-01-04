@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from scipy.interpolate import make_interp_spline
 
-# 配置
-DATA_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp7')
-OUTPUT_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/combined_figures_no_label')
+# Configuration
+DATA_DIR = Path(__file__).resolve().parents[2] / 'results/experiments/exp7'
+OUTPUT_DIR = Path(__file__).resolve().parents[2] / 'results/plot_results/combined_figures_no_label'
 
 # 配色
 COLOR_BLUE = '#7BA5D5'
@@ -19,7 +19,7 @@ COLOR_RED = '#D97E73'
 COLOR_RED_DARK = '#B95E53'
 COLOR_BLUE_DARK = '#5B85B5'
 
-# 模型配置
+# Model configuration
 MODEL_CONFIGS = [
     {'key': 'gpt2', 'display': 'GPT-2'},
     {'key': 'gptj_6b', 'display': 'GPT-J'},
@@ -54,15 +54,15 @@ def create_exp7_combined():
         data = load_model_data(model_key)
         if data is None:
             ax.text(0.5, 0.5, f'{model_display}\nData Not Found',
-                   ha='center', va='center', fontsize=14, color='red')
-            ax.axis('off')
+                   ha='center', va='center', fontsize=14, color='red'
+            ax.axis('off'
             continue
 
         baseline = data['attribution']['baseline']
         if np.isnan(baseline) or baseline == 0:
             ax.text(0.5, 0.5, f'{model_display}\nInvalid Data',
-                   ha='center', va='center', fontsize=14, color='red')
-            ax.axis('off')
+                   ha='center', va='center', fontsize=14, color='red'
+            ax.axis('off'
             continue
 
         ablate_dir = data['attribution']['ablate_direction_mean']
@@ -86,12 +86,12 @@ def create_exp7_combined():
         for bar in bars1:
             height = bar.get_height()
             ax.text(bar.get_x() + bar.get_width()/2., height + baseline*0.01,
-                   f'{height:.1f}', ha='center', va='bottom', fontsize=12, fontweight='bold')
+                   f'{height:.1f}', ha='center', va='bottom', fontsize=12, fontweight='bold'
 
         for bar, val in zip(bars2, ablated_vals):
             height = bar.get_height()
             ax.text(bar.get_x() + bar.get_width()/2., height + baseline*0.01,
-                   f'{val:.1f}', ha='center', va='bottom', fontsize=12, fontweight='bold')
+                   f'{val:.1f}', ha='center', va='bottom', fontsize=12, fontweight='bold'
 
         # 趋势线
         x_smooth = np.linspace(x[0] - width/2, x[-1] - width/2, 50)
@@ -109,7 +109,7 @@ def create_exp7_combined():
 
         # 设置坐标轴（放大X轴标签）
         ax.set_xticks(x)
-        ax.set_xticklabels(categories, fontsize=16, fontweight='bold')
+        ax.set_xticklabels(categories, fontsize=16, fontweight='bold'
         ax.tick_params(axis='y', labelsize=14)
         ax.set_ylim(0, max(baseline_vals + ablated_vals) * 1.18)
 
@@ -124,7 +124,7 @@ def create_exp7_combined():
             spine.set_linewidth(1.2)
 
         # 网格
-        ax.grid(True, alpha=0.2, axis='y')
+        ax.grid(True, alpha=0.2, axis='y'
 
         # 底部添加模型名称（放大字体）
         ax.set_xlabel(f'({chr(97+idx)}) {model_display}', fontsize=18, fontweight='bold', labelpad=8)
@@ -136,8 +136,8 @@ def create_exp7_combined():
     # 保存
     output_png = OUTPUT_DIR / 'exp7_Ablation_Comparison_Combined.png'
     output_pdf = OUTPUT_DIR / 'exp7_Ablation_Comparison_Combined.pdf'
-    plt.savefig(output_png, dpi=600, bbox_inches='tight', facecolor='white')
-    plt.savefig(output_pdf, bbox_inches='tight', facecolor='white')
+    plt.savefig(output_png, dpi=600, bbox_inches='tight', facecolor='white'
+    plt.savefig(output_pdf, bbox_inches='tight', facecolor='white'
     plt.close()
     print(f"✓ 保存: {output_png.name}")
     print(f"✓ 保存: {output_pdf.name}")

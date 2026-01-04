@@ -11,11 +11,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-# 配置
-DATA_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/experiments/exp3')
-OUTPUT_DIR = Path('/mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/ludan/massActive/changeHead_massvieAcitve/results/plot_results/combined_figures_no_label')
+# Configuration
+DATA_DIR = Path(__file__).resolve().parents[2] / 'results/experiments/exp3'
+OUTPUT_DIR = Path(__file__).resolve().parents[2] / 'results/plot_results/combined_figures_no_label'
 
-# 模型配置
+# Model configuration
 MODELS = ['gpt2', 'gptj_6b', 'bloom_7b1', 'falcon_7b', 'opt_6.7b', 'mistral_7b_v03', 'qwen2.5_7b', 'llama2_13b']
 MODEL_DISPLAY_NAMES = {
     'gpt2': 'GPT-2',
@@ -99,17 +99,17 @@ def create_stacked_bar_no_legend():
         # U标签
         if u > 8:
             ax.text(i, u/2, f'{u:.1f}%', ha='center', va='center',
-                   fontsize=20, fontweight='bold', color='white')
+                   fontsize=20, fontweight='bold', color='white'
 
         # V标签
         if v > 8:
             ax.text(i, u + v/2, f'{v:.1f}%', ha='center', va='center',
-                   fontsize=20, fontweight='bold', color='white')
+                   fontsize=20, fontweight='bold', color='white'
 
         # 交互标签
         if inter > 8:
             ax.text(i, u + v + inter/2, f'{inter:.1f}%', ha='center', va='center',
-                   fontsize=20, fontweight='bold', color='white')
+                   fontsize=20, fontweight='bold', color='white'
 
     # 添加模式标注（Independent vs Synergistic）
     for i, model in enumerate(models_with_data):
@@ -123,13 +123,13 @@ def create_stacked_bar_no_legend():
             color = '#e67e22'
             label_text = 'Syner'
 
-        ax.text(i, 102, marker, ha='center', fontsize=24, color=color, fontweight='bold')
-        ax.text(i, 108, label_text, ha='center', fontsize=16, color=color, fontweight='bold')
+        ax.text(i, 102, marker, ha='center', fontsize=24, color=color, fontweight='bold'
+        ax.text(i, 108, label_text, ha='center', fontsize=16, color=color, fontweight='bold'
 
     # 设置坐标轴（大字体、稀疏刻度）
     ax.set_xticks(x)
-    ax.set_xticklabels(model_names, rotation=15, ha='right', fontsize=20, fontweight='bold')
-    ax.set_ylabel('Attribution Proportion (%)', fontsize=22, fontweight='bold')
+    ax.set_xticklabels(model_names, rotation=15, ha='right', fontsize=20, fontweight='bold'
+    ax.set_ylabel('Attribution Proportion (%)', fontsize=22, fontweight='bold'
     ax.set_ylim(0, 118)
 
     # 稀疏Y轴刻度
@@ -142,7 +142,7 @@ def create_stacked_bar_no_legend():
     # 不添加图例
 
     # 网格
-    ax.grid(axis='y', alpha=0.3, linestyle='--')
+    ax.grid(axis='y', alpha=0.3, linestyle='--'
     ax.set_axisbelow(True)
 
     # 边框
@@ -154,8 +154,8 @@ def create_stacked_bar_no_legend():
     # 保存PNG和PDF
     output_png = OUTPUT_DIR / 'exp3_UV_Attribution_Stacked_Bar.png'
     output_pdf = OUTPUT_DIR / 'exp3_UV_Attribution_Stacked_Bar.pdf'
-    plt.savefig(output_png, dpi=600, bbox_inches='tight', facecolor='white')
-    plt.savefig(output_pdf, bbox_inches='tight', facecolor='white')
+    plt.savefig(output_png, dpi=600, bbox_inches='tight', facecolor='white'
+    plt.savefig(output_pdf, bbox_inches='tight', facecolor='white'
     plt.close()
     print(f"✓ 保存: {output_png.name}")
     print(f"✓ 保存: {output_pdf.name}")
@@ -202,12 +202,12 @@ def create_cross_model_comparison():
 
     # 设置坐标轴（放大字体）
     ax.set_xticks(x_pos)
-    ax.set_xticklabels(model_names, rotation=15, ha='right', fontsize=24, fontweight='bold')
-    ax.set_ylabel('Massive Activation Value', fontsize=26, fontweight='bold')
+    ax.set_xticklabels(model_names, rotation=15, ha='right', fontsize=24, fontweight='bold'
+    ax.set_ylabel('Massive Activation Value', fontsize=26, fontweight='bold'
     ax.tick_params(axis='y', labelsize=24)
 
     # 网格
-    ax.grid(axis='y', alpha=0.3, linestyle='--')
+    ax.grid(axis='y', alpha=0.3, linestyle='--'
     ax.set_ylim(bottom=0)
 
     # 边框
@@ -221,8 +221,8 @@ def create_cross_model_comparison():
     # 保存
     output_png = OUTPUT_DIR / 'exp3_Cross_Model_Comparison.png'
     output_pdf = OUTPUT_DIR / 'exp3_Cross_Model_Comparison.pdf'
-    plt.savefig(output_png, dpi=600, bbox_inches='tight', facecolor='white')
-    plt.savefig(output_pdf, bbox_inches='tight', facecolor='white')
+    plt.savefig(output_png, dpi=600, bbox_inches='tight', facecolor='white'
+    plt.savefig(output_pdf, bbox_inches='tight', facecolor='white'
     plt.close()
     print(f"✓ 保存: {output_png.name}")
     print(f"✓ 保存: {output_pdf.name}")
