@@ -318,7 +318,7 @@ where h₂ is MLP intermediate activation, v₁ is first right singular vector
 ## 📁 Repository Structure
 
 ```
-changeHead_massvieAcitve/
+massive-activations/
 ├── README.md                       # This file
 ├── LICENSE                         # MIT License
 ├── requirements.txt                # Python dependencies
@@ -365,8 +365,8 @@ changeHead_massvieAcitve/
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/Ludan-daye/changeHead_massvieAcitve.git
-cd changeHead_massvieAcitve
+git clone https://github.com/anonymous/massive-activations.git
+cd massive-activations
 
 # 2. Create conda environment
 conda create -n ma python=3.11
@@ -538,10 +538,10 @@ If this work contributes to your research, please cite:
 ```bibtex
 @misc{massive_activation_2025,
   title={Investigating Massive Activations in Large Language Models},
-  author={Anonymous Research Team},
+  author={Anonymous},
   year={2025},
   note={Systematic investigation of massive activation mechanisms in transformer-based LLMs},
-  howpublished={\url{https://github.com/Ludan-daye/changeHead_massvieAcitve}}
+  howpublished={Under Review}
 }
 ```
 
@@ -582,7 +582,7 @@ Special thanks to the mechanistic interpretability community for establishing ri
 
 **Last Updated**: 2025-12-29
 
-**Repository**: https://github.com/Ludan-daye/changeHead_massvieAcitve
+**Repository**: [Anonymous Repository - Will be made public upon acceptance]
 
 ---
 

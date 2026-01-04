@@ -54,7 +54,7 @@ This project systematically investigates the "Massive Activation" (MA) phenomeno
 ### Directory Structure
 
 ```
-changeHead_massvieAcitve/
+massive-activations/
 ├── README.md                          # Human-friendly version
 ├── README_STRUCTURED.md               # This file - Claude-optimized
 ├── TASK_COMPLETION_TREE.md            # Task tracking
@@ -379,7 +379,7 @@ y = down_proj(x) = U Sigma (V^T x)
 ```bash
 # 1. Clone repository
 git clone <repository_url>
-cd changeHead_massvieAcitve
+cd massive-activations
 
 # 2. Create conda environment
 conda create -n ma python=3.11
