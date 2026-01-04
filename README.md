@@ -22,7 +22,7 @@ This repository contains the complete implementation and results of a systematic
 
 ### Research Contribution
 
-We provide the first **end-to-end mechanistic explanation** of massive activation generation through rigorous causal analysis:
+This work provides the first **end-to-end mechanistic explanation** of massive activation generation through rigorous causal analysis:
 
 ```
 Function Word Triggering → MLP Generation → SVD Geometric Amplification
@@ -46,7 +46,7 @@ Massive activations are extreme internal activation values that:
 
 ## 🎯 Research Questions
 
-Our investigation systematically addresses five interconnected research questions:
+This investigation systematically addresses five interconnected research questions:
 
 | Question | Focus | Key Method |
 |----------|-------|------------|
@@ -588,6 +588,6 @@ Special thanks to the mechanistic interpretability community for establishing ri
 
 <div align="center">
 
-**For questions or collaboration inquiries, please open an issue on GitHub**
+**For questions or collaboration inquiries, please use the repository issue tracker**
 
 </div>

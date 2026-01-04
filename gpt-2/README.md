@@ -1,13 +1,13 @@
 # Training GPT-2 with Explicit Attention Biases
 
-We provide the code and pretrained checkpoints for the experiments in Section 5.2 on "Explicit attention biases". The code for training GPT-2 is based on the open-source [nanoGPT](https://github.com/karpathy/nanoGPT) repository.
+This directory provides the code and pretrained checkpoints for the experiments in Section 5.2 on "Explicit attention biases". The code for training GPT-2 is based on the open-source [nanoGPT](https://github.com/karpathy/nanoGPT) repository.
 
 ---
 <p align="center">
 <img src="../assets/equation.png" width=80% height=80% 
 class="center">
 </p>
-We propose to augment the self-attention mechanism with explicit attention biases, by inserting auxiliary key and value parameters.  
+The proposed method to augment the self-attention mechanism with explicit attention biases, by inserting auxiliary key and value parameters.  
 
 [model_attn_bias.py](model_attn_bias.py) contains the model definition of GPT-2 augmented with explicit attention biases.
 
@@ -15,7 +15,7 @@ We propose to augment the self-attention mechanism with explicit attention biase
 
 - *data*: Follow [here](https://github.com/karpathy/nanoGPT?tab=readme-ov-file#reproducing-gpt-2) to setup the training and validation data from OpenWebText2.
 
-- *pretrained models*: Here we provide the model checkpoints for three GPT-2 models we trained, each with 50k iterations
+- *pretrained models*: Here the checkpoint provides the model checkpoints for three GPT-2 models that were trained, each with 50k iterations
 
 | model name | download path | validation perplexity |
 |:---:|:---:|:---:|
@@ -43,7 +43,7 @@ CUDA_VISIBLE_DEVICES=0 python train.py config/train_gpt2_attn_bias.py ### gpt2 a
 ```
 
 ## Analysis
-We provide the commands for visualizing the activaiton magnitudes of an intermediate feature and also layerwise largest activation magnitudes:
+This directory provides the commands for visualizing the activaiton magnitudes of an intermediate feature and also layerwise largest activation magnitudes:
 ```sh
 CUDA_VISIBLE_DEVICES=0 python analyze.py config/eval_gpt2_default.py
 CUDA_VISIBLE_DEVICES=0 python analyze.py config/eval_gpt2_sink.py

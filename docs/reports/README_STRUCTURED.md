@@ -8,7 +8,7 @@
 
 ## EXECUTIVE SUMMARY
 
-This project systematically investigates the "Massive Activation" (MA) phenomenon in large language models, where certain feature dimensions exhibit activation values 300-3000x larger than the median. Through 7 experimental series across 8 models, we have identified two distinct mechanisms underlying MA generation.
+This project systematically investigates the "Massive Activation" (MA) phenomenon in large language models, where certain feature dimensions exhibit activation values 300-3000x larger than the median. Through 7 experimental series across 8 models, two distinct mechanisms underlying MA generation have been identified.
 
 ### Key Findings
 

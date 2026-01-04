@@ -32,7 +32,7 @@ Unlike LLaMA-2-13B where Attention heads contribute to massive activations, **OP
 
 ## 3. Mechanism Reconstruction (机制重构)
 
-Combining Exp 2 and Exp 3, we can reconstruct the lifecycle of a massive activation in OPT-6.7B:
+Combining Exp 2 and Exp 3, the lifecycle can be reconstructed as follows: the lifecycle of a massive activation in OPT-6.7B:
 
 1.  **Ignition (Layer 0-1)**:
     *   Input embeddings enter Layer 0.
@@ -63,7 +63,7 @@ Combining Exp 2 and Exp 3, we can reconstruct the lifecycle of a massive activat
 ## 5. Experiment 4: MLP SVD Alignment (The "Why")
 
 ### 5.1 Methodology
-To understand the origin of the massive activations in Layer 0, we performed Singular Value Decomposition (SVD) on the MLP weight matrices.
+To understand the origin of the massive activations in Layer 0, was performed Singular Value Decomposition (SVD) on the MLP weight matrices.
 *   **Target Matrix**: $W_{fc2}$ (The output projection matrix of the MLP).
 *   **Decomposition**: $W_{fc2} = U \Sigma V^T$.
 *   **Primary Analysis**:

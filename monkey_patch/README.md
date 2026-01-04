@@ -1,6 +1,6 @@
 # Monkey Patch LLMs
 
-This directory provide the code where we use to get intermediate hidden states from LLMs from [Transformers](https://github.com/huggingface/transformers/tree/main/src/transformers/models) and ViTs from [timm](https://github.com/huggingface/pytorch-image-models/blob/main/timm/models/vision_transformer.py). For other LLM model families, you need to write a custom forward function, depending on the model definition.
+This directory provide the code used to get intermediate hidden states from LLMs from [Transformers](https://github.com/huggingface/transformers/tree/main/src/transformers/models) and ViTs from [timm](https://github.com/huggingface/pytorch-image-models/blob/main/timm/models/vision_transformer.py). For other LLM model families, you need to write a custom forward function, depending on the model definition.
 
 A sample command to replace the forward function of [LLaMADecoderLayer](https://github.com/huggingface/transformers/blob/v4.36.0/src/transformers/models/llama/modeling_llama.py#L755) with a custom forward function ``llama_custom_decoderlayer_forward``:
 ```py
