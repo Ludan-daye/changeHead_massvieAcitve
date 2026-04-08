@@ -1,0 +1,32 @@
+We thank all reviewers for the constructive feedback.
+
+Questions about regarding sample type and breadth(bDKj1,qarC4)
+
+关于input的样本过少的问题：本文属于机制解释研究（mechanistic interpretability），而非分布统计或泛化性能评估研究。现有相关工作已经在大规模语料中观察到 Massive Activations 现象的存在，因此本文的目标并非再次验证其分布频率，而是分析其生成路径与内部几何结构。基于这一研究定位，我们采用小规模、受控输入作为刺激集合，以最大限度控制变量、减少分布干扰，从而更清晰地识别权重结构与激活放大之间的因果关系。因此，本研究关注的是机制层面的结构性解释，而非现象在自然语料中的统计普遍性。
+关于使用模型样本过少的问题：我们同意，当前实验主要基于英语语料与 dense Transformer 架构（最高至 13B 参数），因此本文结论的外部泛化范围应被明确界定。需要说明的是，本文所揭示的 Massive Activations 生成机制依赖于 MLP 下投影权重矩阵的谱几何结构，而非特定语言的词形特征。因此，从理论上讲，该机制应主要受模型权重分布影响，而非语言形态本身。不同语言（尤其是形态丰富语言）可能改变触发 token 的分布类型，但并不直接否定几何方向放大机制的存在。
+
+Question about LayerNorm as Confound(bDKj2)
+
+确实，LayerNorm 的 γ 参数在 Transformer 中可能存在非均衡分布，并在数值上对下游模块的幅度产生缩放影响。然而，我们的实验结果表明，Massive Activations 的生成机制并非由 LayerNorm 增益主导。首先，我们的几何分析（RQ4）显示 Massive Activations 与 MLP 下投影矩阵的主奇异方向（v₁）高度对齐，而非与 LayerNorm γ 向量对齐。如果 LayerNorm 为主要放大来源，则激活方向应主要受 γ 主导，而非 SVD 主方向。其次，在 RQ5 中，我们对 W_down 的 V 矩阵进行随机正交替换，在保持奇异值谱结构与 LayerNorm 参数完全不变的前提下，激活强度在多个模型中出现高达 78.8%–99.1% 的塌缩。这一因果干预结果表明，Massive Activation 的产生依赖于权重几何方向结构，而非单纯的尺度放大效应。因此，LayerNorm 增益可能调节整体尺度，但并不构成 Massive Activation 生成的根本因果来源。
+
+Question about co-occurrence bias/aggregation effects of high-frequency tokens in the embedding space.(daTc1)
+首先，本研究所分析的几何结构位于 MLP 下投影权重矩阵的奇异方向空间，而非输入嵌入空间。若现象仅由词频驱动，则应主要反映在 embedding 空间的主方向，而不会依赖于 MLP 权重的奇异向量结构。其次，若词频是唯一驱动因素，则所有高频词（包括高频内容词）均应具有类似触发概率。然而，我们观察到 Massive Activations 主要集中在功能词类别，而非所有高频 token，表明触发机制具有类别选择性。更关键的是，在保持嵌入空间与输入分布不变的情况下，我们对 W_down 的 V 矩阵进行方向随机化，激活强度在多个模型中发生 78%–99% 的塌缩。这一结果表明，放大效应依赖于权重几何方向结构，而非输入词频分布。因此，我们认为 Massive Activations 更接近于“句法特征在 MLP 几何空间中的结构锚定效应”，而非单纯的高频聚合偏差。
+
+Question about if the result can help quantization or model compression lacks empirical evidence.(daTc2)
+ 本文的核心贡献主要在于揭示 Massive Activations 的几何–因果生成机制，因此属于机制解释研究（mechanistic interpretability）范畴，而非直接提出新的量化或压缩算法。关于“可用于量化或模型压缩”的表述，我们原意是指出该机制为异常激活的结构来源提供了解释性依据，从而为后续工程方法提供潜在启发，而非声称已验证的性能提升结果。
+
+Question about how the MA have influence on the models(daTc3)
+需要澄清的是，本文并未主张“抑制 Massive Activations”作为优化目标，也未将其定义为应当消除的数值缺陷。RQ5 中的方向扰动实验仅作为因果验证工具，用以证明 Massive Activations 的产生依赖于特定的权重几何方向结构。该干预属于“结构必要性测试”，并非设计为可部署的模型修改方案。因此，其对 Perplexity 或下游任务性能的影响不构成对机制结论的反证。即使极端方向扰动导致性能变化，这也仅表明 Massive Activations 与模型内部表示结构存在耦合关系，而不影响其几何生成路径的成立。
+
+Question about if we have classification on the models(daTc4)
+事实上，本文已在跨架构实验中覆盖了多种主流设计，包括 Post-LN（GPT-2）、Pre-LN + RMSNorm（LLaMA-2、Qwen2.5）、以及不同激活函数（GELU、SiLU、SwiGLU）。如表 3 所示，我们进一步基于触发机制将模型划分为 Generative-Promoting、Inhibitory-Regulatory 与 Mixed/Hybrid 三类，这一分类本身即反映了不同架构设计下的调节模式差异。
+
+The questions about the analysis on Qwen2.5(daTc5,qarC3)
+首先，除 Qwen-2.5 外，部分模型的触发层与对照层在累计能量曲线上的视觉分离程度并非显著分叉，因此“extreme”一词可能在视觉层面显得过于强调。需要说明的是，我们对谱各向异性的判断并非基于曲线主观观察，而是基于定量指标 η = σ₁ / σ₂（见 Table 1）。例如，GPT-2 的 η 达到 3.05，Qwen-2.5 为 2.64，这表明第一奇异方向具有显著主导性，即便累计能量曲线在后续维度上逐渐贴合。此外，我们观察到不同架构呈现不同程度的谱集中模式：Qwen-2.5 表现出高度集中型结构，而 GPT-J、Mistral 等则呈现相对分散型几何结构。这种跨架构差异恰恰支持我们在 RQ5 中区分“concentrated”与“distributed”模式的结论。
+其次，Qwen2.5 中 semantic token 触发比例的增加，可能反映出不同架构下 MA 表征重心的转移，这一现象值得进一步研究。需要说明的是，本文的核心目标是揭示 Massive Activations 的几何生成机制，而非对其所编码的具体语义内容进行系统性解析。我们通过跨模型分析展示了从以功能词为主的触发模式到更具语义触发倾向的结构转变，但未深入探讨这些语义维度所对应的语言学或语义特征。
+
+The question of Theoretical Inconsistency in Formalism(qarC1)
+感谢审稿人指出 Eq. 17 推导尺度表达上的不严谨之处。我们确实在公式中采用了近似量级表示，而未明确区分 $\mathbb{E}[\cos\theta]$ 与 $\mathbb{E}[\cos^2\theta]$ 的尺度差异。严格而言，在高维空间中，随机单位向量与固定向量之间的平方余弦相似度期望为 $1/d_{ff}$，对应的余弦量级为  $1/sqrt{d_{ff}}$。
+
+The question of the Presentation Quality(qarC2)
+我们感谢审稿人指出图 2 和图 6 中的拼写与排版错误。这些问题确实源于我们的疏忽，我们对此表示诚挚的歉意。

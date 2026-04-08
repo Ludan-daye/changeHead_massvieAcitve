@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:arxiv.org)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(git clone:*)",
+      "Bash(conda env list:*)",
+      "Bash(echo:*)",
+      "Bash(python3 -m pip:*)",
+      "Bash(python3:*)",
+      "Bash(source:*)",
+      "Bash(pip --version:*)",
+      "Bash(pip install:*)",
+      "Bash(python main_llm.py:*)",
+      "Bash(pip uninstall:*)",
+      "Bash(python main_vit.py:*)",
+      "Bash(huggingface-cli whoami:*)",
+      "Bash(printf:*)",
+      "Bash(huggingface-cli login:*)",
+      "Bash(huggingface-cli logout:*)",
+      "Read(//Users/a1-6/.cache/huggingface/**)",
+      "Bash(timeout 600 python main_llm.py:*)",
+      "Bash(sysctl:*)",
+      "Bash(system_profiler:*)",
+      "Bash(tree:*)",
+      "Bash(open:*)",
+      "Bash(find /Users/a1-6/importantfile/Research/ma -maxdepth 1 -name \".DS_Store\" -delete)",
+      "WebFetch(domain:www.notion.so)",
+      "Bash(curl -s https://notion-api.splitbee.io/v1/page/30a61f5aed5d80588ed3ca20be38acca)",
+      "Bash(grep -r sample /Users/a1-6/importantfile/Research/ma/changeHead_massvieAcitve/lib/*.py)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
