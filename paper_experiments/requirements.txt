@@ -1,0 +1,12 @@
+torch>=2.0.0
+transformers==4.36.0
+timm==0.9.12
+accelerate==0.23.0
+datasets==2.14.5
+matplotlib==3.8.0
+seaborn
+sentencepiece
+protobuf
+numpy
+tqdm
+spacy
