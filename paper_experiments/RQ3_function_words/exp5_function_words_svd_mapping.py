@@ -89,6 +89,7 @@ class FunctionWordSVDTracker:
         # Storage: {word: [(context_id, h2_vector), ...]}
         self.word_data = defaultdict(list)
         self.context_counter = 0
+        self.total_token_count = 0
 
     def is_function_word(self, token_text):
         """Check if token is a function word"""
@@ -97,6 +98,7 @@ class FunctionWordSVDTracker:
 
     def add_token(self, token_text, h2_vector):
         """Add token representation"""
+        self.total_token_count += 1
         if self.is_function_word(token_text):
             # h2_vector shape: [3072]
             self.word_data[token_text].append((self.context_counter, h2_vector.cpu().detach().numpy()))
@@ -137,11 +139,11 @@ class SVDSpaceAnalyzer:
 
         # SVD decomposition
         print("Computing SVD decomposition...")
-        U, S, Vt = torch.svd(self.W2)
+        U, S, Vh = torch.linalg.svd(self.W2, full_matrices=False)
 
-        self.U = U[:, :self.keep_top_k]  # [3072, k]
-        self.S = S[:self.keep_top_k]      # [k]
-        self.Vt = Vt[:self.keep_top_k, :]  # [k, 768]
+        self.U = U[:, :self.keep_top_k]   # [m, k]
+        self.S = S[:self.keep_top_k]       # [k]
+        self.Vt = Vh[:self.keep_top_k, :]  # [k, n]
 
         print(f"  U shape: {self.U.shape}, S shape: {self.S.shape}, Vt shape: {self.Vt.shape}")
         print(f"  σ₁/σ₂ ratio: {(S[0]/S[1]).item():.3f}")

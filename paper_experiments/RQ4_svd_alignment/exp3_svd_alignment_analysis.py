@@ -891,6 +891,8 @@ def main():
                        help='Save directory')
     parser.add_argument('--access_token', type=str, default='type in your access token here',
                        help='Hugging Face access token')
+    parser.add_argument('--revision', type=str, default='main',
+                       help='Model revision')
 
     args = parser.parse_args()
 
