@@ -1,0 +1,8 @@
+{
+  "model": "mistral_7b",
+  "layer_id": 2,
+  "sigma1_sigma2": 1.0327974680757408,
+  "cos_sim": 0.011776148334556522,
+  "ma_type": "Type III (multi-direction)",
+  "r_squared": 0.13346678935416953
+}

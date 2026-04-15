@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-04-16T00:01:56.190652",
+  "args": {
+    "model": "llama2_7b_chat",
+    "layer_id": 2,
+    "nsamples": 30,
+    "seqlen": 1024,
+    "savedir": "results/wikitext_run/RQ3/llama2_7b_chat",
+    "access_token": "type in your access token here",
+    "revision": "main"
+  },
+  "func_pct": 100.0,
+  "concentration": {
+    "no": {
+      "concentration": {
+        "top_1": 0.055687736719846725,
+        "top_3": 0.11583901196718216,
+        "top_5": 0.15773911774158478,
+        "top_10": 0.2521835267543793
+      },
+      "top_singular_vectors": [
+        

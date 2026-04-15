@@ -1,0 +1,6 @@
+{
+  "model": "falcon_7b",
+  "func_pct": 100.0,
+  "func_tokens": 30638,
+  "total_tokens": 30638
+}

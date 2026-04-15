@@ -1,0 +1,8 @@
+{
+  "model": "gptj_6b",
+  "layer_id": 2,
+  "sigma1_sigma2": 2.517015044623058,
+  "cos_sim": 0.04050004454213939,
+  "ma_type": "Type III (multi-direction)",
+  "r_squared": 0.9984886556059829
+}
