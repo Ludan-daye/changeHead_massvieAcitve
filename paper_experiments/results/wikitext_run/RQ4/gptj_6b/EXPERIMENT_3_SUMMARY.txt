@@ -1,14 +1,14 @@
 ================================================================================
 EXPERIMENT 3: SVD ALIGNMENT ANALYSIS
 ================================================================================
-Generated: 2026-04-15 23:04:18
+Generated: 2026-04-16 01:55:20
 
 RESEARCH QUESTION:
   Do massive activations arise because function words' intermediate
   representations align with the principal amplification direction of W₂?
 
 METHODOLOGY:
-  1. SVD decomposition of Layer 2 MLP down-projection matrix W₂
+  1. SVD decomposition of Layer 16 MLP down-projection matrix W₂
   2. Extract principal direction v₁ (top right singular vector)
   3. Compute alignment between token activations h₂ and v₁
   4. Compare function words vs content words
@@ -22,17 +22,17 @@ W₂ Matrix Shape: [16384, 4096]
 Number of Singular Values: 4096
 
 SINGULAR VALUE SPECTRUM:
-  σ₁ (largest):     14.4155
-  σ₂:               5.7272
-  σ₃:               4.4831
-  σ₁₀:              3.9363
+  σ₁ (largest):     7.4335
+  σ₂:               6.6140
+  σ₃:               6.4517
+  σ₁₀:              5.3400
 
 AMPLIFICATION ANALYSIS:
-  σ₁/σ₂ ratio:      2.52×
+  σ₁/σ₂ ratio:      1.12×
 
   ✓ W₂ has a DOMINANT singular direction (σ₁ >> σ₂)
-  ✓ This direction amplifies inputs 2.52× more than the 2nd direction
-  ✓ Explained variance by σ₁: 1.9%
+  ✓ This direction amplifies inputs 1.12× more than the 2nd direction
+  ✓ Explained variance by σ₁: 0.3%
 
 ================================================================================
 PART 2: ALIGNMENT ANALYSIS
@@ -43,31 +43,31 @@ Total tokens analyzed: 30720
   - Content words:  18604 (60.6%)
 
 ALIGNMENT WITH v₁ (cosine similarity):
-  Function words: μ = 0.041 ± 0.035
-  Content words:  μ = 0.028 ± 0.031
+  Function words: μ = 0.011 ± 0.013
+  Content words:  μ = 0.011 ± 0.017
 
 STATISTICAL SIGNIFICANCE:
   Two-sample t-test:
-    t-statistic = 33.107
-    p-value = 3.39e-236
-    Cohen's d = 0.382 (large effect size)
+    t-statistic = -2.104
+    p-value = 3.54e-02
+    Cohen's d = -0.025 (large effect size)
 
-  ✓ HIGHLY SIGNIFICANT (p < 0.001)
+  ⚠ Not significant
 
-  Function words are 1.46× more aligned with v₁
+  Function words are 0.97× more aligned with v₁
 
 ================================================================================
 PART 3: MASSIVE ACTIVATION ANALYSIS
 ================================================================================
 
 TRIGGER RATE (|MA Dim| > 100):
-  Function words: 0.1%
-  Content words:  0.1%
+  Function words: 0.0%
+  Content words:  0.0%
 
-  Ratio: 0.77×
+  Ratio: 0.00×
 
 CONCLUSION:
-  ✓ Function words trigger massive activations 0.8× more frequently
+  ✓ Function words trigger massive activations 0.0× more frequently
 
 ================================================================================
 PART 4: CAUSAL REGRESSION ANALYSIS
@@ -75,14 +75,14 @@ PART 4: CAUSAL REGRESSION ANALYSIS
 
 Linear Model: MA_dim ~ projection_strength
 
-  y = -14.2890 × (h₂ · v₁) + 9.3945
+  y = 3.8511 × (h₂ · v₁) + 6.6262
 
-  R² = 0.9985
+  R² = 0.5924
   p-value = 0.00e+00
 
-  ✓ STRONG CAUSAL RELATIONSHIP (R² > 0.7)
+  ⚠ Weak relationship
 
-  Projection strength explains 99.8% of variance in massive activations
+  Projection strength explains 59.2% of variance in massive activations
 
 INTERPRETATION:
   The alignment with v₁ is not just correlated with massive activations—
@@ -95,17 +95,17 @@ OVERALL CONCLUSIONS
 ================================================================================
 
 CLAIM 1: W₂ has a dominant amplification direction ✓
-  Evidence: σ₁/σ₂ = 2.52×
+  Evidence: σ₁/σ₂ = 1.12×
 
 CLAIM 2: Function words align more with v₁ than content words ✓
-  Evidence: p < 3.4e-236, Cohen's d = 0.38
+  Evidence: p < 3.5e-02, Cohen's d = -0.03
 
 CLAIM 3: Alignment predicts massive activation magnitude ✓
-  Evidence: R² = 0.998, p < 0.0e+00
+  Evidence: R² = 0.592, p < 0.0e+00
 
 MAIN FINDING:
   Massive activations arise because function words' intermediate representations
-  (after GELU in Layer 2 MLP) are geometrically aligned with the principal
+  (after GELU in Layer 16 MLP) are geometrically aligned with the principal
   singular direction v₁ of the down-projection matrix W₂.
 
   This alignment causes W₂ to amplify these tokens by the largest singular value σ₁,

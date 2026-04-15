@@ -2,23 +2,23 @@
 EXPERIMENT 5: Function Words SVD Space Mapping Analysis
 ================================================================================
 
-Timestamp: 2026-04-16T00:56:55.206147
-Model: falcon_7b, Layer: 2
+Timestamp: 2026-04-16T01:49:50.645308
+Model: falcon_7b, Layer: 23
 Samples: 30
 
 ANALYSIS 1: CONCENTRATION ON SINGULAR VECTORS
 --------------------------------------------------------------------------------
 Top 10 Most Concentrated Words (Low-Dimensional):
-   The           : top_5=0.464, top_3=0.408
-   before        : top_5=0.446, top_3=0.404
-   Through       : top_5=0.390, top_3=0.307
-   the           : top_5=0.377, top_3=0.322
-  can            : top_5=0.371, top_3=0.258
-   Has           : top_5=0.345, top_3=0.271
-   It            : top_5=0.344, top_3=0.295
-   We            : top_5=0.340, top_3=0.278
-   This          : top_5=0.340, top_3=0.274
-  by             : top_5=0.334, top_3=0.244
+  by             : top_5=0.344, top_3=0.284
+   Will          : top_5=0.334, top_3=0.235
+  we             : top_5=0.333, top_3=0.254
+  can            : top_5=0.312, top_3=0.227
+   WAS           : top_5=0.295, top_3=0.243
+   Not           : top_5=0.280, top_3=0.224
+   Over          : top_5=0.280, top_3=0.200
+  be             : top_5=0.279, top_3=0.196
+   Can           : top_5=0.271, top_3=0.188
+   Before        : top_5=0.268, top_3=0.201
 
 
 ANALYSIS 2: LEFT-RIGHT ASYMMETRY
@@ -27,46 +27,46 @@ Asymmetry Ratio (Left / Right concentration):
   Ratio > 1: Left space more concentrated (early determination)
   Ratio < 1: Right space more concentrated (late determination)
 
-   The           : ratio=59.290 (left=0.408, right=0.007)
-   before        : ratio=58.229 (left=0.404, right=0.007)
-   the           : ratio=54.152 (left=0.322, right=0.006)
-   We            : ratio=50.822 (left=0.278, right=0.005)
-   being         : ratio=49.252 (left=0.160, right=0.003)
-   was           : ratio=47.268 (left=0.153, right=0.003)
-   If            : ratio=46.654 (left=0.222, right=0.005)
-   It            : ratio=45.699 (left=0.295, right=0.006)
-   and           : ratio=45.522 (left=0.148, right=0.003)
-   For           : ratio=44.557 (left=0.228, right=0.005)
+   Though        : ratio=21.527 (left=0.094, right=0.004)
+   Among         : ratio=19.001 (left=0.145, right=0.008)
+   Our           : ratio=17.113 (left=0.113, right=0.007)
+   Before        : ratio=16.682 (left=0.201, right=0.012)
+  be             : ratio=11.828 (left=0.196, right=0.017)
+   Those         : ratio=9.923 (left=0.175, right=0.018)
+   Will          : ratio=9.190 (left=0.235, right=0.026)
+  its            : ratio=8.788 (left=0.120, right=0.014)
+   Under         : ratio=7.776 (left=0.119, right=0.015)
+  he             : ratio=6.843 (left=0.103, right=0.015)
 
 
 ANALYSIS 3: CROSS-CONTEXT STABILITY
 --------------------------------------------------------------------------------
 Mean Cosine Similarity (Higher = More Stable):
-  we             : stability=0.987 (±0.000), n=2
-   AS            : stability=0.950 (±0.027), n=3
-   Their         : stability=0.927 (±0.038), n=5
-   Before        : stability=0.918 (±0.000), n=2
-   From          : stability=0.896 (±0.043), n=7
-  under          : stability=0.893 (±0.084), n=5
-   Those         : stability=0.891 (±0.052), n=3
-   WAS           : stability=0.883 (±0.065), n=27
-  can            : stability=0.871 (±0.000), n=2
-   During        : stability=0.865 (±0.063), n=20
+   AS            : stability=0.895 (±0.059), n=3
+   WAS           : stability=0.832 (±0.113), n=27
+   Because       : stability=0.822 (±0.043), n=7
+  can            : stability=0.808 (±0.000), n=2
+   Although      : stability=0.789 (±0.076), n=19
+  her            : stability=0.785 (±0.165), n=24
+   But           : stability=0.776 (±0.089), n=20
+  our            : stability=0.767 (±0.173), n=7
+   Those         : stability=0.757 (±0.056), n=3
+   Not           : stability=0.754 (±0.137), n=5
 
 
 ANALYSIS 4: PRINCIPAL DIRECTION ALIGNMENT
 --------------------------------------------------------------------------------
 Alignment with v₁ (Principal Singular Direction):
-   Since         : v₁_align=0.043 (±0.011)
-   Those         : v₁_align=0.043 (±0.004)
-   During        : v₁_align=0.039 (±0.007)
-   When          : v₁_align=0.038 (±0.009)
-   If            : v₁_align=0.038 (±0.014)
-   That          : v₁_align=0.037 (±0.015)
-   While         : v₁_align=0.037 (±0.014)
-   These         : v₁_align=0.036 (±0.020)
-   Though        : v₁_align=0.036 (±0.010)
-   Although      : v₁_align=0.034 (±0.011)
+  by             : v₁_align=0.020 (±0.010)
+   AS            : v₁_align=0.019 (±0.004)
+  to             : v₁_align=0.017 (±0.007)
+   Because       : v₁_align=0.017 (±0.003)
+   WAS           : v₁_align=0.017 (±0.007)
+  on             : v₁_align=0.015 (±0.009)
+  our            : v₁_align=0.014 (±0.002)
+   She           : v₁_align=0.014 (±0.005)
+  her            : v₁_align=0.014 (±0.004)
+  we             : v₁_align=0.014 (±0.006)
 
 
 KEY FINDINGS

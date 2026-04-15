@@ -1,14 +1,14 @@
 ================================================================================
 EXPERIMENT 3: SVD ALIGNMENT ANALYSIS
 ================================================================================
-Generated: 2026-04-16 00:34:25
+Generated: 2026-04-16 01:35:29
 
 RESEARCH QUESTION:
   Do massive activations arise because function words' intermediate
   representations align with the principal amplification direction of W₂?
 
 METHODOLOGY:
-  1. SVD decomposition of Layer 2 MLP down-projection matrix W₂
+  1. SVD decomposition of Layer 19 MLP down-projection matrix W₂
   2. Extract principal direction v₁ (top right singular vector)
   3. Compute alignment between token activations h₂ and v₁
   4. Compare function words vs content words
@@ -22,16 +22,16 @@ W₂ Matrix Shape: [14336, 4096]
 Number of Singular Values: 4096
 
 SINGULAR VALUE SPECTRUM:
-  σ₁ (largest):     1.0217
-  σ₂:               0.9892
-  σ₃:               0.9701
-  σ₁₀:              0.8297
+  σ₁ (largest):     0.9424
+  σ₂:               0.8992
+  σ₃:               0.8011
+  σ₁₀:              0.6916
 
 AMPLIFICATION ANALYSIS:
-  σ₁/σ₂ ratio:      1.03×
+  σ₁/σ₂ ratio:      1.05×
 
   ✓ W₂ has a DOMINANT singular direction (σ₁ >> σ₂)
-  ✓ This direction amplifies inputs 1.03× more than the 2nd direction
+  ✓ This direction amplifies inputs 1.05× more than the 2nd direction
   ✓ Explained variance by σ₁: 0.2%
 
 ================================================================================
@@ -43,31 +43,31 @@ Total tokens analyzed: 30720
   - Content words:  20228 (65.8%)
 
 ALIGNMENT WITH v₁ (cosine similarity):
-  Function words: μ = 0.012 ± 0.022
-  Content words:  μ = 0.029 ± 0.031
+  Function words: μ = 0.008 ± 0.013
+  Content words:  μ = 0.010 ± 0.013
 
 STATISTICAL SIGNIFICANCE:
   Two-sample t-test:
-    t-statistic = -49.352
-    p-value = 0.00e+00
-    Cohen's d = -0.625 (large effect size)
+    t-statistic = -8.380
+    p-value = 5.50e-17
+    Cohen's d = -0.101 (large effect size)
 
   ✓ HIGHLY SIGNIFICANT (p < 0.001)
 
-  Function words are 0.41× more aligned with v₁
+  Function words are 0.86× more aligned with v₁
 
 ================================================================================
 PART 3: MASSIVE ACTIVATION ANALYSIS
 ================================================================================
 
 TRIGGER RATE (|MA Dim| > 100):
-  Function words: 0.0%
-  Content words:  0.0%
+  Function words: 0.1%
+  Content words:  0.2%
 
-  Ratio: 0.00×
+  Ratio: 0.59×
 
 CONCLUSION:
-  ✓ Function words trigger massive activations 0.0× more frequently
+  ✓ Function words trigger massive activations 0.6× more frequently
 
 ================================================================================
 PART 4: CAUSAL REGRESSION ANALYSIS
@@ -75,14 +75,14 @@ PART 4: CAUSAL REGRESSION ANALYSIS
 
 Linear Model: MA_dim ~ projection_strength
 
-  y = 0.1589 × (h₂ · v₁) + 0.0349
+  y = 0.3682 × (h₂ · v₁) + 0.3585
 
-  R² = 0.1335
+  R² = 0.0677
   p-value = 0.00e+00
 
   ⚠ Weak relationship
 
-  Projection strength explains 13.3% of variance in massive activations
+  Projection strength explains 6.8% of variance in massive activations
 
 INTERPRETATION:
   The alignment with v₁ is not just correlated with massive activations—
@@ -95,17 +95,17 @@ OVERALL CONCLUSIONS
 ================================================================================
 
 CLAIM 1: W₂ has a dominant amplification direction ✓
-  Evidence: σ₁/σ₂ = 1.03×
+  Evidence: σ₁/σ₂ = 1.05×
 
 CLAIM 2: Function words align more with v₁ than content words ✓
-  Evidence: p < 0.0e+00, Cohen's d = -0.63
+  Evidence: p < 5.5e-17, Cohen's d = -0.10
 
 CLAIM 3: Alignment predicts massive activation magnitude ✓
-  Evidence: R² = 0.133, p < 0.0e+00
+  Evidence: R² = 0.068, p < 0.0e+00
 
 MAIN FINDING:
   Massive activations arise because function words' intermediate representations
-  (after GELU in Layer 2 MLP) are geometrically aligned with the principal
+  (after GELU in Layer 19 MLP) are geometrically aligned with the principal
   singular direction v₁ of the down-projection matrix W₂.
 
   This alignment causes W₂ to amplify these tokens by the largest singular value σ₁,
