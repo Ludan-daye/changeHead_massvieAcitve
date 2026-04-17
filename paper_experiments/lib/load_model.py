@@ -17,12 +17,30 @@ def load_llm(args):
     # For attention analysis, we need attn_implementation='eager'
     attn_impl = getattr(args, 'attn_implementation', 'eager')
 
-    if "falcon" in args.model or "mpt" in args.model or "phi" in args.model:
-        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", trust_remote_code=True, attn_implementation=attn_impl, **token_kwargs)
-    elif "mistral" in args.model or "pythia" in args.model:
-        model = AutoModelForCausalLM.from_pretrained(model_name, revision=args.revision, torch_dtype=torch.float16, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", attn_implementation=attn_impl, **token_kwargs)
+    # dtype 选择:
+    # - glm4 系列: 默认 fp32 避免 Inf 溢出（尤其 glm4_32b 在 fp16 下 baseline 直接 Infinity）
+    # - 其他模型: fp16（原有行为不变）
+    # 用户可通过 --force_fp32 强制所有模型走 fp32
+    force_fp32 = getattr(args, 'force_fp32', False)
+    if force_fp32 or "glm4" in args.model.lower():
+        dtype = torch.float32
+        print(f"  → using dtype=float32 (glm4 family or --force_fp32)")
     else:
-        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", attn_implementation=attn_impl, **token_kwargs)
+        dtype = torch.float16
+
+    # glm4 需要 trust_remote_code=True，走独立分支
+    if "glm4" in args.model.lower():
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name, torch_dtype=dtype, cache_dir=cache_dir,
+            low_cpu_mem_usage=True, device_map="auto", trust_remote_code=True,
+            attn_implementation=attn_impl, **token_kwargs,
+        )
+    elif "falcon" in args.model or "mpt" in args.model or "phi" in args.model:
+        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=dtype, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", trust_remote_code=True, attn_implementation=attn_impl, **token_kwargs)
+    elif "mistral" in args.model or "pythia" in args.model:
+        model = AutoModelForCausalLM.from_pretrained(model_name, revision=args.revision, torch_dtype=dtype, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", attn_implementation=attn_impl, **token_kwargs)
+    else:
+        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=dtype, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", attn_implementation=attn_impl, **token_kwargs)
     model.eval()
 
     if "mpt" in args.model or "pythia" in args.model:
@@ -46,6 +64,17 @@ def load_llm(args):
         hidden_size = model.config.hidden_size
     elif "qwen" in args.model:
         layers = model.model.layers
+        hidden_size = model.config.hidden_size
+    elif "glm" in args.model.lower():
+        # GLM4 有两种结构：
+        # - 老版本/ChatGLM3: model.transformer.encoder.layers
+        # - transformers 新集成: model.model.layers（和 Qwen 一样）
+        if hasattr(model, 'transformer') and hasattr(model.transformer, 'encoder'):
+            layers = model.transformer.encoder.layers
+        elif hasattr(model, 'model') and hasattr(model.model, 'layers'):
+            layers = model.model.layers
+        else:
+            raise ValueError(f"Cannot locate layers for glm model {args.model}")
         hidden_size = model.config.hidden_size
     elif "falcon" in args.model:
         layers = model.transformer.h

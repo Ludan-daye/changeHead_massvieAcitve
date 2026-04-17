@@ -63,6 +63,11 @@ MODEL_DICT_LLMs = {
         "model_id": "/model/ModelScope/ZhipuAI/glm-4-9b-chat",
         "cache_dir": CACHE_DIR_BASE,
     },
+    "glm4_32b": {
+        # Update to actual local path on your server if available
+        "model_id": "/model/ModelScope/ZhipuAI/glm-4-32b-chat",
+        "cache_dir": CACHE_DIR_BASE,
+    },
     "gemma3_12b": {
         "model_id": "/model/HuggingFace/google/gemma-3-12b-it",
         "cache_dir": CACHE_DIR_BASE,
@@ -114,11 +119,59 @@ MODEL_DICT_LLMs = {
     },
 
     ### ============================================================
+    ### Qwen2.5 规模缩放系列
+    ### ============================================================
+
+    "qwen2.5_0.5b": {
+        "model_id": "/model/ModelScope/Qwen/Qwen2.5-0.5B",
+        "cache_dir": CACHE_DIR_BASE,
+    },
+
+    ### ============================================================
+    ### Qwen3.5 系列（若服务器尚无本地权重，先用占位路径，后续替换）
+    ### ============================================================
+
+    "qwen3.5_9b": {
+        "model_id": "/model/ModelScope/Qwen/Qwen3.5-9B",
+        "cache_dir": CACHE_DIR_BASE,
+    },
+    "qwen3.5_27b": {
+        "model_id": "/model/ModelScope/Qwen/Qwen3.5-27B",
+        "cache_dir": CACHE_DIR_BASE,
+    },
+
+    ### ============================================================
+    ### 覆盖 ALL_EXPERIMENTS_SUMMARY.json 中历史 model alias
+    ### （旧实验里用的命名，与新 paper_experiments 的差异）
+    ### ============================================================
+
+    # bloom_7b1 是 bloom-7b1 的正式命名（同 HuggingFace id）
+    "bloom_7b1": {
+        "model_id": "bigscience/bloom-7b1",
+        "cache_dir": CACHE_DIR_BASE,
+    },
+    # opt_6.7b 是 facebook/opt-6.7b 的 ALL_EXPERIMENTS 命名
+    "opt_6.7b": {
+        "model_id": "facebook/opt-6.7b",
+        "cache_dir": CACHE_DIR_BASE,
+    },
+    # mistral_7b_v03 指 Mistral-7B-v0.3（不是老 model_dict 里的 v0.1）
+    "mistral_7b_v03": {
+        "model_id": "mistralai/Mistral-7B-v0.3",
+        "cache_dir": CACHE_DIR_BASE,
+    },
+
+    ### ============================================================
     ### MoE 架构
     ### ============================================================
 
     "qwen3_30b_a3b": {
         "model_id": "/model/HuggingFace/Qwen/Qwen3-30B-A3B-Thinking-2507-FP8",
+        "cache_dir": CACHE_DIR_BASE,
+    },
+    "qwen3.5_35b_a3b": {
+        # Update to actual local path if available
+        "model_id": "/model/HuggingFace/Qwen/Qwen3.5-35B-A3B",
         "cache_dir": CACHE_DIR_BASE,
     },
     "glm4.7_flash": {
