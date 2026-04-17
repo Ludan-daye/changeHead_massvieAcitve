@@ -1,0 +1,36 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.venv/
+venv/
+
+# Model weights / cache
+*.pt
+*.pth
+*.safetensors
+*.bin
+.cache/
+hf_cache/
+
+# Large experiment artifacts
+archives/*.zip
+paper_experiments/results/**/*.pt
+paper_experiments/results/**/*.safetensors
+paper_experiments/results/**/*.npy
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Claude local settings (keep committed project settings if any)
+.claude/settings.local.json

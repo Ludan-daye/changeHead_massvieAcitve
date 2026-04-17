@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2026.1.22)  6 APR 2026 16:21
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2026.1.22)  10 APR 2026 14:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -462,38 +462,16 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \@thisrulewidth=\dimen256
 )
 (./multirow.sty
-
-! LaTeX Error: Missing \begin{document}.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1 <
-     !DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-You're in trouble here.  Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
+Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
+\multirow@colwidth=\skip58
+\multirow@cntb=\count313
+\multirow@dima=\skip59
+\bigstrutjot=\dimen257
 )
-Underfull \hbox (badness 5260) in paragraph at lines 1--15
-[]\OT1/ptm/m/n/10 <!DOCTYPE HTML PUB-LIC "-//IETF//DTD HTML
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1--15
-\OT1/ptm/m/n/10 2.0//EN"> <html><head> <ti-tle>404 Not Found</title>
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1--15
-\OT1/ptm/m/n/10 /pub/CTAN/macros/latex/contrib/multirow/multirow.sty was
- []
-
-
 (/usr/local/texlive/2025basic/texmf-dist/tex/latex/l3backend/l3backend-pdftex.d
 ef
 File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count313
+\l__color_backend_stack_int=\count314
 \l__pdf_internal_box=\box56
 ) (./Massive activation.aux)
 \openout1 = `"Massive activation.aux"'.
@@ -520,16 +498,16 @@ LaTeX Font Info:    ... okay on input line 20.
 -- Lines per column: 56 (exact).
 (/usr/local/texlive/2025basic/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count314
-\scratchdimen=\dimen257
+\scratchcounter=\count315
+\scratchdimen=\dimen258
 \scratchbox=\box57
-\nofMPsegments=\count315
-\nofMParguments=\count316
+\nofMPsegments=\count316
+\nofMParguments=\count317
 \everyMPshowfont=\toks24
-\MPscratchCnt=\count317
-\MPscratchDim=\dimen258
-\MPnumerator=\count318
-\makeMPintoPDFobject=\count319
+\MPscratchCnt=\count318
+\MPscratchDim=\dimen259
+\MPnumerator=\count319
+\makeMPintoPDFobject=\count320
 \everyMPtoPDFconversion=\toks25
 )
 (/usr/local/texlive/2025basic/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.s
@@ -550,16 +528,6 @@ Package hyperref Info: Link coloring OFF on input line 20.
 \@outlinefile=\write3
 \openout3 = `"Massive activation.out"'.
 
-
-
-
-
-[1
-
-{/usr/local/texlive/2025basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/us
-r/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/base/8r.enc}
-
-]
 LaTeX Font Info:    Trying to load font information for U+msa on input line 66.
 
 
@@ -573,7 +541,7 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 66.
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Calculating math sizes for size <11> on input line 66.
-<figure/Research_Framework.png, id=87, 3252.15pt x 3804.2125pt>
+<figure/Research_Framework.png, id=81, 3252.15pt x 3804.2125pt>
 File: figure/Research_Framework.png Graphic file (type png)
 <use figure/Research_Framework.png>
 Package pdftex.def Info: figure/Research_Framework.png  used on input line 79.
@@ -587,12 +555,14 @@ Overfull \hbox (6.0pt too wide) in paragraph at lines 79--80
 
 
 
-[2
+[1{/usr/local/texlive/2025basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/
+usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/base/8r.enc}
+
 
  <./figure/Research_Framework.png>]
 
 
-LaTeX Warning: Citation `geva2022transformer' on page 3 undefined on input line
+LaTeX Warning: Citation `geva2022transformer' on page 2 undefined on input line
  113.
 
 LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 1
@@ -600,31 +570,9 @@ LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 1
 (/usr/local/texlive/2025basic/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-! Font OT1/pcr/m/n/10=pcrr7t at 10.0pt not loadable: Metric (TFM) file not foun
-d.
-<to be read again> 
-                   relax 
-l.113 ...”and specifically the \texttt{down\_proj}
-                                                   layerâ€”as the physical s...
-I wasn't able to read the size data for this font,
-so I will ignore the font specification.
-[Wizards can fix TFM files using TFtoPL/PLtoTF.]
-You might try inserting a different font spec;
-e.g., type `I\font<same font id>=<substitute font name>'.
 
-Missing character: There is no d in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no w in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no _ in font nullfont!
-Missing character: There is no p in font nullfont!
-Missing character: There is no r in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no j in font nullfont!
-
-
-[3]
-<figure/Experimental_Framework.png, id=192, 2508.87312pt x 2193.69562pt>
+[2]
+<figure/Experimental_Framework.png, id=189, 2508.87312pt x 2193.69562pt>
 File: figure/Experimental_Framework.png Graphic file (type png)
 <use figure/Experimental_Framework.png>
 Package pdftex.def Info: figure/Experimental_Framework.png  used on input line 
@@ -637,7 +585,7 @@ Overfull \hbox (6.0pt too wide) in paragraph at lines 123--124
 
 
 
-<figure/Massive_Activation.png, id=195, 3252.15pt x 2924.9275pt>
+<figure/Massive_Activation.png, id=192, 3252.15pt x 2924.9275pt>
 File: figure/Massive_Activation.png Graphic file (type png)
 <use figure/Massive_Activation.png>
 Package pdftex.def Info: figure/Massive_Activation.png  used on input line 164.
@@ -650,57 +598,67 @@ Overfull \hbox (6.0pt too wide) in paragraph at lines 164--165
 
 
 
-[4 <./figure/Experimental_Framework.png>]
-Underfull \hbox (badness 1490) in paragraph at lines 180--181
+[3 <./figure/Experimental_Framework.png>]
+
+
+Underfull \hbox (badness 1490) in paragraph at lines 182--183
 []\OT1/ptm/m/n/10 This sec-tion presents each re-search ques-tion with its
  []
 
-<figure/exp1/gpt2_124M.png, id=224, 327.20242pt x 224.39835pt>
+<figure/exp1/gpt2_124M.png, id=222, 327.20242pt x 224.39835pt>
 File: figure/exp1/gpt2_124M.png Graphic file (type png)
 <use figure/exp1/gpt2_124M.png>
-Package pdftex.def Info: figure/exp1/gpt2_124M.png  used on input line 223.
+Package pdftex.def Info: figure/exp1/gpt2_124M.png  used on input line 225.
 (pdftex.def)             Requested size: 123.84283pt x 84.93326pt.
-<figure/exp1/llama2_13b.png, id=225, 327.20242pt x 224.39835pt>
+<figure/exp1/llama2_13b.png, id=223, 327.20242pt x 224.39835pt>
 File: figure/exp1/llama2_13b.png Graphic file (type png)
 <use figure/exp1/llama2_13b.png>
-Package pdftex.def Info: figure/exp1/llama2_13b.png  used on input line 229.
+Package pdftex.def Info: figure/exp1/llama2_13b.png  used on input line 231.
 (pdftex.def)             Requested size: 123.84283pt x 84.93326pt.
-<figure/exp1/bloom_7b.png, id=226, 327.20242pt x 224.39835pt>
+<figure/exp1/bloom_7b.png, id=224, 327.20242pt x 224.39835pt>
 File: figure/exp1/bloom_7b.png Graphic file (type png)
 <use figure/exp1/bloom_7b.png>
-Package pdftex.def Info: figure/exp1/bloom_7b.png  used on input line 235.
+Package pdftex.def Info: figure/exp1/bloom_7b.png  used on input line 237.
 (pdftex.def)             Requested size: 123.84283pt x 84.93326pt.
-<figure/exp1/gptj_6b.png, id=227, 327.20242pt x 224.39835pt>
+<figure/exp1/gptj_6b.png, id=225, 327.20242pt x 224.39835pt>
 File: figure/exp1/gptj_6b.png Graphic file (type png)
 <use figure/exp1/gptj_6b.png>
-Package pdftex.def Info: figure/exp1/gptj_6b.png  used on input line 241.
+Package pdftex.def Info: figure/exp1/gptj_6b.png  used on input line 243.
 (pdftex.def)             Requested size: 123.84283pt x 84.93326pt.
-<figure/exp1/qwen2.5_7b.png, id=228, 332.98402pt x 224.39835pt>
+<figure/exp1/qwen2.5_7b.png, id=226, 332.98402pt x 224.39835pt>
 File: figure/exp1/qwen2.5_7b.png Graphic file (type png)
 <use figure/exp1/qwen2.5_7b.png>
-Package pdftex.def Info: figure/exp1/qwen2.5_7b.png  used on input line 250.
+Package pdftex.def Info: figure/exp1/qwen2.5_7b.png  used on input line 252.
 (pdftex.def)             Requested size: 123.84283pt x 83.4575pt.
-<figure/exp1/opt_6.7b.png, id=229, 327.20242pt x 224.39835pt>
+<figure/exp1/opt_6.7b.png, id=227, 327.20242pt x 224.39835pt>
 File: figure/exp1/opt_6.7b.png Graphic file (type png)
 <use figure/exp1/opt_6.7b.png>
-Package pdftex.def Info: figure/exp1/opt_6.7b.png  used on input line 256.
+Package pdftex.def Info: figure/exp1/opt_6.7b.png  used on input line 258.
 (pdftex.def)             Requested size: 123.84283pt x 84.93326pt.
-<figure/exp1/falcon_7b.png, id=230, 327.20242pt x 224.39835pt>
+<figure/exp1/falcon_7b.png, id=228, 327.20242pt x 224.39835pt>
 File: figure/exp1/falcon_7b.png Graphic file (type png)
 <use figure/exp1/falcon_7b.png>
-Package pdftex.def Info: figure/exp1/falcon_7b.png  used on input line 262.
+Package pdftex.def Info: figure/exp1/falcon_7b.png  used on input line 264.
 (pdftex.def)             Requested size: 123.84283pt x 84.93326pt.
-<figure/exp1/mistral_7b.png, id=231, 321.42082pt x 224.39835pt>
+<figure/exp1/mistral_7b.png, id=229, 321.42082pt x 224.39835pt>
 File: figure/exp1/mistral_7b.png Graphic file (type png)
 <use figure/exp1/mistral_7b.png>
-Package pdftex.def Info: figure/exp1/mistral_7b.png  used on input line 268.
+Package pdftex.def Info: figure/exp1/mistral_7b.png  used on input line 270.
 (pdftex.def)             Requested size: 123.84283pt x 86.46039pt.
 
 
+[4 <./figure/Massive_Activation.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
-[5 <./figure/Massive_Activation.png>]
-Underfull \hbox (badness 2547) in paragraph at lines 317--319
+
+
+
+[5 <./figure/exp1/gpt2_124M.png> <./figure/exp1/llama2_13b.png> <./figure/exp1/
+bloom_7b.png> <./figure/exp1/gptj_6b.png> <./figure/exp1/qwen2.5_7b.png> <./fig
+ure/exp1/opt_6.7b.png> <./figure/exp1/falcon_7b.png> <./figure/exp1/mistral_7b.
+png>]
+Underfull \hbox (badness 2547) in paragraph at lines 319--321
 \OT1/ptm/m/n/10 ar-chi-tec-tural pat-terns emerge from the ra-tios. \OT1/ptm/m/
 it/10 Clas-si-cal
  []
@@ -708,89 +666,46 @@ it/10 Clas-si-cal
 
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-
-[6 <./figure/exp1/gpt2_124M.png> <./figure/exp1/llama2_13b.png> <./figure/exp1/
-bloom_7b.png> <./figure/exp1/gptj_6b.png> <./figure/exp1/qwen2.5_7b.png> <./fig
-ure/exp1/opt_6.7b.png> <./figure/exp1/falcon_7b.png> <./figure/exp1/mistral_7b.
-png>]
-
-! Undefined control sequence.
-<recently read> \multirow 
-                          
-l.385 \multirow
-               {4}{*}{\textbf{Generative}}
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \multirow 
-                          
-l.391 \multirow
-               {2}{*}{\textbf{Suppressive}}
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \multirow 
-                          
-l.395 \multirow
-               {2}{*}{\textbf{Mixed}}
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-
-Overfull \hbox (39.50845pt too wide) in paragraph at lines 381--400
+[6]
+Overfull \hbox (31.50845pt too wide) in paragraph at lines 383--402
  [][] 
  []
 
 
 
+
+
 [7]
-
-
-
-[8]
-Underfull \hbox (badness 2591) in paragraph at lines 467--469
+Underfull \hbox (badness 2591) in paragraph at lines 469--471
 \OT1/ptm/b/n/10 d. Dif-fer-en-tial de-pen-dency pat-terns across ar-chi-tec-
  []
 
 
 
 
-Underfull \hbox (badness 1484) in paragraph at lines 498--499
+
+[8]
+Underfull \hbox (badness 1484) in paragraph at lines 500--501
 []\OT1/ptm/b/n/10 Causal Ver-i-fi-ca-tion (RQ5)\OT1/ptm/m/n/10 : $\OML/cmm/m/it
 /10 V$ \OT1/ptm/m/n/10 ma-trix ge-om-e-try is
  []
 
 
 
+
+
 [9]
 
 
-
-[10]
-
-
-Underfull \hbox (badness 2158) in paragraph at lines 595--596
+Underfull \hbox (badness 2158) in paragraph at lines 597--598
 []\OT1/ptm/m/n/8 T. Dao et al., ``Mas-sive ac-ti-va-tions in large lan-guage mo
 d-els,''
  []
 
 
 
-[11]
+[10]
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -806,7 +721,7 @@ Before submitting the final camera ready copy, remember to:
 
 
 
-[12
+[11
 
 ] (./Massive activation.aux)
  ***********
@@ -821,13 +736,13 @@ Package rerunfilecheck Info: File `"Massive activation".out' has not changed.
 (rerunfilecheck)             Checksum: FD31154B907C4AC5F6580EE9656EED11;4218.
  ) 
 Here is how much of TeX's memory you used:
- 13164 strings out of 474662
- 212357 string characters out of 5751109
- 623411 words of memory out of 5000000
- 35926 multiletter control sequences out of 15000+600000
- 614874 words of font info for 154 fonts, out of 8000000 for 9000
+ 13210 strings out of 474662
+ 212951 string characters out of 5751109
+ 624146 words of memory out of 5000000
+ 35972 multiletter control sequences out of 15000+600000
+ 615389 words of font info for 156 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
- 75i,14n,79p,1897b,579s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,14n,79p,1897b,577s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx1
 0.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mbx8.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/c
@@ -847,14 +762,15 @@ basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/
 2025basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texli
 ve/2025basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/te
 xlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr
-/local/texlive/2025basic/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/loca
-l/texlive/2025basic/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/te
-xlive/2025basic/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive
-/2025basic/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on "Massive activation.pdf" (12 pages, 6803657 bytes).
+/local/texlive/2025basic/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/lo
+cal/texlive/2025basic/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/t
+exlive/2025basic/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texli
+ve/2025basic/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/20
+25basic/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on "Massive activation.pdf" (11 pages, 6813141 bytes).
 PDF statistics:
- 420 PDF objects out of 1000 (max. 8388607)
- 336 compressed objects within 4 object streams
- 96 named destinations out of 1000 (max. 500000)
+ 422 PDF objects out of 1000 (max. 8388607)
+ 337 compressed objects within 4 object streams
+ 95 named destinations out of 1000 (max. 500000)
  208 words of extra memory for PDF output out of 10000 (max. 10000000)
 
