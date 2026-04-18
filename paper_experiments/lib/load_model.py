@@ -4,12 +4,14 @@ import torch
 import timm
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-from .model_dict import MODEL_DICT_LLMs
+from .model_dict import MODEL_DICT_LLMs, resolve_model_id
 
 
 def load_llm(args):
     print(f"loading model {args.model}")
-    model_name, cache_dir = MODEL_DICT_LLMs[args.model]["model_id"], MODEL_DICT_LLMs[args.model]["cache_dir"]
+    # resolve_model_id: 若 model_id 是本地路径且不存在，自动 fallback 到 HF ID（若已登记）
+    model_name = resolve_model_id(args.model)
+    cache_dir = MODEL_DICT_LLMs[args.model]["cache_dir"]
 
     # Only use token if it's not the default placeholder
     token_kwargs = {} if args.access_token == "type in your access token here" else {"token": args.access_token}

@@ -228,23 +228,64 @@ ma/
 
 ---
 
-## 六、运行实验
+## 六、Quick Start（外部部署）
 
 ```bash
-cd paper_experiments
-pip install -r requirements.txt
+# 1. Clone 含子模块（RQ2b 脚本在子模块里）
+git clone --recurse-submodules https://github.com/Ludan-daye/changeHead_massvieAcitve.git ma
+cd ma
 
-# 例：GPT-J-6B 在起源层 (L2) 做 RQ5 v-ablation
+# 或者先 clone 再补 submodule
+# git clone https://github.com/Ludan-daye/changeHead_massvieAcitve.git ma
+# cd ma && git submodule update --init --recursive
+
+# 2. 安装依赖
+cd paper_experiments
+bash setup.sh          # 创建 conda 环境 + 装 requirements + spaCy
+
+# 3. Pilot 验证：GPT-J-6B 在起源层 L2 做 RQ5（~30 min，HF 自动下载 24GB）
 python RQ5_v_matrix_ablation/exp5_v_ablation.py \
-    --model gptj_6b --layer_id 2 \
+    --model gptj_6b --layer_id 2 --nsamples 30 \
     --savedir results/wikitext_run/RQ5_origin/gptj_6b
+# 预期: delta_ma.top1_mean_pct ≤ -85%
+
+# 4. 批量跑所有 23 个模型的 RQ3/4/5 在起源层（~12h 双卡）
+bash run_rq345_origin_layer.sh "" all
 ```
 
-详见 `paper_experiments/README.md` 以及各 RQ 子目录下的 `README.md`。
+### 环境变量（可选）
+
+| 变量 | 默认 | 作用 |
+|---|---|---|
+| `HF_CACHE_DIR` | `./model_weights` | HuggingFace 权重缓存目录 |
+| `HF_ENDPOINT` | `https://hf-mirror.com` | 国内镜像源（用户已默认）|
+
+### 模型路径策略
+
+`lib/model_dict.py` 每个模型都有:
+- `model_id`：本地路径（作者服务器约定）
+- `hf_fallback`：HuggingFace 公开 ID（外部用户自动走这个）
+
+本地路径不存在时，加载器会**自动 fallback 到 HF 下载**——详见 `lib/model_dict.py` 的 `resolve_model_id()`。
+
+### 不能直接跑的模型（5 个）
+
+下列模型没有公开 HF 发布，外部用户无法部署，本仓库暂用占位路径：
+- `glm4_32b`, `qwen3.5_9b`, `qwen3.5_27b`, `qwen3.5_35b_a3b` (MoE)
+- 内部用户的 `qwen3_30b_a3b` 用 FP8 权重（需设本地路径）
+
+### 执行计划
+
+- 主手册：`paper_experiments/docs/EXECUTION_PLAN.md`（批次顺序、验收阈值）
+- 按 RQ 独立：`paper_experiments/RQ{1..6}_*/PLAN.md`（每个 RQ 自包含）
 
 ---
 
 ## 七、引用
+
+---
+
+## 八、引用
 
 ```
 @article{...,
