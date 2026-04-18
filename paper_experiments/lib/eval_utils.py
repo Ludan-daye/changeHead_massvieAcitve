@@ -75,11 +75,35 @@ def test_imagenet(model, dataloader):
     return acc/cnt 
 
 @torch.no_grad()
-def eval_ppl(dataset_name, model, tokenizer, seed):
+def eval_ppl(dataset_name, model, tokenizer, seed, seqlen=None, device=None):
+    """
+    计算给定数据集的 perplexity。
+
+    Args:
+        dataset_name: 'wikitext' / 'c4' / 'ptb' 等
+        model: 已加载的 LM
+        tokenizer: 配套 tokenizer
+        seed: 随机种子
+        seqlen: 序列长度；若为 None，自动从 model.config 推断，失败则用 2048 作安全默认值
+        device: 目标设备字符串或 torch.device；若为 None，用模型首个参数所在设备
+    Returns:
+        ppl (float)
+    """
     print(f"Evaluating on {dataset_name}")
-    seqlen=4096
+
+    if seqlen is None:
+        cfg = getattr(model, 'config', None)
+        seqlen = getattr(cfg, 'max_position_embeddings', 2048) if cfg is not None else 2048
+        # 限制一下上限，避免某些模型 max_pos_embeddings = 32768 这种情况下 OOM
+        seqlen = min(seqlen, 4096)
+    if device is None:
+        try:
+            device = next(model.parameters()).device
+        except StopIteration:
+            device = torch.device("cuda:0")
+
     testseq_list = get_test_data(
-        dataset_name, seed=seed, tokenizer=tokenizer, seqlen=seqlen, device="cuda:0"
+        dataset_name, seed=seed, tokenizer=tokenizer, seqlen=seqlen, device=device
     )
 
     nlls = []
@@ -87,8 +111,8 @@ def eval_ppl(dataset_name, model, tokenizer, seed):
         for test_seq in testseq_list:
             lm_logits = model(test_seq).logits
 
-            shift_logits = lm_logits[:, :-1, :].contiguous()   ## shape: [1, 2047, 50272]
-            shift_labels = test_seq[:, 1:]             ## shape: shape: [1, 2047]
+            shift_logits = lm_logits[:, :-1, :].contiguous()
+            shift_labels = test_seq[:, 1:]
 
             loss_fct = nn.CrossEntropyLoss()
             loss = loss_fct(shift_logits.reshape(-1, shift_logits.size(-1)), shift_labels.reshape(-1))

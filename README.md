@@ -1,593 +1,298 @@
-# Investigating Massive Activations in Large Language Models
+# Massive Activations: Mechanism and Empirical Evidence
 
-<div align="center">
-
-![Models](https://img.shields.io/badge/Models-8_LLMs-blue)
-![Experiments](https://img.shields.io/badge/Experiments-5_Series-green)
-![Status](https://img.shields.io/badge/Status-Completed-success)
-![Python](https://img.shields.io/badge/Python-3.11-blue)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red)
-
-**A Systematic Investigation into the Generation Mechanisms of Massive Activations in Transformer-based Language Models**
-
-[📖 Overview](#-overview) • [🎯 Research Questions](#-research-questions) • [🔬 Key Findings](#-key-findings) • [📊 Experiments](#-experiments) • [🚀 Quick Start](#-quick-start) • [📖 Citation](#-citation)
-
-</div>
+> **Function Words as Geometric Anchors** — 25 个 LLM + ViT 的 MA 机制研究
+> 核心论点：MA 是 MLP 在功能词位置写入的"语法重音 mark"，经 attention 广播并由模型调节为稳态。
 
 ---
 
-## 📖 Overview
+## 一、核心机制：功能词 mark → attention 广播 → 分岔（可解释性链）
 
-This repository contains the complete implementation and results of a systematic investigation into **Massive Activation (MA)** phenomena in large language models. Massive activations—characterized by activation values orders of magnitude larger than typical ranges—pose significant challenges to numerical stability and computational efficiency in modern LLMs.
+这是贯穿所有实验（RQ1–RQ6）的**单一因果链**。每条实验都是对这条链上某一步的检验。
 
-### Research Contribution
+### 步骤 1 — Mark 形成（生成端）
 
-This work provides the first **end-to-end mechanistic explanation** of massive activation generation through rigorous causal analysis:
+训练动力学决定了"在哪写 MA"：
 
 ```
-Function Word Triggering → MLP Generation → SVD Geometric Amplification
+功能词三重性质（Zipf 三合一）:
+  - 高频     → 梯度信号充足
+  - 低熵     → 任务简单，loss 快速下降
+  - 低维语义 → hidden 里大量维度空闲
+
+↓
+
+MLP 发现 "功能词位置 × 空闲维度" 是写标记的最佳载体
+→ 在 v₁ 方向把激活推到 300–3000×
+→ MA = mark
 ```
 
-### What are Massive Activations?
+#### 两种生成模式（Mark 写入方式）
 
-Massive activations are extreme internal activation values that:
-- Exceed normal ranges by 300-3000× (99.9th percentile threshold)
-- Threaten numerical stability in low-precision inference
-- Occur systematically rather than randomly
-- Are linked to specific linguistic and geometric properties
+**同一个"写 mark"的任务，不同模型用不同方式完成**。按单层消融 ΔMA 判定：
 
-### Scientific Value
+| 模式 | 判定 | 机制 | 例子 | RQ4/5 怎么做 |
+|:-:|:-:|---|---|---|
+| **模式 A — 单层主导** | 某层 ΔMA ≥ 85% | 一个早期 MLP 层一次性把完整 MA 写入 | GPT-J (L2 -90%)、BLOOM (L3 -95%)、Falcon (L3 -87%)、Llama-3.1 (L1 -87%)、Yi-9B (L1 -88%) | 对该起源层做 SVD、消融 v₁ |
+| **模式 B — 多层协作** | 所有单层 ΔMA < 30% | 多个 MLP 层同向接力，每层写一小部分，合力形成 MA | GPT-2（L0-L4 每层最多 -6.7%，u₁ 对齐 0.856）、OPT-6.7B、Qwen3-32B、Qwen3.5-27B | macro-SVD：对 Δh₂ 多层累加做 SVD，得到 macro v₁ |
+| 中间形态 | 30%–85% | 疑似"单层 + 调节"或"双层主导"，需 RQ2c 累积消融进一步判定 | Mistral-7B、Qwen1.5-14B、GLM4-9B 等 9 个 | 待判定后决定 |
 
-- **Theoretical**: First mechanistic understanding of MA generation pathways in Transformers
-- **Practical**: Provides principled geometric interventions for model stability
-- **Architectural**: Reveals evolutionary trajectory from distributed to specialized amplification mechanisms
-
----
-
-## 🎯 Research Questions
-
-This investigation systematically addresses five interconnected research questions:
-
-| Question | Focus | Key Method |
-|----------|-------|------------|
-| **RQ1: Source Effect** | Does MA originate from attention or MLP? | Attention head ablation |
-| **RQ2: Localization Effect** | Which MLP component generates MA? | Layer-wise output comparison |
-| **RQ3: Trigger Effect** | What linguistic patterns trigger MA? | Part-of-speech analysis |
-| **RQ4: Mechanism Effect** | Can SVD geometry explain MA? | Singular value decomposition |
-| **RQ5: Causality Effect** | Is geometric structure causal? | V-matrix ablation |
-
----
-
-## 🔬 Key Findings
-
-### Finding 1: Attention as Regulator, Not Generator (RQ1)
-
-Attention mechanisms exhibit **three distinct regulatory roles**:
-
-- **Generative-Promoting** (GPT-2, LLaMA-2, BLOOM, GPT-J): ∆Top1 = -60% to -98%
-  - Attention provides triggering input to MLP
-  - Disabling attention reduces MA significantly
-
-- **Inhibitory-Regulatory** (Qwen2.5, OPT): ∆Top1 = +250% to +266%
-  - Attention suppresses MA generation
-  - Disabling attention causes MA explosion
-
-- **Hybrid/Mixed** (Falcon, Mistral): Layer-specific behavior
-  - Complex interaction patterns across layers
-
-**Implication**: Attention regulates, but does not generate MA.
-
----
-
-### Finding 2: MLP as Unequivocal Physical Source (RQ2)
-
-MLP layers are the **exclusive physical source** of massive activations:
-
-| Model | MLP/Attention Ratio | Key Layer |
-|-------|---------------------|-----------|
-| **Qwen2.5-7B** | **3496.18×** | Layer 0 |
-| **Mistral-7B** | 21.20× | Layer 0 |
-| **Falcon-7B** | 14.68× | Layer 0 |
-| **LLaMA-2-13B** | 13.67× | Layer 22 |
-| **BLOOM-7B1** | 9.88× | Layer 12 |
-| **OPT-6.7B** | 6.42× | Layer 25 |
-| **GPT-J-6B** | 4.12× | Layer 0 |
-| **GPT-2** | 2.84× | Layer 2 |
-
-**Statistical Verification**: All ratios significant at p < 0.001 (bootstrap, N=1000)
-
-**Implication**: MLP amplification is 2.84-3496× stronger than attention output.
-
----
-
-### Finding 3: Function Words as Primary Triggers (RQ3)
-
-Massive activations are **systematically triggered** by grammatical tokens:
-
-| Architecture | Function Word % | Pattern |
-|--------------|-----------------|---------|
-| **Mistral-7B** | **100%** | Exclusive function word triggering |
-| **Falcon-7B** | 90% | Strong preference |
-| **BLOOM-7B1** | 90% | Strong preference |
-| **GPT-2** | 84% | Strong preference |
-| **GPT-J-6B** | 80% | Strong preference |
-| **LLaMA-2-13B** | 76% | Moderate preference |
-| **OPT-6.7B** | 58% | Mixed pattern |
-| **Qwen2.5-7B** | 40% | Content word dominant |
-
-**Linguistic Categories**: Prepositions, conjunctions, articles, auxiliary verbs
-
-**Implication**: Abstract grammatical processing creates alignment conditions.
-
----
-
-### Finding 4: SVD Geometric Amplification (RQ4)
-
-MLP weight matrices exhibit **systematic geometric structures**:
-
-#### Three Amplification Strategies
-
-**1. Single-Direction Dominance** (Qwen, GPT-2, OPT)
-- High singular value ratio: σ₁/σ₂ = 2.52-2.87
-- Strong alignment: cos(MA, v₁) = 0.78-0.994
-- Efficient amplification along one direction
-
-**2. Anti-Alignment Mechanism** (GPT-J)
-- Moderate dominance: σ₁/σ₂ = 1.91
-- Negative alignment: cos(MA, v₁) = -0.69
-- Compensatory amplification
-
-**3. Multi-Direction Collaboration** (BLOOM, LLaMA-2)
-- Low dominance: σ₁/σ₂ = 1.18-2.23
-- Minimal alignment: cos(MA, v₁) = 0.05-0.11
-- Distributed amplification
-
-**Mathematical Model**:
+**关键区别**：
 ```
-MA ≈ σ₁ × (h₂ · v₁) + bias
-```
-where h₂ is MLP intermediate activation, v₁ is first right singular vector
+模式 A: ablation L_origin → MA 大降
+         ablation 其他层 → MA 几乎不变
+         → 有明确的"起源层"
 
-**Implication**: Geometric structure determines amplification capacity.
-
----
-
-### Finding 5: V-Matrix as Causal Component (RQ5)
-
-**V-matrix ablation** provides definitive causal evidence:
-
-| Model | Baseline MA | After V-Ablation | ∆MA | Dependency |
-|-------|-------------|------------------|-----|------------|
-| **Qwen2.5-7B** | 9160.00 | 82.60 | **-99.1%** | Extreme |
-| **BLOOM-7B1** | 92.50 | 20.15 | -78.2% | Strong |
-| **Falcon-7B** | 8.92 | 2.15 | -75.9% | Strong |
-| **OPT-6.7B** | 1.85 | 0.42 | -77.3% | Strong |
-| **Mistral-7B** | 1.17 | 0.31 | -73.5% | Strong |
-| **GPT-2** | 102.71 | 31.00 | -69.8% | Moderate |
-| **GPT-J-6B** | 30.33 | 9.21 | -69.6% | Moderate |
-| **LLaMA-2-13B** | 12.23 | 2.59 | -78.8% | Strong |
-
-**Ablation Method**: Replace V with random orthogonal matrix while preserving U and Σ
-
-**Statistical Significance**: All reductions p < 0.001
-
-**Implication**: V-matrix geometry is **causally necessary** for MA generation.
-
----
-
-## 📊 Experiments
-
-### Experiment Framework
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                   Research Pipeline                      │
-├─────────────────────────────────────────────────────────┤
-│                                                          │
-│  RQ1: Attention Ablation ──→ Identify Regulatory Role   │
-│            ↓                                             │
-│  RQ2: MLP vs Attention ────→ Locate Physical Source     │
-│            ↓                                             │
-│  RQ3: POS Tagging ─────────→ Identify Trigger Pattern   │
-│            ↓                                             │
-│  RQ4: SVD Analysis ────────→ Explain Geometry           │
-│            ↓                                             │
-│  RQ5: V-Matrix Ablation ───→ Establish Causality        │
-│                                                          │
-└─────────────────────────────────────────────────────────┘
+模式 B: ablation 任何单层 → MA 小降
+         ablation 多层组合 → MA 大降（贪心）
+         多层 W_down 的 u₁ 方向高度一致（> 0.8）
+         → 整个前段是"分布式起源"
 ```
 
-### Experiment 1: Attention Mechanism Contribution Analysis
+**不能把模式 B 简化为"模式 A + 调节"** —— 它们是真实不同的写入方式。GPT-2 的 macro-SVD 验证：η=3.48, u₁ 对齐 0.856, R²=0.870，这些数字只在把多层 Δ 累加后才出现，单层视角看不到。
 
-**Objective**: Determine if attention mechanisms generate or regulate MA
+**对应实验**：
+- RQ2（禁 MLP → 证 MLP 是写入者，对 A 和 B 都成立）
+- RQ2b（逐层消融 → 判模式 A / B）
+- RQ2c（累积消融 → 确认模式判定、解决中间形态）
+- RQ3（功能词 vs 内容词 v₁ 投影 → 证位置在功能词）
+- RQ4 / RQ5（单层 SVD + v₁ 消融，仅对模式 A 有效）
+- RQ6（macro-SVD，对模式 B 和中间形态必需）
 
-**Method**:
-- Disable all attention heads via PyTorch hooks
-- Compare Top1 activation changes: ∆Top1 = (Top1_intervention - Top1_baseline) / Top1_baseline
-
-**Results**:
-- Generative models: ∆Top1 ∈ [-98.3%, -60.0%]
-- Inhibitory models: ∆Top1 ∈ [+250.4%, +266.8%]
-- Attention is regulatory, not generative
-
-**Implementation**: `experiments/exp1_attention_heads/`
-
----
-
-### Experiment 2: MLP Layer Source Verification
-
-**Objective**: Identify which component (attention vs MLP) physically generates MA
-
-**Method**:
-- Simultaneously capture attention and MLP outputs
-- Calculate ratio: MLP_max / Attention_max
-
-**Results**:
-- MLP dominance: 2.84× to 3496.18×
-- Consistent across all architectures
-- Establishes MLP as physical source
-
-**Implementation**: `experiments/exp2_mlp_layers/`
-
----
-
-### Experiment 3: Function Word Trigger Analysis
-
-**Objective**: Identify linguistic patterns that trigger MA
-
-**Method**:
-- Record token positions of Top-K MAs
-- Perform POS tagging with spaCy
-- Calculate function word percentage
-
-**Results**:
-- Function word dominance: 76-100% (except Qwen: 40%)
-- Strong systematic correlation
-- Links computational to linguistic structure
-
-**Implementation**: `experiments/exp3_svd_alignment/`
-
----
-
-### Experiment 4: SVD Alignment Mechanism Analysis
-
-**Objective**: Explain MA generation through weight matrix geometry
-
-**Method**:
-- Perform SVD on MLP down_proj matrices: W = UΣV^T
-- Analyze singular value spectrum: σ₁/σ₂
-- Calculate alignment: cos(MA_direction, v₁)
-
-**Results**:
-- Three geometric strategies identified
-- Correlation with architectural families
-- Mathematical explanation of amplification
-
-**Implementation**: `experiments/exp4_attention_svd/`
-
----
-
-### Experiment 5: V-Matrix Ablation Study
-
-**Objective**: Establish causal role of V-matrix geometry
-
-**Method**:
-- Construct ablated weight: W_ablated = U Σ V_rand^T
-- Replace original V with random orthogonal matrix
-- Measure MA reduction
-
-**Results**:
-- Systematic MA reduction: 69.6-99.1%
-- Causal necessity established
-- Dependency varies by architecture
-
-**Implementation**: `experiments/exp6_v_ablation/`
-
----
-
-## 🎯 Models and Data
-
-### Evaluated Models (8 LLMs)
-
-| Model | Parameters | Layers | Architecture | Position Encoding |
-|-------|------------|--------|--------------|-------------------|
-| **GPT-2** | 124M | 12 | Standard Transformer | Learned |
-| **GPT-J-6B** | 6B | 28 | Parallel Attn+FFN | RoPE |
-| **BLOOM-7B1** | 7.1B | 30 | Standard | ALiBi |
-| **Falcon-7B** | 7B | 32 | Multi-Query Attention | ALiBi |
-| **OPT-6.7B** | 6.7B | 32 | Standard | Learned |
-| **Mistral-7B-v0.3** | 7B | 32 | Sliding Window + GQA | RoPE |
-| **Qwen2.5-7B** | 7B | 28 | GQA | RoPE |
-| **LLaMA-2-13B** | 13B | 40 | RoPE + RMSNorm | RoPE |
-
-### Dataset
-
-- **10 text sequences** × 128 tokens each
-- Diverse syntactic structures
-- Consistent across all experiments
-- Ensures reproducible comparisons
-
-### Computational Resources
-
-- **GPU**: NVIDIA A100 80GB
-- **Total Compute**: ~200 GPU hours
-- **Storage**: ~185 GB experimental data
-
----
-
-## 📁 Repository Structure
+### 步骤 2 — Attention sink（softmax 指数放大）
 
 ```
-massive-activations/
-├── README.md                       # This file
-├── LICENSE                         # MIT License
-├── requirements.txt                # Python dependencies
-├── .gitignore                      # Git ignore rules
-│
-├── lib/                            # Core library
-│   ├── core/                       # Model loading, data processing
-│   ├── utils/                      # Evaluation and model utilities
-│   └── plotting/                   # Visualization tools
-│
-├── experiments/                    # Experiment implementations
-│   ├── README.md                   # Detailed experiment guide
-│   ├── exp1_attention_heads/       # RQ1: Attention ablation
-│   ├── exp2_mlp_layers/            # RQ2: MLP verification
-│   ├── exp3_svd_alignment/         # RQ3&4: Trigger + SVD analysis
-│   ├── exp4_attention_svd/         # Attention SVD analysis
-│   ├── exp6_v_ablation/            # RQ5: V-matrix causality
-│   └── shared/                     # Shared utilities
-│
-├── results/                        # Experimental results
-│   ├── experiments/                # Organized by experiment
-│   │   ├── exp1/ exp2/ exp3/      # Per-experiment results
-│   │   ├── exp4/ exp4b/ exp6/
-│   │   └── exp7/ exp8/
-│   ├── plot_results/               # Generated figures
-│   └── archive/                    # Archived data
-│
-├── scripts/                        # Utility scripts
-│   ├── README.md                   # Script documentation
-│   └── visualization/              # 36 plotting scripts
-│
-├── docs/                           # Documentation
-│   ├── README.md                   # Documentation index
-│   └── reports/                    # Detailed analysis reports
-│
-└── model_weights/                  # Model weight cache (gitignored)
+attention_weight(i→j) = softmax(Q_i · K_j / √d)
+
+当 K_j 在 v₁ 维度携带 MA (K_j[v₁] ≈ 2000):
+  Q_i · K_j ≈ 2000    ← 被这一维主导
+  exp(2000/√d) ≫ exp(其他 token 的内积)
+→ attention 权重几乎全部聚焦到 MA token
+```
+
+这不是模型"设计"了 attention sink，是 **softmax + MA 的必然耦合**。功能词成为 attention sink。
+
+### 步骤 3 — 广播（V 向量横向传播）
+
+```
+output_i = Σ_j attention_weight(i→j) · V_j
+        ≈ V_{MA_token}   （权重几乎全在 MA token 上）
+
+→ 所有 token 的 attention 输出都被拉向 V_{功能词}
+→ 结构信号横向传到整个序列
+→ 几何上：所有 token 在 v₁ 轴上"对齐"
+```
+
+### 步骤 4 — 分岔（Generative vs Suppressive）
+
+attention head 读到 mark 后，有两种响应方式：
+
+| 模式 | 模型数 | V 投射方向 | 禁用 attention 后 ΔMA | 例子 |
+|:-:|:-:|:-:|:-:|---|
+| **Generative** | 17 | ∥ +v₁（同向）| **下降**（-20% ~ -98%） | GPT-J, BLOOM, Falcon, Llama-3.1 |
+| **Suppressive** | 7 | ∥ −v₁（反向）| **暴涨**（+27% ~ +266%） | OPT-6.7B, Qwen2.5-7B, Yi-9B |
+
+**关键**：两种方向都锁在 v₁ 轴上——没有哪种模型的 attention 会忽略 MA 去别的方向投射。这就是 MA 的 **几何锁定性**：一旦 v₁ 确定，所有下游模块只能在这个轴上选"支持"或"反对"。
+
+#### 生成模式 × 调节模式：两个正交维度
+
+**步骤 1 的生成模式（A 单层 / B 多层）** 和 **步骤 4 的调节模式（Generative / Suppressive）** 是**彼此独立、可自由组合**的两个维度——不能混为一谈：
+
+|  | Generative（attention 放大）| Suppressive（attention 抑制）|
+|---|---|---|
+| **模式 A 单层主导** | GPT-J, BLOOM, Falcon, Llama-3.1, Qwen2.5-0.5B, Qwen3-0.6B/1.7B | Yi-9B, Qwen2-7B, Qwen2.5-7B |
+| **模式 B 多层协作** | GPT-2 | OPT-6.7B, Qwen3-32B, Qwen3.5-35B-a3b |
+
+→ 不同模型组合不同。**MLP 既参与生成（起源层），又可能参与调节（其他层负值输出抑制 MA）**。生成发生在训练初期，调节是训练后期为了稳态新学到的；两件事在架构里同时存在但可独立分析。
+
+### 步骤 5 — 稳态维持
+
+```
+残差流      : 跨层垂直传递 MA
+LayerNorm  : 限制绝对幅度上限（被动硬约束）
+GELU       : 防止单维无限放大（软门控）
+
+→ MA 收敛到某个稳定量级
+```
+
+**训练动力学实证**（Pythia-160M）：
+```
+step 1      : MA ≈ 2.1    （初始噪声）
+step 32k    : MA ≈ 622    （达峰）
+step 143k   : MA ≈ 293    （回落稳定）
 ```
 
 ---
 
-## 🚀 Quick Start
+## 二、机制链对实验的映射
 
-### Installation
+| 步骤 | 对应 RQ | 检测什么 |
+|:-:|---|---|
+| 1. Mark 形成 | **RQ2** 禁 MLP → MA 消失 | MLP 是写入者 |
+| 1. Mark 位置 | **RQ3** 功能词 vs 内容词 v₁ 投影 | 标记集中在功能词 |
+| 1. Mark 几何 | **RQ4 / RQ5** σ₁/σ₂ + 消融 v₁ | v₁ 方向因果必要 |
+| 1. Mark 多层 | **RQ6** macro-SVD | Δ 多层累加还原 macro v₁ |
+| 2–3. Sink + 广播 | **RQ1** 禁 attn 看 ΔMA | attention 读取 mark |
+| 4. 分岔方向 | **RQ1 mode** | Generative / Suppressive 二分 |
+| 5. 稳态 | **RQ7**（本轮排除） | 训练步维度 MA 演化 |
+
+---
+
+## 三、三个关键推论
+
+### 推论 A：Peak 层测 RQ3 出现 Cohen's d 反向 — 是广播步骤的实证
+
+```
+L_origin      : 功能词 h₂[v₁] ≫ 内容词 h₂[v₁]      → Cohen's d ≫ 0
+L_origin + k  : attention 把 V_{功能词} 广播到所有位置
+                内容词位置被"染色"
+L_peak        : 所有 token 都有 +v₁ 成分，差距摊薄   → Cohen's d ≤ 0
+```
+
+当前 ALL_EXPERIMENTS_SUMMARY 中 9/16 模型在 peak 层出现 Cohen's d 负值，正是这一步的直接实证。这也是 **RQ3 必须在起源层重跑** 的物理理由。
+
+### 推论 B：信息分轨 — 禁 v₁ 不破坏语言建模
+
+```
+hidden dim (4096)
+ ├── 主导几维 (v₁ / v₂，~0.1%)
+ │    = 结构信号通道 (MA)
+ │    = 经 attention sink + 广播 传递
+ │    
+ └── 其余维度 (~99.9%)
+      = 语义信号通道
+      = 正常 attention，与 MA sink 不交互
+```
+
+两条通路正交不干扰。禁 v₁（RQ5）把 MA 砍 -90% 以上，但 **PPL 几乎不变**。这是把"MA 是附加结构标签、不占语义"的主张做实的关键证据。
+
+### 推论 C：MA 的几何锁定性 — attention 没有"忽略"的选择
+
+步骤 4 里不存在"attention 忽略 MA"的第三选项。一旦 v₁ 在训练中确定，任何 attention head 若想让输出有意义，就必须响应 v₁ 维度——要么放大（generative），要么抑制（suppressive）。这解释了为什么 25/25 模型都有明确的 Mode 归属，没有一个模型出现 ΔMA ≈ 0% 的"中立"情况。
+
+---
+
+## 四、仓库结构
+
+```
+ma/
+├── README.md                        ← 本文件（机制可解释性）
+├── paper_experiments/               ← 实验代码（按 RQ 组织）
+│   ├── docs/                        ← 理论文档与进度追踪
+│   │   ├── MA_FRAMEWORK.md          生成/传递/调节三部分框架
+│   │   ├── MA_CONCLUSIONS_AND_ARGUMENTS.md  完整结论论证
+│   │   ├── MA_WHY.md                理论解释（15 章）
+│   │   ├── EXPERIMENT_PLAN.md       逐 RQ 讨论 + 机制链附录 A
+│   │   ├── PROGRESS_MATRIX.md       25 模型 × 6 RQ 进度矩阵
+│   │   ├── TODO_EXPERIMENTS.md      待补实验清单
+│   │   ├── FINDINGS_TRACKING.md     核心发现追踪
+│   │   ├── CONFLICTS.md             数据冲突记录
+│   │   └── CONCLUSIONS.md           阶段性结论
+│   ├── RQ1_attention_contribution/  禁 attention 实验
+│   ├── RQ2_mlp_source/              禁/逐层 MLP 实验
+│   ├── RQ3_function_words/          功能词 SVD 映射
+│   ├── RQ4_svd_alignment/           SVD 对齐分析
+│   ├── RQ5_v_matrix_ablation/       v₁ 消融因果
+│   ├── RQ6_single_layer_activation/ 单层/macro-SVD
+│   ├── RQ7_training_dynamics/       训练动力学（本轮排除）
+│   ├── lib/                         共享库：模型加载 / hooks / 评估 / 绘图
+│   ├── monkey_patch/                激活捕获 hook
+│   ├── main_llm.py, main_vit.py     统一入口
+│   └── results/                     实验输出
+├── paper/
+│   ├── Function Words as Geometric Anchors.pdf   主论文
+│   ├── acl_source/                  ACL 投稿 LaTeX 源
+│   └── notes_zh/                    中文笔记、rebuttal、审稿意见
+├── changeHead_massvieAcitve/        老代码库（submodule）
+├── figures/                         实验输出图（exp1–7 + combined）
+├── archives/                        zip 归档
+└── scripts/                         顶层可视化脚本
+```
+
+---
+
+## 五、支持的模型（25 个 LLM + 若干 ViT）
+
+### LLM（已在本框架下测试）
+
+| 模式 | 数量 | 模型 |
+|:-:|:-:|---|
+| A 单层主导 | 10 | GPT-J-6B, BLOOM-7B, Falcon-7B, Llama-3.1-8B, Yi-9B, Qwen2-7B, Qwen2.5-7B, Qwen2.5-0.5B, Qwen3-0.6B, Qwen3-1.7B |
+| 中间形态（待 RQ2c 精细判定） | 9 | Mistral-7B-v03, Qwen1.5-14B, GLM4-9B, Qwen3-4B/8B/14B, Qwen3.5-9B, Qwen3-30B-a3b(MoE) |
+| B 多层协作 | 4 | GPT-2, OPT-6.7B, Qwen3-32B, Qwen3.5-27B, Qwen3.5-35B-a3b(MoE) |
+| 数据待修复 | 2 | Llama-2-13B（缺 RQ2）、GLM4-32B（fp16 溢出） |
+
+**Attention 分岔**：17 generative / 7 suppressive。
+
+### ViT（changeHead_massvieAcitve 里）
+- MAE (base/large/huge), CLIP, DINOv2, DINOv2-reg
+
+---
+
+## 六、Quick Start（外部部署）
 
 ```bash
-# 1. Clone repository
-git clone https://github.com/anonymous/massive-activations.git
-cd massive-activations
+# 1. Clone 含子模块（RQ2b 脚本在子模块里）
+git clone --recurse-submodules https://github.com/Ludan-daye/changeHead_massvieAcitve.git ma
+cd ma
 
-# 2. Create conda environment
-conda create -n ma python=3.11
-conda activate ma
+# 或者先 clone 再补 submodule
+# git clone https://github.com/Ludan-daye/changeHead_massvieAcitve.git ma
+# cd ma && git submodule update --init --recursive
 
-# 3. Install PyTorch (CUDA 11.8 example)
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+# 2. 安装依赖
+cd paper_experiments
+bash setup.sh          # 创建 conda 环境 + 装 requirements + spaCy
 
-# 4. Install dependencies
-pip install -r requirements.txt
+# 3. Pilot 验证：GPT-J-6B 在起源层 L2 做 RQ5（~30 min，HF 自动下载 24GB）
+python RQ5_v_matrix_ablation/exp5_v_ablation.py \
+    --model gptj_6b --layer_id 2 --nsamples 30 \
+    --savedir results/wikitext_run/RQ5_origin/gptj_6b
+# 预期: delta_ma.top1_mean_pct ≤ -85%
 
-# 5. Verify installation
-python -c "import torch; print(f'PyTorch {torch.__version__}')"
+# 4. 批量跑所有 23 个模型的 RQ3/4/5 在起源层（~12h 双卡）
+bash run_rq345_origin_layer.sh "" all
 ```
 
-### Running Experiments
+### 环境变量（可选）
 
-#### Experiment 1: Attention Ablation (RQ1)
+| 变量 | 默认 | 作用 |
+|---|---|---|
+| `HF_CACHE_DIR` | `./model_weights` | HuggingFace 权重缓存目录 |
+| `HF_ENDPOINT` | `https://hf-mirror.com` | 国内镜像源（用户已默认）|
 
-```bash
-python experiments/exp1_attention_heads/exp1_feasibility_test.py \
-    --model gpt2 \
-    --nsamples 10
-```
+### 模型路径策略
 
-#### Experiment 2: MLP Layer Analysis (RQ2)
+`lib/model_dict.py` 每个模型都有:
+- `model_id`：本地路径（作者服务器约定）
+- `hf_fallback`：HuggingFace 公开 ID（外部用户自动走这个）
 
-```bash
-python experiments/exp2_mlp_layers/exp2b_mlp_layer_ablation.py \
-    --model gpt2 \
-    --nsamples 10 \
-    --n_jobs 1
-```
+本地路径不存在时，加载器会**自动 fallback 到 HF 下载**——详见 `lib/model_dict.py` 的 `resolve_model_id()`。
 
-#### Experiment 3-4: SVD Analysis (RQ3, RQ4)
+### 不能直接跑的模型（5 个）
 
-```bash
-python experiments/exp3_svd_alignment/exp3_svd_alignment.py \
-    --model gpt2 \
-    --nsamples 10
-```
+下列模型没有公开 HF 发布，外部用户无法部署，本仓库暂用占位路径：
+- `glm4_32b`, `qwen3.5_9b`, `qwen3.5_27b`, `qwen3.5_35b_a3b` (MoE)
+- 内部用户的 `qwen3_30b_a3b` 用 FP8 权重（需设本地路径）
 
-#### Experiment 5: V-Matrix Ablation (RQ5)
+### 执行计划
 
-```bash
-python experiments/exp6_v_ablation/exp6_v_matrix_ablation.py \
-    --model gpt2 \
-    --nsamples 10 \
-    --target_layers 0 1 2
-```
-
-### Viewing Results
-
-```bash
-# Experiment 1 results
-cat results/experiments/exp1/gpt2/exp1_results.json
-
-# Experiment 2 summary
-cat results/experiments/exp2/gpt2/summary.json
-
-# V-matrix ablation results
-cat results/experiments/exp6/gpt2/layer0_v_ablation.json
-```
+- 主手册：`paper_experiments/docs/EXECUTION_PLAN.md`（批次顺序、验收阈值）
+- 按 RQ 独立：`paper_experiments/RQ{1..6}_*/PLAN.md`（每个 RQ 自包含）
 
 ---
 
-## 📊 Complete Results Summary
-
-### Cross-Model Mechanism Classification
-
-| Type | Models | Attention Role | SVD Strength | Trigger |
-|------|--------|----------------|--------------|---------|
-| **Generative-SVD** | GPT-2, GPT-J | Provides input | Extreme | Function word |
-| **Inhibitory-SVD** | Qwen, OPT | Suppresses | Extreme | Mixed |
-| **Non-SVD** | BLOOM, LLaMA-2 | Provides input | Weak | Function word |
-| **Hybrid** | Falcon, Mistral | Mixed | Moderate | Function word |
-
-### Key Metrics Across All Models
-
-```
-┌──────────────┬─────────┬──────────┬─────────┬──────────┬──────────┐
-│ Model        │ ∆Top1   │ MLP/Attn │ Func(%) │ σ₁/σ₂    │ ∆MA      │
-├──────────────┼─────────┼──────────┼─────────┼──────────┼──────────┤
-│ GPT-2        │  -60.0% │   2.84×  │   84%   │   2.52   │  -69.8%  │
-│ GPT-J-6B     │  -95.2% │   4.12×  │   80%   │   1.91   │  -69.6%  │
-│ BLOOM-7B1    │  -98.3% │   9.88×  │   90%   │   1.18   │  -78.2%  │
-│ Falcon-7B    │  -21.0% │  14.68×  │   90%   │   2.15   │  -75.9%  │
-│ OPT-6.7B     │ +250.4% │   6.42×  │   58%   │   2.87   │  -77.3%  │
-│ Mistral-7B   │  -18.2% │  21.20×  │  100%   │   1.85   │  -73.5%  │
-│ Qwen2.5-7B   │ +266.8% │ 3496.18× │   40%   │   2.64   │  -99.1%  │
-│ LLaMA-2-13B  │  -79.5% │  13.67×  │   76%   │   2.23   │  -78.8%  │
-└──────────────┴─────────┴──────────┴─────────┴──────────┴──────────┘
-```
+## 七、引用
 
 ---
 
-## 🔍 Theoretical Implications
-
-### The Complete MA Generation Pathway
+## 八、引用
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                  MA Generation Mechanism                         │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. INPUT: Function Word Token                                  │
-│     ↓                                                            │
-│  2. EMBEDDING: Creates input vector x                           │
-│     ↓                                                            │
-│  3. ATTENTION: Modulates input (promotes/inhibits)              │
-│     ↓                                                            │
-│  4. MLP INPUT PROJECTION: h₂ = activation(W_up × x)            │
-│     ↓                                                            │
-│  5. GEOMETRIC ALIGNMENT: h₂ aligns with v₁                     │
-│     ↓                                                            │
-│  6. AMPLIFICATION: y = σ₁ × (h₂ · v₁) × u₁                     │
-│     ↓                                                            │
-│  7. OUTPUT: Massive Activation                                  │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Architectural Evolution
-
-```
-Classical (GPT-2, 2019)          Modern (Qwen, 2024)
-─────────────────────            ─────────────────────
-• Distributed geometry           • Specialized geometry
-• Moderate σ₁/σ₂ (2.5)          • Extreme σ₁/σ₂ (2.6)
-• Lower alignment (0.78)         • Perfect alignment (0.994)
-• Attention promotes             • Attention suppresses
-• Moderate dependency            • Extreme dependency (99.1%)
-```
-
-### Practical Implications
-
-**For Model Training**:
-- Incorporate spectral penalties on σ₁/σ₂ ratio
-- Monitor V-matrix geometry during training
-- Balance alignment vs robustness
-
-**For Model Deployment**:
-- Dynamic precision adjustment for function words
-- Targeted activation clamping in key layers
-- Geometry-aware quantization strategies
-
-**For Model Architecture**:
-- Design attention mechanisms considering regulatory role
-- Balance MLP amplification capacity
-- Consider multi-direction vs single-direction strategies
-
----
-
-## 📚 Documentation
-
-Comprehensive documentation is available in the `docs/` directory:
-
-- **[Documentation Index](docs/README.md)** - Navigation guide for all documentation
-- **[Experiment Guide](experiments/README.md)** - Detailed experiment protocols and usage
-- **[Script Guide](scripts/README.md)** - Visualization and utility script documentation
-- **[Analysis Reports](docs/reports/)** - In-depth analysis reports by experiment category
-
----
-
-## 📖 Citation
-
-If this work contributes to your research, please cite:
-
-```bibtex
-@misc{massive_activation_2025,
-  title={Investigating Massive Activations in Large Language Models},
-  author={Anonymous},
-  year={2025},
-  note={Systematic investigation of massive activation mechanisms in transformer-based LLMs},
-  howpublished={Under Review}
+@article{...,
+  title={Function Words as Geometric Anchors in Massive Activations},
+  author={...},
+  year={2026}
 }
 ```
 
----
-
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-This research builds upon the foundational work of:
-
-- **Transformers** - Hugging Face team for the transformers library
-- **PyTorch** - Facebook AI Research for the deep learning framework
-- **Open Source LLMs** - Meta (LLaMA), Google (T5), BigScience (BLOOM), EleutherAI (GPT-J), TII (Falcon), Mistral AI, Qwen team
-
-Special thanks to the mechanistic interpretability community for establishing rigorous analysis frameworks.
-
----
-
-## 📈 Project Statistics
-
-- **Total Experiments**: 5 series (8 sub-experiments)
-- **Models Evaluated**: 8 LLMs (124M - 13B parameters)
-- **Data Generated**: 185 GB
-- **Result Files**: 350+ JSON files
-- **Visualizations**: 200+ figures
-- **Code Files**: 143 Python files
-- **Documentation**: 153 Markdown files
-- **Compute Time**: ~200 GPU hours (NVIDIA A100 80GB)
-
----
-
-**Project Status**: ✅ **Completed** (All experiments finished, results published)
-
-**Last Updated**: 2025-12-29
-
-**Repository**: [Anonymous Repository - Will be made public upon acceptance]
-
----
-
-<div align="center">
-
-**For questions or collaboration inquiries, please use the repository issue tracker**
-
-</div>
+详见 `paper/Function Words as Geometric Anchors.pdf`。

@@ -89,6 +89,7 @@ class FunctionWordSVDTracker:
         # Storage: {word: [(context_id, h2_vector), ...]}
         self.word_data = defaultdict(list)
         self.context_counter = 0
+        self.total_token_count = 0
 
     def is_function_word(self, token_text):
         """Check if token is a function word"""
@@ -97,6 +98,7 @@ class FunctionWordSVDTracker:
 
     def add_token(self, token_text, h2_vector):
         """Add token representation"""
+        self.total_token_count += 1
         if self.is_function_word(token_text):
             # h2_vector shape: [3072]
             self.word_data[token_text].append((self.context_counter, h2_vector.cpu().detach().numpy()))
@@ -137,11 +139,11 @@ class SVDSpaceAnalyzer:
 
         # SVD decomposition
         print("Computing SVD decomposition...")
-        U, S, Vt = torch.svd(self.W2)
+        U, S, Vh = torch.linalg.svd(self.W2, full_matrices=False)
 
-        self.U = U[:, :self.keep_top_k]  # [3072, k]
-        self.S = S[:self.keep_top_k]      # [k]
-        self.Vt = Vt[:self.keep_top_k, :]  # [k, 768]
+        self.U = U[:, :self.keep_top_k]   # [m, k]
+        self.S = S[:self.keep_top_k]       # [k]
+        self.Vt = Vh[:self.keep_top_k, :]  # [k, n]
 
         print(f"  U shape: {self.U.shape}, S shape: {self.S.shape}, Vt shape: {self.Vt.shape}")
         print(f"  σ₁/σ₂ ratio: {(S[0]/S[1]).item():.3f}")
@@ -249,8 +251,8 @@ class SVDSpaceAnalyzer:
                 continue
 
             # Concentration score: fraction of variance in top 3 dimensions
-            left_top3 = sorted(left_var_per_dim, reverse=True)[:3].sum() / left_total
-            right_top3 = sorted(right_var_per_dim, reverse=True)[:3].sum() / right_total
+            left_top3 = sum(sorted(left_var_per_dim, reverse=True)[:3]) / left_total
+            right_top3 = sum(sorted(right_var_per_dim, reverse=True)[:3]) / right_total
 
             # Asymmetry ratio
             asymmetry_ratio = left_top3 / (right_top3 + 1e-6)
@@ -585,7 +587,7 @@ def main():
     print(f"Collected {sum(s['count'] for s in tracker.get_word_statistics().values())} function word occurrences")
 
     # Get W2 matrix (MLP down-projection)
-    W2 = lib.get_mlp_down_proj(args.model, layer).t()  # [intermediate, hidden]
+    W2 = lib.get_mlp_down_proj(args.model, layer).cpu().float().t()  # [intermediate, hidden]
 
     # SVD Analysis
     print("\nInitializing SVD analyzer...")
@@ -621,7 +623,7 @@ def main():
         'total_tokens': int(total_tokens),
     }
     with open(f'{args.savedir}/table1_rq3.json', 'w') as f:
-        json.dump(table1_rq3, f, indent=2)
+        json.dump(table1_rq3, f, indent=2, default=lambda x: int(x) if isinstance(x, (np.integer,)) else float(x) if isinstance(x, (np.floating,)) else str(x))
 
     # Save detailed results
     print("\nSaving detailed results...")
@@ -638,7 +640,7 @@ def main():
     }
 
     with open(f'{args.savedir}/exp5_detailed_results.json', 'w') as f:
-        json.dump(results, f, indent=2)
+        json.dump(results, f, indent=2, default=lambda x: int(x) if isinstance(x, (np.integer,)) else float(x) if isinstance(x, (np.floating,)) else str(x))
 
     # Generate summary report
     print("\nGenerating summary report...")

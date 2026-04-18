@@ -358,8 +358,8 @@ def analyze_function_vs_content_words(alignment_data, args):
     # Trigger rate (dynamic threshold: 10× median of all values)
     all_ma_vals = function_ma_dim + content_ma_dim
     trigger_threshold = 10 * float(np.median(all_ma_vals)) if all_ma_vals else 100
-    function_trigger_rate = sum(1 for x in function_ma_dim if x > trigger_threshold) / len(function_ma_dim)
-    content_trigger_rate = sum(1 for x in content_ma_dim if x > trigger_threshold) / len(content_ma_dim)
+    function_trigger_rate = sum(1 for x in function_ma_dim if x > trigger_threshold) / len(function_ma_dim) if function_ma_dim else 0
+    content_trigger_rate = sum(1 for x in content_ma_dim if x > trigger_threshold) / len(content_ma_dim) if content_ma_dim else 0
 
     print(f"\nTrigger rate (|activation| > {trigger_threshold:.1f}):")
     print(f"  Function words: {function_trigger_rate:.1%}")
@@ -534,8 +534,8 @@ def generate_visualizations(alignment_data, svd_results, stats_results,
     ax3 = fig.add_subplot(gs[1, 1])
     sorted_content = np.sort(content_alignments)
     sorted_function = np.sort(function_alignments)
-    cdf_content = np.arange(1, len(sorted_content)+1) / len(sorted_content)
-    cdf_function = np.arange(1, len(sorted_function)+1) / len(sorted_function)
+    cdf_content = np.arange(1, len(sorted_content)+1) / max(len(sorted_content), 1)
+    cdf_function = np.arange(1, len(sorted_function)+1) / max(len(sorted_function), 1)
     ax3.plot(sorted_content, cdf_content, label='Content Words', color='coral', linewidth=2)
     ax3.plot(sorted_function, cdf_function, label='Function Words', color='steelblue', linewidth=2)
     ax3.set_xlabel('Alignment with v₁', fontsize=12, fontweight='bold')
@@ -787,10 +787,10 @@ TRIGGER RATE (|MA Dim| > 100):
   Function words: {stats_results['function_trigger_rate']:.1%}
   Content words:  {stats_results['content_trigger_rate']:.1%}
 
-  Ratio: {stats_results['function_trigger_rate']/stats_results['content_trigger_rate']:.2f}×
+  Ratio: {stats_results['function_trigger_rate']/(stats_results['content_trigger_rate'] + 1e-10):.2f}×
 
 CONCLUSION:
-  ✓ Function words trigger massive activations {stats_results['function_trigger_rate']/stats_results['content_trigger_rate']:.1f}× more frequently
+  ✓ Function words trigger massive activations {stats_results['function_trigger_rate']/(stats_results['content_trigger_rate'] + 1e-10):.1f}× more frequently
 
 {'='*80}
 PART 4: CAUSAL REGRESSION ANALYSIS
@@ -891,6 +891,8 @@ def main():
                        help='Save directory')
     parser.add_argument('--access_token', type=str, default='type in your access token here',
                        help='Hugging Face access token')
+    parser.add_argument('--revision', type=str, default='main',
+                       help='Model revision')
 
     args = parser.parse_args()
 

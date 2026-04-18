@@ -98,16 +98,19 @@ def ablate_v_matrix(model_name, layer):
     W_down = lib.get_mlp_down_proj(model_name, layer).clone()
     W_original = W_down.clone()
 
-    # SVD decomposition
+    # SVD decomposition: W_down [hidden, intermediate] or [intermediate, hidden]
     U, S, Vh = torch.linalg.svd(W_down.float(), full_matrices=False)
+    # U: [m, k], S: [k], Vh: [k, n] where k = min(m, n)
 
-    # Generate random orthogonal matrix via QR decomposition of Gaussian
-    random_matrix = torch.randn_like(Vh)
-    Q, R = torch.linalg.qr(random_matrix)
-    # Ensure proper orthogonal matrix (fix sign ambiguity)
-    Q = Q * torch.sign(torch.diag(R)).unsqueeze(0)
+    # Generate random orthogonal matrix with same shape as Vh
+    random_matrix = torch.randn(Vh.shape[0], Vh.shape[1], device=Vh.device)
+    Q, R = torch.linalg.qr(random_matrix.T)  # QR on [n, k] -> Q [n, k]
+    Q = Q.T  # [k, n] to match Vh shape
+    # Fix sign ambiguity
+    signs = torch.sign(torch.diag(R))
+    Q = Q * signs.unsqueeze(1)
 
-    # Reconstruct: W_ablated = U @ Σ @ V_rand^T
+    # Reconstruct: W_ablated = U @ diag(S) @ Q
     W_ablated = U @ torch.diag(S) @ Q
 
     # Convert back to original dtype

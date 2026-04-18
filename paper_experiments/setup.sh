@@ -20,12 +20,22 @@ pip install -r requirements.txt
 echo "[3/4] Installing spaCy English model..."
 python -m spacy download en_core_web_sm
 
-# 4. Configure model cache
-echo "[4/4] Configuring model cache..."
-if [ ! -f config.py ]; then
-    echo "Please edit config.py to set your model cache directory."
-fi
-
+# 4. Model config reminders
+echo "[4/4] Model setup hints:"
+echo ""
+echo "  - Default HF cache at ./model_weights/"
+echo "    Override with:  export HF_CACHE_DIR=/your/cache/path"
+echo ""
+echo "  - Gated models (LLaMA-2, Mistral) need an HF access token:"
+echo "      pass --access_token <token> on each script call"
+echo ""
+echo "  - Local weight paths are in lib/model_dict.py."
+echo "    If a local path does not exist on your machine, loader will"
+echo "    auto-fallback to HuggingFace download (for models with hf_fallback set)."
+echo ""
+echo "  - RQ2b (per-layer MLP ablation) script lives in submodule."
+echo "    From repo root, run once:"
+echo "      git submodule update --init --recursive"
 echo ""
 echo "=== Setup complete ==="
 echo ""

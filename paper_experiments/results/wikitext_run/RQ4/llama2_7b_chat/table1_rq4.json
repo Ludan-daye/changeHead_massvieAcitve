@@ -1,0 +1,8 @@
+{
+  "model": "llama2_7b_chat",
+  "layer_id": 26,
+  "sigma1_sigma2": 1.0414332934956245,
+  "cos_sim": -0.0016562872187608864,
+  "ma_type": "Type III (multi-direction)",
+  "r_squared": 0.00011278740980448439
+}

@@ -1,0 +1,6 @@
+{
+  "model": "falcon_7b",
+  "key_layer": 23,
+  "base_ma": 1871.8333333333333,
+  "delta_top1_pct": -25.75193660404238
+}

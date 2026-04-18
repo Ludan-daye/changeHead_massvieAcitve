@@ -1,85 +1,36 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
+*.pyc
+*.pyo
+*.pyd
 .Python
 *.egg-info/
-dist/
-build/
-*.egg
-
-# Virtual Environment
-massive-activations-env/
+.venv/
 venv/
-ENV/
-env/
 
-# IDE
-.vscode/
+# Model weights / cache
+*.pt
+*.pth
+*.safetensors
+*.bin
+.cache/
+hf_cache/
+
+# Large experiment artifacts
+archives/*.zip
+paper_experiments/results/**/*.pt
+paper_experiments/results/**/*.safetensors
+paper_experiments/results/**/*.npy
+
+# Editor / IDE
 .idea/
+.vscode/
 *.swp
 *.swo
-*~
 
-# Model cache
-cache/
-.cache/
-/models/
-checkpoints/
-model_weights/
-
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Large files (will be tracked via Git LFS if needed)
-*.pth
-*.pt
-*.bin
-*.safetensors
-
-# Temporary files
-*.tmp
-
-# Logs
-logs/
-*.log
-
-# HuggingFace cache
-.cache/
-*.aria2
-
-# Incomplete downloads
-*.incomplete
-
-# Backup files
-*.bak
-*.backup
-*~
-
-# Privacy backups
-privacy_backup*/
-
-# Temporary result files
-results/temp/
-results/tmp/
-
-# Large result archives
-results/archive/by_model/
-results/archive/old_experiments/
-
-# Development artifacts
-.pytest_cache/
-.coverage
-htmlcov/
-*.prof
-
-# Editor temp files
-.*.sw[op]
-*~
-\#*\#
+# Claude local settings (keep committed project settings if any)
+.claude/settings.local.json
