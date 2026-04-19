@@ -1,6 +1,8 @@
 # Origin Layer Finder — 起源层自动判定
 
-> **用 1 条命令产出 25+ 模型对应的起源层**，供 RQ3 / RQ4 / RQ5 / RQ6 实验使用。
+> 用 1 条命令从 `ALL_EXPERIMENTS_SUMMARY_v2.json` 推导**每个模型的起源层**，供 RQ3 / RQ4 / RQ5 / RQ6 实验使用。
+>
+> 当前产出覆盖 **24 个模型**（JSON 里 5 个模型缺 exp2/exp2c 数据，跳过）。
 
 ## 目录
 
@@ -20,11 +22,19 @@ origin_layer/
 
 ## 为什么要有这个工具
 
-所有 RQ3 / RQ4 / RQ5 实验的准确性都取决于 `--layer_id` 传对。
-老脚本 `run_all_rq.sh` 读的是 `peak_layer`（MA 观测最大层，错），
-正确的应该是 `exp2c.l_origin_from_step1`（贪心消融第一步砍掉的层）。
+RQ3 / RQ4 / RQ5 单层实验的结果**强依赖**于 `--layer_id` 传的层是否真的是 MA 起源层。
 
-**修一次层号，约 30 处指标异常自动变预期值**（见 `docs/V2_ROOT_CAUSE.md`）。
+**历史上三种层号选择**：
+
+| 方案 | 数据源 | 问题 |
+|---|---|---|
+| ❌ `exp1.peak_layer` | v1 的老脚本 `run_all_rq.sh` | MA **观测最大**层，非写入层 |
+| ⚠️ `exp2.critical_layer` | v1 JSON 里的 per-layer 单层消融最大层 | 对 CONCENTRATED 模型可用；对 DISPERSED 严重失真 |
+| ✅ `exp2c.l_origin_from_step1` | 贪心累积消融第 1 步砍掉的层 | **当前最优**，本工具的默认选择 |
+
+例：glm4_9b 在方案 ⚠️ 下给出 L17，方案 ✅ 给出 L1——两个层差 16。用 L17 跑 RQ3 得到 Cohen's d=+0.24，用 L1 做 macro RQ5b 得到 ΔMA=−82%。差距由层选择决定。
+
+详见 [`../docs/V2_ROOT_CAUSE.md`](../docs/V2_ROOT_CAUSE.md)。
 
 ## 一条命令跑完
 
@@ -52,46 +62,27 @@ bash run.sh
                                     (DISPERSED 模型取前 50%，避免包含弱贡献层)
 ```
 
-类别解读：
+**类别说明（`exp2c.category` 仅按 `steps_to_kill` 划分，不看消融 %）**：
 
-| exp2c.category | 消融步数 | 含义 | 单层实验预期 |
-|:-:|:-:|---|:-:|
-| CONCENTRATED | 1 步 ≥ 80% | 单层主导，典型模式 A | 强 |
-| FEW-SOURCE | 2-5 步 | 少数层主导 | 中-强 |
-| DISPERSED | > 5 步 | 多层分散，典型模式 B | **必弱**（需用 macro）|
+| exp2c.category | steps_to_kill | 典型含义 |
+|:-:|:-:|---|
+| CONCENTRATED | = 1 | 单层主导，典型模式 A |
+| FEW-SOURCE | 2 – 5 | 少数层共同主导 |
+| DISPERSED | > 5 | 多层分散（典型模式 B，单层实验必弱）|
 
-## 所有模型的起源层（最新产出）
+> 反例提醒：`total_drop_pct` **不参与分类** — 例如 qwen3.5_35b_a3b 总降仅 15.9% 仍标 FEW-SOURCE，
+> 因为它在 3 步内耗尽消融预算（但每步贡献不够大）。
 
-这张表**由代码自动生成**，具体在 [`output/SUMMARY.md`](output/SUMMARY.md)：
+## 所有模型起源层
 
-| 模型 | 单层起源 L_ORIGIN | Macro 集合 | 类别 |
-|---|:-:|---|:-:|
-| gptj_6b | **2** | — | (v1 回退，无 exp2c) |
-| bloom_7b1 | 3 | — | (v1 回退) |
-| falcon_7b | 3 | — | (v1 回退) |
-| gpt2 | 3 | — | (v1 回退) |
-| mistral_7b_v03 | 1 | — | (v1 回退) |
-| opt_6.7b | 1 | — | (v1 回退) |
-| llama3.1_8b | **1** | [0,1] | FEW-SOURCE |
-| qwen2.5_0.5b | **0** | [0] | CONCENTRATED |
-| qwen2.5_7b | **3** | [3] | CONCENTRATED |
-| qwen2_7b | **3** | [3] | CONCENTRATED |
-| qwen3_0.6b | **2** | [2] | CONCENTRATED |
-| qwen3_1.7b | **2** | [0,1,2] | FEW-SOURCE |
-| qwen3_4b | **6** | [6,15] | FEW-SOURCE |
-| qwen3_8b | 6 | [5,6,15,24,25,28,29] | DISPERSED |
-| qwen3_14b | 6 | [3,6,7,10,12,19,22] | DISPERSED |
-| qwen3.5_9b | 22 | [6,10,18,19,22,23,25] | DISPERSED |
-| qwen3.5_27b | 54 | [34,48,50,52,54,58] | DISPERSED |
-| qwen3_32b | 6 | [5,6,40,41,42] | DISPERSED |
-| glm4_9b | **1** | [0,1] | FEW-SOURCE |
-| glm4_32b | **0** | [0] | CONCENTRATED |
-| yi_9b | 8 | [8,24] | DISPERSED |
-| qwen1.5_14b | 35 | [3,4,26,33,34,35,36] | DISPERSED |
-| qwen3_30b_a3b (MoE) | 1 | [1,3,10,11,26] | DISPERSED |
-| qwen3.5_35b_a3b (MoE) | **9** | [7,9,38] | FEW-SOURCE |
+**直接看产出文件**（代码每次运行自动更新）：
 
-加粗表示**和 v1 旧层号显著不同**（见 `output/compare_v1_vs_v2.txt`）。
+- **人类可读表**：[`output/SUMMARY.md`](output/SUMMARY.md)（推荐，含覆盖统计 + 完整表 + 和 v1 对比）
+- **程序化读取**：[`output/L_ORIGIN.json`](output/L_ORIGIN.json)（单层）/ [`output/ORIGIN_LAYERS_MACRO.json`](output/ORIGIN_LAYERS_MACRO.json)（macro）
+- **Shell 脚本 source**：[`output/L_ORIGIN.sh`](output/L_ORIGIN.sh)
+- **diff 报告**：[`output/compare_v1_vs_v2.txt`](output/compare_v1_vs_v2.txt)
+
+> ⚠️ 本 README **不在此处列全表**——避免和自动产出漂移失同步。以 `output/` 下实际文件为准。
 
 ## 下游消费方式
 
@@ -104,6 +95,10 @@ echo "${L_ORIGIN[gptj_6b]}"    # → 2
 source paper_experiments/origin_layer/output/ORIGIN_LAYERS_MACRO.sh
 echo "${ORIGIN_LAYERS_MACRO[qwen3_32b]}"    # → "5,6,40,41,42"
 ```
+
+> ⚠️ **需要 bash 4+**。macOS 默认 bash 3.2 不支持关联数组（`declare -A`）。
+> 如需在 macOS 上测，用 Homebrew 安装的 bash：`/opt/homebrew/bin/bash`。
+> Linux 服务器默认 bash 4+，开箱即用。
 
 ### 方式 2：Python 里 JSON 读取
 

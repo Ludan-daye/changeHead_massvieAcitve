@@ -2,6 +2,17 @@
 
 > 由 `determine_origin_layer.py` 从 `ALL_EXPERIMENTS_SUMMARY_v2.json` 的 `exp2c` 自动产出
 
+## 覆盖情况
+
+- JSON 中总模型数：**29**
+- 用 exp2c 数据推导：**18** 个（最准）
+- 无 exp2c、回退到 v1 `exp2.critical_layer`：**6** 个
+- 无任何可用数据 → 未产出：**5** 个
+  - 缺失模型列表：`deepseek_v2_lite`, `llama2_13b`, `llama2_7b_chat`, `qwen2.5_0.5b_optimized`, `qwen2.5_7b_old_nan`
+
+→ `L_ORIGIN.json` 含 **24** 个模型
+→ `ORIGIN_LAYERS_MACRO.json` 含 **18** 个模型（只有 exp2c 模型才有 macro 集合）
+
 ## 所有模型的起源层
 
 | 模型 | 单层起源 (L_ORIGIN) | Macro 起源层集合 | 类别 | 消融步数 | MA 总降 % |
@@ -38,11 +49,16 @@
 
 ## 分类说明
 
-| 类别 | 判定 | 含义 |
+`category` 由 exp2c 实验直接写入，**仅按 `steps_to_kill` 划分**：
+
+| 类别 | steps_to_kill | 典型含义 |
 |:-:|:-:|---|
-| CONCENTRATED | 1 步消 ≥ 80% | 单层主导（模式 A），起源层是 L_ORIGIN |
-| FEW-SOURCE | 2-5 步消 ≥ 80% | 少数层主导，macro 集合是完整起源 |
-| DISPERSED | > 5 步 | 多层分散（模式 B），单层实验必弱，真故事在 macro |
+| CONCENTRATED | = 1 | 单层主导，该层就是起源（对应模式 A）|
+| FEW-SOURCE | 2 – 5 | 少数层共同主导 |
+| DISPERSED | > 5 | 多层分散贡献（对应模式 B，单层实验必弱）|
+
+> 注：`total_drop_pct` 不参与分类——例如 qwen3.5_35b_a3b 总降仅 15.9% 仍标 FEW-SOURCE
+> （因 3 步就耗尽消融预算，但单步贡献不够大）。
 
 ## 和 v1 L_ORIGIN 的对比
 

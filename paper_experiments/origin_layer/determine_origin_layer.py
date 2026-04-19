@@ -263,10 +263,30 @@ def dump_all(table: dict, outdir: str):
         f.write(buf2.getvalue())
 
     # 5. SUMMARY.md（人类可读的起源层汇总）
+    # 先统计覆盖情况
+    total = len(table)
+    with_exp2c = sum(1 for t in table.values() if t.get('category'))
+    v1_fallback = sum(1 for t in table.values()
+                      if t['single_layer'] is not None and not t.get('category'))
+    no_data = sum(1 for t in table.values() if t['single_layer'] is None)
+    missing_models = [m for m, t in sorted(table.items()) if t['single_layer'] is None]
+
     lines = ['# 起源层自动判定结果（SUMMARY）', '',
              '> 由 `determine_origin_layer.py` 从 `ALL_EXPERIMENTS_SUMMARY_v2.json` 的 `exp2c` 自动产出',
              '',
-             '## 所有模型的起源层',
+             '## 覆盖情况',
+             '',
+             f'- JSON 中总模型数：**{total}**',
+             f'- 用 exp2c 数据推导：**{with_exp2c}** 个（最准）',
+             f'- 无 exp2c、回退到 v1 `exp2.critical_layer`：**{v1_fallback}** 个',
+             f'- 无任何可用数据 → 未产出：**{no_data}** 个']
+    if missing_models:
+        lines.append(f'  - 缺失模型列表：{", ".join(f"`{m}`" for m in missing_models)}')
+    lines += ['',
+              f'→ `L_ORIGIN.json` 含 **{with_exp2c + v1_fallback}** 个模型',
+              f'→ `ORIGIN_LAYERS_MACRO.json` 含 **{with_exp2c}** 个模型（只有 exp2c 模型才有 macro 集合）',
+              '',
+              '## 所有模型的起源层',
              '',
              '| 模型 | 单层起源 (L_ORIGIN) | Macro 起源层集合 | 类别 | 消融步数 | MA 总降 % |',
              '|---|:-:|---|:-:|:-:|:-:|']
@@ -282,12 +302,18 @@ def dump_all(table: dict, outdir: str):
         drop_str = f"{drop:.1f}%" if drop is not None else '—'
         lines.append(f'| `{m}` | **{sl_str}** | {ml_str} | {cat} | {steps} | {drop_str} |')
 
-    lines += ['', '## 分类说明', '',
-              '| 类别 | 判定 | 含义 |',
+    lines += ['', '## 分类说明',
+              '',
+              '`category` 由 exp2c 实验直接写入，**仅按 `steps_to_kill` 划分**：',
+              '',
+              '| 类别 | steps_to_kill | 典型含义 |',
               '|:-:|:-:|---|',
-              '| CONCENTRATED | 1 步消 ≥ 80% | 单层主导（模式 A），起源层是 L_ORIGIN |',
-              '| FEW-SOURCE | 2-5 步消 ≥ 80% | 少数层主导，macro 集合是完整起源 |',
-              '| DISPERSED | > 5 步 | 多层分散（模式 B），单层实验必弱，真故事在 macro |',
+              '| CONCENTRATED | = 1 | 单层主导，该层就是起源（对应模式 A）|',
+              '| FEW-SOURCE | 2 – 5 | 少数层共同主导 |',
+              '| DISPERSED | > 5 | 多层分散贡献（对应模式 B，单层实验必弱）|',
+              '',
+              '> 注：`total_drop_pct` 不参与分类——例如 qwen3.5_35b_a3b 总降仅 15.9% 仍标 FEW-SOURCE',
+              '> （因 3 步就耗尽消融预算，但单步贡献不够大）。',
               '',
               '## 和 v1 L_ORIGIN 的对比',
               '',
