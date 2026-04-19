@@ -6,7 +6,7 @@
   "gpt2": 3,
   "gptj_6b": 2,
   "llama3.1_8b": 1,
-  "mistral_7b_v03": 1,
+  "mistral_7b_v03": 0,
   "opt_6.7b": 1,
   "qwen1.5_14b": 35,
   "qwen2.5_0.5b": 0,

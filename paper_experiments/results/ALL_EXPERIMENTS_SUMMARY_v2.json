@@ -94,6 +94,80 @@
           6.820469379425049
         ]
       }
+    },
+    "exp2c": {
+      "steps_to_kill": 1,
+      "final_disabled_set": [
+        3
+      ],
+      "l_origin_from_step1": 3,
+      "baseline_top1": 3614.9333333333334,
+      "final_top1": 147.975,
+      "total_drop_pct": 95.90656351431102,
+      "category": "CONCENTRATED",
+      "source_file": "results/wikitext_run/RQ2c/bloom_7b1/bloom_7b1_rq6_greedy.json"
+    },
+    "exp3_origin": {
+      "model": "bloom_7b1",
+      "func_pct": 28.3642578125,
+      "func_tokens": 17427,
+      "total_tokens": 61440,
+      "source_file": "results/wikitext_run/RQ3_origin/bloom_7b1/table1_rq3.json"
+    },
+    "exp4_origin": {
+      "model": "bloom_7b1",
+      "layer_id": 3,
+      "sigma1_sigma2": 1.4134749945492586,
+      "cos_sim": 0.004385093606194784,
+      "ma_type": "Type III (multi-direction)",
+      "r_squared": 0.00010585269530851533,
+      "source_file": "results/wikitext_run/RQ4_origin/bloom_7b1/table1_rq4.json"
+    },
+    "exp5_origin": {
+      "model": "bloom_7b1",
+      "layer_id": 3,
+      "nsamples": 30,
+      "seed": 0,
+      "timestamp": "2026-04-20T03:10:19.057705",
+      "svd_info": {
+        "sigma_1": 15.11251163482666,
+        "sigma_2": 10.691046714782715,
+        "eta": 1.413567066192627,
+        "W_shape": [
+          4096,
+          16384
+        ]
+      },
+      "baseline": {
+        "top1_mean": 119.90625,
+        "top1_max": 162.125,
+        "ma_dims": [
+          3448,
+          665
+        ],
+        "per_dim_max": {
+          "3448": 162.125,
+          "665": 160.25
+        }
+      },
+      "ablated": {
+        "top1_mean": 109.63541666666667,
+        "top1_max": 159.875,
+        "per_dim_max": {
+          "3448": 159.875,
+          "665": 147.875
+        }
+      },
+      "delta_ma": {
+        "top1_mean_pct": -8.565719746329593,
+        "top1_max_pct": -1.3878180416345411,
+        "per_dim_pct": {
+          "3448": -1.3878180416345411,
+          "665": -7.722308892355695
+        }
+      },
+      "theoretical_prediction_pct": 99.37665268687276,
+      "source_file": "results/wikitext_run/RQ5_origin/bloom_7b1/bloom_7b1_v_ablation_results.json"
     }
   },
   "deepseek_v2_lite": {
@@ -202,6 +276,126 @@
           6.824902057647705
         ]
       }
+    },
+    "exp2c": {
+      "steps_to_kill": 2,
+      "final_disabled_set": [
+        3,
+        0
+      ],
+      "l_origin_from_step1": 3,
+      "baseline_top1": 1854.8666666666666,
+      "final_top1": 119.77708333333334,
+      "total_drop_pct": 93.54255022822844,
+      "category": "FEW-SOURCE",
+      "source_file": "results/wikitext_run/RQ2c/falcon_7b/falcon_7b_rq6_greedy.json"
+    },
+    "exp3_origin": {
+      "model": "falcon_7b",
+      "func_pct": 24.933268229166668,
+      "func_tokens": 30638,
+      "total_tokens": 122880,
+      "source_file": "results/wikitext_run/RQ3_origin/falcon_7b/table1_rq3.json"
+    },
+    "exp4_origin": {
+      "model": "falcon_7b",
+      "layer_id": 3,
+      "sigma1_sigma2": 1.3653243350031894,
+      "cos_sim": 0.004959930840384299,
+      "ma_type": "Type III (multi-direction)",
+      "r_squared": 0.988393776646245,
+      "source_file": "results/wikitext_run/RQ4_origin/falcon_7b/table1_rq4.json"
+    },
+    "exp5_origin": {
+      "model": "falcon_7b",
+      "layer_id": 3,
+      "nsamples": 30,
+      "seed": 0,
+      "timestamp": "2026-04-20T03:33:38.235356",
+      "svd_info": {
+        "sigma_1": 13.275040626525879,
+        "sigma_2": 9.721056938171387,
+        "eta": 1.3655964136123657,
+        "W_shape": [
+          4544,
+          18176
+        ]
+      },
+      "baseline": {
+        "top1_mean": 1193.6666666666667,
+        "top1_max": 1312.0,
+        "ma_dims": [
+          2002,
+          3080
+        ],
+        "per_dim_max": {
+          "2002": 1312.0,
+          "3080": 1288.0
+        }
+      },
+      "ablated": {
+        "top1_mean": 22.273177083333334,
+        "top1_max": 41.09375,
+        "per_dim_max": {
+          "2002": 41.09375,
+          "3080": 30.328125
+        }
+      },
+      "delta_ma": {
+        "top1_mean_pct": -98.13405386065345,
+        "top1_max_pct": -96.8678544207317,
+        "per_dim_pct": {
+          "2002": -96.8678544207317,
+          "3080": -97.6453319099379
+        }
+      },
+      "theoretical_prediction_pct": 99.40817827367694,
+      "source_file": "results/wikitext_run/RQ5_origin/falcon_7b/falcon_7b_v_ablation_results.json"
+    },
+    "exp5b": {
+      "model": "falcon_7b",
+      "origin_layers": [
+        0,
+        3
+      ],
+      "capture_layer": 3,
+      "nsamples": 30,
+      "seqlen": 4096,
+      "seed": 0,
+      "timestamp": "2026-04-20T03:41:12.325750",
+      "macro_svd": {
+        "sigma1": 11220.3505859375,
+        "eta": 3.181694746017456
+      },
+      "baseline": {
+        "top1_mean": 1193.6666666666667,
+        "top1_max": 1312.0,
+        "ma_dims": [
+          2002,
+          3080
+        ],
+        "per_dim_max": {
+          "2002": 1312.0,
+          "3080": 1288.0
+        }
+      },
+      "ablated": {
+        "top1_mean": 30.730729166666666,
+        "top1_max": 49.78125,
+        "per_dim_max": {
+          "1673": 28.3125,
+          "350": 33.75
+        }
+      },
+      "delta_ma": {
+        "top1_mean_pct": -97.42551836079308,
+        "top1_max_pct": -96.20569740853658,
+        "per_dim_pct": {
+          "2002": -100.0,
+          "3080": -100.0
+        }
+      },
+      "source_file": "results/wikitext_run/RQ5_macro/falcon_7b/falcon_7b_macro_v_ablation_results.json"
     }
   },
   "glm4_32b": {
@@ -448,6 +642,48 @@
         }
       ],
       "source_file": "paper_experiments/results/wikitext_run/RQ2c/glm4_32b/glm4_32b_rq6_greedy.json"
+    },
+    "exp5_origin": {
+      "layer_id": 0,
+      "eta": 1.5312,
+      "sigma_1": 116.7483,
+      "sigma_2": 76.2454,
+      "baseline_top1_mean": 301192.5333,
+      "ablated_top1_mean": 9614.9333,
+      "delta_ma_top1_mean_pct": -96.8077,
+      "delta_ma_top1_max_pct": -96.7978,
+      "theoretical_prediction_pct": 99.4743,
+      "ma_dims": [
+        5828,
+        5355
+      ],
+      "timestamp": "2026-04-19T11:55:31.184484",
+      "source_file": "results/wikitext_run/RQ5_origin/glm4_32b/glm4_32b_v_ablation_results.json",
+      "method": "single-layer W_down SVD, replace V with random orthogonal"
+    },
+    "exp5b": {
+      "origin_layers": [
+        0
+      ],
+      "capture_layer": 0,
+      "nsamples": 30,
+      "seqlen": 4096,
+      "timestamp": "2026-04-19T12:54:26.769740",
+      "macro_svd": {
+        "sigma1": 954371072.0,
+        "eta": 1.8681
+      },
+      "baseline_top1_mean": 301192.5333,
+      "ablated_top1_mean": 249753.6,
+      "ma_dims": [
+        5828,
+        5355
+      ],
+      "delta_ma_top1_mean_pct": -17.0784,
+      "delta_ma_top1_max_pct": -18.5185,
+      "verdict": "partial",
+      "source_file": "results/wikitext_run/RQ5_macro/glm4_32b/glm4_32b_macro_v_ablation_results.json",
+      "method": "macro v1 from \u0394h SVD, project out from mean(W_down)"
     }
   },
   "glm4_9b": {
@@ -713,19 +949,38 @@
       "seqlen": 1024,
       "timestamp": "2026-04-18T21:56:14.095625",
       "macro_svd": {
-        "sigma1": 39492.422,
+        "sigma1": 39492.4219,
         "eta": 3.0345
       },
-      "baseline_top1_mean": 435.667,
-      "ablated_top1_mean": 79.483,
+      "baseline_top1_mean": 435.6667,
+      "ablated_top1_mean": 79.4833,
       "ma_dims": [
         3325,
         2861
       ],
-      "delta_ma_top1_mean_pct": -81.76,
-      "delta_ma_top1_max_pct": -82.71,
+      "delta_ma_top1_mean_pct": -81.7559,
+      "delta_ma_top1_max_pct": -82.7068,
       "verdict": "strong",
-      "source_file": "results/experiments/exp5b/glm4_9b/glm4_9b_macro_v_ablation_results.json"
+      "source_file": "results/wikitext_run/RQ5_macro/glm4_9b/glm4_9b_macro_v_ablation_results.json",
+      "method": "macro v1 from \u0394h SVD, project out from mean(W_down)"
+    },
+    "exp5_origin": {
+      "layer_id": 1,
+      "eta": 3.2591,
+      "sigma_1": 15.063,
+      "sigma_2": 4.6218,
+      "baseline_top1_mean": 470.9333,
+      "ablated_top1_mean": 252.1667,
+      "delta_ma_top1_mean_pct": -46.4539,
+      "delta_ma_top1_max_pct": -35.1351,
+      "theoretical_prediction_pct": 99.3182,
+      "ma_dims": [
+        3325,
+        2861
+      ],
+      "timestamp": "2026-04-19T11:06:10.263317",
+      "source_file": "results/wikitext_run/RQ5_origin/glm4_9b/glm4_9b_v_ablation_results.json",
+      "method": "single-layer W_down SVD, replace V with random orthogonal"
     }
   },
   "gpt2": {
@@ -920,6 +1175,124 @@
           2.263731002807617
         ]
       }
+    },
+    "exp2c": {
+      "steps_to_kill": 1,
+      "final_disabled_set": [
+        2
+      ],
+      "l_origin_from_step1": 2,
+      "baseline_top1": 4193.0,
+      "final_top1": 389.725,
+      "total_drop_pct": 90.70534223706177,
+      "category": "CONCENTRATED",
+      "source_file": "results/wikitext_run/RQ2c/gptj_6b/gptj_6b_rq6_greedy.json"
+    },
+    "exp3_origin": {
+      "model": "gptj_6b",
+      "func_pct": 28.369140625,
+      "func_tokens": 17430,
+      "total_tokens": 61440,
+      "source_file": "results/wikitext_run/RQ3_origin/gptj_6b/table1_rq3.json"
+    },
+    "exp4_origin": {
+      "model": "gptj_6b",
+      "layer_id": 2,
+      "sigma1_sigma2": 2.517015044623058,
+      "cos_sim": 0.0405003384211084,
+      "ma_type": "Type III (multi-direction)",
+      "r_squared": 0.99848865630077,
+      "source_file": "results/wikitext_run/RQ4_origin/gptj_6b/table1_rq4.json"
+    },
+    "exp5_origin": {
+      "model": "gptj_6b",
+      "layer_id": 2,
+      "nsamples": 30,
+      "seed": 0,
+      "timestamp": "2026-04-20T02:45:57.834907",
+      "svd_info": {
+        "sigma_1": 14.419354438781738,
+        "sigma_2": 5.727525234222412,
+        "eta": 2.5175540447235107,
+        "W_shape": [
+          4096,
+          16384
+        ]
+      },
+      "baseline": {
+        "top1_mean": 3677.4,
+        "top1_max": 4038.0,
+        "ma_dims": [
+          3019,
+          939
+        ],
+        "per_dim_max": {
+          "3019": 4038.0,
+          "939": 602.5
+        }
+      },
+      "ablated": {
+        "top1_mean": 37.05625,
+        "top1_max": 54.5625,
+        "per_dim_max": {
+          "3019": 54.5625,
+          "1497": 29.40625
+        }
+      },
+      "delta_ma": {
+        "top1_mean_pct": -98.99232474030565,
+        "top1_max_pct": -98.64877414561664,
+        "per_dim_pct": {
+          "3019": -98.64877414561664,
+          "939": -100.0
+        }
+      },
+      "theoretical_prediction_pct": 99.37665268687276,
+      "source_file": "results/wikitext_run/RQ5_origin/gptj_6b/gptj_6b_v_ablation_results.json"
+    },
+    "exp5b": {
+      "model": "gptj_6b",
+      "origin_layers": [
+        2
+      ],
+      "capture_layer": 2,
+      "nsamples": 30,
+      "seqlen": 2048,
+      "seed": 0,
+      "timestamp": "2026-04-20T02:32:49.518600",
+      "macro_svd": {
+        "sigma1": 20746.77734375,
+        "eta": 15.354503631591797
+      },
+      "baseline": {
+        "top1_mean": 3677.4,
+        "top1_max": 4038.0,
+        "ma_dims": [
+          3019,
+          939
+        ],
+        "per_dim_max": {
+          "3019": 4038.0,
+          "939": 602.5
+        }
+      },
+      "ablated": {
+        "top1_mean": 33.606770833333336,
+        "top1_max": 48.375,
+        "per_dim_max": {
+          "3019": 48.375,
+          "3563": 26.703125
+        }
+      },
+      "delta_ma": {
+        "top1_mean_pct": -99.08612686046301,
+        "top1_max_pct": -98.80200594353641,
+        "per_dim_pct": {
+          "3019": -98.80200594353641,
+          "939": -100.0
+        }
+      },
+      "source_file": "results/wikitext_run/RQ5_macro/gptj_6b/gptj_6b_macro_v_ablation_results.json"
     }
   },
   "llama2_13b": {
@@ -1377,6 +1750,80 @@
           0.6961656808853149
         ]
       }
+    },
+    "exp2c": {
+      "steps_to_kill": 1,
+      "final_disabled_set": [
+        0
+      ],
+      "l_origin_from_step1": 0,
+      "baseline_top1": 321.2083333333333,
+      "final_top1": 32.979166666666664,
+      "total_drop_pct": 89.73277986768711,
+      "category": "CONCENTRATED",
+      "source_file": "results/wikitext_run/RQ2c/mistral_7b_v03/mistral_7b_v03_rq6_greedy.json"
+    },
+    "exp3_origin": {
+      "model": "mistral_7b_v03",
+      "func_pct": 25.447591145833332,
+      "func_tokens": 31270,
+      "total_tokens": 122880,
+      "source_file": "results/wikitext_run/RQ3_origin/mistral_7b_v03/table1_rq3.json"
+    },
+    "exp4_origin": {
+      "model": "mistral_7b_v03",
+      "layer_id": 0,
+      "sigma1_sigma2": 1.0800262920387762,
+      "cos_sim": -0.07546585981371122,
+      "ma_type": "Type III (multi-direction)",
+      "r_squared": 0.0016742088646224537,
+      "source_file": "results/wikitext_run/RQ4_origin/mistral_7b_v03/table1_rq4.json"
+    },
+    "exp5_origin": {
+      "model": "mistral_7b_v03",
+      "layer_id": 0,
+      "nsamples": 30,
+      "seed": 0,
+      "timestamp": "2026-04-20T04:20:11.214110",
+      "svd_info": {
+        "sigma_1": 1.2924787998199463,
+        "sigma_2": 1.1964912414550781,
+        "eta": 1.0802241563796997,
+        "W_shape": [
+          4096,
+          14336
+        ]
+      },
+      "baseline": {
+        "top1_mean": 1.4649088541666666,
+        "top1_max": 1.9287109375,
+        "ma_dims": [
+          3878,
+          3732
+        ],
+        "per_dim_max": {
+          "3878": 1.7939453125,
+          "3732": 1.9287109375
+        }
+      },
+      "ablated": {
+        "top1_mean": 0.24676513671875,
+        "top1_max": 0.326416015625,
+        "per_dim_max": {
+          "1669": 0.310791015625,
+          "1494": 0.316162109375
+        }
+      },
+      "delta_ma": {
+        "top1_mean_pct": -83.15491533709613,
+        "top1_max_pct": -83.07594936708861,
+        "per_dim_pct": {
+          "3878": -100.0,
+          "3732": -100.0
+        }
+      },
+      "theoretical_prediction_pct": 99.33361369180336,
+      "source_file": "results/wikitext_run/RQ5_origin/mistral_7b_v03/mistral_7b_v03_v_ablation_results.json"
     }
   },
   "opt_6.7b": {
@@ -2896,7 +3343,7 @@
         55,
         56
       ],
-      "origin_strategy": "contiguous_plan_§2.10",
+      "origin_strategy": "contiguous_plan_\u00a72.10",
       "capture_layer": 56,
       "nsamples": 10,
       "seqlen": 512,
@@ -3189,6 +3636,96 @@
         }
       ],
       "source_file": "paper_experiments/results/wikitext_run/RQ2c/qwen3.5_35b_a3b/qwen3.5_35b_a3b_rq6_greedy.json"
+    },
+    "exp5_origin": {
+      "layer_id": 9,
+      "eta": 1.0339,
+      "sigma_1": 0.0479,
+      "sigma_2": 0.0463,
+      "baseline_top1_mean": 4.8557,
+      "ablated_top1_mean": 4.8583,
+      "delta_ma_top1_mean_pct": 0.0536,
+      "delta_ma_top1_max_pct": 0.0,
+      "theoretical_prediction_pct": 96.4738,
+      "ma_dims": [
+        1108,
+        2045
+      ],
+      "timestamp": "2026-04-19T13:13:29.376778",
+      "source_file": "results/wikitext_run/RQ5_origin/qwen3.5_35b_a3b/qwen3.5_35b_a3b_v_ablation_results.json",
+      "method": "mean-based (falls back to per-expert on MoE \u2014 see exp5_origin_moe_pe)"
+    },
+    "exp5b": {
+      "origin_layers": [
+        7,
+        9,
+        38
+      ],
+      "capture_layer": 38,
+      "nsamples": 30,
+      "seqlen": 4096,
+      "timestamp": "2026-04-19T13:17:42.232916",
+      "macro_svd": {
+        "sigma1": 3003.3264,
+        "eta": 3.9345
+      },
+      "baseline_top1_mean": 33.4625,
+      "ablated_top1_mean": 33.6375,
+      "ma_dims": [
+        1269,
+        549
+      ],
+      "delta_ma_top1_mean_pct": 0.523,
+      "delta_ma_top1_max_pct": 0.578,
+      "verdict": "weak",
+      "source_file": "results/wikitext_run/RQ5_macro/qwen3.5_35b_a3b/qwen3.5_35b_a3b_macro_v_ablation_results.json",
+      "method": "mean-based (see exp5b_moe_pe for MoE per-expert version)"
+    },
+    "exp5_origin_moe_pe": {
+      "layer_id": 9,
+      "num_experts": 256,
+      "per_expert_eta_mean": 1.3121,
+      "per_expert_eta_min": 1.0047,
+      "per_expert_eta_max": 1.8324,
+      "per_expert_var_frac_mean": 0.0148,
+      "baseline_top1_mean": 4.8557,
+      "ablated_top1_mean": 4.8969,
+      "delta_ma_top1_mean_pct": 0.8474,
+      "delta_ma_top1_max_pct": 0.4329,
+      "ma_dims": [
+        1108,
+        2045
+      ],
+      "timestamp": "2026-04-19T13:43:57.008966",
+      "verdict": "weak/no-MA",
+      "source_file": "results/wikitext_run/RQ5_origin_moe_per_expert/qwen3.5_35b_a3b/qwen3.5_35b_a3b_moe_per_expert_ablation_results.json",
+      "method": "per-expert independent SVD; each expert V replaced with random orthogonal"
+    },
+    "exp5b_moe_pe": {
+      "origin_layers": [
+        7,
+        9,
+        38
+      ],
+      "capture_layer": 38,
+      "nsamples": 30,
+      "seqlen": 4096,
+      "timestamp": "2026-04-19T13:57:08.505004",
+      "macro_svd": {
+        "sigma1": 3003.3264,
+        "eta": 3.9345
+      },
+      "baseline_top1_mean": 33.4625,
+      "ablated_top1_mean": 28.1417,
+      "ma_dims": [
+        1269,
+        549
+      ],
+      "delta_ma_top1_mean_pct": -15.9009,
+      "delta_ma_top1_max_pct": -15.0289,
+      "verdict": "partial",
+      "source_file": "results/wikitext_run/RQ5_macro_moe_per_expert/qwen3.5_35b_a3b/qwen3.5_35b_a3b_macro_moe_per_expert_results.json",
+      "method": "macro v1 from \u0394h SVD, project out per-expert from each expert W_down"
     }
   },
   "qwen3.5_9b": {
@@ -4451,31 +4988,51 @@
     },
     "exp5b": {
       "origin_layers": [
-        0,
-        2,
         3,
-        4,
-        5,
-        6
+        6,
+        7,
+        10,
+        12,
+        19,
+        22
       ],
-      "capture_layer": 6,
+      "capture_layer": 22,
       "nsamples": 30,
-      "seqlen": 1024,
-      "timestamp": "2026-04-18T21:48:00.297977",
+      "seqlen": 4096,
+      "timestamp": "2026-04-19T12:36:38.006327",
       "macro_svd": {
-        "sigma1": 73078.953,
-        "eta": 21.0182
+        "sigma1": 135087.6875,
+        "eta": 6.8252
       },
-      "baseline_top1_mean": 13081.6,
-      "ablated_top1_mean": 64.005,
+      "baseline_top1_mean": 15258.4,
+      "ablated_top1_mean": 1806.0333,
+      "ma_dims": [
+        731,
+        2994
+      ],
+      "delta_ma_top1_mean_pct": -88.1637,
+      "delta_ma_top1_max_pct": -88.2038,
+      "verdict": "strong",
+      "source_file": "results/wikitext_run/RQ5_macro/qwen3_14b/qwen3_14b_macro_v_ablation_results.json",
+      "method": "macro v1 from \u0394h SVD, project out from mean(W_down)"
+    },
+    "exp5_origin": {
+      "layer_id": 6,
+      "eta": 1.3338,
+      "sigma_1": 16.9672,
+      "sigma_2": 12.721,
+      "baseline_top1_mean": 12792.8,
+      "ablated_top1_mean": 825.3667,
+      "delta_ma_top1_mean_pct": -93.5482,
+      "delta_ma_top1_max_pct": -93.7365,
+      "theoretical_prediction_pct": 99.3953,
       "ma_dims": [
         731,
         1016
       ],
-      "delta_ma_top1_mean_pct": -99.51,
-      "delta_ma_top1_max_pct": -99.23,
-      "verdict": "strong",
-      "source_file": "results/experiments/exp5b/qwen3_14b/qwen3_14b_macro_v_ablation_results.json"
+      "timestamp": "2026-04-19T12:31:04.368036",
+      "source_file": "results/wikitext_run/RQ5_origin/qwen3_14b/qwen3_14b_v_ablation_results.json",
+      "method": "single-layer W_down SVD, replace V with random orthogonal"
     }
   },
   "qwen3_30b_a3b": {
@@ -4794,6 +5351,100 @@
         }
       ],
       "source_file": "paper_experiments/results/wikitext_run/RQ2c/qwen3_30b_a3b/qwen3_30b_a3b_rq6_greedy.json"
+    },
+    "exp5_origin": {
+      "layer_id": 1,
+      "eta": 1.1698,
+      "sigma_1": 0.2037,
+      "sigma_2": 0.1741,
+      "baseline_top1_mean": 80.7417,
+      "ablated_top1_mean": 80.0583,
+      "delta_ma_top1_mean_pct": -0.8463,
+      "delta_ma_top1_max_pct": -0.8734,
+      "theoretical_prediction_pct": 97.1209,
+      "ma_dims": [
+        940,
+        1992
+      ],
+      "timestamp": "2026-04-19T13:00:06.610454",
+      "source_file": "results/wikitext_run/RQ5_origin/qwen3_30b_a3b/qwen3_30b_a3b_v_ablation_results.json",
+      "method": "mean-based (falls back to per-expert on MoE \u2014 see exp5_origin_moe_pe)"
+    },
+    "exp5b": {
+      "origin_layers": [
+        1,
+        3,
+        10,
+        11,
+        26
+      ],
+      "capture_layer": 26,
+      "nsamples": 30,
+      "seqlen": 4096,
+      "timestamp": "2026-04-19T13:06:02.219182",
+      "macro_svd": {
+        "sigma1": 7196.9209,
+        "eta": 1.4832
+      },
+      "baseline_top1_mean": 1312.2667,
+      "ablated_top1_mean": 1307.4667,
+      "ma_dims": [
+        940,
+        1992
+      ],
+      "delta_ma_top1_mean_pct": -0.3658,
+      "delta_ma_top1_max_pct": 0.0,
+      "verdict": "weak",
+      "source_file": "results/wikitext_run/RQ5_macro/qwen3_30b_a3b/qwen3_30b_a3b_macro_v_ablation_results.json",
+      "method": "mean-based (see exp5b_moe_pe for MoE per-expert version)"
+    },
+    "exp5_origin_moe_pe": {
+      "layer_id": 1,
+      "num_experts": 128,
+      "per_expert_eta_mean": 1.2096,
+      "per_expert_eta_min": 1.002,
+      "per_expert_eta_max": 1.5823,
+      "per_expert_var_frac_mean": 0.0125,
+      "baseline_top1_mean": 80.7417,
+      "ablated_top1_mean": 7.2365,
+      "delta_ma_top1_mean_pct": -91.0375,
+      "delta_ma_top1_max_pct": -90.8297,
+      "ma_dims": [
+        940,
+        1992
+      ],
+      "timestamp": "2026-04-19T13:36:29.251958",
+      "verdict": "strong",
+      "source_file": "results/wikitext_run/RQ5_origin_moe_per_expert/qwen3_30b_a3b/qwen3_30b_a3b_moe_per_expert_ablation_results.json",
+      "method": "per-expert independent SVD; each expert V replaced with random orthogonal"
+    },
+    "exp5b_moe_pe": {
+      "origin_layers": [
+        1,
+        3,
+        10,
+        11,
+        26
+      ],
+      "capture_layer": 26,
+      "nsamples": 30,
+      "seqlen": 4096,
+      "timestamp": "2026-04-19T13:49:46.626145",
+      "macro_svd": {
+        "sigma1": 7196.9209,
+        "eta": 1.4832
+      },
+      "baseline_top1_mean": 1312.2667,
+      "ablated_top1_mean": 50.3875,
+      "ma_dims": [
+        940,
+        1992
+      ],
+      "delta_ma_top1_mean_pct": -96.1603,
+      "delta_ma_top1_max_pct": -91.5838,
+      "verdict": "strong",
+      "source_file": "results/wikitext_run/RQ5_macro_moe_per_expert/qwen3_30b_a3b/qwen3_30b_a3b_macro_moe_per_expert_results.json",
+      "method": "macro v1 from \u0394h SVD, project out per-expert from each expert W_down"
     }
   },
   "qwen3_32b": {
@@ -5150,7 +5801,7 @@
           44,
           45
         ],
-        "strategy_note": "plan §2.10 suggested \"40-45\" based on old L_origin=43 estimate",
+        "strategy_note": "plan \u00a72.10 suggested \"40-45\" based on old L_origin=43 estimate",
         "eta": 15.5024,
         "delta_ma_top1_mean_pct": -10.98,
         "finding": "Contiguous range around old L_origin=43 gave only -11%, while RQ2c-derived sparse gave -86%. Confirms that old L_origin=43 was wrong; true MA source is in early layers."

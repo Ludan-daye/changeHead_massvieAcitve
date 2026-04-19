@@ -4,17 +4,17 @@
 
 # 单层实验用的起源层 (RQ3 / RQ4 / RQ5-single)
 declare -A L_ORIGIN=(
-    [bloom_7b1]=3    # ?
+    [bloom_7b1]=3    # CONCENTRATED
     # [deepseek_v2_lite]=??  # ?, 无 exp2c 数据
-    [falcon_7b]=3    # ?
+    [falcon_7b]=3    # FEW-SOURCE
     [glm4_32b]=0    # CONCENTRATED
     [glm4_9b]=1    # FEW-SOURCE
     [gpt2]=3    # ?
-    [gptj_6b]=2    # ?
+    [gptj_6b]=2    # CONCENTRATED
     # [llama2_13b]=??  # ?, 无 exp2c 数据
     # [llama2_7b_chat]=??  # ?, 无 exp2c 数据
     [llama3.1_8b]=1    # FEW-SOURCE
-    [mistral_7b_v03]=1    # ?
+    [mistral_7b_v03]=0    # CONCENTRATED
     [opt_6.7b]=1    # ?
     [qwen1.5_14b]=35   # DISPERSED
     [qwen2.5_0.5b]=0    # CONCENTRATED

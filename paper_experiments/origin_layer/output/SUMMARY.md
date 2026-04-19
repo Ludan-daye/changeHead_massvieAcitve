@@ -7,15 +7,15 @@
 - JSON 中总模型数：**29**
 
 ### 单层起源层（L_ORIGIN.json）
-- 用 exp2c 数据推导：**18** 个（最准）
-- 无 exp2c、回退到 v1 `exp2.critical_layer`：**6** 个
+- 用 exp2c 数据推导：**22** 个（最准）
+- 无 exp2c、回退到 v1 `exp2.critical_layer`：**2** 个
 - 无任何可用数据 → 未产出：**5** 个
   - 缺失模型列表：`deepseek_v2_lite`, `llama2_13b`, `llama2_7b_chat`, `qwen2.5_0.5b_optimized`, `qwen2.5_7b_old_nan`
 - **总计 `L_ORIGIN.json` 含 24 个模型**
 
 ### Macro 起源集合（ORIGIN_LAYERS_MACRO.json）
-- 用 exp2c `final_disabled_set` 推导：**18** 个（最准）
-- 无 exp2c、用 `critical_layer ± 2` 或 `[0..5]` 启发式窗口 fallback：**6** 个
+- 用 exp2c `final_disabled_set` 推导：**22** 个（最准）
+- 无 exp2c、用 `critical_layer ± 2` 或 `[0..5]` 启发式窗口 fallback：**2** 个
 - 无任何可用数据：**5** 个
 - **总计 `ORIGIN_LAYERS_MACRO.json` 含 24 个模型**
 
@@ -25,17 +25,17 @@
 
 | 模型 | 单层 L_ORIGIN | Macro 起源层集合 | macro 来源 | 类别 | 消融步数 | MA 总降 % |
 |---|:-:|---|:-:|:-:|:-:|:-:|
-| `bloom_7b1` | **3** | [0,1,2,3,4,5] | ⚠ 启发式 | ? | None | — |
+| `bloom_7b1` | **3** | [3] | ✓ exp2c | CONCENTRATED | 1 | 95.9% |
 | `deepseek_v2_lite` | **—** | — | — | ? | None | — |
-| `falcon_7b` | **3** | [0,1,2,3,4,5] | ⚠ 启发式 | ? | None | — |
+| `falcon_7b` | **3** | [0,3] | ✓ exp2c | FEW-SOURCE | 2 | 93.5% |
 | `glm4_32b` | **0** | [0] | ✓ exp2c | CONCENTRATED | 1 | 95.9% |
 | `glm4_9b` | **1** | [0,1] | ✓ exp2c | FEW-SOURCE | 2 | 90.7% |
 | `gpt2` | **3** | [0,1,2,3,4,5] | ⚠ 启发式 | ? | None | — |
-| `gptj_6b` | **2** | [0,1,2,3,4,5] | ⚠ 启发式 | ? | None | — |
+| `gptj_6b` | **2** | [2] | ✓ exp2c | CONCENTRATED | 1 | 90.7% |
 | `llama2_13b` | **—** | — | — | ? | None | — |
 | `llama2_7b_chat` | **—** | — | — | ? | None | — |
 | `llama3.1_8b` | **1** | [0,1] | ✓ exp2c | FEW-SOURCE | 2 | 90.3% |
-| `mistral_7b_v03` | **1** | [0,1,2,3,4,5] | ⚠ 启发式 | ? | None | — |
+| `mistral_7b_v03` | **0** | [0] | ✓ exp2c | CONCENTRATED | 1 | 89.7% |
 | `opt_6.7b` | **1** | [0,1,2,3,4,5] | ⚠ 启发式 | ? | None | — |
 | `qwen1.5_14b` | **35** | [3,4,26,33,34,35,36] | ✓ exp2c | DISPERSED | 15 | 39.7% |
 | `qwen2.5_0.5b` | **0** | [0] | ✓ exp2c | CONCENTRATED | 1 | 97.1% |

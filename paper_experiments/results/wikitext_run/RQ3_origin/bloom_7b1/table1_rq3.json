@@ -1,0 +1,6 @@
+{
+  "model": "bloom_7b1",
+  "func_pct": 28.3642578125,
+  "func_tokens": 17427,
+  "total_tokens": 61440
+}

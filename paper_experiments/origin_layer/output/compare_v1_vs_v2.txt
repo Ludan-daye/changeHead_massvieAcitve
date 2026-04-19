@@ -1,13 +1,13 @@
 
 模型                         旧     新     Δ 类别               steps    drop%  注意                       
 ---------------------------------------------------------------------------------------------------------
-bloom_7b1                  3     3     0 ?                    -        -                           
-falcon_7b                  3     3     0 ?                    -        -                           
+bloom_7b1                  3     3     0 CONCENTRATED         1     95.9                           
+falcon_7b                  3     3     0 FEW-SOURCE           2     93.5                           
 glm4_9b                   17     1   16! FEW-SOURCE           2     90.7  新旧差大, 用新的                
 gpt2                       3     3     0 ?                    -        -                           
-gptj_6b                    2     2     0 ?                    -        -                           
+gptj_6b                    2     2     0 CONCENTRATED         1     90.7                           
 llama3.1_8b                1     1     0 FEW-SOURCE           2     90.3                           
-mistral_7b_v03             1     1     0 ?                    -        -                           
+mistral_7b_v03             1     0     1 CONCENTRATED         1     89.7                           
 opt_6.7b                   1     1     0 ?                    -        -                           
 qwen1.5_14b                2    35   33! DISPERSED           15     39.7  多层分散, 单层必弱               
 qwen2.5_0.5b               0     0     0 CONCENTRATED         1     97.1                           

@@ -1,0 +1,8 @@
+{
+  "model": "bloom_7b1",
+  "layer_id": 3,
+  "sigma1_sigma2": 1.4134749945492586,
+  "cos_sim": 0.004385093606194784,
+  "ma_type": "Type III (multi-direction)",
+  "r_squared": 0.00010585269530851533
+}
