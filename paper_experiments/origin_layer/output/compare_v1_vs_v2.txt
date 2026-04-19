@@ -1,0 +1,26 @@
+
+模型                         旧     新     Δ 类别               steps    drop%  注意                       
+---------------------------------------------------------------------------------------------------------
+bloom_7b1                  3     3     0 ?                    -        -                           
+falcon_7b                  3     3     0 ?                    -        -                           
+glm4_9b                   17     1   16! FEW-SOURCE           2     90.7  新旧差大, 用新的                
+gpt2                       3     3     0 ?                    -        -                           
+gptj_6b                    2     2     0 ?                    -        -                           
+llama3.1_8b                1     1     0 FEW-SOURCE           2     90.3                           
+mistral_7b_v03             1     1     0 ?                    -        -                           
+opt_6.7b                   1     1     0 ?                    -        -                           
+qwen1.5_14b                2    35   33! DISPERSED           15     39.7  多层分散, 单层必弱               
+qwen2.5_0.5b               0     0     0 CONCENTRATED         1     97.1                           
+qwen2.5_7b                 3     3     0 CONCENTRATED         1     89.5                           
+qwen2_7b                   3     3     0 CONCENTRATED         1     92.5                           
+qwen3.5_27b               54    54     0 DISPERSED           12     55.6  多层分散, 单层必弱               
+qwen3.5_35b_a3b           39     9   30! FEW-SOURCE           3     15.9  新旧差大, 用新的                
+qwen3.5_9b                26    22    4! DISPERSED           15     52.2  多层分散, 单层必弱               
+qwen3_0.6b                 2     2     0 CONCENTRATED         1     92.8                           
+qwen3_1.7b                 2     2     0 FEW-SOURCE           3     89.8                           
+qwen3_14b                  6     6     0 DISPERSED           15     71.6  多层分散, 单层必弱               
+qwen3_30b_a3b              2     1     1 DISPERSED           10     75.4  多层分散, 单层必弱               
+qwen3_32b                 43     6   37! DISPERSED           10     80.2  多层分散, 单层必弱               
+qwen3_4b                   5     6     1 FEW-SOURCE           2     89.1                           
+qwen3_8b                   6     6     0 DISPERSED           15     57.7  多层分散, 单层必弱               
+yi_9b                      1     8    7! DISPERSED            5     89.6  多层分散, 单层必弱               

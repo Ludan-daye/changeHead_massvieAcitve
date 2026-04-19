@@ -35,9 +35,15 @@ import argparse
 from typing import Optional
 
 # 脚本默认读的 JSON 路径（相对于脚本所在目录）
+# 此脚本在 paper_experiments/origin_layer/ 下，数据在 paper_experiments/results/
 DEFAULT_JSON = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
-    'results/ALL_EXPERIMENTS_SUMMARY_v2.json'
+    '..', 'results', 'ALL_EXPERIMENTS_SUMMARY_v2.json'
+)
+
+# 默认输出目录（paper_experiments/origin_layer/output/）
+DEFAULT_OUTDIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), 'output'
 )
 
 # 旧 L_ORIGIN 表（从 v1 critical_layer 来的，已在 run_rq345_origin_layer.sh 内）
@@ -212,8 +218,129 @@ def print_pretty(table: dict):
         print(f"{m:<22} {sl_str:>8} {ml_str:<34} {cat:<15}")
 
 
+def dump_all(table: dict, outdir: str):
+    """
+    一键产出所有格式到 outdir/:
+      - L_ORIGIN.json             单层起源层（model -> int）
+      - L_ORIGIN.sh               单层起源层 bash 数组
+      - ORIGIN_LAYERS_MACRO.json  macro 起源层集合（model -> list[int]）
+      - ORIGIN_LAYERS_MACRO.sh    macro 起源层 bash 数组
+      - compare_v1_vs_v2.txt      和旧 L_ORIGIN 的对比
+      - SUMMARY.md                人类可读的汇总报告
+    """
+    os.makedirs(outdir, exist_ok=True)
+
+    # 1. L_ORIGIN.json
+    single = {m: t['single_layer'] for m, t in table.items() if t['single_layer'] is not None}
+    with open(os.path.join(outdir, 'L_ORIGIN.json'), 'w') as f:
+        json.dump(single, f, indent=2, ensure_ascii=False, sort_keys=True)
+
+    # 2. ORIGIN_LAYERS_MACRO.json
+    macro = {m: t['macro_layers'] for m, t in table.items() if t['macro_layers']}
+    with open(os.path.join(outdir, 'ORIGIN_LAYERS_MACRO.json'), 'w') as f:
+        json.dump(macro, f, indent=2, ensure_ascii=False, sort_keys=True)
+
+    # 3. L_ORIGIN.sh（bash 数组，可 source 或粘贴）
+    import io, contextlib
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        print_bash(table)
+    full = buf.getvalue()
+    # 拆分为两个文件
+    part1 = full.split('# macro 实验用的起源层集合')[0]
+    part2_header = '# macro 实验用的起源层集合 (RQ5b / RQ6 macro-SVD)\n'
+    part2 = part2_header + full.split(part2_header)[1] if part2_header in full else ''
+    with open(os.path.join(outdir, 'L_ORIGIN.sh'), 'w') as f:
+        f.write(part1)
+    with open(os.path.join(outdir, 'ORIGIN_LAYERS_MACRO.sh'), 'w') as f:
+        f.write(part2)
+
+    # 4. compare_v1_vs_v2.txt
+    buf2 = io.StringIO()
+    with contextlib.redirect_stdout(buf2):
+        print_compare(table)
+    with open(os.path.join(outdir, 'compare_v1_vs_v2.txt'), 'w') as f:
+        f.write(buf2.getvalue())
+
+    # 5. SUMMARY.md（人类可读的起源层汇总）
+    lines = ['# 起源层自动判定结果（SUMMARY）', '',
+             '> 由 `determine_origin_layer.py` 从 `ALL_EXPERIMENTS_SUMMARY_v2.json` 的 `exp2c` 自动产出',
+             '',
+             '## 所有模型的起源层',
+             '',
+             '| 模型 | 单层起源 (L_ORIGIN) | Macro 起源层集合 | 类别 | 消融步数 | MA 总降 % |',
+             '|---|:-:|---|:-:|:-:|:-:|']
+    for m in sorted(table.keys()):
+        t = table[m]
+        sl = t['single_layer']
+        ml = t['macro_layers']
+        cat = t.get('category', '?') or '?'
+        steps = t.get('steps_to_kill', '?')
+        drop = t.get('total_drop_pct')
+        sl_str = str(sl) if sl is not None else '—'
+        ml_str = '[' + ','.join(str(x) for x in ml) + ']' if ml else '—'
+        drop_str = f"{drop:.1f}%" if drop is not None else '—'
+        lines.append(f'| `{m}` | **{sl_str}** | {ml_str} | {cat} | {steps} | {drop_str} |')
+
+    lines += ['', '## 分类说明', '',
+              '| 类别 | 判定 | 含义 |',
+              '|:-:|:-:|---|',
+              '| CONCENTRATED | 1 步消 ≥ 80% | 单层主导（模式 A），起源层是 L_ORIGIN |',
+              '| FEW-SOURCE | 2-5 步消 ≥ 80% | 少数层主导，macro 集合是完整起源 |',
+              '| DISPERSED | > 5 步 | 多层分散（模式 B），单层实验必弱，真故事在 macro |',
+              '',
+              '## 和 v1 L_ORIGIN 的对比',
+              '',
+              '详见 `compare_v1_vs_v2.txt`。关键差异：',
+              '',
+              '| 模型 | v1 | v2 | 类别 |',
+              '|---|:-:|:-:|:-:|',
+              ]
+    big_diffs = []
+    for m in sorted(table.keys()):
+        if m not in OLD_L_ORIGIN:
+            continue
+        old = OLD_L_ORIGIN[m]
+        new = table[m]['single_layer']
+        if new is None:
+            continue
+        if abs(new - old) > 3:
+            big_diffs.append((m, old, new, table[m].get('category', '?') or '?'))
+    for m, o, n, cat in big_diffs:
+        lines.append(f'| `{m}` | {o} | **{n}** | {cat} |')
+
+    lines += ['', '## 使用这些数据的方式',
+              '',
+              '```bash',
+              '# 方式一：直接 source 到 shell',
+              'source output/L_ORIGIN.sh',
+              'echo "${L_ORIGIN[gptj_6b]}"  # → 2',
+              '',
+              '# 方式二：JSON 程序化读取',
+              'python3 -c "import json; d=json.load(open(\'output/L_ORIGIN.json\')); print(d[\'gptj_6b\'])"',
+              '',
+              '# 方式三：粘贴 bash 数组到 run_rq345_origin_layer.sh',
+              'cat output/L_ORIGIN.sh  # 复制 declare -A 部分',
+              '```',
+              '']
+
+    with open(os.path.join(outdir, 'SUMMARY.md'), 'w') as f:
+        f.write('\n'.join(lines))
+
+    print(f"✓ 输出已写入 {outdir}/")
+    for fn in ['SUMMARY.md', 'L_ORIGIN.json', 'L_ORIGIN.sh',
+               'ORIGIN_LAYERS_MACRO.json', 'ORIGIN_LAYERS_MACRO.sh',
+               'compare_v1_vs_v2.txt']:
+        path = os.path.join(outdir, fn)
+        if os.path.exists(path):
+            size = os.path.getsize(path)
+            print(f"    {fn:<32} ({size} bytes)")
+
+
 def main():
-    p = argparse.ArgumentParser()
+    p = argparse.ArgumentParser(
+        description="从 exp2c 自动推导每个模型的起源层，服务 RQ3/4/5/6 实验"
+    )
     p.add_argument('--json-path', default=DEFAULT_JSON,
                    help=f'v2 JSON path (default: {DEFAULT_JSON})')
     p.add_argument('--bash', action='store_true',
@@ -222,6 +349,8 @@ def main():
                    help='以 JSON 输出（程序化使用）')
     p.add_argument('--compare', action='store_true',
                    help='对比旧 L_ORIGIN 与新的差异')
+    p.add_argument('--dump-all', nargs='?', const=DEFAULT_OUTDIR,
+                   help=f'一次性产出所有格式到目录（默认 {DEFAULT_OUTDIR}）')
     args = p.parse_args()
 
     if not os.path.exists(args.json_path):
@@ -230,7 +359,9 @@ def main():
     data = load_v2(args.json_path)
     table = build_table(data)
 
-    if args.bash:
+    if args.dump_all is not None:
+        dump_all(table, args.dump_all)
+    elif args.bash:
         print_bash(table)
     elif args.json:
         print_json(table)

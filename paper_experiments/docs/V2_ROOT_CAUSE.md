@@ -127,12 +127,18 @@ B     (3 个) ：1.45 – 1.77  ← 弱是对的
 - **应该**尝试：`[step1, step2, ..., steps_to_kill]` 的**前半部分**（优先级最高几层）
 - 或者用 `final_disabled_set` 的**前 40% 层**
 
-见 `determine_origin_layer.py` 的 `derive_origin_layers()` 函数。
+见 `origin_layer/determine_origin_layer.py` 的 `derive_macro_layers()` 函数。
 
 ## 六、代码工具
 
-- `determine_origin_layer.py`（本轮新增）：从 v2 JSON 自动推导每个模型的起源层，输出可直接粘贴到 bash 的 `L_ORIGIN` 表
-- 用法：`python determine_origin_layer.py > L_ORIGIN_v2.sh`
+- `paper_experiments/origin_layer/`（本轮新增的专门文件夹）：从 v2 JSON 自动推导每个模型的起源层
+- **一键产出**：`bash paper_experiments/origin_layer/run.sh`
+- 产出目录：`paper_experiments/origin_layer/output/`
+  - `SUMMARY.md` 人类可读表
+  - `L_ORIGIN.json` / `L_ORIGIN.sh` 单层起源层
+  - `ORIGIN_LAYERS_MACRO.json` / `.sh` macro 起源集合
+  - `compare_v1_vs_v2.txt` 新旧对比
+- 详见 `origin_layer/README.md`
 
 ---
 

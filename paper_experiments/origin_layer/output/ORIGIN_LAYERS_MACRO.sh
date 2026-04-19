@@ -1,0 +1,32 @@
+# macro 实验用的起源层集合 (RQ5b / RQ6 macro-SVD)
+declare -A ORIGIN_LAYERS_MACRO=(
+    # [bloom_7b1]=""  # ?, 无 macro 层数据
+    # [deepseek_v2_lite]=""  # ?, 无 macro 层数据
+    # [falcon_7b]=""  # ?, 无 macro 层数据
+    [glm4_32b]="0"  # CONCENTRATED
+    [glm4_9b]="0,1"  # FEW-SOURCE
+    # [gpt2]=""  # ?, 无 macro 层数据
+    # [gptj_6b]=""  # ?, 无 macro 层数据
+    # [llama2_13b]=""  # ?, 无 macro 层数据
+    # [llama2_7b_chat]=""  # ?, 无 macro 层数据
+    [llama3.1_8b]="0,1"  # FEW-SOURCE
+    # [mistral_7b_v03]=""  # ?, 无 macro 层数据
+    # [opt_6.7b]=""  # ?, 无 macro 层数据
+    [qwen1.5_14b]="3,4,26,33,34,35,36"  # DISPERSED
+    [qwen2.5_0.5b]="0"  # CONCENTRATED
+    # [qwen2.5_0.5b_optimized]=""  # ?, 无 macro 层数据
+    [qwen2.5_7b]="3"  # CONCENTRATED
+    # [qwen2.5_7b_old_nan]=""  # ?, 无 macro 层数据
+    [qwen2_7b]="3"  # CONCENTRATED
+    [qwen3.5_27b]="34,48,50,52,54,58"  # DISPERSED
+    [qwen3.5_35b_a3b]="7,9,38"  # FEW-SOURCE
+    [qwen3.5_9b]="6,10,18,19,22,23,25"  # DISPERSED
+    [qwen3_0.6b]="2"  # CONCENTRATED
+    [qwen3_1.7b]="0,1,2"  # FEW-SOURCE
+    [qwen3_14b]="3,6,7,10,12,19,22"  # DISPERSED
+    [qwen3_30b_a3b]="1,3,10,11,26"  # DISPERSED
+    [qwen3_32b]="5,6,40,41,42"  # DISPERSED
+    [qwen3_4b]="6,15"  # FEW-SOURCE
+    [qwen3_8b]="5,6,15,24,25,28,29"  # DISPERSED
+    [yi_9b]="8,24"  # DISPERSED
+)
