@@ -25,30 +25,42 @@ export HF_ENDPOINT=${HF_ENDPOINT:-https://hf-mirror.com}
 # 切到脚本所在目录（即 paper_experiments/）
 cd "$(dirname "$0")"
 
-# ====== 25 模型起源层查找表 ======
-# 来源: ALL_EXPERIMENTS_SUMMARY.json 的 exp2.critical_layer 字段
-declare -A L_ORIGIN=(
-    [bloom_7b1]=3      [falcon_7b]=3      [gptj_6b]=2
-    [llama3.1_8b]=1    [qwen2.5_0.5b]=0   [qwen2.5_7b]=3
-    [qwen2_7b]=3       [qwen3_0.6b]=2     [qwen3_1.7b]=2
-    [yi_9b]=1          [mistral_7b_v03]=1 [qwen1.5_14b]=2
-    [qwen3_4b]=5       [qwen3_8b]=6       [qwen3_14b]=6
-    [qwen3.5_9b]=26    [glm4_9b]=17       [qwen3_30b_a3b]=2
-    [gpt2]=3           [opt_6.7b]=1       [qwen3_32b]=43
-    [qwen3.5_27b]=54   [qwen3.5_35b_a3b]=39
-    # llama2_13b: 待 RQ2b 跑完后填入
-    # glm4_32b:   待 RQ1/RQ2a fp32 修复后填入
-)
+# ====== 起源层查找表（自动 source 自 origin_layer/output/）======
+#
+# 单层: L_ORIGIN[model]            ← origin_layer/output/L_ORIGIN.sh
+# 多层: ORIGIN_LAYERS_MACRO[model] ← origin_layer/output/ORIGIN_LAYERS_MACRO.sh
+#
+# 这两个文件由 determine_origin_layer.py 从 exp2c 自动产出。
+# 更新层号只需: cd origin_layer && bash run.sh
 
-# 模式 B 的模型列表（这些模型 RQ5 需要额外跑 macro 版本）
+L_ORIGIN_FILE="origin_layer/output/L_ORIGIN.sh"
+MACRO_FILE="origin_layer/output/ORIGIN_LAYERS_MACRO.sh"
+
+if [ ! -f "$L_ORIGIN_FILE" ] || [ ! -f "$MACRO_FILE" ]; then
+    echo "❌ 找不到层号文件: $L_ORIGIN_FILE / $MACRO_FILE"
+    echo "   运行: cd origin_layer && bash run.sh 生成这些文件"
+    exit 1
+fi
+
+# 需要 bash 4+ (declare -A)
+if ! declare -A test_assoc 2>/dev/null; then
+    echo "❌ 当前 bash 不支持关联数组 (需要 4+)"
+    echo "   macOS 默认 bash 3.2 → 用 /opt/homebrew/bin/bash 重跑"
+    exit 1
+fi
+unset test_assoc
+
+source "$L_ORIGIN_FILE"
+source "$MACRO_FILE"
+
+echo "✓ 已 source $L_ORIGIN_FILE （${#L_ORIGIN[@]} 模型）"
+echo "✓ 已 source $MACRO_FILE （${#ORIGIN_LAYERS_MACRO[@]} 模型）"
+
+# 模式 B 的模型（RQ5 macro 默认跑这几个）
 MODEL_B_FOR_MACRO="gpt2 opt_6.7b qwen3_32b qwen3.5_27b"
-# glm4_9b (macro η=4.33) 和 qwen3.5_35b_a3b 若最终判为真 B 也要加入；先不默认加
 
-# 默认跑全部已知起源层模型
-ALL_READY="bloom_7b1 falcon_7b gptj_6b llama3.1_8b qwen2.5_0.5b qwen2.5_7b \
-    qwen2_7b qwen3_0.6b qwen3_1.7b yi_9b mistral_7b_v03 qwen1.5_14b \
-    qwen3_4b qwen3_8b qwen3_14b qwen3.5_9b glm4_9b qwen3_30b_a3b \
-    gpt2 opt_6.7b qwen3_32b qwen3.5_27b qwen3.5_35b_a3b"
+# 默认跑全部已知起源层模型（自动从 L_ORIGIN 数组取 keys）
+ALL_READY="${!L_ORIGIN[*]}"
 
 # ====== 参数解析 ======
 MODELS_INPUT=${1:-}
@@ -109,21 +121,19 @@ for model in $MODELS; do
         echo "$(date): [$model] RQ5 single done" | tee -a "$LOG"
     fi
 
-    # ---- RQ5 Macro: 多层 v₁ 消融（仅模式 B 模型）----
+    # ---- RQ5 Macro: 多层 v₁ 消融 ----
+    # 从 ORIGIN_LAYERS_MACRO 数组直接读（auto-sourced 自 origin_layer/output/）
     if [ "$RQ" = "rq5_macro" ]; then
-        # 判断是否模式 B
-        if echo " $MODEL_B_FOR_MACRO " | grep -q " $model "; then
-            # origin_layers 设为 0 到 L_origin+2（覆盖起源层及其邻近层）
-            L_END=$((L+2))
-            ORIGIN_LAYERS=$(seq -s, 0 $L_END)
-            echo "$(date): [$model] RQ5 macro start origin_layers=$ORIGIN_LAYERS" | tee -a "$LOG"
+        MACRO="${ORIGIN_LAYERS_MACRO[$model]:-}"
+        if [ -z "$MACRO" ]; then
+            echo "$(date): [$model] no macro layers (无 exp2c 和 fallback), skip" | tee -a "$LOG"
+        else
+            echo "$(date): [$model] RQ5 macro start origin_layers=$MACRO" | tee -a "$LOG"
             python RQ5_v_matrix_ablation/exp5_macro_v_ablation.py \
-                --model "$model" --origin_layers "$ORIGIN_LAYERS" --nsamples 30 \
+                --model "$model" --origin_layers "$MACRO" --nsamples 30 \
                 --savedir "results/wikitext_run/RQ5_macro/$model" \
                 $EXTRA 2>&1 | tail -10 | tee -a "$LOG" || true
             echo "$(date): [$model] RQ5 macro done" | tee -a "$LOG"
-        else
-            echo "$(date): [$model] not in MODEL_B list, skip macro RQ5" | tee -a "$LOG"
         fi
     fi
 done
