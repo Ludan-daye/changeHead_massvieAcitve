@@ -5,47 +5,55 @@
 ## 覆盖情况
 
 - JSON 中总模型数：**29**
+
+### 单层起源层（L_ORIGIN.json）
 - 用 exp2c 数据推导：**18** 个（最准）
 - 无 exp2c、回退到 v1 `exp2.critical_layer`：**6** 个
 - 无任何可用数据 → 未产出：**5** 个
   - 缺失模型列表：`deepseek_v2_lite`, `llama2_13b`, `llama2_7b_chat`, `qwen2.5_0.5b_optimized`, `qwen2.5_7b_old_nan`
+- **总计 `L_ORIGIN.json` 含 24 个模型**
 
-→ `L_ORIGIN.json` 含 **24** 个模型
-→ `ORIGIN_LAYERS_MACRO.json` 含 **18** 个模型（只有 exp2c 模型才有 macro 集合）
+### Macro 起源集合（ORIGIN_LAYERS_MACRO.json）
+- 用 exp2c `final_disabled_set` 推导：**18** 个（最准）
+- 无 exp2c、用 `critical_layer ± 2` 或 `[0..5]` 启发式窗口 fallback：**6** 个
+- 无任何可用数据：**5** 个
+- **总计 `ORIGIN_LAYERS_MACRO.json` 含 24 个模型**
+
+> 单层和 macro 都已为可推导的模型全部确定。
 
 ## 所有模型的起源层
 
-| 模型 | 单层起源 (L_ORIGIN) | Macro 起源层集合 | 类别 | 消融步数 | MA 总降 % |
-|---|:-:|---|:-:|:-:|:-:|
-| `bloom_7b1` | **3** | — | ? | None | — |
-| `deepseek_v2_lite` | **—** | — | ? | None | — |
-| `falcon_7b` | **3** | — | ? | None | — |
-| `glm4_32b` | **0** | [0] | CONCENTRATED | 1 | 95.9% |
-| `glm4_9b` | **1** | [0,1] | FEW-SOURCE | 2 | 90.7% |
-| `gpt2` | **3** | — | ? | None | — |
-| `gptj_6b` | **2** | — | ? | None | — |
-| `llama2_13b` | **—** | — | ? | None | — |
-| `llama2_7b_chat` | **—** | — | ? | None | — |
-| `llama3.1_8b` | **1** | [0,1] | FEW-SOURCE | 2 | 90.3% |
-| `mistral_7b_v03` | **1** | — | ? | None | — |
-| `opt_6.7b` | **1** | — | ? | None | — |
-| `qwen1.5_14b` | **35** | [3,4,26,33,34,35,36] | DISPERSED | 15 | 39.7% |
-| `qwen2.5_0.5b` | **0** | [0] | CONCENTRATED | 1 | 97.1% |
-| `qwen2.5_0.5b_optimized` | **—** | — | ? | None | — |
-| `qwen2.5_7b` | **3** | [3] | CONCENTRATED | 1 | 89.5% |
-| `qwen2.5_7b_old_nan` | **—** | — | ? | None | — |
-| `qwen2_7b` | **3** | [3] | CONCENTRATED | 1 | 92.5% |
-| `qwen3.5_27b` | **54** | [34,48,50,52,54,58] | DISPERSED | 12 | 55.6% |
-| `qwen3.5_35b_a3b` | **9** | [7,9,38] | FEW-SOURCE | 3 | 15.9% |
-| `qwen3.5_9b` | **22** | [6,10,18,19,22,23,25] | DISPERSED | 15 | 52.2% |
-| `qwen3_0.6b` | **2** | [2] | CONCENTRATED | 1 | 92.8% |
-| `qwen3_1.7b` | **2** | [0,1,2] | FEW-SOURCE | 3 | 89.8% |
-| `qwen3_14b` | **6** | [3,6,7,10,12,19,22] | DISPERSED | 15 | 71.6% |
-| `qwen3_30b_a3b` | **1** | [1,3,10,11,26] | DISPERSED | 10 | 75.4% |
-| `qwen3_32b` | **6** | [5,6,40,41,42] | DISPERSED | 10 | 80.2% |
-| `qwen3_4b` | **6** | [6,15] | FEW-SOURCE | 2 | 89.1% |
-| `qwen3_8b` | **6** | [5,6,15,24,25,28,29] | DISPERSED | 15 | 57.7% |
-| `yi_9b` | **8** | [8,24] | DISPERSED | 5 | 89.6% |
+| 模型 | 单层 L_ORIGIN | Macro 起源层集合 | macro 来源 | 类别 | 消融步数 | MA 总降 % |
+|---|:-:|---|:-:|:-:|:-:|:-:|
+| `bloom_7b1` | **3** | [0,1,2,3,4,5] | ⚠ 启发式 | ? | None | — |
+| `deepseek_v2_lite` | **—** | — | — | ? | None | — |
+| `falcon_7b` | **3** | [0,1,2,3,4,5] | ⚠ 启发式 | ? | None | — |
+| `glm4_32b` | **0** | [0] | ✓ exp2c | CONCENTRATED | 1 | 95.9% |
+| `glm4_9b` | **1** | [0,1] | ✓ exp2c | FEW-SOURCE | 2 | 90.7% |
+| `gpt2` | **3** | [0,1,2,3,4,5] | ⚠ 启发式 | ? | None | — |
+| `gptj_6b` | **2** | [0,1,2,3,4,5] | ⚠ 启发式 | ? | None | — |
+| `llama2_13b` | **—** | — | — | ? | None | — |
+| `llama2_7b_chat` | **—** | — | — | ? | None | — |
+| `llama3.1_8b` | **1** | [0,1] | ✓ exp2c | FEW-SOURCE | 2 | 90.3% |
+| `mistral_7b_v03` | **1** | [0,1,2,3,4,5] | ⚠ 启发式 | ? | None | — |
+| `opt_6.7b` | **1** | [0,1,2,3,4,5] | ⚠ 启发式 | ? | None | — |
+| `qwen1.5_14b` | **35** | [3,4,26,33,34,35,36] | ✓ exp2c | DISPERSED | 15 | 39.7% |
+| `qwen2.5_0.5b` | **0** | [0] | ✓ exp2c | CONCENTRATED | 1 | 97.1% |
+| `qwen2.5_0.5b_optimized` | **—** | — | — | ? | None | — |
+| `qwen2.5_7b` | **3** | [3] | ✓ exp2c | CONCENTRATED | 1 | 89.5% |
+| `qwen2.5_7b_old_nan` | **—** | — | — | ? | None | — |
+| `qwen2_7b` | **3** | [3] | ✓ exp2c | CONCENTRATED | 1 | 92.5% |
+| `qwen3.5_27b` | **54** | [34,48,50,52,54,58] | ✓ exp2c | DISPERSED | 12 | 55.6% |
+| `qwen3.5_35b_a3b` | **9** | [7,9,38] | ✓ exp2c | FEW-SOURCE | 3 | 15.9% |
+| `qwen3.5_9b` | **22** | [6,10,18,19,22,23,25] | ✓ exp2c | DISPERSED | 15 | 52.2% |
+| `qwen3_0.6b` | **2** | [2] | ✓ exp2c | CONCENTRATED | 1 | 92.8% |
+| `qwen3_1.7b` | **2** | [0,1,2] | ✓ exp2c | FEW-SOURCE | 3 | 89.8% |
+| `qwen3_14b` | **6** | [3,6,7,10,12,19,22] | ✓ exp2c | DISPERSED | 15 | 71.6% |
+| `qwen3_30b_a3b` | **1** | [1,3,10,11,26] | ✓ exp2c | DISPERSED | 10 | 75.4% |
+| `qwen3_32b` | **6** | [5,6,40,41,42] | ✓ exp2c | DISPERSED | 10 | 80.2% |
+| `qwen3_4b` | **6** | [6,15] | ✓ exp2c | FEW-SOURCE | 2 | 89.1% |
+| `qwen3_8b` | **6** | [5,6,15,24,25,28,29] | ✓ exp2c | DISPERSED | 15 | 57.7% |
+| `yi_9b` | **8** | [8,24] | ✓ exp2c | DISPERSED | 5 | 89.6% |
 
 ## 分类说明
 

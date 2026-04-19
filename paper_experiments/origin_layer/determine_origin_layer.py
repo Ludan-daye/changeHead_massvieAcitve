@@ -94,29 +94,55 @@ def derive_macro_layers(model: str, entry: dict) -> Optional[list]:
 
     优先级:
       1. exp2c.final_disabled_set  (贪心完整集合)
-      2. 对 DISPERSED 模型：取 final_disabled_set 的**前 50%**，
-         否则全部
-      3. None
+         - DISPERSED 模型: 取前 50%（避免包含弱贡献层）
+         - 否则: 全部
+      2. **fallback**: 从 exp2.critical_layer L 推导:
+         - L ≤ 5: 取 [0..5]  (前段模型，覆盖早期起源段)
+         - L > 5: 取 [L-2..L+2] (深层起源，以 L 为中心±2)
+         这是经验值，供外部用户在没跑 exp2c 时也能启动 macro 实验
+      3. None（连 critical_layer 都没有）
 
     注意 DISPERSED 模型用完整 final_disabled_set 可能效果差（见 qwen1.5_14b、
     qwen3.5_9b、qwen3.5_27b 的 RQ5b 弱结果）。这里保守取前半。
     """
+    # 主路径: 用 exp2c 的 final_disabled_set
     e2c = entry.get('exp2c')
-    if not e2c:
-        return None
-    fset = e2c.get('final_disabled_set') or []
-    if not fset:
-        return None
-    category = e2c.get('category', '')
+    if e2c:
+        fset = e2c.get('final_disabled_set') or []
+        if fset:
+            category = e2c.get('category', '')
+            if category == 'DISPERSED':
+                n = max(1, len(fset) // 2)
+                return sorted(set(fset[:n]))
+            return sorted(set(fset))
 
-    if category == 'DISPERSED':
-        # 前 50% 层
-        n = max(1, len(fset) // 2)
-        layers = sorted(set(fset[:n]))
-    else:
-        # CONCENTRATED / FEW-SOURCE: 全部
-        layers = sorted(set(fset))
-    return layers
+    # Fallback: 用 v1 critical_layer 推导合理的 macro 窗口
+    e2 = entry.get('exp2')
+    if e2 and e2.get('critical_layer') is not None:
+        L = int(e2['critical_layer'])
+        n_layers = e2.get('num_layers_tested')
+        if L <= 5:
+            # 早期起源：覆盖 L0 到 L5
+            return list(range(0, 6))
+        # 深层起源：L-2 到 L+2 的 5 层窗口
+        lo = max(0, L - 2)
+        hi = L + 2
+        if n_layers is not None:
+            hi = min(hi, int(n_layers) - 1)
+        return list(range(lo, hi + 1))
+
+    return None
+
+
+def macro_source(entry: dict) -> str:
+    """返回 macro_layers 的来源标签（供 SUMMARY 展示）。"""
+    e2c = entry.get('exp2c')
+    if e2c and e2c.get('final_disabled_set'):
+        return 'exp2c'
+    e2 = entry.get('exp2')
+    if e2 and e2.get('critical_layer') is not None:
+        return 'fallback_window'
+    return 'none'
 
 
 def build_table(data: dict) -> dict:
@@ -125,8 +151,10 @@ def build_table(data: dict) -> dict:
     for model, entry in data.items():
         sl = derive_single_layer(model, entry)
         ml = derive_macro_layers(model, entry)
+        msrc = macro_source(entry)
         e2c = entry.get('exp2c') or {}
         out[model] = {
+            'macro_source': msrc,
             'single_layer': sl,
             'macro_layers': ml,
             'category': e2c.get('category'),
@@ -269,6 +297,8 @@ def dump_all(table: dict, outdir: str):
     v1_fallback = sum(1 for t in table.values()
                       if t['single_layer'] is not None and not t.get('category'))
     no_data = sum(1 for t in table.values() if t['single_layer'] is None)
+    macro_exp2c = sum(1 for t in table.values() if t.get('macro_source') == 'exp2c')
+    macro_fallback = sum(1 for t in table.values() if t.get('macro_source') == 'fallback_window')
     missing_models = [m for m, t in sorted(table.items()) if t['single_layer'] is None]
 
     lines = ['# 起源层自动判定结果（SUMMARY）', '',
@@ -277,19 +307,27 @@ def dump_all(table: dict, outdir: str):
              '## 覆盖情况',
              '',
              f'- JSON 中总模型数：**{total}**',
+             f'',
+             f'### 单层起源层（L_ORIGIN.json）',
              f'- 用 exp2c 数据推导：**{with_exp2c}** 个（最准）',
              f'- 无 exp2c、回退到 v1 `exp2.critical_layer`：**{v1_fallback}** 个',
              f'- 无任何可用数据 → 未产出：**{no_data}** 个']
     if missing_models:
         lines.append(f'  - 缺失模型列表：{", ".join(f"`{m}`" for m in missing_models)}')
-    lines += ['',
-              f'→ `L_ORIGIN.json` 含 **{with_exp2c + v1_fallback}** 个模型',
-              f'→ `ORIGIN_LAYERS_MACRO.json` 含 **{with_exp2c}** 个模型（只有 exp2c 模型才有 macro 集合）',
+    lines += [f'- **总计 `L_ORIGIN.json` 含 {with_exp2c + v1_fallback} 个模型**',
+              '',
+              f'### Macro 起源集合（ORIGIN_LAYERS_MACRO.json）',
+              f'- 用 exp2c `final_disabled_set` 推导：**{macro_exp2c}** 个（最准）',
+              f'- 无 exp2c、用 `critical_layer ± 2` 或 `[0..5]` 启发式窗口 fallback：**{macro_fallback}** 个',
+              f'- 无任何可用数据：**{no_data}** 个',
+              f'- **总计 `ORIGIN_LAYERS_MACRO.json` 含 {macro_exp2c + macro_fallback} 个模型**',
+              '',
+              '> 单层和 macro 都已为可推导的模型全部确定。',
               '',
               '## 所有模型的起源层',
              '',
-             '| 模型 | 单层起源 (L_ORIGIN) | Macro 起源层集合 | 类别 | 消融步数 | MA 总降 % |',
-             '|---|:-:|---|:-:|:-:|:-:|']
+             '| 模型 | 单层 L_ORIGIN | Macro 起源层集合 | macro 来源 | 类别 | 消融步数 | MA 总降 % |',
+             '|---|:-:|---|:-:|:-:|:-:|:-:|']
     for m in sorted(table.keys()):
         t = table[m]
         sl = t['single_layer']
@@ -297,10 +335,16 @@ def dump_all(table: dict, outdir: str):
         cat = t.get('category', '?') or '?'
         steps = t.get('steps_to_kill', '?')
         drop = t.get('total_drop_pct')
+        msrc = t.get('macro_source', 'none')
         sl_str = str(sl) if sl is not None else '—'
         ml_str = '[' + ','.join(str(x) for x in ml) + ']' if ml else '—'
         drop_str = f"{drop:.1f}%" if drop is not None else '—'
-        lines.append(f'| `{m}` | **{sl_str}** | {ml_str} | {cat} | {steps} | {drop_str} |')
+        msrc_label = {
+            'exp2c': '✓ exp2c',
+            'fallback_window': '⚠ 启发式',
+            'none': '—',
+        }.get(msrc, msrc)
+        lines.append(f'| `{m}` | **{sl_str}** | {ml_str} | {msrc_label} | {cat} | {steps} | {drop_str} |')
 
     lines += ['', '## 分类说明',
               '',

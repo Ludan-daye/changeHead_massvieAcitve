@@ -1,17 +1,17 @@
 # macro 实验用的起源层集合 (RQ5b / RQ6 macro-SVD)
 declare -A ORIGIN_LAYERS_MACRO=(
-    # [bloom_7b1]=""  # ?, 无 macro 层数据
+    [bloom_7b1]="0,1,2,3,4,5"  # ?
     # [deepseek_v2_lite]=""  # ?, 无 macro 层数据
-    # [falcon_7b]=""  # ?, 无 macro 层数据
+    [falcon_7b]="0,1,2,3,4,5"  # ?
     [glm4_32b]="0"  # CONCENTRATED
     [glm4_9b]="0,1"  # FEW-SOURCE
-    # [gpt2]=""  # ?, 无 macro 层数据
-    # [gptj_6b]=""  # ?, 无 macro 层数据
+    [gpt2]="0,1,2,3,4,5"  # ?
+    [gptj_6b]="0,1,2,3,4,5"  # ?
     # [llama2_13b]=""  # ?, 无 macro 层数据
     # [llama2_7b_chat]=""  # ?, 无 macro 层数据
     [llama3.1_8b]="0,1"  # FEW-SOURCE
-    # [mistral_7b_v03]=""  # ?, 无 macro 层数据
-    # [opt_6.7b]=""  # ?, 无 macro 层数据
+    [mistral_7b_v03]="0,1,2,3,4,5"  # ?
+    [opt_6.7b]="0,1,2,3,4,5"  # ?
     [qwen1.5_14b]="3,4,26,33,34,35,36"  # DISPERSED
     [qwen2.5_0.5b]="0"  # CONCENTRATED
     # [qwen2.5_0.5b_optimized]=""  # ?, 无 macro 层数据

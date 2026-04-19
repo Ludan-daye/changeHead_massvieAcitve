@@ -1,8 +1,13 @@
 # Origin Layer Finder — 起源层自动判定
 
-> 用 1 条命令从 `ALL_EXPERIMENTS_SUMMARY_v2.json` 推导**每个模型的起源层**，供 RQ3 / RQ4 / RQ5 / RQ6 实验使用。
+> 用 1 条命令从 `ALL_EXPERIMENTS_SUMMARY_v2.json` 推导**每个模型的起源层**（单层和多层都有），供 RQ3 / RQ4 / RQ5 / RQ6 实验使用。
 >
 > 当前产出覆盖 **24 个模型**（JSON 里 5 个模型缺 exp2/exp2c 数据，跳过）。
+>
+> | 产出 | 模型数 | 数据来源 |
+> |---|:-:|---|
+> | `L_ORIGIN.json`（单层起源）| **24** | 18 精确 + 6 v1-fallback |
+> | `ORIGIN_LAYERS_MACRO.json`（多层起源集合）| **24** | 18 精确 + 6 启发式窗口 |
 
 ## 目录
 
@@ -48,19 +53,37 @@ bash run.sh
 
 ## 判定算法
 
-```
-输入: results/ALL_EXPERIMENTS_SUMMARY_v2.json 的 exp2c 字段
-    exp2c 是"贪心累积消融"的结果，按层对 MA 的贡献排序
-    关键字段：
-      l_origin_from_step1     第 1 步砍掉的层（最大单层贡献）
-      final_disabled_set      完整被砍掉的层序列
-      category                CONCENTRATED / FEW-SOURCE / DISPERSED
+### 单层起源层 L_ORIGIN（RQ3 / RQ4 / RQ5-single 用）
 
-输出:
-    单层起源层 (RQ3/4/5-single 用):  L_ORIGIN[model] = l_origin_from_step1
-    Macro 起源集合 (RQ5b/RQ6 用):    ORIGIN_LAYERS_MACRO[model] = final_disabled_set
-                                    (DISPERSED 模型取前 50%，避免包含弱贡献层)
 ```
+优先级 1: exp2c.l_origin_from_step1    最准，贪心消融第 1 步砍掉的层
+优先级 2: exp2.critical_layer          v1 fallback（单层最强消融层）
+优先级 3: None                         无数据 → 模型不列入 L_ORIGIN.json
+```
+
+### Macro 起源集合 ORIGIN_LAYERS_MACRO（RQ5b / RQ6 macro-SVD 用）
+
+```
+优先级 1: exp2c.final_disabled_set     贪心完整集合（最准）
+   ├─ category = DISPERSED:   取前 50% 层（按 greedy 顺序，即贡献最大的几层）
+   └─ 否则:                   全部
+
+优先级 2: 无 exp2c → 启发式窗口 fallback（有 exp2.critical_layer L 时）
+   ├─ L ≤ 5:   取 [0, 1, 2, 3, 4, 5]     覆盖早期写入段（多数模型起源在 L0-L5）
+   └─ L > 5:   取 [L-2, L-1, L, L+1, L+2] 以 L 为中心的 5 层窗口
+
+优先级 3: None                         无任何数据
+```
+
+### 来源标签
+
+SUMMARY 表格里 `macro 来源` 列用符号区分可信度：
+
+- **✓ exp2c**：来自 exp2c 实验，层号精确（18 个模型）
+- **⚠ 启发式**：fallback 窗口，层号是**经验估计**（6 个模型，对应原始 bloom/falcon/gpt2/gptj/mistral/opt）
+- **—**：无数据（5 个模型）
+
+**对 ⚠ 启发式 模型**：RQ5b / RQ6 跑出来的数字可能不够精确；最好先跑 RQ2c（`exp6_progressive_ablation.py`）得到 exp2c 数据再更新层号。
 
 **类别说明（`exp2c.category` 仅按 `steps_to_kill` 划分，不看消融 %）**：
 
