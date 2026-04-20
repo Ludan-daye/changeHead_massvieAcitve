@@ -2,6 +2,18 @@
 
 > 本目录包含 7 个脚本 bug 的修复版本，用于本轮 RQ3/4/6 重做。**本地修好后用户自行拷贝到服务器**。
 
+## 每个修复文件的使用文档
+
+每个子目录下**都有一个专门的 README.md**，说明：该文件修了什么、怎么部署、怎么跑、预期输出、怎么验证。
+
+| 路径 | 文档 |
+|---|---|
+| `fixes/lib/model_utils.py` | [`fixes/lib/README.md`](lib/README.md) — B3 |
+| `fixes/RQ2_mlp_source/exp2a_mlp_feasibility_test.py` | [`fixes/RQ2_mlp_source/README.md`](RQ2_mlp_source/README.md) — B7 |
+| `fixes/RQ3_function_words/exp5_function_words_svd_mapping.py` | [`fixes/RQ3_function_words/README.md`](RQ3_function_words/README.md) — B1 + I2 + I3 |
+| `fixes/RQ6_v_ablation/exp6_v_ablation.py` | [`fixes/RQ6_v_ablation/README.md`](RQ6_v_ablation/README.md) — B4 + B5 + B6 + MoE guard |
+| `fixes/sentinel_test.sh` | [`fixes/sentinel_test.md`](sentinel_test.md) — 验证脚本使用说明 |
+
 ## 快速部署
 
 把本目录下每个文件**按对应路径覆盖**到 `paper_experiments/` 对应位置（见下面的"文件替换对照表"）。然后跑 `sentinel_test.sh` 验证。
