@@ -1,7 +1,59 @@
 # Massive Activations: Mechanism and Empirical Evidence
 
-> **Function Words as Geometric Anchors** — 25 个 LLM + ViT 的 MA 机制研究
-> 核心论点：MA 是 MLP 在功能词位置写入的"语法重音 mark"，经 attention 广播并由模型调节为稳态。
+> **Function Words as Geometric Anchors** — 26 个 LLM + ViT 的 MA 机制研究
+> 核心论点：MA 是 MLP 在**结构 token**（功能词 + 标点 + 换行 + 特殊符号）位置写入的"语法重音 mark"，经 attention 广播并由模型调节为稳态。
+
+---
+
+## 📋 本轮进度（2026-04-21）
+
+### 当前状态
+
+- ✅ **RQ1 分析完成**（H₀ 证伪：25/25 模型关 attention 后 MA 都有残留）
+- ✅ **RQ2 分析完成**（H₁ 验证：24/26 模型关 MLP 后 MA 大幅消失，bloom_7b1 归零）
+- ✅ **RQ5 分析完成**（v₁ 因果验证：扣除 MoE 后 78% 支持率）
+- ⏸ **RQ3/RQ4 待重做**（论点重定位：功能词 → 结构 token；脚本修复后重新采样）
+- ⏸ **RQ6 待重做**（baseline 错层 bug 修复后重跑）
+
+### 本轮方法学修正
+
+1. **论点从"功能词 mark"→"结构 token mark"**：Top-K 验证（gpt2）显示 MA 实际在**换行/标点/特殊符号**位置，不是语法功能词。
+2. **主样本定为 24 dense 模型**（26 总 − 2 MoE，MoE 归 Tier C 附录讨论）。
+3. **发现并修复 6 个脚本 bug**（参见下方），全部验证通过。
+
+### Debug 总结
+
+📑 详见：[`paper_experiments/docs/DEBUG_SUMMARY.md`](paper_experiments/docs/DEBUG_SUMMARY.md)
+
+**修复的 bug**（7 个 total，6 修 + 1 推迟）：
+
+| ID | Bug | 修复前 | 修复后 |
+|:-:|---|---|---|
+| B1 | RQ3 `add_token` 只存功能词，丢内容词 | 0/26 可信 | ✅ 24/26 |
+| B2 | MoE `SparseMoeBlock` 无 `.up_proj` | ✗ crash | ⏸ Tier C 专项 |
+| B3 | `get_mlp_submodules` 缺 glm4/yi | 3 crash | ✅ |
+| B4 | RQ6 `get_mlp_down_proj` 缺 glm4/yi | 3 crash | ✅ |
+| B5 | RQ6 `critical_layer` 默认 L0 | 20+ 错层 | ✅ 读 L_ORIGIN.json |
+| B6 | RQ6 baseline 测错层（非真 MA）| 17/17 baseline 错 | ✅ 扫全层取真 MA |
+| B7 | RQ2a MoE tuple 未处理 | qwen3.5 retain 81% 异常 | ✅ |
+
+**主样本数据可信度**：修复前 RQ3/RQ6 零可信 → 修复后 **24 dense × 6 RQ = 144 数据点**全部可用。
+
+**部署包**：[`paper_experiments/fixes/`](paper_experiments/fixes/) — 含 README、验证脚本。
+
+**验证**：`bash paper_experiments/fixes/sentinel_test.sh` → `6 passed, 0 failed. All checks passed. Safe to deploy.`
+
+### 重跑计划（~8.5h 主结论）
+
+| 阶段 | 内容 | 成本 |
+|:-:|---|:-:|
+| 1 | RQ1/RQ2 小补（4 模型缺口） | ~1h |
+| 2 | RQ3/RQ4 结构 token 重跑（24 dense）| ~3h |
+| 3 | RQ6 exp6 全重跑（24 dense）| ~2.5h |
+| 4 | RQ5 补数据（8 模型缺口）| ~2h |
+| 5（主结论后）| Tier C MoE 专项 | ~3h |
+
+详见 [`paper_experiments/docs/EXPERIMENT_PLAN.md`](paper_experiments/docs/EXPERIMENT_PLAN.md) §全局重跑计划汇总。
 
 ---
 
