@@ -3,7 +3,10 @@ import types
 
 import torch
 import torch.nn as nn
-from timm.utils import accuracy
+try:
+    from timm.utils import accuracy
+except ImportError:
+    accuracy = None
 
 from .load_data import get_test_data
 

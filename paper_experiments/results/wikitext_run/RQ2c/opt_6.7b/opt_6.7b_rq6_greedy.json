@@ -1,0 +1,19 @@
+{
+  "model": "opt_6.7b",
+  "n_layers": 32,
+  "timestamp": "2026-04-20T04:58:05.523400",
+  "baseline_top1": 371.65833333333336,
+  "floor_top1": 371.65833333333336,
+  "threshold": 371.65833333333336,
+  "final_disabled_set": [],
+  "final_top1": 371.65833333333336,
+  "steps_to_kill": 0,
+  "trajectory": [
+    {
+      "step": 0,
+      "disabled": [],
+      "top1": 371.65833333333336,
+      "remaining_pct": 100.0
+    }
+  ]
+}

@@ -1,10 +1,29 @@
 import os
 
 import torch
-import timm
-from transformers import AutoTokenizer, AutoModelForCausalLM
+try:
+    import timm
+except ImportError:
+    timm = None
+from transformers import AutoConfig, AutoTokenizer, AutoModelForCausalLM
+from transformers.modeling_utils import PreTrainedModel
 
 from .model_dict import MODEL_DICT_LLMs, resolve_model_id
+
+
+# ---------------------------------------------------------------------------
+# transformers 5.x compatibility shim for older remote-code models (ChatGLM).
+# Multiple internal paths (`infer_auto_device_map`, `caching_allocator_warmup`,
+# `get_total_byte_count`, …) read `model.all_tied_weights_keys`, which only
+# exists on PreTrainedModel subclasses *shipped with* transformers 5.x. Remote
+# trust-remote-code models (e.g. ChatGLM) predate this API and crash with
+# AttributeError. We inject an empty dict as the class-level default so any
+# subclass that doesn't override inherits "no tied weights" — correct for
+# byte-count/device-map purposes; a subclass that *does* define its own will
+# shadow this default naturally.
+# ---------------------------------------------------------------------------
+if not hasattr(PreTrainedModel, "all_tied_weights_keys"):
+    PreTrainedModel.all_tied_weights_keys = {}
 
 
 def load_llm(args):
@@ -19,22 +38,58 @@ def load_llm(args):
     # For attention analysis, we need attn_implementation='eager'
     attn_impl = getattr(args, 'attn_implementation', 'eager')
 
-    # dtype 选择:
-    # - glm4 系列: 默认 fp32 避免 Inf 溢出（尤其 glm4_32b 在 fp16 下 baseline 直接 Infinity）
-    # - 其他模型: fp16（原有行为不变）
-    # 用户可通过 --force_fp32 强制所有模型走 fp32
+    # dtype 选择（对齐旧仓库 lib/core/load_model.py 的稳定策略）:
+    # - bf16 集合: 数值范围与 fp32 相当，避免 fp16 溢出 Inf，速度远快于 fp32
+    #   · glm4_32b / glm4_9b : ChatGLM 的 MA 数值极大，fp16 溢出
+    #   · qwen3.5_9b         : 之前 fp16 路径下 routing/数值不稳
+    #   · qwen3_30b_a3b      : MoE 从 FP8 反量化就是 bf16，统一保留
+    # - 其他模型: fp16（默认，速度最快）
+    # 用户可通过 --force_fp32 强制走 fp32
     force_fp32 = getattr(args, 'force_fp32', False)
-    if force_fp32 or "glm4" in args.model.lower():
+    bf16_models = {"glm4_32b", "glm4_9b", "qwen3.5_9b", "qwen3_30b_a3b", "qwen3.5_35b_a3b"}
+    if force_fp32:
         dtype = torch.float32
-        print(f"  → using dtype=float32 (glm4 family or --force_fp32)")
+        print(f"  → using dtype=float32 (--force_fp32)")
+    elif args.model in bf16_models:
+        dtype = torch.bfloat16
+        print(f"  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on {args.model})")
     else:
         dtype = torch.float16
+        print(f"  → using dtype=float16 (default)")
 
     # glm4 需要 trust_remote_code=True，走独立分支
     if "glm4" in args.model.lower():
+        # ChatGLM modeling code requires `config.max_length` which was removed
+        # in transformers 5.x. Pre-load the config and inject the attribute so
+        # the remote-trust-code model instantiates cleanly.
+        glm_cfg = AutoConfig.from_pretrained(
+            model_name, cache_dir=cache_dir, trust_remote_code=True, **token_kwargs
+        )
+        if not hasattr(glm_cfg, "max_length") or glm_cfg.max_length is None:
+            fallback = (getattr(glm_cfg, "seq_length", None)
+                        or getattr(glm_cfg, "max_position_embeddings", None)
+                        or 2048)
+            glm_cfg.max_length = int(fallback)
+            print(f"  → injected config.max_length={glm_cfg.max_length} for glm (ChatGLM shim)")
+        # Other attributes the ChatGLM remote code reads via `self.config.X` but
+        # which transformers 5.x's PretrainedConfig no longer auto-populates:
+        _glm_defaults = {
+            "use_cache": False,            # we never generate; False = no KV cache overhead
+            "output_attentions": False,
+            "output_hidden_states": False,
+            "return_dict": True,
+        }
+        for _k, _v in _glm_defaults.items():
+            if not hasattr(glm_cfg, _k):
+                setattr(glm_cfg, _k, _v)
+        # NOTE: device_map="auto" triggers transformers 5.x `infer_auto_device_map`,
+        # which reads `model.all_tied_weights_keys` — an attribute only present on
+        # the new PreTrainedModel base but NOT on ChatGLM's shipped remote code.
+        # Use explicit `{"": 0}` to skip auto-inference; glm4_9b (20GB bf16) and
+        # glm4_32b (64GB bf16) both fit on a single H100-80GB.
         model = AutoModelForCausalLM.from_pretrained(
-            model_name, torch_dtype=dtype, cache_dir=cache_dir,
-            low_cpu_mem_usage=True, device_map="auto", trust_remote_code=True,
+            model_name, config=glm_cfg, torch_dtype=dtype, cache_dir=cache_dir,
+            low_cpu_mem_usage=True, device_map={"": 0}, trust_remote_code=True,
             attn_implementation=attn_impl, **token_kwargs,
         )
     elif "falcon" in args.model or "mpt" in args.model or "phi" in args.model:
@@ -45,20 +100,29 @@ def load_llm(args):
         model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=dtype, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", attn_implementation=attn_impl, **token_kwargs)
     model.eval()
 
+    # glm4 / falcon / mpt / phi ship a custom tokenizer → needs trust_remote_code.
+    tok_kwargs = dict(token_kwargs)
+    if any(t in args.model.lower() for t in ("glm4", "falcon", "mpt", "phi")):
+        tok_kwargs["trust_remote_code"] = True
     if "mpt" in args.model or "pythia" in args.model:
-        tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True, **token_kwargs)
+        tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True, **tok_kwargs)
     else:
-        tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False, **token_kwargs)
+        tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False, **tok_kwargs)
 
     device = torch.device("cuda:0")
     if "mpt_30b" in args.model:
         device = model.hf_device_map["transformer.wte"]
-    elif "30b" in args.model or "65b" in args.model or "70b" in args.model or "40b" in args.model: # for 30b and 65b we use device_map to load onto multiple A6000 GPUs, thus the processing here.
-        device = torch.device("cuda:"+str(model.hf_device_map["lm_head"]))
+    elif "30b" in args.model or "65b" in args.model or "70b" in args.model or "40b" in args.model:
+        # Historically used multi-GPU device_map; on a single big GPU (e.g. H100-80GB)
+        # the whole model fits and `hf_device_map` is not populated — fall back to cuda:0.
+        if hasattr(model, "hf_device_map") and "lm_head" in getattr(model, "hf_device_map", {}):
+            device = torch.device("cuda:" + str(model.hf_device_map["lm_head"]))
+        else:
+            device = torch.device("cuda:0")
 
     if "llama2_13b" == args.model:
         # device = torch.device("cuda:"+str(model.hf_device_map["lm_head"]))
-        device = torch.device("cuda:1")
+        device = torch.device("cuda:0")  # 8.138 single GPU
 
     seq_len=4096
     if "llama" in args.model or "mistral" in args.model:

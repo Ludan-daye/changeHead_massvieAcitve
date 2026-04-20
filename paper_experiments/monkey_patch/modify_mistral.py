@@ -14,35 +14,66 @@ from transformers.models.mistral.modeling_mistral import (
 
 def mistral_custom_decoderlayer_forward(
     self,
-    hidden_states: torch.Tensor,
-    attention_mask: Optional[torch.Tensor] = None,
-    position_ids: Optional[torch.LongTensor] = None,
-    past_key_value: Optional[Tuple[torch.Tensor]] = None,
-    output_attentions: Optional[bool] = False,
-    use_cache: Optional[bool] = False,
+    hidden_states,
+    attention_mask=None,
+    position_ids=None,
+    past_key_value=None,
+    past_key_values=None,  # transformers 4.57+ uses this name
+    output_attentions=False,
+    use_cache=False,
+    cache_position=None,
+    position_embeddings=None,
     **kwargs,
-) -> Tuple[torch.FloatTensor, Optional[Tuple[torch.FloatTensor, torch.FloatTensor]]]:
-    if "padding_mask" in kwargs:
-        warnings.warn(
-            "Passing `padding_mask` is deprecated and will be removed in v4.37. Please make sure use `attention_mask` instead.`"
-        )
+):
+    """transformers-4.57-compatible MistralDecoderLayer.forward with feat capture."""
+    # harmonize deprecated arg names
+    if past_key_values is None:
+        past_key_values = past_key_value
 
     residual = hidden_states
-
     hidden_states = self.input_layernorm(hidden_states)
 
-    # Self Attention
-    hidden_states, self_attn_weights, present_key_value = self.self_attn(
-        hidden_states=hidden_states,
-        attention_mask=attention_mask,
-        position_ids=position_ids,
-        past_key_value=past_key_value,
-        output_attentions=output_attentions,
-        use_cache=use_cache,
-    )
+    # self_attn kwargs — include only keys the current tx version accepts.
+    # In tx 4.57 the signature is (hidden_states, attention_mask, position_ids,
+    # past_key_values, use_cache, cache_position, position_embeddings, **kwargs).
+    attn_kwargs = {
+        "hidden_states": hidden_states,
+        "attention_mask": attention_mask,
+        "position_ids": position_ids,
+        "use_cache": use_cache,
+    }
+    if cache_position is not None:
+        attn_kwargs["cache_position"] = cache_position
+    if position_embeddings is not None:
+        attn_kwargs["position_embeddings"] = position_embeddings
+    # Pass past_key_values under whichever name the current self_attn accepts.
+    import inspect
+    _sig = inspect.signature(self.self_attn.forward).parameters
+    if "past_key_values" in _sig:
+        attn_kwargs["past_key_values"] = past_key_values
+    elif "past_key_value" in _sig:
+        attn_kwargs["past_key_value"] = past_key_values
+    if "output_attentions" in _sig:
+        attn_kwargs["output_attentions"] = output_attentions
 
-    if residual.device.index != hidden_states.device.index:
-        residual = residual.to(hidden_states.device)
+    attn_out = self.self_attn(**attn_kwargs)
+    # tx 4.57 returns (hidden_states, attn_weights); older returns 3-tuple
+    if isinstance(attn_out, tuple):
+        if len(attn_out) >= 3:
+            hidden_states, self_attn_weights, present_key_value = attn_out[:3]
+        elif len(attn_out) == 2:
+            hidden_states, self_attn_weights = attn_out
+            present_key_value = None
+        else:
+            hidden_states = attn_out[0]
+            self_attn_weights, present_key_value = None, None
+    else:
+        hidden_states = attn_out
+        self_attn_weights, present_key_value = None, None
+
+    if hasattr(residual, "device") and hasattr(hidden_states, "device"):
+        if residual.device != hidden_states.device:
+            residual = residual.to(hidden_states.device)
     hidden_states = residual + hidden_states
 
     # Fully Connected
@@ -51,17 +82,12 @@ def mistral_custom_decoderlayer_forward(
     hidden_states = self.mlp(hidden_states)
     hidden_states = residual + hidden_states
 
-    self.feat = hidden_states.clone().detach().cpu().double()
+    if getattr(self, "_save_feat", True):
+        self.feat = hidden_states.detach().cpu().float()
 
-    outputs = (hidden_states,)
-
-    if output_attentions:
-        outputs += (self_attn_weights,)
-
-    if use_cache:
-        outputs += (present_key_value,)
-
-    return outputs
+    # transformers 4.57+ MistralDecoderLayer.forward returns a bare Tensor.
+    # We always return a Tensor to avoid breaking layer stacking.
+    return hidden_states
 
 def enable_mistral_custom_decoderlayer(layer, layer_id):
     """

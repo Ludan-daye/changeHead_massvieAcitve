@@ -7,17 +7,17 @@
 - JSON 中总模型数：**29**
 
 ### 单层起源层（L_ORIGIN.json）
-- 用 exp2c 数据推导：**22** 个（最准）
-- 无 exp2c、回退到 v1 `exp2.critical_layer`：**2** 个
-- 无任何可用数据 → 未产出：**5** 个
-  - 缺失模型列表：`deepseek_v2_lite`, `llama2_13b`, `llama2_7b_chat`, `qwen2.5_0.5b_optimized`, `qwen2.5_7b_old_nan`
-- **总计 `L_ORIGIN.json` 含 24 个模型**
+- 用 exp2c 数据推导：**25** 个（最准）
+- 无 exp2c、回退到 v1 `exp2.critical_layer`：**0** 个
+- 无任何可用数据 → 未产出：**4** 个
+  - 缺失模型列表：`deepseek_v2_lite`, `llama2_7b_chat`, `qwen2.5_0.5b_optimized`, `qwen2.5_7b_old_nan`
+- **总计 `L_ORIGIN.json` 含 25 个模型**
 
 ### Macro 起源集合（ORIGIN_LAYERS_MACRO.json）
-- 用 exp2c `final_disabled_set` 推导：**22** 个（最准）
-- 无 exp2c、用 `critical_layer ± 2` 或 `[0..5]` 启发式窗口 fallback：**2** 个
-- 无任何可用数据：**5** 个
-- **总计 `ORIGIN_LAYERS_MACRO.json` 含 24 个模型**
+- 用 exp2c `final_disabled_set` 推导：**24** 个（最准）
+- 无 exp2c、用 `critical_layer ± 2` 或 `[0..5]` 启发式窗口 fallback：**1** 个
+- 无任何可用数据：**4** 个
+- **总计 `ORIGIN_LAYERS_MACRO.json` 含 25 个模型**
 
 > 单层和 macro 都已为可推导的模型全部确定。
 
@@ -30,13 +30,13 @@
 | `falcon_7b` | **3** | [0,3] | ✓ exp2c | FEW-SOURCE | 2 | 93.5% |
 | `glm4_32b` | **0** | [0] | ✓ exp2c | CONCENTRATED | 1 | 95.9% |
 | `glm4_9b` | **1** | [0,1] | ✓ exp2c | FEW-SOURCE | 2 | 90.7% |
-| `gpt2` | **3** | [0,1,2,3,4,5] | ⚠ 启发式 | ? | None | — |
+| `gpt2` | **3** | [1,2,3] | ✓ exp2c | FEW-SOURCE | 3 | 64.0% |
 | `gptj_6b` | **2** | [2] | ✓ exp2c | CONCENTRATED | 1 | 90.7% |
-| `llama2_13b` | **—** | — | — | ? | None | — |
+| `llama2_13b` | **0** | [0,1,39] | ✓ exp2c | FEW-SOURCE | 3 | 93.6% |
 | `llama2_7b_chat` | **—** | — | — | ? | None | — |
 | `llama3.1_8b` | **1** | [0,1] | ✓ exp2c | FEW-SOURCE | 2 | 90.3% |
 | `mistral_7b_v03` | **0** | [0] | ✓ exp2c | CONCENTRATED | 1 | 89.7% |
-| `opt_6.7b` | **1** | [0,1,2,3,4,5] | ⚠ 启发式 | ? | None | — |
+| `opt_6.7b` | **1** | [0,1,2,3,4,5] | ⚠ 启发式 | ANOMALY_NO_MLP_RESPONSE | 0 | 0.0% |
 | `qwen1.5_14b` | **35** | [3,4,26,33,34,35,36] | ✓ exp2c | DISPERSED | 15 | 39.7% |
 | `qwen2.5_0.5b` | **0** | [0] | ✓ exp2c | CONCENTRATED | 1 | 97.1% |
 | `qwen2.5_0.5b_optimized` | **—** | — | — | ? | None | — |

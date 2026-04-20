@@ -1078,6 +1078,128 @@
           10.274288177490234
         ]
       }
+    },
+    "exp2c": {
+      "steps_to_kill": 3,
+      "final_disabled_set": [
+        3,
+        2,
+        1
+      ],
+      "l_origin_from_step1": 3,
+      "baseline_top1": 3021.3333333333335,
+      "final_top1": 1088.1333333333334,
+      "total_drop_pct": 63.98499558693733,
+      "category": "FEW-SOURCE",
+      "source_file": "results/wikitext_run/RQ2c/gpt2/gpt2_rq6_greedy.json"
+    },
+    "exp3_origin": {
+      "model": "gpt2",
+      "func_pct": 27.457682291666668,
+      "func_tokens": 8435,
+      "total_tokens": 30720,
+      "source_file": "results/wikitext_run/RQ3_origin/gpt2/table1_rq3.json"
+    },
+    "exp4_origin": {
+      "model": "gpt2",
+      "layer_id": 3,
+      "sigma1_sigma2": 3.05141038484784,
+      "cos_sim": -0.005905179555502,
+      "ma_type": "Type III (multi-direction)",
+      "r_squared": 0.5506723264216654,
+      "source_file": "results/wikitext_run/RQ4_origin/gpt2/table1_rq4.json"
+    },
+    "exp5_origin": {
+      "model": "gpt2",
+      "layer_id": 3,
+      "nsamples": 30,
+      "seed": 0,
+      "timestamp": "2026-04-20T04:53:45.403872",
+      "svd_info": {
+        "sigma_1": 40.8055419921875,
+        "sigma_2": 13.37251091003418,
+        "eta": 3.0514495372772217,
+        "W_shape": [
+          768,
+          3072
+        ]
+      },
+      "baseline": {
+        "top1_mean": 2648.4666666666667,
+        "top1_max": 2672.0,
+        "ma_dims": [
+          447,
+          138
+        ],
+        "per_dim_max": {
+          "447": 2672.0,
+          "138": 782.5
+        }
+      },
+      "ablated": {
+        "top1_mean": 2476.8,
+        "top1_max": 2492.0,
+        "per_dim_max": {
+          "447": 2492.0,
+          "138": 716.5
+        }
+      },
+      "delta_ma": {
+        "top1_mean_pct": -6.481737860900641,
+        "top1_max_pct": -6.736526946107785,
+        "per_dim_pct": {
+          "447": -6.736526946107785,
+          "138": -8.43450479233227
+        }
+      },
+      "theoretical_prediction_pct": 98.56044104386945,
+      "source_file": "results/wikitext_run/RQ5_origin/gpt2/gpt2_v_ablation_results.json"
+    },
+    "exp5b": {
+      "model": "gpt2",
+      "origin_layers": [
+        1,
+        2,
+        3
+      ],
+      "capture_layer": 3,
+      "nsamples": 30,
+      "seqlen": 1024,
+      "seed": 0,
+      "timestamp": "2026-04-20T04:55:06.716683",
+      "macro_svd": {
+        "sigma1": 14869.142578125,
+        "eta": 9.442127227783203
+      },
+      "baseline": {
+        "top1_mean": 2648.4666666666667,
+        "top1_max": 2672.0,
+        "ma_dims": [
+          447,
+          138
+        ],
+        "per_dim_max": {
+          "447": 2672.0,
+          "138": 782.5
+        }
+      },
+      "ablated": {
+        "top1_mean": 142.87708333333333,
+        "top1_max": 171.0,
+        "per_dim_max": {
+          "447": 150.25,
+          "138": 171.0
+        }
+      },
+      "delta_ma": {
+        "top1_mean_pct": -94.60529048254335,
+        "top1_max_pct": -93.6002994011976,
+        "per_dim_pct": {
+          "447": -94.37687125748504,
+          "138": -78.14696485623003
+        }
+      },
+      "source_file": "results/wikitext_run/RQ5_macro/gpt2/gpt2_macro_v_ablation_results.json"
     }
   },
   "gptj_6b": {
@@ -1358,6 +1480,128 @@
           5.041322708129883
         ]
       }
+    },
+    "exp2c": {
+      "steps_to_kill": 3,
+      "final_disabled_set": [
+        0,
+        39,
+        1
+      ],
+      "l_origin_from_step1": 0,
+      "baseline_top1": 1283.7,
+      "final_top1": 81.87291666666667,
+      "total_drop_pct": 93.6221144608034,
+      "category": "FEW-SOURCE",
+      "source_file": "results/wikitext_run/RQ2c/llama2_13b/llama2_13b_rq6_greedy.json"
+    },
+    "exp3_origin": {
+      "model": "llama2_13b",
+      "func_pct": 25.087076822916664,
+      "func_tokens": 30827,
+      "total_tokens": 122880,
+      "source_file": "results/wikitext_run/RQ3_origin/llama2_13b/table1_rq3.json"
+    },
+    "exp4_origin": {
+      "model": "llama2_13b",
+      "layer_id": 0,
+      "sigma1_sigma2": 1.324023468472286,
+      "cos_sim": 0.03246540295152459,
+      "ma_type": "Type III (multi-direction)",
+      "r_squared": 0.9719061971742743,
+      "source_file": "results/wikitext_run/RQ4_origin/llama2_13b/table1_rq4.json"
+    },
+    "exp5_origin": {
+      "model": "llama2_13b",
+      "layer_id": 0,
+      "nsamples": 30,
+      "seed": 0,
+      "timestamp": "2026-04-20T05:44:52.903549",
+      "svd_info": {
+        "sigma_1": 9.743122100830078,
+        "sigma_2": 7.356164932250977,
+        "eta": 1.324483871459961,
+        "W_shape": [
+          5120,
+          13824
+        ]
+      },
+      "baseline": {
+        "top1_mean": 64.759375,
+        "top1_max": 73.4375,
+        "ma_dims": [
+          2100,
+          4776
+        ],
+        "per_dim_max": {
+          "2100": 73.4375,
+          "4776": 29.390625
+        }
+      },
+      "ablated": {
+        "top1_mean": 2.827018229166667,
+        "top1_max": 3.12109375,
+        "per_dim_max": {
+          "2100": 3.12109375,
+          "1271": 2.58203125
+        }
+      },
+      "delta_ma": {
+        "top1_mean_pct": -95.6345807395969,
+        "top1_max_pct": -95.75,
+        "per_dim_pct": {
+          "2100": -95.75,
+          "4776": -100.0
+        }
+      },
+      "theoretical_prediction_pct": 99.32138540013483,
+      "source_file": "results/wikitext_run/RQ5_origin/llama2_13b/llama2_13b_v_ablation_results.json"
+    },
+    "exp5b": {
+      "model": "llama2_13b",
+      "origin_layers": [
+        0,
+        1,
+        39
+      ],
+      "capture_layer": 39,
+      "nsamples": 30,
+      "seqlen": 4096,
+      "seed": 0,
+      "timestamp": "2026-04-20T05:50:25.668736",
+      "macro_svd": {
+        "sigma1": 39634.8046875,
+        "eta": 1.7877240180969238
+      },
+      "baseline": {
+        "top1_mean": 343.78333333333336,
+        "top1_max": 464.75,
+        "ma_dims": [
+          2285,
+          2772
+        ],
+        "per_dim_max": {
+          "2285": 464.75,
+          "2772": 464.25
+        }
+      },
+      "ablated": {
+        "top1_mean": 245.55416666666667,
+        "top1_max": 356.5,
+        "per_dim_max": {
+          "2772": 356.5,
+          "2285": 291.5
+        }
+      },
+      "delta_ma": {
+        "top1_mean_pct": -28.57298686188006,
+        "top1_max_pct": -23.292092522861754,
+        "per_dim_pct": {
+          "2285": -37.278106508875744,
+          "2772": -23.209477652127084
+        }
+      },
+      "source_file": "results/wikitext_run/RQ5_macro/llama2_13b/llama2_13b_macro_v_ablation_results.json"
     }
   },
   "llama2_7b_chat": {
@@ -1921,6 +2165,17 @@
           4.353036403656006
         ]
       }
+    },
+    "exp2c": {
+      "steps_to_kill": 0,
+      "final_disabled_set": [],
+      "l_origin_from_step1": null,
+      "baseline_top1": 371.65833333333336,
+      "final_top1": 371.65833333333336,
+      "total_drop_pct": 0.0,
+      "category": "ANOMALY_NO_MLP_RESPONSE",
+      "source_file": "results/wikitext_run/RQ2c/opt_6.7b/opt_6.7b_rq6_greedy.json",
+      "note": "baseline==floor; disabling all MLP did not drop MA \u2014 likely hook failure or legit architectural anomaly"
     }
   },
   "qwen1.5_14b": {
