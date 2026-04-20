@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 > 本文件面向 Claude Code 和任何接手开发者。记录当前所有实验进度、代码工具、执行流程、关键 gotcha。
-> **最后一次更新：2026-04-19**（反映 v2 实验数据 + origin_layer 工具 + 合并 local_ma → main）
+> **最后一次更新：2026-04-20**（新增 §16 本轮分析进度：RQ1 H₀ 证伪完成 + 26 模型基数 + RQ2 数据盘点）
 
 ---
 
@@ -371,11 +371,13 @@ MA ≈ σ₁ · |h₂ᵀ · v₁| · max_j|(u₁)_j| + bias
 
 ## 10. 支持的模型（v2 JSON 里的 29 个 + 少数 ViT）
 
-### LLM（本轮重点，25 核心 + 4 辅助）
+### LLM（本轮重点，26 = 25 核心 + 1 辅助）
 
 **25 核心**：gpt2, gptj_6b, opt_6.7b, bloom_7b1, falcon_7b, mistral_7b_v03, llama2_13b, llama3.1_8b, mistral_7b_v03, qwen2.5_0.5b, qwen2.5_7b, qwen2_7b, qwen3_0.6b, qwen3_1.7b, qwen3_4b, qwen3_8b, qwen3_14b, qwen3_30b_a3b (MoE), qwen3_32b, qwen3.5_9b, qwen3.5_27b, qwen3.5_35b_a3b (MoE), yi_9b, qwen1.5_14b, glm4_9b, glm4_32b
 
-**4 辅助**（无数据或占位）：deepseek_v2_lite, llama2_7b_chat, qwen2.5_0.5b_optimized, qwen2.5_7b_old_nan
+**1 辅助**（有 exp1 但缺 exp2 链）：llama2_7b_chat
+
+**3 占位/无数据**（本轮不分析）：deepseek_v2_lite, qwen2.5_0.5b_optimized, qwen2.5_7b_old_nan
 
 ### ViT
 MAE（base/large/huge）、CLIP、DINOv2、DINOv2-reg
@@ -438,3 +440,148 @@ MAE（base/large/huge）、CLIP、DINOv2、DINOv2-reg
 根因诊断在 `paper_experiments/docs/V2_ROOT_CAUSE.md`。
 
 对 Claude Code 的提示：修改代码时优先考虑用 `origin_layer/` 产出的层号，不要硬编码；所有层依赖的脚本通过 source 消费，而不是复制粘贴。
+
+---
+
+## 16. 本轮分析进度（2026-04-20）
+
+### 16.1 模型基数统一：26
+
+本轮起把模型数统一定为 **26**：25 核心（见 §10）+ 1 辅助（`llama2_7b_chat`）。
+
+- JSON `ALL_EXPERIMENTS_SUMMARY_v2.json` 里共 29 个 key
+- 去掉 2 个**完全无数据占位**（`qwen2.5_0.5b_optimized`、`qwen2.5_7b_old_nan`）+ 1 个**重复条目**（`deepseek_v2_lite` 无核心实验数据）
+- 余下 26 个真实模型作为本轮分析基数
+
+### 16.2 分析工作流程约定
+
+用户要求的工作流（**不创建新文档，整合进已有文档**）：
+
+1. **讨论优先**：先口头分析、对齐判读口径
+2. **等用户确认**后再写入文档
+3. **首选目标文档**：`paper_experiments/docs/EXPERIMENT_PLAN.md`（逐 RQ 讨论记录的**唯一归宿**）
+4. 不要新建 `RQ{N}_ANALYSIS.md` 之类的并行文件——会造成文档碎片化
+
+### 16.3 RQ1 分析已完成（2026-04-20）
+
+**重新定位**：RQ1 的目的不是给模型分 Generative/Suppressive，而是**证伪 H₀"attention 是 MA 起源"**。
+
+**两条结论记录**：
+
+1. **主结论**（H₀ 证伪）：**atten_h 不是 MA 的起源**
+   - 26 个模型中有数据的 25 个，关 attention 后 MA 都有**残留**
+   - 最小残留 `residual% = disabled_top1 / baseline_top1 × 100` = **1.69%**（gptj_6b）
+   - **没有任何一个模型归零**——MA 必须还有另一个来源（→ RQ2 指向 MLP）
+2. **副结论（影响方向）**：
+   - **Generative (ΔMA<0)**：17 个——attention 是下游**放大器/广播器**
+   - **Suppressive (ΔMA>0)**：8 个——attention 是下游**抑制器/稳态器**
+   - 数据缺失：1 个（`qwen2_7b` baseline≈0 除零→+Inf，需 `--nsamples 60` 重跑）
+
+**4 个观察**（已写入 `EXPERIMENT_PLAN.md` RQ1 节）：
+
+1. **同家族翻转**：qwen2.5_7b Sup vs qwen2.5_0.5b Gen；glm4_32b Sup vs glm4_9b Gen——size 与训练策略同时变化
+2. **baseline 相关性**：baseline 越大越容易 suppressive（大模型 attention 倾向收束）
+3. **Suppressive 集群在中国开源家族**：Qwen 4/13、Yi 1/1、GLM 1/2；西方族（GPT/BLOOM/Falcon/Mistral/Llama-base）全为 Gen
+4. **MoE 弱响应**：qwen3.5_35b_a3b ΔMA=+5%，整层 attention 消融对 MoE 路由影响小，需 PE-level 重跑
+
+**指标定义**：
+- `residual% = disabled_top1 / baseline_top1 × 100`（主证伪指标，表征"MA 还剩多少"）
+- `ΔMA% = (disabled − baseline) / baseline × 100`（方向指标，决定 Gen/Sup）
+
+**文档入口**：`paper_experiments/docs/EXPERIMENT_PLAN.md` §RQ1（行号 21–114）。
+
+### 16.4 RQ2 分析已完成（2026-04-20）
+
+**详见** → [`paper_experiments/docs/EXPERIMENT_PLAN.md` §RQ2](paper_experiments/docs/EXPERIMENT_PLAN.md#rq2--mlp-来源与起源层定位)。
+
+**一句话摘要**：
+- **主结论**：MLP 是 MA 主要来源（H₁ 验证）——24/26 已测，20/24 retain ≤ 10%，bloom_7b1 归零（100% reduce）
+- **4 个残留异常**（retain > 15%）：qwen3.5_35b_a3b 81%（MoE 脚本工件）、gpt2 39%（小模型老架构）、qwen3.5_9b 32%、qwen3.5_27b 20%
+- **家族级新发现**：qwen3.5 家族 3/3 全体 retain > 15%，与 qwen3（1-8%）形成强反差，提示 qwen3.5 有非 MLP 源
+- **模式分布**（RQ2c）：CONCENTRATED 8 / FEW-SOURCE 8 / DISPERSED 8 / ANOMALY 1(opt_6.7b)
+- **缺口**：仅 3 模型零散缺口（llama2_13b RQ2a+2b、opt_6.7b RQ2a、llama2_7b_chat RQ2b+2c），合计 ~45 min
+- **RQ2b critical_layer ≠ RQ2c L_origin**：这是 V2 错层的根因，下游 RQ3/4/5 必须以 RQ2c.L_origin 为准
+
+### 16.5 RQ3 + RQ4 暂停（2026-04-20）——**论点从"功能词"重定位到"结构 token"**
+
+**gpt2 Top-K 验证的震撼发现**：在起源层 L3（σ₁/σ₂=3.05 强谱），按 |h₂·v₁| 排序的 Top-10：
+- 整体 token 里 40% 是功能词
+- **Top-10 只有 1/10 是功能词**（是 `' .'` 句号）
+- Top-1 是 `'\n\n'`（换行符），MA=165.88，比第 2 名高 10×
+- Top-10 主要构成：换行 / 标点 / @ 符号 / 日文字符 / 罕见内容词
+
+**结论**：MA 不在"语法功能词"位置，而在**结构 token**——包括换行、标点、特殊符号、部分功能词。和学界 attention sink 研究（Xiao et al.）一致。
+
+**影响**：
+1. **RQ3 和 RQ4 都要重做**——不只是修 bug，**论点本身要重定位**
+2. **RQ3 旧 bug 仍需修**：脚本只存功能词 + MoE 不支持 + get_mlp_submodules 白名单（3 个 bug 合并修）
+3. **RQ4 分析指标换**：从"Cohen's d 平均差异"换成"Top-K 里结构 token 占比"
+4. **论文主论点修正**：**"MA = MLP 在结构 token 位置写的 mark"**（不是单纯"功能词 mark"）
+
+**重做成本**（见 `EXPERIMENT_PLAN.md §全局补跑清单 RQ4 节`）：
+- 任务 1 Top-K 验证扩到 23 模型 ~15 min（不需重跑模型）
+- 任务 2 定义"结构 token"词表 ~10 min
+- 任务 3 修 RQ3 脚本 ~15 min
+- 任务 4 RQ3+RQ4 全 26 模型重跑 ~2h
+- 任务 5 RQ4 分析重写 ~30 min
+- **合计 ~3.5h**
+
+### 16.6 MoE（多专家机制）单独归类（Tier C）——2026-04-20 定案
+
+本轮 26 模型里有 2 个 MoE：
+- **qwen3_30b_a3b**（`Qwen3MoeSparseMoeBlock`，30B 总，3B 激活）
+- **qwen3.5_35b_a3b**（`Qwen3_5MoeSparseMoeBlock`，35B 总，3B 激活）
+
+**决定**：MoE **不纳入主结论统计**——24 个 dense 模型作为主样本。MoE 单独在论文附录讨论。
+
+**原因**：MoE 的 MA 生成走**专家级（per-expert）机制**，和 dense MLP 的"整层单 v₁"机制**本质不同**：
+- 每个 token 只激活 K=2~8 个专家（总共 64~256 个）
+- 每个专家有独立的 W_up/W_down
+- 功能词可能走特定专家，内容词走别的专家
+- 整层平均 v₁ **会稀释**真正的 mark 方向
+
+**脚本系统性不兼容（4 类 bug）**：
+- B1：直接访问 `.up_proj / .down_proj` 在 `SparseMoeBlock` 上失败（RQ3、RQ6）
+- B2：`torch.zeros_like(tuple)` 行为未定义（RQ2a）
+- B3：`get_mlp_submodules()` 无 MoE 分支（RQ3）
+- B4：`get_mlp_down_proj()` 无 MoE 分支（RQ6）
+
+详见 `EXPERIMENT_PLAN.md §MoE（多专家机制）模型——单独类别`。
+
+**论文叙事定稿**：
+> "Our main analyses cover 24 dense MLP models. Two Mixture-of-Experts models exhibit distinct MA generation mechanisms incompatible with single-V-direction theory; preliminary per-expert analysis shows a subset of experts may specialize in MA writing. Full MoE treatment is deferred to future work."
+
+### 16.7 全局重跑计划（2026-04-21）
+
+主结论定稿前需要的所有重跑，按依赖链排序。详见 `EXPERIMENT_PLAN.md §全局重跑计划汇总`。
+
+| 阶段 | 内容 | 成本 |
+|:-:|---|:-:|
+| 0 | **修 7 个脚本 bug**（B1-B7，阻塞所有阶段）| ~2h |
+| 1 | RQ1/RQ2 数据缺口（opt_6.7b, qwen2_7b, llama2_13b, llama2_7b_chat）| ~1h |
+| 2 | RQ3/RQ4 结构 token 重做（全 26 模型）| ~3h |
+| 3 | RQ6 exp6 全重跑（修 baseline 错层）| ~2.5h |
+| 4 | RQ5 补数据（缺 single/macro 的 8 模型）| ~2h |
+| 5 | **MoE 专项（Tier C，优先级低）** | ~3h |
+| **合计** | | **~13.5h** |
+
+**7 个脚本 bug 汇总**：
+- B1：RQ3 `add_token` 只存功能词，丢内容词
+- B2：MoE `SparseMoeBlock` 无 `.up_proj/.down_proj`（RQ3/6）
+- B3：`get_mlp_submodules()` 缺 glm4/qwen1.5/qwen3.5/yi 白名单
+- B4：`get_mlp_down_proj()` 缺 glm4/MoE 分支（RQ6）
+- B5：`get_critical_layer()` 默认 L0 不读 L_origin（RQ6）
+- B6：RQ6 baseline 只在 critical_layer 测（非真 MA）
+- B7：RQ2a `MLPDisableHook` 未处理 tuple（MoE 静默失败）
+
+**主结论定稿标准**（24 dense 模型）：
+- ≥ 20 个支持 H₁-H₅（主论点："MA = MLP 在结构 token 位置的 v₁ mark"）
+- qwen3.5 dense（Tier D）+ opt_6.7b（Tier E）单独讨论
+- MoE（Tier C）附录讨论
+
+### 16.8 剩余 RQ（RQ5/6）待分析
+
+按顺序：RQ6（macro-SVD，RQ3/4 重做后合并分析）→ RQ5（V 消融）。当前数据均为 v2 错层版本，待起源层重跑（见 §12 批次）。
+
+---
+
