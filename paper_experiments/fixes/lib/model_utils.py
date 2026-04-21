@@ -18,10 +18,26 @@ def enable_custom_block(model_name, layer, layer_id):
     """
     import monkey_patch as mp
 
-    # Bug B9 fix (2026-04-21): glm4/yi use SwiGLU (llama-compatible decoder layer).
-    # Same rationale as B3 fix in get_mlp_submodules.
+    # Bug B11 fix (2026-04-21): glm4 uses ChatGLM's GLMBlock (not llama-compatible).
+    # Attention attribute is `self_attention` (underscore), forward signature is
+    # different. Instead of rewriting the forward, use an architecture-agnostic
+    # forward HOOK that just captures the layer's final output → self.feat.
+    # This preserves the original GLMBlock logic untouched.
+    if "glm4" in model_name:
+        import torch as _torch
+        def _feat_capture_hook(module, _input, output):
+            hidden = output if not isinstance(output, tuple) else output[0]
+            try:
+                module.feat = hidden.clone().detach().cpu().double()
+            except Exception:
+                module.feat = hidden
+        layer.layer_id = layer_id
+        layer._feat_hook_handle = layer.register_forward_hook(_feat_capture_hook)
+        return
+
+    # Bug B9 fix (2026-04-21): yi uses llama-compatible decoder layer.
     if ("llama" in model_name or "qwen" in model_name
-            or "glm4" in model_name or "yi" in model_name):
+            or "yi" in model_name):
         mp.enable_llama_custom_decoderlayer(layer, layer_id)
     elif "mistral" in model_name:
         mp.enable_mistral_custom_decoderlayer(layer, layer_id)
@@ -231,18 +247,44 @@ def get_mlp_submodules(model_name, layer):
                 continue
         return None
 
-    # Bug B11 fix (2026-04-21): glm4 MLP uses a FUSED gate_up_proj (single linear
-    # projecting to 2 * intermediate), not separate up_proj + gate_proj.
-    # Detected first so the generic SwiGLU branch below doesn't mis-route it.
+    # Bug B11 fix (2026-04-21): glm4_9b is loaded via ChatGLM remote code (shim),
+    # not HF's native Glm4MLP. The ChatGLM MLP uses BLOOM-style naming
+    # `dense_h_to_4h` / `dense_4h_to_h` but with a FUSED gate+up projection
+    # (e.g., 13696 intermediate → dense_h_to_4h: [hidden, 27392=2*13696]).
+    # Handle both cases defensively:
+    #   - HF native glm4 (gate_up_proj + down_proj)
+    #   - ChatGLM shim (dense_h_to_4h fused + dense_4h_to_h)
     if "glm4" in model_name:
+        mlp = layer.mlp
+        # ChatGLM shim path (typical for glm4_9b loaded with trust_remote_code)
+        if hasattr(mlp, 'dense_h_to_4h') and hasattr(mlp, 'dense_4h_to_h'):
+            return {
+                'up_proj': None,
+                'gate_up_proj': mlp.dense_h_to_4h,  # fused [hidden, 2*intermediate]
+                'activation': _try_getattr(layer, 'mlp.activation_func', 'mlp.activation_fn', 'mlp.act_fn'),
+                'down_proj': mlp.dense_4h_to_h,
+                'gate_proj': None,
+                'is_gated': True,
+                'is_fused_gate_up': True,
+            }
+        # HF native Glm4MLP path (gate_up_proj + down_proj)
+        if hasattr(mlp, 'gate_up_proj'):
+            return {
+                'up_proj': None,
+                'gate_up_proj': mlp.gate_up_proj,
+                'activation': _try_getattr(layer, 'mlp.activation_fn', 'mlp.act_fn'),
+                'down_proj': mlp.down_proj,
+                'gate_proj': None,
+                'is_gated': True,
+                'is_fused_gate_up': True,
+            }
+        # Fallback to standard SwiGLU naming (should not hit for glm4 in practice)
         return {
-            'up_proj': None,  # no separate up_proj — use gate_up_proj instead
-            'gate_up_proj': layer.mlp.gate_up_proj,  # fused: [hidden → 2*intermediate]
-            'activation': _try_getattr(layer, 'mlp.activation_fn', 'mlp.act_fn'),
-            'down_proj': layer.mlp.down_proj,
-            'gate_proj': None,  # no separate gate_proj
+            'up_proj': getattr(mlp, 'up_proj', None),
+            'activation': _try_getattr(layer, 'mlp.act_fn', 'mlp.activation_fn'),
+            'down_proj': getattr(mlp, 'down_proj', None),
+            'gate_proj': getattr(mlp, 'gate_proj', None),
             'is_gated': True,
-            'is_fused_gate_up': True,  # marker for downstream scripts to split
         }
 
     # Bug B3 fix (2026-04-21): yi uses standard SwiGLU (up_proj/gate_proj/down_proj).

@@ -143,9 +143,14 @@ class FunctionWordSVDTracker:
         self.total_token_count += 1
         is_func = self.is_function_word(token_text)
         is_struct = self.is_structural_token(token_text)
+        # Bug B12 fix (2026-04-21): bfloat16 tensors can't go to numpy directly.
+        # Force float32 conversion before numpy (affects glm4_9b which loads in bf16).
+        h2_cpu = h2_vector.detach().cpu()
+        if h2_cpu.dtype == torch.bfloat16:
+            h2_cpu = h2_cpu.float()
         self.word_data[token_text].append({
             'context_id': self.context_counter,
-            'h2': h2_vector.cpu().detach().numpy(),
+            'h2': h2_cpu.numpy(),
             'is_function': is_func,
             'is_structural': is_struct,
         })
