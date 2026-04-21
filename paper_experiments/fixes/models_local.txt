@@ -1,0 +1,21 @@
+# 15 dense models with local weights available on server 117.50.223.194
+# Skipped: qwen3_30b_a3b (MoE), qwen3.5_35b_a3b (MoE + no local), glm4_32b (no local)
+# Deferred: bloom_7b1, falcon_7b, gpt2, gptj_6b, llama2_13b, mistral_7b_v03, opt_6.7b, qwen2.5_0.5b
+#           (need HF download — to be run on another server)
+#
+# Sorted smallest-first (matching run_pipeline.py auto-sort behavior)
+qwen3_0.6b
+qwen3_1.7b
+qwen3_4b
+llama2_7b_chat
+qwen2_7b
+qwen2.5_7b
+qwen3_8b
+llama3.1_8b
+qwen3.5_9b
+yi_9b
+glm4_9b
+qwen3_14b
+qwen1.5_14b
+qwen3.5_27b
+qwen3_32b
