@@ -18,7 +18,10 @@ def enable_custom_block(model_name, layer, layer_id):
     """
     import monkey_patch as mp
 
-    if "llama" in model_name or "qwen" in model_name:
+    # Bug B9 fix (2026-04-21): glm4/yi use SwiGLU (llama-compatible decoder layer).
+    # Same rationale as B3 fix in get_mlp_submodules.
+    if ("llama" in model_name or "qwen" in model_name
+            or "glm4" in model_name or "yi" in model_name):
         mp.enable_llama_custom_decoderlayer(layer, layer_id)
     elif "mistral" in model_name:
         mp.enable_mistral_custom_decoderlayer(layer, layer_id)
@@ -49,7 +52,9 @@ def enable_custom_attention(model_name, layer, layer_id):
     """
     import monkey_patch as mp
 
-    if "llama" in model_name or "qwen" in model_name:
+    # Bug B9 fix: glm4/yi use llama-compatible attention
+    if ("llama" in model_name or "qwen" in model_name
+            or "glm4" in model_name or "yi" in model_name):
         mp.enable_llama_custom_attention(layer, layer_id)
     elif "mistral" in model_name:
         mp.enable_mistral_custom_attention(layer, layer_id)
