@@ -37,27 +37,45 @@ def llama_custom_decoderlayer_forward(
     residual = hidden_states
     hidden_states = self.input_layernorm(hidden_states)
 
-    # Self Attention — defensive unpacking for both old and new APIs
-    # Build kwargs carefully to forward what each version accepts
+    # Self Attention — defensive unpacking for both old and new APIs.
+    # Bug B10 fix (2026-04-21): qwen3.5 hybrid architecture uses either
+    #   self_attn (Qwen3_5Attention) OR linear_attn (Qwen3_5GatedDeltaNet)
+    # depending on config.layer_types[layer_idx]. We detect which one exists
+    # and dispatch appropriately. For vanilla llama/qwen/mistral, self_attn
+    # always exists so behavior is unchanged.
     attn_kwargs = dict(
         hidden_states=hidden_states,
         attention_mask=attention_mask,
-        position_ids=position_ids,
-        use_cache=use_cache,
     )
-    # transformers 5.x expects these (plural + position_embeddings)
-    if past_key_values is not None:
-        attn_kwargs["past_key_values"] = past_key_values
-    elif past_key_value is not None:
-        # Try both — some versions accept either
-        attn_kwargs["past_key_value"] = past_key_value
-    if position_embeddings is not None:
-        attn_kwargs["position_embeddings"] = position_embeddings
-    if output_attentions:
-        attn_kwargs["output_attentions"] = output_attentions
-    attn_kwargs.update(kwargs)
+    # Add position_ids / use_cache for self_attn path (linear_attn doesn't take these)
+    if hasattr(self, 'self_attn'):
+        attn_kwargs["position_ids"] = position_ids
+        attn_kwargs["use_cache"] = use_cache
+        # transformers 5.x expects these (plural + position_embeddings)
+        if past_key_values is not None:
+            attn_kwargs["past_key_values"] = past_key_values
+        elif past_key_value is not None:
+            attn_kwargs["past_key_value"] = past_key_value
+        if position_embeddings is not None:
+            attn_kwargs["position_embeddings"] = position_embeddings
+        if output_attentions:
+            attn_kwargs["output_attentions"] = output_attentions
+        attn_kwargs.update(kwargs)
+        _attn_outputs = self.self_attn(**attn_kwargs)
+    elif hasattr(self, 'linear_attn'):
+        # Qwen3.5 hybrid: some layers use linear attention (GatedDeltaNet).
+        # Different API — takes cache_params instead of past_key_values.
+        linear_kwargs = dict(
+            hidden_states=hidden_states,
+            attention_mask=attention_mask,
+        )
+        if past_key_values is not None:
+            linear_kwargs["cache_params"] = past_key_values
+        _attn_outputs = self.linear_attn(**linear_kwargs)
+    else:
+        # No attention at this layer — identity pass-through
+        _attn_outputs = hidden_states
 
-    _attn_outputs = self.self_attn(**attn_kwargs)
     if isinstance(_attn_outputs, tuple):
         hidden_states = _attn_outputs[0]
     else:

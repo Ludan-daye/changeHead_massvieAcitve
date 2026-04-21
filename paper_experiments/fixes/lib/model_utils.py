@@ -231,10 +231,24 @@ def get_mlp_submodules(model_name, layer):
                 continue
         return None
 
-    # Bug B3 fix (2026-04-21): add glm4 and yi to SwiGLU branch.
-    # Both use identical HF MLP attributes (up_proj/gate_proj/down_proj/act_fn).
+    # Bug B11 fix (2026-04-21): glm4 MLP uses a FUSED gate_up_proj (single linear
+    # projecting to 2 * intermediate), not separate up_proj + gate_proj.
+    # Detected first so the generic SwiGLU branch below doesn't mis-route it.
+    if "glm4" in model_name:
+        return {
+            'up_proj': None,  # no separate up_proj — use gate_up_proj instead
+            'gate_up_proj': layer.mlp.gate_up_proj,  # fused: [hidden → 2*intermediate]
+            'activation': _try_getattr(layer, 'mlp.activation_fn', 'mlp.act_fn'),
+            'down_proj': layer.mlp.down_proj,
+            'gate_proj': None,  # no separate gate_proj
+            'is_gated': True,
+            'is_fused_gate_up': True,  # marker for downstream scripts to split
+        }
+
+    # Bug B3 fix (2026-04-21): yi uses standard SwiGLU (up_proj/gate_proj/down_proj).
+    # Also covers llama/mistral/qwen which were always here.
     if "llama" in model_name or "mistral" in model_name or "qwen" in model_name \
-            or "glm4" in model_name or "yi" in model_name:
+            or "yi" in model_name:
         return {
             'up_proj': layer.mlp.up_proj,
             'activation': _try_getattr(layer, 'mlp.act_fn', 'mlp.activation_fn'),
