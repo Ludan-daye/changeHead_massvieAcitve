@@ -75,6 +75,24 @@ def prepare_word_set(words):
 
 FUNCTION_WORDS = prepare_word_set(FUNCTION_WORDS)
 
+# Bug B1 fix (2026-04-21): add structural token set.
+# RQ4 Top-K verification (gpt2) showed MA appears at structural positions
+# (newlines / punctuation / special symbols) more often than at function words.
+# We tag them here and track in add_token alongside function/content categories.
+STRUCTURAL_TOKENS = {
+    # Punctuation
+    '.', ',', '!', '?', ';', ':', '"', "'", '`',
+    '(', ')', '[', ']', '{', '}',
+    '-', '—', '–', '/', '\\', '|', '*', '&', '@', '#', '$', '%', '^', '~',
+    # Newlines / whitespace variants
+    '\n', '\n\n', '\t', '\r', ' ',
+    # Common special tokens (HF tokenizers may emit these)
+    '<bos>', '<eos>', '<pad>', '<unk>',
+    '<|endoftext|>', '<|im_start|>', '<|im_end|>',
+    '<s>', '</s>', '<|system|>', '<|user|>', '<|assistant|>',
+}
+
+
 # ============================================================================
 # TRACKER CLASS
 # ============================================================================
@@ -96,25 +114,69 @@ class FunctionWordSVDTracker:
         clean_token = token_text.lower().lstrip('Ġ ')
         return clean_token in FUNCTION_WORDS
 
+    def is_structural_token(self, token_text):
+        """Bug B1 fix (2026-04-21): check if token is structural
+        (punctuation / newline / special symbol / rare non-alphanumeric).
+        """
+        clean = token_text.lstrip('Ġ ').strip()
+        # Purely whitespace after strip (was only spaces/tabs/newlines)
+        if not clean:
+            return True
+        # Explicit membership
+        if clean in STRUCTURAL_TOKENS:
+            return True
+        # All chars are non-alphanumeric (covers composite punctuation like '@@', '...', weird unicode)
+        if all(not c.isalnum() for c in clean):
+            return True
+        return False
+
     def add_token(self, token_text, h2_vector):
-        """Add token representation"""
+        """Bug B1 fix (2026-04-21): store ALL tokens tagged by category.
+
+        Previously only function words were kept, which meant downstream
+        func-vs-content comparisons were actually comparing subsets of
+        function words (methodologically invalid).
+
+        Now stores every token with is_function/is_structural flags so
+        func/content/structural three-way comparison is possible.
+        """
         self.total_token_count += 1
-        if self.is_function_word(token_text):
-            # h2_vector shape: [3072]
-            self.word_data[token_text].append((self.context_counter, h2_vector.cpu().detach().numpy()))
+        is_func = self.is_function_word(token_text)
+        is_struct = self.is_structural_token(token_text)
+        # Bug B12 fix (2026-04-21): bfloat16 tensors can't go to numpy directly.
+        # Force float32 conversion before numpy (affects glm4_9b which loads in bf16).
+        h2_cpu = h2_vector.detach().cpu()
+        if h2_cpu.dtype == torch.bfloat16:
+            h2_cpu = h2_cpu.float()
+        self.word_data[token_text].append({
+            'context_id': self.context_counter,
+            'h2': h2_cpu.numpy(),
+            'is_function': is_func,
+            'is_structural': is_struct,
+        })
 
     def next_context(self):
         """Mark end of current sequence"""
         self.context_counter += 1
 
     def get_word_statistics(self):
-        """Get stats for each word"""
+        """Get stats for each word (Bug B1 fix: now includes category tags).
+
+        Returns dict: word -> {count, contexts, occurrences, is_function, is_structural}
+        'occurrences' retains the old (context_id, h2_array) tuple-list format
+        so downstream SVDSpaceAnalyzer continues to work unchanged.
+        """
         stats_dict = {}
-        for word, occurrences in self.word_data.items():
+        for word, records in self.word_data.items():
+            # records is new list-of-dicts format
             stats_dict[word] = {
-                'count': len(occurrences),
-                'contexts': len(set(oc[0] for oc in occurrences)),
-                'occurrences': occurrences,
+                'count': len(records),
+                'contexts': len(set(r['context_id'] for r in records)),
+                # Compat: downstream expects list of (context_id, h2) tuples
+                'occurrences': [(r['context_id'], r['h2']) for r in records],
+                # New category tags (constant within a word_text key)
+                'is_function': records[0]['is_function'] if records else False,
+                'is_structural': records[0]['is_structural'] if records else False,
             }
         return stats_dict
 
@@ -541,6 +603,29 @@ def main():
 
     # Register hook to capture h2 (model-agnostic)
     mlp_parts = lib.get_mlp_submodules(args.model, layer)
+
+    # Bug B2 fix (2026-04-22): MoE layers have no single `down_proj` to hook —
+    # per-token h2 flows through a subset of experts each with their own down.
+    # RQ3 (function-word-in-SVD-space) assumes a dense single-V structure, so
+    # MoE requires its own analysis. Write a sentinel output and exit cleanly.
+    if mlp_parts.get('is_moe'):
+        msg = (
+            f"MoE model '{args.model}' detected — RQ3 (single-V SVD mapping) "
+            f"is not well-defined for MoE. Use per-expert analysis. Skipping."
+        )
+        print(f"\n[SKIP-MoE] {msg}")
+        os.makedirs(args.savedir, exist_ok=True)
+        with open(f'{args.savedir}/exp5_SKIPPED_moe.json', 'w') as _f:
+            json.dump({
+                'model': args.model,
+                'layer_id': args.layer_id,
+                'skipped': True,
+                'reason': 'is_moe',
+                'message': msg,
+                'timestamp': datetime.now().isoformat(),
+            }, _f, indent=2)
+        return
+
     if mlp_parts['is_gated']:
         # SwiGLU: capture input to down_proj as h2
         gelu_hook = mlp_parts['down_proj'].register_forward_pre_hook(
@@ -584,7 +669,14 @@ def main():
     # Clean up hook
     gelu_hook.remove()
 
-    print(f"Collected {sum(s['count'] for s in tracker.get_word_statistics().values())} function word occurrences")
+    # Log message updated for Bug B1 fix (2026-04-21): tracker now collects ALL tokens,
+    # not just function words — old log message was misleading.
+    _ws_for_log = tracker.get_word_statistics()
+    _total = sum(s['count'] for s in _ws_for_log.values())
+    _n_func = sum(s['count'] for s in _ws_for_log.values() if s.get('is_function'))
+    _n_struct = sum(s['count'] for s in _ws_for_log.values() if s.get('is_structural'))
+    print(f"Collected {_total} total tokens "
+          f"({_n_func} function, {_n_struct} structural, {_total - _n_func - _n_struct} content)")
 
     # Get W2 matrix (MLP down-projection)
     W2 = lib.get_mlp_down_proj(args.model, layer).cpu().float().t()  # [intermediate, hidden]
@@ -607,19 +699,31 @@ def main():
     plot_stability_analysis(stab_results, args.savedir)
     plot_alignment_analysis(align_results, args.savedir)
 
-    # Compute R_func (function word trigger rate) for Table 1
+    # Compute R_func/R_struct/R_content for Table 1 (Bug I2 fix 2026-04-21):
+    # Use pre-computed is_function/is_structural flags from the tracker — no re-checking
+    # FUNCTION_WORDS against raw `w.strip()` which misses BPE `Ġ`-prefixed tokens.
     word_stats = tracker.get_word_statistics()
     total_tokens = tracker.total_token_count if hasattr(tracker, 'total_token_count') else sum(s['count'] for s in word_stats.values())
-    func_tokens = sum(s['count'] for w, s in word_stats.items() if w.strip().lower() in FUNCTION_WORDS)
+    func_tokens = sum(s['count'] for s in word_stats.values() if s.get('is_function'))
+    struct_tokens = sum(s['count'] for s in word_stats.values() if s.get('is_structural'))
+    content_tokens = total_tokens - func_tokens - struct_tokens
     r_func = (func_tokens / total_tokens * 100) if total_tokens > 0 else 0
-    print(f"\n  R_func (Function Word Trigger Rate): {r_func:.1f}%")
-    print(f"  ({func_tokens} function word tokens / {total_tokens} total tokens)")
+    r_struct = (struct_tokens / total_tokens * 100) if total_tokens > 0 else 0
+    r_content = (content_tokens / total_tokens * 100) if total_tokens > 0 else 0
+    print(f"\n  R_func   (Function Words):   {r_func:.1f}%  ({func_tokens} tokens)")
+    print(f"  R_struct (Structural):       {r_struct:.1f}%  ({struct_tokens} tokens)")
+    print(f"  R_content (Content Words):   {r_content:.1f}%  ({content_tokens} tokens)")
+    print(f"  Total tokens sampled:        {total_tokens}")
 
     # Save Table 1 data
     table1_rq3 = {
         'model': args.model,
         'func_pct': float(r_func),
+        'struct_pct': float(r_struct),
+        'content_pct': float(r_content),
         'func_tokens': int(func_tokens),
+        'struct_tokens': int(struct_tokens),
+        'content_tokens': int(content_tokens),
         'total_tokens': int(total_tokens),
     }
     with open(f'{args.savedir}/table1_rq3.json', 'w') as f:

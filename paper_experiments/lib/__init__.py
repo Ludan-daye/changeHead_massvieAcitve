@@ -8,4 +8,5 @@ from .model_utils import (
     enable_custom_block, enable_custom_attention,
     detect_ma_dimensions, get_mlp_down_proj, set_mlp_down_proj,
     get_mlp_up_proj, get_mlp_submodules,
+    _is_moe_layer, _moe_effective_down_proj, _moe_effective_up_proj,
 )

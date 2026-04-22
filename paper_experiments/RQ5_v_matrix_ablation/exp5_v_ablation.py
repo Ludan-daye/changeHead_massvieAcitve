@@ -168,6 +168,27 @@ def main():
     layer = layers[args.layer_id]
     lib.enable_custom_block(args.model, layer, args.layer_id)
 
+    # Bug B2 fix (2026-04-22): MoE has no single W_down to ablate — must use
+    # exp5_v_ablation_moe.py (per-expert). Detect and skip with sentinel output.
+    _layer_for_moe_check = layers[args.layer_id]
+    if lib._is_moe_layer(_layer_for_moe_check):
+        msg = (
+            f"MoE model '{args.model}' at L{args.layer_id} detected — "
+            f"single-W V-ablation is not defined. Use exp5_v_ablation_moe.py."
+        )
+        print(f"\n[SKIP-MoE] {msg}")
+        import json as _json
+        os.makedirs(args.savedir, exist_ok=True)
+        with open(os.path.join(args.savedir, 'exp5_SKIPPED_moe.json'), 'w') as _f:
+            _json.dump({
+                'model': args.model,
+                'layer_id': args.layer_id,
+                'skipped': True,
+                'reason': 'is_moe',
+                'message': msg,
+            }, _f, indent=2)
+        return
+
     # Measure baseline MA
     print("\n[2/5] Measuring baseline massive activations...")
     baseline = measure_ma(model, tokenizer, device, layers, args.layer_id,

@@ -92,7 +92,10 @@ def load_llm(args):
             low_cpu_mem_usage=True, device_map={"": 0}, trust_remote_code=True,
             attn_implementation=attn_impl, **token_kwargs,
         )
-    elif "falcon" in args.model or "mpt" in args.model or "phi" in args.model:
+    elif "falcon" in args.model:
+        # B15: falcon's on-hub remote code is broken; use HF's built-in FalconForCausalLM
+        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=dtype, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", trust_remote_code=False, attn_implementation=attn_impl, **token_kwargs)
+    elif "mpt" in args.model or "phi" in args.model:
         model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=dtype, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", trust_remote_code=True, attn_implementation=attn_impl, **token_kwargs)
     elif "mistral" in args.model or "pythia" in args.model:
         model = AutoModelForCausalLM.from_pretrained(model_name, revision=args.revision, torch_dtype=dtype, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", attn_implementation=attn_impl, **token_kwargs)
@@ -102,7 +105,7 @@ def load_llm(args):
 
     # glm4 / falcon / mpt / phi ship a custom tokenizer → needs trust_remote_code.
     tok_kwargs = dict(token_kwargs)
-    if any(t in args.model.lower() for t in ("glm4", "falcon", "mpt", "phi")):
+    if any(t in args.model.lower() for t in ("glm4", "mpt", "phi")):  # B15: falcon uses built-in tokenizer
         tok_kwargs["trust_remote_code"] = True
     if "mpt" in args.model or "pythia" in args.model:
         tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True, **tok_kwargs)
@@ -112,12 +115,24 @@ def load_llm(args):
     device = torch.device("cuda:0")
     if "mpt_30b" in args.model:
         device = model.hf_device_map["transformer.wte"]
-    elif "30b" in args.model or "65b" in args.model or "70b" in args.model or "40b" in args.model:
+    elif "30b" in args.model or "65b" in args.model or "70b" in args.model or "40b" in args.model or "32b" in args.model or "35b" in args.model:
         # Historically used multi-GPU device_map; on a single big GPU (e.g. H100-80GB)
         # the whole model fits and `hf_device_map` is not populated — fall back to cuda:0.
-        if hasattr(model, "hf_device_map") and "lm_head" in getattr(model, "hf_device_map", {}):
-            device = torch.device("cuda:" + str(model.hf_device_map["lm_head"]))
+        # Bug B19 fix (2026-04-22): when device_map="auto" offloads some submodules
+        # to CPU (big MoE like qwen3_30b_a3b on one 80GB GPU), hf_device_map["lm_head"]
+        # can be the string "cpu" (not an int). Building `cuda:cpu` raises
+        # `RuntimeError: Invalid device string`. Accept both int (GPU index) and
+        # str (e.g. "cpu"); for "cpu" fall back to cuda:0 for I/O and let the
+        # model's own hooks move tensors as needed.
+        _m = getattr(model, "hf_device_map", {}) or {}
+        _lm = _m.get("lm_head", None)
+        if isinstance(_lm, int):
+            device = torch.device(f"cuda:{_lm}")
+        elif isinstance(_lm, str) and _lm.isdigit():
+            device = torch.device(f"cuda:{_lm}")
         else:
+            # _lm is None, "cpu", or "disk" → use cuda:0 for input placement;
+            # accelerate will dispatch submodules as per the device map.
             device = torch.device("cuda:0")
 
     if "llama2_13b" == args.model:
