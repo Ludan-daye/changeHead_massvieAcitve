@@ -1,0 +1,46 @@
+
+================================================================================
+RQ6: SINGLE-LAYER ACTIVATION SCAN - qwen3_32b
+================================================================================
+
+loading model qwen3_32b
+  → using dtype=float16 (default)
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/707 [00:00<?, ?it/s]Loading weights:   0%|          | 1/707 [00:01<11:46,  1.00s/it]Loading weights:   0%|          | 2/707 [00:01<06:26,  1.82it/s]Loading weights:   4%|▎         | 26/707 [00:01<00:26, 25.34it/s]Loading weights:   5%|▌         | 37/707 [00:01<00:25, 26.13it/s]Loading weights:   7%|▋         | 48/707 [00:02<00:23, 27.76it/s]Loading weights:   8%|▊         | 59/707 [00:02<00:23, 27.66it/s]Loading weights:  10%|▉         | 70/707 [00:03<00:23, 27.56it/s]Loading weights:  11%|█▏        | 81/707 [00:03<00:21, 28.59it/s]Loading weights:  13%|█▎        | 92/707 [00:03<00:21, 28.91it/s]Loading weights:  15%|█▍        | 103/707 [00:04<00:21, 27.78it/s]Loading weights:  16%|█▌        | 114/707 [00:04<00:19, 29.77it/s]Loading weights:  18%|█▊        | 125/707 [00:04<00:19, 30.54it/s]Loading weights:  19%|█▉        | 136/707 [00:05<00:18, 31.66it/s]Loading weights:  21%|██        | 147/707 [00:05<00:17, 31.66it/s]Loading weights:  22%|██▏       | 158/707 [00:05<00:17, 30.91it/s]Loading weights:  24%|██▍       | 169/707 [00:06<00:14, 37.09it/s]Loading weights:  25%|██▍       | 174/707 [00:06<00:13, 38.56it/s]Loading weights:  25%|██▌       | 180/707 [00:06<00:14, 35.30it/s]Loading weights:  27%|██▋       | 191/707 [00:06<00:14, 36.14it/s]Loading weights:  28%|██▊       | 195/707 [00:07<00:19, 26.07it/s]Loading weights:  29%|██▊       | 203/707 [00:07<00:17, 29.60it/s]Loading weights:  30%|███       | 215/707 [00:07<00:11, 41.27it/s]Loading weights:  32%|███▏      | 224/707 [00:07<00:11, 42.84it/s]Loading weights:  33%|███▎      | 235/707 [00:07<00:10, 43.50it/s]Loading weights:  35%|███▍      | 247/707 [00:08<00:08, 52.21it/s]Loading weights:  36%|███▋      | 257/707 [00:08<00:10, 43.90it/s]Loading weights:  38%|███▊      | 268/707 [00:08<00:11, 39.78it/s]Loading weights:  39%|███▉      | 279/707 [00:08<00:10, 40.16it/s]Loading weights:  41%|████      | 290/707 [00:09<00:11, 36.19it/s]Loading weights:  43%|████▎     | 301/707 [00:09<00:09, 43.26it/s]Loading weights:  44%|████▍     | 312/707 [00:09<00:10, 37.47it/s]Loading weights:  46%|████▌     | 323/707 [00:10<00:11, 34.48it/s]Loading weights:  47%|████▋     | 334/707 [00:10<00:10, 35.24it/s]Loading weights:  49%|████▉     | 345/707 [00:10<00:09, 37.25it/s]Loading weights:  50%|█████     | 356/707 [00:11<00:09, 37.92it/s]Loading weights:  52%|█████▏    | 367/707 [00:11<00:07, 43.75it/s]Loading weights:  53%|█████▎    | 378/707 [00:11<00:08, 40.07it/s]Loading weights:  55%|█████▌    | 389/707 [00:11<00:08, 38.46it/s]Loading weights:  56%|█████▌    | 394/707 [00:11<00:08, 38.67it/s]Loading weights:  57%|█████▋    | 400/707 [00:12<00:09, 31.05it/s]Loading weights:  57%|█████▋    | 404/707 [00:12<00:10, 29.82it/s]Loading weights:  58%|█████▊    | 411/707 [00:12<00:08, 34.86it/s]Loading weights:  59%|█████▊    | 415/707 [00:12<00:09, 30.97it/s]Loading weights:  60%|█████▉    | 422/707 [00:13<00:10, 26.38it/s]Loading weights:  61%|██████    | 433/707 [00:13<00:09, 28.12it/s]Loading weights:  63%|██████▎   | 444/707 [00:13<00:09, 27.14it/s]Loading weights:  64%|██████▍   | 455/707 [00:14<00:09, 27.73it/s]Loading weights:  66%|██████▌   | 466/707 [00:14<00:08, 29.16it/s]Loading weights:  67%|██████▋   | 477/707 [00:15<00:08, 28.21it/s]Loading weights:  69%|██████▉   | 488/707 [00:15<00:06, 31.39it/s]Loading weights:  71%|███████   | 499/707 [00:15<00:07, 29.35it/s]Loading weights:  72%|███████▏  | 510/707 [00:16<00:06, 30.13it/s]Loading weights:  74%|███████▎  | 521/707 [00:16<00:05, 33.70it/s]Loading weights:  75%|███████▌  | 532/707 [00:16<00:05, 32.14it/s]Loading weights:  77%|███████▋  | 543/707 [00:16<00:04, 34.81it/s]Loading weights:  78%|███████▊  | 554/707 [00:17<00:04, 33.05it/s]Loading weights:  80%|███████▉  | 565/707 [00:17<00:04, 31.95it/s]Loading weights:  81%|████████▏ | 576/707 [00:18<00:04, 29.08it/s]Loading weights:  82%|████████▏ | 580/707 [00:18<00:04, 29.24it/s]Loading weights:  83%|████████▎ | 587/707 [00:18<00:04, 29.32it/s]Loading weights:  84%|████████▎ | 591/707 [00:18<00:04, 24.82it/s]Loading weights:  85%|████████▍ | 599/707 [00:19<00:04, 26.63it/s]Loading weights:  86%|████████▌ | 609/707 [00:19<00:03, 27.24it/s]Loading weights:  88%|████████▊ | 620/707 [00:19<00:03, 25.73it/s]Loading weights:  89%|████████▉ | 631/707 [00:20<00:02, 26.75it/s]Loading weights:  91%|█████████ | 642/707 [00:20<00:02, 25.77it/s]Loading weights:  92%|█████████▏| 653/707 [00:21<00:01, 28.32it/s]Loading weights:  94%|█████████▍| 664/707 [00:21<00:01, 28.51it/s]Loading weights:  95%|█████████▌| 675/707 [00:21<00:01, 29.38it/s]Loading weights:  97%|█████████▋| 686/707 [00:22<00:00, 27.35it/s]Loading weights:  99%|█████████▊| 697/707 [00:22<00:00, 28.73it/s]Loading weights: 100%|██████████| 707/707 [00:22<00:00, 31.26it/s]
+Model has 64 layers
+
+[1/3] Running baseline (all MLPs enabled)...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Token indices sequence length is longer than the specified maximum sequence length for this model (2518423 > 131072). Running this sequence through the model will result in indexing errors
+  Baseline Top1 MA: mean=27441.6, max=31232.0
+
+[2/3] Running all-MLPs-disabled (floor)...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+  All-disabled Top1 MA: mean=1277.2, max=2928.0
+
+[3/3] Single-layer activation scan across 1 layers...
+Layer scan:   0%|          | 0/1 [00:00<?, ?it/s]`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Layer scan: 100%|██████████| 1/1 [03:48<00:00, 228.26s/it]Layer scan: 100%|██████████| 1/1 [03:48<00:00, 228.26s/it]
+
+================================================================================
+SINGLE-LAYER ACTIVATION RESULTS
+================================================================================
+ Layer |  Top1 (mean) |  Recovery%
+----------------------------------------
+     6 |       6789.8 |      21.1%
+
+>>> Best single layer: L6 recovers 21.1% of MA
+>>> VERDICT: Partial single-source, likely multi-layer contribution
+
+Results saved to: /tmp/systemd_rq6exp6/qwen3_32b/qwen3_32b_rq6_results.json
+[W422 07:11:20.243409600 AllocatorConfig.cpp:28] Warning: PYTORCH_CUDA_ALLOC_CONF is deprecated, use PYTORCH_ALLOC_CONF instead (function operator())

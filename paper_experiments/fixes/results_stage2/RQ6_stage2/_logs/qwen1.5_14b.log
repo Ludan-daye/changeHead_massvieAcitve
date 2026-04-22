@@ -1,0 +1,46 @@
+
+================================================================================
+RQ6: SINGLE-LAYER ACTIVATION SCAN - qwen1.5_14b
+================================================================================
+
+loading model qwen1.5_14b
+  → using dtype=float16 (default)
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/483 [00:00<?, ?it/s]Loading weights:   0%|          | 1/483 [00:01<11:55,  1.49s/it]Loading weights:   0%|          | 2/483 [00:01<05:37,  1.42it/s]Loading weights:   8%|▊         | 40/483 [00:01<00:11, 38.09it/s]Loading weights:  11%|█         | 52/483 [00:02<00:11, 38.59it/s]Loading weights:  13%|█▎        | 64/483 [00:02<00:09, 44.05it/s]Loading weights:  15%|█▌        | 74/483 [00:02<00:08, 51.11it/s]Loading weights:  17%|█▋        | 82/483 [00:02<00:08, 49.97it/s]Loading weights:  18%|█▊        | 89/483 [00:02<00:08, 43.91it/s]Loading weights:  21%|██        | 100/483 [00:03<00:08, 46.13it/s]Loading weights:  23%|██▎       | 110/483 [00:03<00:07, 52.88it/s]Loading weights:  24%|██▍       | 117/483 [00:03<00:06, 54.37it/s]Loading weights:  26%|██▌       | 124/483 [00:03<00:07, 51.19it/s]Loading weights:  28%|██▊       | 136/483 [00:03<00:06, 53.55it/s]Loading weights:  31%|███       | 148/483 [00:03<00:05, 56.41it/s]Loading weights:  33%|███▎      | 160/483 [00:04<00:06, 50.38it/s]Loading weights:  36%|███▌      | 172/483 [00:04<00:05, 54.22it/s]Loading weights:  38%|███▊      | 182/483 [00:04<00:04, 61.21it/s]Loading weights:  39%|███▉      | 189/483 [00:04<00:04, 59.03it/s]Loading weights:  41%|████      | 196/483 [00:04<00:05, 52.69it/s]Loading weights:  43%|████▎     | 208/483 [00:04<00:05, 54.47it/s]Loading weights:  45%|████▌     | 218/483 [00:05<00:04, 60.28it/s]Loading weights:  47%|████▋     | 225/483 [00:05<00:04, 59.84it/s]Loading weights:  48%|████▊     | 232/483 [00:05<00:04, 50.49it/s]Loading weights:  51%|█████     | 244/483 [00:05<00:04, 51.70it/s]Loading weights:  53%|█████▎    | 256/483 [00:05<00:04, 49.38it/s]Loading weights:  55%|█████▌    | 268/483 [00:06<00:04, 52.28it/s]Loading weights:  58%|█████▊    | 278/483 [00:06<00:03, 58.84it/s]Loading weights:  59%|█████▉    | 285/483 [00:06<00:03, 55.73it/s]Loading weights:  60%|██████    | 291/483 [00:06<00:03, 56.13it/s]Loading weights:  61%|██████▏   | 297/483 [00:06<00:03, 56.25it/s]Loading weights:  63%|██████▎   | 304/483 [00:06<00:03, 48.74it/s]Loading weights:  65%|██████▌   | 316/483 [00:06<00:03, 55.51it/s]Loading weights:  68%|██████▊   | 328/483 [00:07<00:02, 65.71it/s]Loading weights:  71%|███████   | 341/483 [00:07<00:01, 77.31it/s]Loading weights:  73%|███████▎  | 352/483 [00:07<00:01, 76.94it/s]Loading weights:  75%|███████▌  | 364/483 [00:07<00:01, 70.77it/s]Loading weights:  78%|███████▊  | 376/483 [00:07<00:01, 74.00it/s]Loading weights:  80%|████████  | 388/483 [00:07<00:01, 69.59it/s]Loading weights:  83%|████████▎ | 400/483 [00:07<00:01, 75.66it/s]Loading weights:  85%|████████▌ | 412/483 [00:08<00:00, 76.26it/s]Loading weights:  88%|████████▊ | 424/483 [00:08<00:00, 77.47it/s]Loading weights:  90%|█████████ | 436/483 [00:08<00:00, 86.62it/s]Loading weights:  93%|█████████▎| 448/483 [00:08<00:00, 90.18it/s]Loading weights:  95%|█████████▌| 460/483 [00:08<00:00, 81.47it/s]Loading weights:  98%|█████████▊| 472/483 [00:08<00:00, 76.88it/s]Loading weights: 100%|██████████| 483/483 [00:08<00:00, 54.07it/s]
+Model has 40 layers
+
+[1/3] Running baseline (all MLPs enabled)...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Token indices sequence length is longer than the specified maximum sequence length for this model (2518423 > 32768). Running this sequence through the model will result in indexing errors
+  Baseline Top1 MA: mean=7893.1, max=9784.0
+
+[2/3] Running all-MLPs-disabled (floor)...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+  All-disabled Top1 MA: mean=163.6, max=271.5
+
+[3/3] Single-layer activation scan across 1 layers...
+Layer scan:   0%|          | 0/1 [00:00<?, ?it/s]`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Layer scan: 100%|██████████| 1/1 [01:59<00:00, 119.45s/it]Layer scan: 100%|██████████| 1/1 [01:59<00:00, 119.45s/it]
+
+================================================================================
+SINGLE-LAYER ACTIVATION RESULTS
+================================================================================
+ Layer |  Top1 (mean) |  Recovery%
+----------------------------------------
+     3 |        199.3 |       0.5%
+
+>>> Best single layer: L3 recovers 0.5% of MA
+>>> VERDICT: Dispersed multi-source generation (no single layer suffices)
+
+Results saved to: /tmp/systemd_rq6exp6/qwen1.5_14b/qwen1.5_14b_rq6_results.json
+[W422 06:41:50.983660733 AllocatorConfig.cpp:28] Warning: PYTORCH_CUDA_ALLOC_CONF is deprecated, use PYTORCH_ALLOC_CONF instead (function operator())
