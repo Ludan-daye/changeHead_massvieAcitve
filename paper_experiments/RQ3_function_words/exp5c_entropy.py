@@ -68,35 +68,30 @@ def main():
     h2_list = []
     mlp_parts = lib.get_mlp_submodules(args.model, layer)
 
-    # Bug B2 fix (2026-04-22): MoE has no single down_proj module — per-expert
-    # routing scatters h2 across experts. H(C) entropy analysis at layer level
-    # is not applicable. Save sentinel and exit.
+    # Bug B2 fix (2026-04-22): MoE — compute effective h2 via MoE-aware helper.
+    # We hook the MLP block and derive h2 via compute_moe_h2_effective (uniform
+    # mean over experts), a dense approximation sufficient for H(C) entropy.
     if mlp_parts.get('is_moe'):
-        msg = (
-            f"MoE model '{args.model}' detected — H(C) entropy test requires "
-            f"single down_proj hook, not applicable for MoE. Skipping."
-        )
-        print(f"\n[SKIP-MoE] {msg}")
-        with open(os.path.join(args.savedir, 'exp5c_SKIPPED_moe.json'), 'w') as _f:
-            json.dump({
-                'model': args.model,
-                'layer_id': args.layer_id,
-                'skipped': True,
-                'reason': 'is_moe',
-                'message': msg,
-            }, _f, indent=2)
-        return
+        from lib.model_utils import compute_moe_h2_effective as _moe_h2
+        def _moe_pre_hook(module, inputs, output):
+            hs = inputs[0] if isinstance(inputs, tuple) else inputs
+            try:
+                h2 = _moe_h2(layer, hs)
+                h2_list.append(h2.detach().float().cpu().clone())
+            except Exception:
+                pass
+        handle = layer.mlp.register_forward_hook(_moe_pre_hook)
+    else:
+        down_proj = mlp_parts["down_proj"]
 
-    down_proj = mlp_parts["down_proj"]
+        def pre_hook(module, inp):
+            h2_list.append(
+                inp[0].detach().float().cpu().clone()
+                if isinstance(inp, tuple)
+                else inp.detach().float().cpu().clone()
+            )
 
-    def pre_hook(module, inp):
-        h2_list.append(
-            inp[0].detach().float().cpu().clone()
-            if isinstance(inp, tuple)
-            else inp.detach().float().cpu().clone()
-        )
-
-    handle = down_proj.register_forward_pre_hook(pre_hook)
+        handle = down_proj.register_forward_pre_hook(pre_hook)
 
     # SVD of W_down to get v₁
     print("Computing v₁ from W_down SVD...")

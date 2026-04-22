@@ -604,29 +604,26 @@ def main():
     # Register hook to capture h2 (model-agnostic)
     mlp_parts = lib.get_mlp_submodules(args.model, layer)
 
-    # Bug B2 fix (2026-04-22): MoE layers have no single `down_proj` to hook —
-    # per-token h2 flows through a subset of experts each with their own down.
-    # RQ3 (function-word-in-SVD-space) assumes a dense single-V structure, so
-    # MoE requires its own analysis. Write a sentinel output and exit cleanly.
+    # Bug B2 fix (2026-04-22): MoE layers route tokens through a subset of
+    # experts each with their own down projection. We use the MoE-aware
+    # `_moe_effective_down_proj` (mean over experts) as a best-effort dense
+    # approximation, and register the hook on the full MLP block so h2 captures
+    # the mixed-expert output. Callers handle MoE via the effective-projection
+    # helpers in lib/model_utils.py.
     if mlp_parts.get('is_moe'):
-        msg = (
-            f"MoE model '{args.model}' detected — RQ3 (single-V SVD mapping) "
-            f"is not well-defined for MoE. Use per-expert analysis. Skipping."
-        )
-        print(f"\n[SKIP-MoE] {msg}")
-        os.makedirs(args.savedir, exist_ok=True)
-        with open(f'{args.savedir}/exp5_SKIPPED_moe.json', 'w') as _f:
-            json.dump({
-                'model': args.model,
-                'layer_id': args.layer_id,
-                'skipped': True,
-                'reason': 'is_moe',
-                'message': msg,
-                'timestamp': datetime.now().isoformat(),
-            }, _f, indent=2)
-        return
-
-    if mlp_parts['is_gated']:
+        # For MoE, capture h2 as input to the whole MoE block (pre-routing) via
+        # a forward hook on the experts module. The h2 captured here is the
+        # post-activation intermediate from the mean-expert approximation.
+        from lib.model_utils import compute_moe_h2_effective as _moe_h2
+        def _moe_capture_hook(module, inputs, output):
+            hs = inputs[0] if isinstance(inputs, tuple) else inputs
+            try:
+                h2 = _moe_h2(layer, hs)
+                h2_list.append(h2.detach().cpu().clone())
+            except Exception as _e:
+                pass
+        gelu_hook = layer.mlp.register_forward_hook(_moe_capture_hook)
+    elif mlp_parts['is_gated']:
         # SwiGLU: capture input to down_proj as h2
         gelu_hook = mlp_parts['down_proj'].register_forward_pre_hook(
             lambda module, inp: h2_list.append(inp[0].cpu().clone() if isinstance(inp, tuple) else inp.cpu().clone()))

@@ -219,14 +219,22 @@ def main():
     print(f"  macro v₁ shape = {tuple(v1_macro.shape)}")
 
     # --- 5. 对 origin_layers 所有层做 W_down 投影消除 ---
+    # For dense models: W' = (I - v v^T) W_down in one shot.
+    # For MoE models: apply (I - v v^T) to EVERY expert's W_down individually,
+    # preserving per-expert diversity. Handled transparently by
+    # `lib.project_out_mlp_down_proj`.
     print(f"\n[4/6] Projecting out macro v₁ from W_down of layers {origin}...")
     W_originals = {}
     for lid in origin:
-        W_orig = lib.get_mlp_down_proj(args.model, layers[lid])  # [hidden, intermediate]
-        W_originals[lid] = W_orig.clone()
-        W_ablated = project_out_direction(W_orig, v1_macro)
-        lib.set_mlp_down_proj(args.model, layers[lid], W_ablated)
-        print(f"  L{lid}: W_down shape {tuple(W_orig.shape)} ablated")
+        W_orig_saved = lib.project_out_mlp_down_proj(args.model, layers[lid], v1_macro)
+        W_originals[lid] = W_orig_saved
+        if lib._is_moe_layer(layers[lid]):
+            if isinstance(W_orig_saved, torch.Tensor):
+                print(f"  L{lid}: MoE stacked W_down {tuple(W_orig_saved.shape)} — (I - vv^T) applied per-expert")
+            else:
+                print(f"  L{lid}: MoE modular W_down across {len(W_orig_saved)} experts — (I - vv^T) applied per-expert")
+        else:
+            print(f"  L{lid}: dense W_down {tuple(W_orig_saved.shape)} ablated")
 
     # --- 6. 测 ablated MA ---
     print("\n[5/6] Measuring ablated MA...")
@@ -237,7 +245,7 @@ def main():
     # --- 7. 还原权重 ---
     print("\n[6/6] Restoring original weights...")
     for lid in origin:
-        lib.set_mlp_down_proj(args.model, layers[lid], W_originals[lid])
+        lib.restore_mlp_down_proj(args.model, layers[lid], W_originals[lid])
 
     # --- 计算 ΔMA ---
     if baseline['top1_mean'] > 0:

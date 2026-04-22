@@ -82,6 +82,32 @@ def measure_ma(model, tokenizer, device, layers, layer_id, hidden_size, seq_len,
     }
 
 
+def _svd_replace_v(W, generator=None):
+    """Return W with V replaced by a random orthogonal matrix (preserves U, Σ).
+
+    Args:
+        W: torch.Tensor of shape [m, n] (typically [hidden, intermediate]).
+        generator: optional torch.Generator for reproducibility.
+
+    Returns:
+        (W_ablated, sigma_1, sigma_2). W_ablated has the same dtype/device as W.
+    """
+    W_orig_dtype = W.dtype
+    Wf = W.float()
+    U, S, Vh = torch.linalg.svd(Wf, full_matrices=False)
+    # Generate random orthogonal matrix with same shape as Vh
+    rand_kwargs = {'device': Vh.device}
+    if generator is not None:
+        rand_kwargs['generator'] = generator
+    random_matrix = torch.randn(Vh.shape[0], Vh.shape[1], **rand_kwargs)
+    Q, R = torch.linalg.qr(random_matrix.T)
+    Q = Q.T
+    signs = torch.sign(torch.diag(R))
+    Q = Q * signs.unsqueeze(1)
+    W_ablated = U @ torch.diag(S) @ Q
+    return W_ablated.to(W_orig_dtype), float(S[0].item()), float(S[1].item())
+
+
 def ablate_v_matrix(model_name, layer):
     """
     Replace the V matrix of W_down with a random orthogonal matrix.
@@ -95,30 +121,72 @@ def ablate_v_matrix(model_name, layer):
         W_original: the original weight matrix (for restoration)
         svd_info: dict with σ₁, σ₂, η for reporting
     """
+    # Bug B2 fix v3 (2026-04-22): for MoE layers we replace V PER-EXPERT
+    # (each expert gets its own random Q); the effective `get_mlp_down_proj`
+    # still reports the averaged spectrum for svd_info reporting.
+    if lib._is_moe_layer(layer):
+        experts = layer.mlp.experts
+        # Stacked-tensor shape: `experts.down_proj` is [E, hidden, intermediate]
+        if hasattr(experts, 'down_proj') and isinstance(experts.down_proj, torch.nn.Parameter):
+            W_stack = experts.down_proj.data  # [E, H, I]
+            W_original = W_stack.clone()
+            sigma1_list, sigma2_list = [], []
+            for e in range(W_stack.shape[0]):
+                W_e = W_stack[e]
+                W_e_ablated, s1, s2 = _svd_replace_v(W_e.to(torch.float32))
+                W_stack[e].copy_(W_e_ablated.to(W_stack.dtype).to(W_stack.device))
+                sigma1_list.append(s1)
+                sigma2_list.append(s2)
+            # Effective spectrum from the MEAN for reporting.
+            W_eff = lib._moe_effective_down_proj(layer).float()
+            _U, S_eff, _Vh = torch.linalg.svd(W_eff, full_matrices=False)
+            svd_info = {
+                'sigma_1': float(S_eff[0].item()),
+                'sigma_2': float(S_eff[1].item()),
+                'eta': float((S_eff[0] / S_eff[1]).item()),
+                'W_shape': list(W_eff.shape),
+                'moe_per_expert_sigma1_mean': float(np.mean(sigma1_list)),
+                'moe_per_expert_sigma2_mean': float(np.mean(sigma2_list)),
+                'moe_num_experts': int(W_stack.shape[0]),
+            }
+            return W_original, svd_info
+        # Modular (nn.ModuleList) experts path: same idea, walk experts.
+        W_originals = {}
+        sigma1_list, sigma2_list = [], []
+        for idx, e in enumerate(experts):
+            for name in ('down_proj', 'w2'):
+                sub = getattr(e, name, None)
+                if sub is not None and hasattr(sub, 'weight'):
+                    W_e = sub.weight.data
+                    W_originals[(idx, name)] = W_e.clone()
+                    W_e_ablated, s1, s2 = _svd_replace_v(W_e.to(torch.float32))
+                    sub.weight.data.copy_(W_e_ablated.to(W_e.dtype).to(W_e.device))
+                    sigma1_list.append(s1)
+                    sigma2_list.append(s2)
+                    break
+        W_eff = lib._moe_effective_down_proj(layer).float()
+        _U, S_eff, _Vh = torch.linalg.svd(W_eff, full_matrices=False)
+        svd_info = {
+            'sigma_1': float(S_eff[0].item()),
+            'sigma_2': float(S_eff[1].item()),
+            'eta': float((S_eff[0] / S_eff[1]).item()),
+            'W_shape': list(W_eff.shape),
+            'moe_per_expert_sigma1_mean': float(np.mean(sigma1_list)) if sigma1_list else 0.0,
+            'moe_per_expert_sigma2_mean': float(np.mean(sigma2_list)) if sigma2_list else 0.0,
+            'moe_num_experts': len(W_originals),
+        }
+        return W_originals, svd_info
+
     W_down = lib.get_mlp_down_proj(model_name, layer).clone()
     W_original = W_down.clone()
 
-    # SVD decomposition: W_down [hidden, intermediate] or [intermediate, hidden]
-    U, S, Vh = torch.linalg.svd(W_down.float(), full_matrices=False)
-    # U: [m, k], S: [k], Vh: [k, n] where k = min(m, n)
-
-    # Generate random orthogonal matrix with same shape as Vh
-    random_matrix = torch.randn(Vh.shape[0], Vh.shape[1], device=Vh.device)
-    Q, R = torch.linalg.qr(random_matrix.T)  # QR on [n, k] -> Q [n, k]
-    Q = Q.T  # [k, n] to match Vh shape
-    # Fix sign ambiguity
-    signs = torch.sign(torch.diag(R))
-    Q = Q * signs.unsqueeze(1)
-
-    # Reconstruct: W_ablated = U @ diag(S) @ Q
-    W_ablated = U @ torch.diag(S) @ Q
-
-    # Convert back to original dtype
-    W_ablated = W_ablated.to(W_original.dtype)
+    W_ablated, s1, s2 = _svd_replace_v(W_down)
 
     # Set the ablated weight
     lib.set_mlp_down_proj(model_name, layer, W_ablated)
 
+    # Also surface the svd spectrum for reporting
+    _U, S, _Vh = torch.linalg.svd(W_down.float(), full_matrices=False)
     svd_info = {
         'sigma_1': float(S[0].item()),
         'sigma_2': float(S[1].item()),
@@ -130,7 +198,28 @@ def ablate_v_matrix(model_name, layer):
 
 
 def restore_weights(model_name, layer, W_original):
-    """Restore original W_down weights after ablation."""
+    """Restore original W_down weights after ablation.
+
+    Supports dense (Tensor) and MoE (stacked Parameter tensor or dict of
+    modular-expert tensors).
+    """
+    # Bug B2 fix v3: MoE restore paths
+    if lib._is_moe_layer(layer):
+        experts = layer.mlp.experts
+        # Stacked-tensor shape: W_original was the full [E, H, I] stack
+        if hasattr(experts, 'down_proj') and isinstance(experts.down_proj, torch.nn.Parameter):
+            if not isinstance(W_original, torch.Tensor) or W_original.dim() != 3:
+                raise RuntimeError("MoE restore: expected a 3D Tensor for stacked experts")
+            experts.down_proj.data.copy_(W_original.to(experts.down_proj.dtype).to(experts.down_proj.device))
+            return
+        # Modular experts: W_original is a dict {(idx, name): Tensor}
+        if isinstance(W_original, dict):
+            for (idx, name), W in W_original.items():
+                sub = getattr(experts[idx], name, None)
+                if sub is not None and hasattr(sub, 'weight'):
+                    sub.weight.data.copy_(W.to(sub.weight.dtype).to(sub.weight.device))
+            return
+        raise RuntimeError("MoE restore: unsupported W_original shape")
     lib.set_mlp_down_proj(model_name, layer, W_original)
 
 
@@ -168,26 +257,9 @@ def main():
     layer = layers[args.layer_id]
     lib.enable_custom_block(args.model, layer, args.layer_id)
 
-    # Bug B2 fix (2026-04-22): MoE has no single W_down to ablate — must use
-    # exp5_v_ablation_moe.py (per-expert). Detect and skip with sentinel output.
-    _layer_for_moe_check = layers[args.layer_id]
-    if lib._is_moe_layer(_layer_for_moe_check):
-        msg = (
-            f"MoE model '{args.model}' at L{args.layer_id} detected — "
-            f"single-W V-ablation is not defined. Use exp5_v_ablation_moe.py."
-        )
-        print(f"\n[SKIP-MoE] {msg}")
-        import json as _json
-        os.makedirs(args.savedir, exist_ok=True)
-        with open(os.path.join(args.savedir, 'exp5_SKIPPED_moe.json'), 'w') as _f:
-            _json.dump({
-                'model': args.model,
-                'layer_id': args.layer_id,
-                'skipped': True,
-                'reason': 'is_moe',
-                'message': msg,
-            }, _f, indent=2)
-        return
+    # Bug B2 fix v3 (2026-04-22): MoE is now supported — ablate_v_matrix has a
+    # per-expert branch; restore_weights handles the stacked-Parameter or
+    # modular-ModuleList cases. No sentinel skip.
 
     # Measure baseline MA
     print("\n[2/5] Measuring baseline massive activations...")

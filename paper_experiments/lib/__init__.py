@@ -9,4 +9,6 @@ from .model_utils import (
     detect_ma_dimensions, get_mlp_down_proj, set_mlp_down_proj,
     get_mlp_up_proj, get_mlp_submodules,
     _is_moe_layer, _moe_effective_down_proj, _moe_effective_up_proj,
+    compute_moe_h2_effective,
+    project_out_mlp_down_proj, restore_mlp_down_proj,
 )

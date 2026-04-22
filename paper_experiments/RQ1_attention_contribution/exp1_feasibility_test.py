@@ -49,10 +49,15 @@ class HeadDisableHook:
 
     def __call__(self, module, input, output):
         """
-        Hook function that zeros out attention head outputs
+        Hook function that zeros out attention head outputs.
+
+        Handles two output shapes:
+          - Classic self-attention: output is a tuple (attn_out, *rest)
+          - Linear-attention (Qwen3.5 hybrid `linear_attn`): output is a plain Tensor.
         """
-        # output[0] is the attention output, shape: [batch, seq_len, hidden_dim]
-        attn_output = output[0]
+        # Detect tuple vs tensor to support hybrid attention layers.
+        is_tuple = isinstance(output, tuple)
+        attn_output = output[0] if is_tuple else output
         batch_size, seq_len, hidden_dim = attn_output.shape
         head_dim = hidden_dim // self.num_heads
 
@@ -71,7 +76,9 @@ class HeadDisableHook:
         # Reshape back to [batch, seq_len, hidden_dim]
         modified_output = attn_output_reshaped.view(batch_size, seq_len, hidden_dim)
 
-        return (modified_output,) + output[1:]
+        if is_tuple:
+            return (modified_output,) + output[1:]
+        return modified_output
 
 
 def run_experiment(args, mode='baseline', enable_heads_dict=None):
@@ -120,7 +127,15 @@ def run_experiment(args, mode='baseline', enable_heads_dict=None):
                 print(f"  Layer {layer_id}: Enabling heads {enable_heads}, disabling others")
 
             # Get attention module (different attribute names per model)
-            attn_module = getattr(layer, 'attn', None) or getattr(layer, 'self_attn', None) or getattr(layer, 'attention', None)
+            # Qwen3.5 MoE hybrid: some layers are `linear_attention` (self.linear_attn),
+            # others are `full_attention` (self.self_attn). Both need the disable hook.
+            attn_module = (
+                getattr(layer, 'attn', None)
+                or getattr(layer, 'self_attn', None)
+                or getattr(layer, 'linear_attn', None)
+                or getattr(layer, 'attention', None)
+                or getattr(layer, 'self_attention', None)  # glm4 ChatGLM shim
+            )
             if attn_module is None:
                 raise ValueError(f"Cannot find attention module in layer {layer_id} for model {args.model}")
             handle = attn_module.register_forward_hook(hook)

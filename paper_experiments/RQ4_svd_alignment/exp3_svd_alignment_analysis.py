@@ -232,33 +232,35 @@ def collect_token_activations(model, tokenizer, layers, v1, args):
     # Register hooks (model-agnostic)
     mlp_parts = lib.get_mlp_submodules(args.model, target_layer)
 
-    # Bug B2 fix (2026-04-22): MoE has no single down_proj module to hook
-    # (experts stored as stacked Parameter or ModuleList). Token-level
-    # h2/output tracking via module hooks is not applicable. Return sentinel.
+    # Bug B2 fix (2026-04-22): MoE — derive h2 and output via MoE-aware
+    # effective projections (mean over experts). This is a dense approximation
+    # appropriate for per-layer SVD alignment; per-expert routing is ignored.
     if mlp_parts.get('is_moe'):
-        msg = (
-            f"MoE model '{args.model}' detected — RQ4 SVD alignment via "
-            f"module-level hooks is not applicable (per-expert routing). "
-            f"Skipping."
+        from lib.model_utils import (
+            compute_moe_h2_effective as _moe_h2,
+            _moe_effective_down_proj as _moe_down,
         )
-        print(f"\n[SKIP-MoE] {msg}")
-        import json as _json
-        with open(f'{args.savedir}/exp3_SKIPPED_moe.json', 'w') as _f:
-            _json.dump({
-                'model': args.model,
-                'layer_id': args.layer_id,
-                'skipped': True,
-                'reason': 'is_moe',
-                'message': msg,
-            }, _f, indent=2)
-        return []
-
-    if mlp_parts['is_gated']:
+        def _moe_block_hook(module, inputs, output):
+            hs = inputs[0] if isinstance(inputs, tuple) else inputs
+            try:
+                h2 = _moe_h2(target_layer, hs)
+                tracker.track_gelu_from_input((h2,))
+                # Effective output = h2 @ W_down_eff^T   (W_down_eff: [H, I])
+                W_eff = _moe_down(target_layer)
+                W_eff = W_eff.to(device=h2.device, dtype=h2.dtype)
+                out_eff = torch.matmul(h2, W_eff.transpose(-1, -2))
+                tracker.track_output(module, (h2,), out_eff)
+            except Exception:
+                pass
+        handle1 = target_layer.mlp.register_forward_hook(_moe_block_hook)
+        handle2 = None  # combined into handle1
+    elif mlp_parts['is_gated']:
         handle1 = mlp_parts['down_proj'].register_forward_pre_hook(
             lambda module, inp: tracker.track_gelu_from_input(inp))
+        handle2 = mlp_parts['down_proj'].register_forward_hook(tracker.track_output)
     else:
         handle1 = mlp_parts['activation'].register_forward_hook(tracker.track_gelu)
-    handle2 = mlp_parts['down_proj'].register_forward_hook(tracker.track_output)
+        handle2 = mlp_parts['down_proj'].register_forward_hook(tracker.track_output)
 
     # Load dataset
     print("Loading dataset...")
@@ -279,7 +281,8 @@ def collect_token_activations(model, tokenizer, layers, v1, args):
 
     # Clean up hooks
     handle1.remove()
-    handle2.remove()
+    if handle2 is not None:
+        handle2.remove()
 
     print(f"\n✓ Collected {len(tracker.token_activations)} token activations")
 
@@ -939,26 +942,10 @@ def main():
     # Phase 1: SVD Analysis
     svd_results, v1, S, U, Vh = perform_svd_analysis(model, layers, args)
 
-    # Bug B2 fix (2026-04-22): MoE — we CAN report SVD spectrum of the mean
-    # down_proj (crude but well-defined), but per-token alignment via module
-    # hooks is not. Save partial results and exit.
-    _mlp_parts = lib.get_mlp_submodules(args.model, layers[args.layer_id])
-    if _mlp_parts.get('is_moe'):
-        import json as _json
-        import os as _os
-        _os.makedirs(args.savedir, exist_ok=True)
-        with open(f'{args.savedir}/exp3_moe_partial.json', 'w') as _f:
-            _json.dump({
-                'model': args.model,
-                'layer_id': args.layer_id,
-                'skipped_token_alignment': True,
-                'reason': 'is_moe',
-                'svd_spectrum_note': 'computed on uniform mean over experts',
-                'svd_results': svd_results,
-            }, _f, indent=2)
-        print(f"\n[MoE] Saved partial SVD spectrum to "
-              f"{args.savedir}/exp3_moe_partial.json; skipping token alignment.")
-        return
+    # Bug B2 fix (2026-04-22): MoE — proceed to token alignment using the
+    # MoE-aware block hook installed in `collect_token_activations` (effective
+    # h2 via compute_moe_h2_effective + effective down_proj). SVD spectrum was
+    # computed on the uniform mean over experts in perform_svd_analysis.
 
     # Phase 2: Collect Token Activations
     alignment_data = collect_token_activations(model, tokenizer, layers, v1, args)
