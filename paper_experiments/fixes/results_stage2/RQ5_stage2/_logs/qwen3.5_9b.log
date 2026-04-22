@@ -1,0 +1,76 @@
+
+================================================================================
+EXPERIMENT 5: V-MATRIX CAUSAL ABLATION
+================================================================================
+
+Model: qwen3.5_9b
+Target Layer: 22
+Samples: 30
+
+[1/5] Loading model...
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+`torch_dtype` is deprecated! Use `dtype` instead!
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s]Loading weights:   0%|          | 1/427 [00:00<03:02,  2.33it/s]Loading weights:   0%|          | 2/427 [00:01<06:45,  1.05it/s]Loading weights:   2%|▏         | 8/427 [00:01<01:12,  5.76it/s]Loading weights:   3%|▎         | 13/427 [00:02<00:45,  9.17it/s]Loading weights:   4%|▍         | 19/427 [00:02<00:28, 14.09it/s]Loading weights:   6%|▌         | 26/427 [00:02<00:22, 18.02it/s]Loading weights:   8%|▊         | 36/427 [00:02<00:13, 29.30it/s]Loading weights:  10%|▉         | 42/427 [00:02<00:15, 25.32it/s]Loading weights:  11%|█         | 47/427 [00:03<00:18, 20.73it/s]Loading weights:  12%|█▏        | 53/427 [00:03<00:14, 25.52it/s]Loading weights:  15%|█▍        | 62/427 [00:03<00:10, 34.12it/s]Loading weights:  16%|█▌        | 67/427 [00:03<00:11, 30.07it/s]Loading weights:  17%|█▋        | 72/427 [00:03<00:10, 33.19it/s]Loading weights:  19%|█▊        | 79/427 [00:03<00:09, 38.42it/s]Loading weights:  20%|█▉        | 84/427 [00:04<00:11, 28.59it/s]Loading weights:  21%|██        | 89/427 [00:04<00:10, 32.16it/s]Loading weights:  22%|██▏       | 94/427 [00:04<00:09, 33.43it/s]Loading weights:  23%|██▎       | 98/427 [00:04<00:11, 29.50it/s]Loading weights:  24%|██▍       | 102/427 [00:05<00:14, 21.80it/s]Loading weights:  25%|██▌       | 107/427 [00:05<00:12, 26.13it/s]Loading weights:  26%|██▋       | 113/427 [00:05<00:09, 32.32it/s]Loading weights:  28%|██▊       | 118/427 [00:05<00:12, 23.97it/s]Loading weights:  30%|███       | 130/427 [00:05<00:07, 39.07it/s]Loading weights:  32%|███▏      | 136/427 [00:06<00:10, 28.70it/s]Loading weights:  34%|███▎      | 144/427 [00:06<00:10, 26.82it/s]Loading weights:  35%|███▍      | 148/427 [00:06<00:13, 21.44it/s]Loading weights:  36%|███▌      | 153/427 [00:07<00:13, 19.61it/s]Loading weights:  38%|███▊      | 161/427 [00:07<00:09, 27.13it/s]Loading weights:  39%|███▉      | 166/427 [00:07<00:08, 30.29it/s]Loading weights:  40%|████      | 171/427 [00:07<00:08, 31.93it/s]Loading weights:  41%|████      | 176/427 [00:07<00:08, 29.78it/s]Loading weights:  42%|████▏     | 180/427 [00:07<00:10, 24.41it/s]Loading weights:  44%|████▍     | 187/427 [00:08<00:10, 23.65it/s]Loading weights:  44%|████▍     | 190/427 [00:08<00:09, 24.48it/s]Loading weights:  46%|████▌     | 197/427 [00:08<00:07, 32.17it/s]Loading weights:  47%|████▋     | 201/427 [00:08<00:08, 27.01it/s]Loading weights:  48%|████▊     | 205/427 [00:08<00:09, 24.37it/s]Loading weights:  49%|████▊     | 208/427 [00:09<00:10, 21.32it/s]Loading weights:  50%|████▉     | 213/427 [00:09<00:08, 25.99it/s]Loading weights:  52%|█████▏    | 220/427 [00:09<00:06, 34.12it/s]Loading weights:  53%|█████▎    | 225/427 [00:09<00:05, 34.75it/s]Loading weights:  54%|█████▎    | 229/427 [00:09<00:09, 21.07it/s]Loading weights:  56%|█████▌    | 238/427 [00:09<00:06, 30.40it/s]Loading weights:  57%|█████▋    | 243/427 [00:10<00:07, 25.29it/s]Loading weights:  59%|█████▊    | 250/427 [00:10<00:05, 32.36it/s]Loading weights:  60%|█████▉    | 255/427 [00:10<00:06, 25.00it/s]Loading weights:  61%|██████    | 259/427 [00:10<00:07, 23.50it/s]Loading weights:  62%|██████▏   | 263/427 [00:10<00:06, 26.05it/s]Loading weights:  63%|██████▎   | 267/427 [00:11<00:05, 28.11it/s]Loading weights:  64%|██████▍   | 274/427 [00:11<00:04, 36.04it/s]Loading weights:  65%|██████▌   | 279/427 [00:11<00:04, 30.21it/s]Loading weights:  66%|██████▋   | 283/427 [00:11<00:04, 31.69it/s]Loading weights:  68%|██████▊   | 291/427 [00:11<00:03, 40.58it/s]Loading weights:  69%|██████▉   | 296/427 [00:11<00:04, 28.33it/s]Loading weights:  71%|███████   | 302/427 [00:12<00:04, 31.11it/s]Loading weights:  72%|███████▏  | 307/427 [00:12<00:03, 32.98it/s]Loading weights:  73%|███████▎  | 311/427 [00:12<00:04, 28.12it/s]Loading weights:  74%|███████▍  | 315/427 [00:12<00:04, 24.34it/s]Loading weights:  74%|███████▍  | 318/427 [00:12<00:04, 24.43it/s]Loading weights:  76%|███████▌  | 325/427 [00:12<00:03, 31.98it/s]Loading weights:  78%|███████▊  | 331/427 [00:13<00:03, 28.66it/s]Loading weights:  78%|███████▊  | 335/427 [00:13<00:03, 30.53it/s]Loading weights:  80%|███████▉  | 340/427 [00:13<00:02, 33.73it/s]Loading weights:  81%|████████  | 345/427 [00:13<00:02, 34.36it/s]Loading weights:  82%|████████▏ | 349/427 [00:13<00:02, 28.65it/s]Loading weights:  83%|████████▎ | 353/427 [00:13<00:02, 30.79it/s]Loading weights:  84%|████████▎ | 357/427 [00:14<00:02, 24.36it/s]Loading weights:  85%|████████▍ | 361/427 [00:14<00:02, 27.23it/s]Loading weights:  85%|████████▌ | 365/427 [00:14<00:02, 23.69it/s]Loading weights:  86%|████████▌ | 368/427 [00:14<00:02, 24.70it/s]Loading weights:  87%|████████▋ | 372/427 [00:14<00:02, 26.96it/s]Loading weights:  88%|████████▊ | 377/427 [00:14<00:01, 29.43it/s]Loading weights:  90%|████████▉ | 383/427 [00:14<00:01, 32.71it/s]Loading weights:  91%|█████████ | 387/427 [00:15<00:01, 26.79it/s]Loading weights:  92%|█████████▏| 393/427 [00:15<00:01, 32.52it/s]Loading weights:  93%|█████████▎| 398/427 [00:15<00:00, 33.61it/s]Loading weights:  94%|█████████▍| 402/427 [00:15<00:00, 28.03it/s]Loading weights:  95%|█████████▌| 406/427 [00:15<00:00, 29.45it/s]Loading weights:  96%|█████████▋| 412/427 [00:15<00:00, 33.13it/s]Loading weights:  97%|█████████▋| 416/427 [00:16<00:00, 28.04it/s]Loading weights:  98%|█████████▊| 420/427 [00:16<00:00, 20.95it/s]Loading weights: 100%|█████████▉| 425/427 [00:16<00:00, 25.27it/s]Loading weights: 100%|██████████| 427/427 [00:16<00:00, 25.85it/s]
+
+[2/5] Measuring baseline massive activations...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+Measuring MA:   0%|          | 0/30 [00:00<?, ?it/s]Measuring MA:   3%|▎         | 1/30 [00:01<00:38,  1.32s/it]Measuring MA:   7%|▋         | 2/30 [00:02<00:32,  1.14s/it]Measuring MA:  10%|█         | 3/30 [00:03<00:29,  1.09s/it]Measuring MA:  13%|█▎        | 4/30 [00:04<00:27,  1.07s/it]Measuring MA:  17%|█▋        | 5/30 [00:05<00:26,  1.05s/it]Measuring MA:  20%|██        | 6/30 [00:06<00:25,  1.04s/it]Measuring MA:  23%|██▎       | 7/30 [00:07<00:23,  1.04s/it]Measuring MA:  27%|██▋       | 8/30 [00:08<00:22,  1.04s/it]Measuring MA:  30%|███       | 9/30 [00:09<00:21,  1.03s/it]Measuring MA:  33%|███▎      | 10/30 [00:10<00:20,  1.03s/it]Measuring MA:  37%|███▋      | 11/30 [00:11<00:19,  1.03s/it]Measuring MA:  40%|████      | 12/30 [00:12<00:18,  1.03s/it]Measuring MA:  43%|████▎     | 13/30 [00:13<00:17,  1.03s/it]Measuring MA:  47%|████▋     | 14/30 [00:14<00:16,  1.03s/it]Measuring MA:  50%|█████     | 15/30 [00:15<00:15,  1.03s/it]Measuring MA:  53%|█████▎    | 16/30 [00:16<00:14,  1.03s/it]Measuring MA:  57%|█████▋    | 17/30 [00:17<00:13,  1.03s/it]Measuring MA:  60%|██████    | 18/30 [00:18<00:12,  1.03s/it]Measuring MA:  63%|██████▎   | 19/30 [00:19<00:11,  1.03s/it]Measuring MA:  67%|██████▋   | 20/30 [00:20<00:10,  1.04s/it]Measuring MA:  70%|███████   | 21/30 [00:21<00:09,  1.05s/it]Measuring MA:  73%|███████▎  | 22/30 [00:23<00:08,  1.05s/it]Measuring MA:  77%|███████▋  | 23/30 [00:24<00:07,  1.04s/it]Measuring MA:  80%|████████  | 24/30 [00:25<00:06,  1.04s/it]Measuring MA:  83%|████████▎ | 25/30 [00:26<00:05,  1.04s/it]Measuring MA:  87%|████████▋ | 26/30 [00:27<00:04,  1.03s/it]Measuring MA:  90%|█████████ | 27/30 [00:28<00:03,  1.03s/it]Measuring MA:  93%|█████████▎| 28/30 [00:29<00:02,  1.04s/it]Measuring MA:  97%|█████████▋| 29/30 [00:30<00:01,  1.03s/it]Measuring MA: 100%|██████████| 30/30 [00:31<00:00,  1.03s/it]Measuring MA: 100%|██████████| 30/30 [00:31<00:00,  1.04s/it]
+  Baseline Top1 (mean): 175.67
+  Baseline Top1 (max):  201.00
+  Detected MA dims: [3994, 3456]
+    Dim 3994: max = 201.00
+    Dim 3456: max = 49.50
+
+[3/5] Performing V-matrix ablation...
+  W_down shape: [4096, 12288]
+  sigma_1 = 3.1101
+  sigma_2 = 2.9229
+  eta (sigma_1/sigma_2) = 1.0641
+
+[4/5] Measuring ablated massive activations...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Measuring MA:   0%|          | 0/30 [00:00<?, ?it/s]Measuring MA:   3%|▎         | 1/30 [00:01<00:32,  1.14s/it]Measuring MA:   7%|▋         | 2/30 [00:02<00:29,  1.05s/it]Measuring MA:  10%|█         | 3/30 [00:03<00:28,  1.04s/it]Measuring MA:  13%|█▎        | 4/30 [00:04<00:27,  1.04s/it]Measuring MA:  17%|█▋        | 5/30 [00:05<00:25,  1.03s/it]Measuring MA:  20%|██        | 6/30 [00:06<00:24,  1.03s/it]Measuring MA:  23%|██▎       | 7/30 [00:07<00:23,  1.03s/it]Measuring MA:  27%|██▋       | 8/30 [00:08<00:22,  1.02s/it]Measuring MA:  30%|███       | 9/30 [00:09<00:21,  1.02s/it]Measuring MA:  33%|███▎      | 10/30 [00:10<00:20,  1.03s/it]Measuring MA:  37%|███▋      | 11/30 [00:11<00:19,  1.02s/it]Measuring MA:  40%|████      | 12/30 [00:12<00:18,  1.02s/it]Measuring MA:  43%|████▎     | 13/30 [00:13<00:17,  1.03s/it]Measuring MA:  47%|████▋     | 14/30 [00:14<00:16,  1.02s/it]Measuring MA:  50%|█████     | 15/30 [00:15<00:15,  1.02s/it]Measuring MA:  53%|█████▎    | 16/30 [00:16<00:14,  1.02s/it]Measuring MA:  57%|█████▋    | 17/30 [00:17<00:13,  1.03s/it]Measuring MA:  60%|██████    | 18/30 [00:18<00:12,  1.02s/it]Measuring MA:  63%|██████▎   | 19/30 [00:19<00:11,  1.03s/it]Measuring MA:  67%|██████▋   | 20/30 [00:20<00:10,  1.02s/it]Measuring MA:  70%|███████   | 21/30 [00:21<00:09,  1.02s/it]Measuring MA:  73%|███████▎  | 22/30 [00:22<00:08,  1.03s/it]Measuring MA:  77%|███████▋  | 23/30 [00:23<00:07,  1.02s/it]Measuring MA:  80%|████████  | 24/30 [00:24<00:06,  1.02s/it]Measuring MA:  83%|████████▎ | 25/30 [00:25<00:05,  1.02s/it]Measuring MA:  87%|████████▋ | 26/30 [00:26<00:04,  1.02s/it]Measuring MA:  90%|█████████ | 27/30 [00:27<00:03,  1.02s/it]Measuring MA:  93%|█████████▎| 28/30 [00:28<00:02,  1.02s/it]Measuring MA:  97%|█████████▋| 29/30 [00:29<00:01,  1.01s/it]Measuring MA: 100%|██████████| 30/30 [00:30<00:00,  1.02s/it]Measuring MA: 100%|██████████| 30/30 [00:30<00:00,  1.02s/it]
+  Ablated Top1 (mean): 52.67
+  Ablated Top1 (max):  55.75
+
+[5/5] Restoring original weights...
+
+================================================================================
+RESULTS
+================================================================================
+
+  ΔMA (Top1 mean): -70.0%
+  ΔMA (Top1 max):  -72.3%
+  ΔMA (Dim 3994):    -72.3%
+  ΔMA (Dim 3456):    -29.8%
+
+  Theoretical prediction (Eq. 10): 99.3%
+  (based on d_ff = 12288)
+
+Results saved to: /tmp/systemd_rq5/qwen3.5_9b/qwen3.5_9b_v_ablation_results.json
+
+================================================================================
+SUMMARY
+================================================================================
+  Model: qwen3.5_9b
+  Layer: 22
+  eta (σ₁/σ₂): 1.06
+  Baseline MA: 175.67
+  Ablated MA:  52.67
+  ΔMA: -70.0%
+  Theoretical: 99.3%
+
+  Conclusion: V-matrix ablation confirms
+  that V-matrix geometry is causally necessary for MA generation.
+================================================================================
+[W422 05:36:26.043087485 AllocatorConfig.cpp:28] Warning: PYTORCH_CUDA_ALLOC_CONF is deprecated, use PYTORCH_ALLOC_CONF instead (function operator())

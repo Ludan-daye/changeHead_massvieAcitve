@@ -1,0 +1,74 @@
+
+================================================================================
+EXPERIMENT 5: V-MATRIX CAUSAL ABLATION
+================================================================================
+
+Model: yi_9b
+Target Layer: 8
+Samples: 30
+
+[1/5] Loading model...
+loading model yi_9b
+  → using dtype=float16 (default)
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/435 [00:00<?, ?it/s]Loading weights:   0%|          | 1/435 [00:00<05:29,  1.32it/s]Loading weights:   0%|          | 2/435 [00:00<03:10,  2.28it/s]Loading weights:   7%|▋         | 31/435 [00:01<00:09, 42.03it/s]Loading weights:   9%|▉         | 40/435 [00:01<00:08, 46.05it/s]Loading weights:  11%|█▏        | 49/435 [00:01<00:08, 45.65it/s]Loading weights:  13%|█▎        | 58/435 [00:01<00:07, 51.53it/s]Loading weights:  15%|█▌        | 67/435 [00:01<00:06, 52.77it/s]Loading weights:  17%|█▋        | 76/435 [00:02<00:07, 50.58it/s]Loading weights:  20%|█▉        | 85/435 [00:02<00:06, 52.44it/s]Loading weights:  22%|██▏       | 94/435 [00:02<00:06, 55.92it/s]Loading weights:  24%|██▎       | 103/435 [00:02<00:06, 55.11it/s]Loading weights:  26%|██▌       | 112/435 [00:02<00:05, 55.60it/s]Loading weights:  28%|██▊       | 121/435 [00:02<00:05, 54.06it/s]Loading weights:  30%|██▉       | 130/435 [00:02<00:05, 54.56it/s]Loading weights:  32%|███▏      | 139/435 [00:03<00:05, 49.81it/s]Loading weights:  34%|███▍      | 148/435 [00:03<00:05, 50.01it/s]Loading weights:  36%|███▌      | 157/435 [00:03<00:05, 47.75it/s]Loading weights:  38%|███▊      | 166/435 [00:03<00:05, 50.96it/s]Loading weights:  40%|████      | 175/435 [00:03<00:04, 52.44it/s]Loading weights:  42%|████▏     | 184/435 [00:04<00:04, 54.24it/s]Loading weights:  44%|████▍     | 193/435 [00:04<00:04, 55.27it/s]Loading weights:  46%|████▋     | 202/435 [00:04<00:03, 61.61it/s]Loading weights:  49%|████▊     | 211/435 [00:04<00:03, 65.16it/s]Loading weights:  51%|█████     | 220/435 [00:04<00:03, 69.25it/s]Loading weights:  53%|█████▎    | 229/435 [00:04<00:03, 65.54it/s]Loading weights:  55%|█████▍    | 238/435 [00:04<00:03, 65.15it/s]Loading weights:  57%|█████▋    | 248/435 [00:04<00:02, 68.83it/s]Loading weights:  60%|██████    | 262/435 [00:05<00:02, 85.11it/s]Loading weights:  62%|██████▏   | 271/435 [00:05<00:02, 80.02it/s]Loading weights:  64%|██████▍   | 280/435 [00:05<00:02, 74.97it/s]Loading weights:  66%|██████▌   | 288/435 [00:05<00:01, 74.85it/s]Loading weights:  68%|██████▊   | 296/435 [00:05<00:02, 67.69it/s]Loading weights:  70%|██████▉   | 303/435 [00:05<00:02, 63.80it/s]Loading weights:  71%|███████▏  | 310/435 [00:05<00:02, 58.80it/s]Loading weights:  73%|███████▎  | 319/435 [00:05<00:01, 62.18it/s]Loading weights:  75%|███████▌  | 328/435 [00:06<00:01, 63.47it/s]Loading weights:  77%|███████▋  | 337/435 [00:06<00:01, 65.38it/s]Loading weights:  80%|███████▉  | 346/435 [00:06<00:01, 64.29it/s]Loading weights:  82%|████████▏ | 355/435 [00:06<00:01, 65.18it/s]Loading weights:  84%|████████▎ | 364/435 [00:06<00:01, 68.56it/s]Loading weights:  86%|████████▌ | 373/435 [00:06<00:00, 63.01it/s]Loading weights:  88%|████████▊ | 382/435 [00:06<00:00, 64.98it/s]Loading weights:  90%|████████▉ | 391/435 [00:07<00:00, 50.33it/s]Loading weights:  92%|█████████▏| 400/435 [00:07<00:00, 53.96it/s]Loading weights:  94%|█████████▍| 409/435 [00:07<00:00, 52.37it/s]Loading weights:  96%|█████████▌| 418/435 [00:07<00:00, 52.48it/s]Loading weights:  98%|█████████▊| 427/435 [00:07<00:00, 50.88it/s]Loading weights: 100%|██████████| 435/435 [00:07<00:00, 55.06it/s]
+
+[2/5] Measuring baseline massive activations...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Token indices sequence length is longer than the specified maximum sequence length for this model (2872186 > 4096). Running this sequence through the model will result in indexing errors
+Measuring MA:   0%|          | 0/30 [00:00<?, ?it/s]Measuring MA:   3%|▎         | 1/30 [00:00<00:28,  1.03it/s]Measuring MA:   7%|▋         | 2/30 [00:01<00:25,  1.12it/s]Measuring MA:  10%|█         | 3/30 [00:02<00:24,  1.10it/s]Measuring MA:  13%|█▎        | 4/30 [00:03<00:23,  1.09it/s]Measuring MA:  17%|█▋        | 5/30 [00:04<00:23,  1.08it/s]Measuring MA:  20%|██        | 6/30 [00:05<00:22,  1.08it/s]Measuring MA:  23%|██▎       | 7/30 [00:06<00:21,  1.08it/s]Measuring MA:  27%|██▋       | 8/30 [00:07<00:20,  1.07it/s]Measuring MA:  30%|███       | 9/30 [00:08<00:19,  1.08it/s]Measuring MA:  33%|███▎      | 10/30 [00:09<00:18,  1.08it/s]Measuring MA:  37%|███▋      | 11/30 [00:10<00:17,  1.08it/s]Measuring MA:  40%|████      | 12/30 [00:11<00:16,  1.07it/s]Measuring MA:  43%|████▎     | 13/30 [00:12<00:15,  1.07it/s]Measuring MA:  47%|████▋     | 14/30 [00:12<00:14,  1.07it/s]Measuring MA:  50%|█████     | 15/30 [00:13<00:14,  1.07it/s]Measuring MA:  53%|█████▎    | 16/30 [00:14<00:13,  1.07it/s]Measuring MA:  57%|█████▋    | 17/30 [00:15<00:12,  1.07it/s]Measuring MA:  60%|██████    | 18/30 [00:16<00:11,  1.07it/s]Measuring MA:  63%|██████▎   | 19/30 [00:17<00:10,  1.07it/s]Measuring MA:  67%|██████▋   | 20/30 [00:18<00:09,  1.07it/s]Measuring MA:  70%|███████   | 21/30 [00:19<00:08,  1.07it/s]Measuring MA:  73%|███████▎  | 22/30 [00:20<00:07,  1.07it/s]Measuring MA:  77%|███████▋  | 23/30 [00:21<00:06,  1.07it/s]Measuring MA:  80%|████████  | 24/30 [00:22<00:05,  1.07it/s]Measuring MA:  83%|████████▎ | 25/30 [00:23<00:04,  1.07it/s]Measuring MA:  87%|████████▋ | 26/30 [00:24<00:03,  1.07it/s]Measuring MA:  90%|█████████ | 27/30 [00:25<00:02,  1.07it/s]Measuring MA:  93%|█████████▎| 28/30 [00:26<00:01,  1.07it/s]Measuring MA:  97%|█████████▋| 29/30 [00:27<00:00,  1.06it/s]Measuring MA: 100%|██████████| 30/30 [00:27<00:00,  1.07it/s]Measuring MA: 100%|██████████| 30/30 [00:27<00:00,  1.07it/s]
+  Baseline Top1 (mean): 5111.27
+  Baseline Top1 (max):  6380.00
+  Detected MA dims: [781, 728]
+    Dim 781: max = 6380.00
+    Dim 728: max = 277.00
+
+[3/5] Performing V-matrix ablation...
+  W_down shape: [4096, 11008]
+  sigma_1 = 5.4084
+  sigma_2 = 3.7717
+  eta (sigma_1/sigma_2) = 1.4340
+
+[4/5] Measuring ablated massive activations...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Measuring MA:   0%|          | 0/30 [00:00<?, ?it/s]Measuring MA:   3%|▎         | 1/30 [00:00<00:21,  1.34it/s]Measuring MA:   7%|▋         | 2/30 [00:01<00:21,  1.28it/s]Measuring MA:  10%|█         | 3/30 [00:02<00:23,  1.17it/s]Measuring MA:  13%|█▎        | 4/30 [00:03<00:22,  1.15it/s]Measuring MA:  17%|█▋        | 5/30 [00:04<00:22,  1.11it/s]Measuring MA:  20%|██        | 6/30 [00:05<00:21,  1.11it/s]Measuring MA:  23%|██▎       | 7/30 [00:06<00:20,  1.10it/s]Measuring MA:  27%|██▋       | 8/30 [00:07<00:20,  1.10it/s]Measuring MA:  30%|███       | 9/30 [00:08<00:19,  1.10it/s]Measuring MA:  33%|███▎      | 10/30 [00:08<00:18,  1.09it/s]Measuring MA:  37%|███▋      | 11/30 [00:09<00:17,  1.10it/s]Measuring MA:  40%|████      | 12/30 [00:10<00:16,  1.09it/s]Measuring MA:  43%|████▎     | 13/30 [00:11<00:15,  1.08it/s]Measuring MA:  47%|████▋     | 14/30 [00:12<00:14,  1.08it/s]Measuring MA:  50%|█████     | 15/30 [00:13<00:13,  1.09it/s]Measuring MA:  53%|█████▎    | 16/30 [00:14<00:12,  1.09it/s]Measuring MA:  57%|█████▋    | 17/30 [00:15<00:11,  1.08it/s]Measuring MA:  60%|██████    | 18/30 [00:16<00:11,  1.09it/s]Measuring MA:  63%|██████▎   | 19/30 [00:17<00:10,  1.09it/s]Measuring MA:  67%|██████▋   | 20/30 [00:18<00:09,  1.08it/s]Measuring MA:  70%|███████   | 21/30 [00:19<00:08,  1.09it/s]Measuring MA:  73%|███████▎  | 22/30 [00:19<00:07,  1.09it/s]Measuring MA:  77%|███████▋  | 23/30 [00:20<00:06,  1.08it/s]Measuring MA:  80%|████████  | 24/30 [00:21<00:05,  1.09it/s]Measuring MA:  83%|████████▎ | 25/30 [00:22<00:04,  1.08it/s]Measuring MA:  87%|████████▋ | 26/30 [00:23<00:03,  1.09it/s]Measuring MA:  90%|█████████ | 27/30 [00:24<00:02,  1.09it/s]Measuring MA:  93%|█████████▎| 28/30 [00:25<00:01,  1.08it/s]Measuring MA:  97%|█████████▋| 29/30 [00:26<00:00,  1.08it/s]Measuring MA: 100%|██████████| 30/30 [00:27<00:00,  1.08it/s]Measuring MA: 100%|██████████| 30/30 [00:27<00:00,  1.10it/s]
+  Ablated Top1 (mean): 286.64
+  Ablated Top1 (max):  314.75
+
+[5/5] Restoring original weights...
+
+================================================================================
+RESULTS
+================================================================================
+
+  ΔMA (Top1 mean): -94.4%
+  ΔMA (Top1 max):  -95.1%
+  ΔMA (Dim 781):    -100.0%
+  ΔMA (Dim 728):    +2.6%
+
+  Theoretical prediction (Eq. 10): 99.2%
+  (based on d_ff = 11008)
+
+Results saved to: /tmp/systemd_rq5/yi_9b/yi_9b_v_ablation_results.json
+
+================================================================================
+SUMMARY
+================================================================================
+  Model: yi_9b
+  Layer: 8
+  eta (σ₁/σ₂): 1.43
+  Baseline MA: 5111.27
+  Ablated MA:  286.64
+  ΔMA: -94.4%
+  Theoretical: 99.2%
+
+  Conclusion: V-matrix ablation confirms
+  that V-matrix geometry is causally necessary for MA generation.
+================================================================================

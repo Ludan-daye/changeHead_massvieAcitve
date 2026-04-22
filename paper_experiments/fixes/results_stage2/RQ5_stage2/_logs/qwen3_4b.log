@@ -1,0 +1,75 @@
+
+================================================================================
+EXPERIMENT 5: V-MATRIX CAUSAL ABLATION
+================================================================================
+
+Model: qwen3_4b
+Target Layer: 0
+Samples: 30
+
+[1/5] Loading model...
+loading model qwen3_4b
+  → using dtype=float16 (default)
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/398 [00:00<?, ?it/s]Loading weights:   0%|          | 1/398 [00:00<01:40,  3.95it/s]Loading weights:  18%|█▊        | 70/398 [00:00<00:01, 243.41it/s]Loading weights:  27%|██▋       | 108/398 [00:00<00:01, 279.96it/s]Loading weights:  37%|███▋      | 146/398 [00:00<00:00, 296.01it/s]Loading weights:  45%|████▌     | 181/398 [00:00<00:00, 306.71it/s]Loading weights:  56%|█████▌    | 223/398 [00:00<00:00, 326.30it/s]Loading weights:  65%|██████▍   | 258/398 [00:00<00:00, 317.88it/s]Loading weights:  73%|███████▎  | 292/398 [00:01<00:00, 311.87it/s]Loading weights:  84%|████████▎ | 333/398 [00:01<00:00, 330.28it/s]Loading weights:  92%|█████████▏| 367/398 [00:01<00:00, 328.25it/s]Loading weights: 100%|██████████| 398/398 [00:01<00:00, 300.74it/s]
+
+[2/5] Measuring baseline massive activations...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Token indices sequence length is longer than the specified maximum sequence length for this model (2518423 > 131072). Running this sequence through the model will result in indexing errors
+Measuring MA:   0%|          | 0/30 [00:00<?, ?it/s]Measuring MA:   3%|▎         | 1/30 [00:00<00:18,  1.60it/s]Measuring MA:   7%|▋         | 2/30 [00:01<00:16,  1.70it/s]Measuring MA:  10%|█         | 3/30 [00:01<00:16,  1.65it/s]Measuring MA:  13%|█▎        | 4/30 [00:02<00:15,  1.64it/s]Measuring MA:  17%|█▋        | 5/30 [00:03<00:15,  1.62it/s]Measuring MA:  20%|██        | 6/30 [00:03<00:14,  1.63it/s]Measuring MA:  23%|██▎       | 7/30 [00:04<00:14,  1.62it/s]Measuring MA:  27%|██▋       | 8/30 [00:04<00:13,  1.62it/s]Measuring MA:  30%|███       | 9/30 [00:05<00:13,  1.61it/s]Measuring MA:  33%|███▎      | 10/30 [00:06<00:12,  1.61it/s]Measuring MA:  37%|███▋      | 11/30 [00:06<00:11,  1.62it/s]Measuring MA:  40%|████      | 12/30 [00:07<00:11,  1.62it/s]Measuring MA:  43%|████▎     | 13/30 [00:08<00:10,  1.61it/s]Measuring MA:  47%|████▋     | 14/30 [00:08<00:09,  1.61it/s]Measuring MA:  50%|█████     | 15/30 [00:09<00:09,  1.61it/s]Measuring MA:  53%|█████▎    | 16/30 [00:09<00:08,  1.62it/s]Measuring MA:  57%|█████▋    | 17/30 [00:10<00:08,  1.62it/s]Measuring MA:  60%|██████    | 18/30 [00:11<00:07,  1.62it/s]Measuring MA:  63%|██████▎   | 19/30 [00:11<00:06,  1.62it/s]Measuring MA:  67%|██████▋   | 20/30 [00:12<00:06,  1.60it/s]Measuring MA:  70%|███████   | 21/30 [00:12<00:05,  1.61it/s]Measuring MA:  73%|███████▎  | 22/30 [00:13<00:04,  1.62it/s]Measuring MA:  77%|███████▋  | 23/30 [00:14<00:04,  1.62it/s]Measuring MA:  80%|████████  | 24/30 [00:14<00:03,  1.61it/s]Measuring MA:  83%|████████▎ | 25/30 [00:15<00:03,  1.62it/s]Measuring MA:  87%|████████▋ | 26/30 [00:16<00:02,  1.61it/s]Measuring MA:  90%|█████████ | 27/30 [00:16<00:01,  1.62it/s]Measuring MA:  93%|█████████▎| 28/30 [00:17<00:01,  1.62it/s]Measuring MA:  97%|█████████▋| 29/30 [00:17<00:00,  1.61it/s]Measuring MA: 100%|██████████| 30/30 [00:18<00:00,  1.61it/s]Measuring MA: 100%|██████████| 30/30 [00:18<00:00,  1.62it/s]
+  Baseline Top1 (mean): 7.56
+  Baseline Top1 (max):  8.77
+  Detected MA dims: [0, 216]
+    Dim 0: max = 8.77
+    Dim 216: max = 3.53
+
+[3/5] Performing V-matrix ablation...
+  W_down shape: [2560, 9728]
+  sigma_1 = 9.4196
+  sigma_2 = 5.4923
+  eta (sigma_1/sigma_2) = 1.7150
+
+[4/5] Measuring ablated massive activations...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Measuring MA:   0%|          | 0/30 [00:00<?, ?it/s]Measuring MA:   3%|▎         | 1/30 [00:00<00:12,  2.24it/s]Measuring MA:   7%|▋         | 2/30 [00:01<00:14,  1.87it/s]Measuring MA:  10%|█         | 3/30 [00:01<00:15,  1.76it/s]Measuring MA:  13%|█▎        | 4/30 [00:02<00:15,  1.70it/s]Measuring MA:  17%|█▋        | 5/30 [00:02<00:15,  1.66it/s]Measuring MA:  20%|██        | 6/30 [00:03<00:14,  1.65it/s]Measuring MA:  23%|██▎       | 7/30 [00:04<00:14,  1.64it/s]Measuring MA:  27%|██▋       | 8/30 [00:04<00:13,  1.64it/s]Measuring MA:  30%|███       | 9/30 [00:05<00:12,  1.62it/s]Measuring MA:  33%|███▎      | 10/30 [00:05<00:12,  1.62it/s]Measuring MA:  37%|███▋      | 11/30 [00:06<00:11,  1.62it/s]Measuring MA:  40%|████      | 12/30 [00:07<00:11,  1.61it/s]Measuring MA:  43%|████▎     | 13/30 [00:07<00:10,  1.62it/s]Measuring MA:  47%|████▋     | 14/30 [00:08<00:09,  1.62it/s]Measuring MA:  50%|█████     | 15/30 [00:09<00:09,  1.61it/s]Measuring MA:  53%|█████▎    | 16/30 [00:09<00:08,  1.61it/s]Measuring MA:  57%|█████▋    | 17/30 [00:10<00:08,  1.61it/s]Measuring MA:  60%|██████    | 18/30 [00:10<00:07,  1.62it/s]Measuring MA:  63%|██████▎   | 19/30 [00:11<00:06,  1.61it/s]Measuring MA:  67%|██████▋   | 20/30 [00:12<00:06,  1.61it/s]Measuring MA:  70%|███████   | 21/30 [00:12<00:05,  1.61it/s]Measuring MA:  73%|███████▎  | 22/30 [00:13<00:04,  1.61it/s]Measuring MA:  77%|███████▋  | 23/30 [00:14<00:04,  1.61it/s]Measuring MA:  80%|████████  | 24/30 [00:14<00:03,  1.62it/s]Measuring MA:  83%|████████▎ | 25/30 [00:15<00:03,  1.62it/s]Measuring MA:  87%|████████▋ | 26/30 [00:15<00:02,  1.61it/s]Measuring MA:  90%|█████████ | 27/30 [00:16<00:01,  1.61it/s]Measuring MA:  93%|█████████▎| 28/30 [00:17<00:01,  1.61it/s]Measuring MA:  97%|█████████▋| 29/30 [00:17<00:00,  1.61it/s]Measuring MA: 100%|██████████| 30/30 [00:18<00:00,  1.61it/s]Measuring MA: 100%|██████████| 30/30 [00:18<00:00,  1.63it/s]
+  Ablated Top1 (mean): 2.98
+  Ablated Top1 (max):  3.23
+
+[5/5] Restoring original weights...
+
+================================================================================
+RESULTS
+================================================================================
+
+  ΔMA (Top1 mean): -60.6%
+  ΔMA (Top1 max):  -63.2%
+  ΔMA (Dim 0):    -63.2%
+  ΔMA (Dim 216):    -100.0%
+
+  Theoretical prediction (Eq. 10): 99.2%
+  (based on d_ff = 9728)
+
+Results saved to: /tmp/systemd_rq5/qwen3_4b/qwen3_4b_v_ablation_results.json
+
+================================================================================
+SUMMARY
+================================================================================
+  Model: qwen3_4b
+  Layer: 0
+  eta (σ₁/σ₂): 1.72
+  Baseline MA: 7.56
+  Ablated MA:  2.98
+  ΔMA: -60.6%
+  Theoretical: 99.2%
+
+  Conclusion: V-matrix ablation confirms
+  that V-matrix geometry is causally necessary for MA generation.
+================================================================================
+[W422 05:25:49.914298455 AllocatorConfig.cpp:28] Warning: PYTORCH_CUDA_ALLOC_CONF is deprecated, use PYTORCH_ALLOC_CONF instead (function operator())
