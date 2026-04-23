@@ -1,0 +1,2220 @@
+/bin/bash: warning: setlocale: LC_ALL: cannot change locale (zh_CN.UTF-8)
+================================================================================
+🔬 Experiment 2B: MLP Layer-wise Ablation
+================================================================================
+模型: qwen3.5_9b
+样本数: 30
+并行任务数: 1
+保存目录: /tmp/systemd_rq2b/qwen35_9b
+================================================================================
+
+📊 加载模型获取层数...
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+`torch_dtype` is deprecated! Use `dtype` instead!
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s]Loading weights:   0%|          | 1/427 [00:02<16:54,  2.38s/it]Loading weights:   0%|          | 2/427 [00:04<15:03,  2.13s/it]Loading weights:   2%|▏         | 10/427 [00:04<02:00,  3.46it/s]Loading weights:   3%|▎         | 13/427 [00:04<01:32,  4.48it/s]Loading weights:   4%|▎         | 16/427 [00:04<01:07,  6.10it/s]Loading weights:   6%|▋         | 27/427 [00:04<00:29, 13.63it/s]Loading weights:   7%|▋         | 31/427 [00:05<00:26, 14.79it/s]Loading weights:   8%|▊         | 35/427 [00:05<00:23, 16.91it/s]Loading weights:  10%|▉         | 41/427 [00:05<00:22, 16.90it/s]Loading weights:  10%|█         | 44/427 [00:05<00:20, 18.31it/s]Loading weights:  11%|█         | 47/427 [00:05<00:19, 19.85it/s]Loading weights:  13%|█▎        | 54/427 [00:06<00:13, 27.57it/s]Loading weights:  15%|█▍        | 62/427 [00:06<00:10, 33.67it/s]Loading weights:  16%|█▌        | 67/427 [00:06<00:11, 30.15it/s]Loading weights:  17%|█▋        | 71/427 [00:06<00:11, 30.68it/s]Loading weights:  18%|█▊        | 75/427 [00:06<00:14, 23.48it/s]Loading weights:  19%|█▊        | 80/427 [00:06<00:13, 25.05it/s]Loading weights:  19%|█▉        | 83/427 [00:07<00:15, 22.12it/s]Loading weights:  21%|██        | 89/427 [00:07<00:16, 20.47it/s]Loading weights:  22%|██▏       | 94/427 [00:07<00:18, 18.10it/s]Loading weights:  23%|██▎       | 97/427 [00:08<00:19, 17.04it/s]Loading weights:  23%|██▎       | 99/427 [00:08<00:24, 13.22it/s]Loading weights:  24%|██▎       | 101/427 [00:08<00:26, 12.33it/s]Loading weights:  25%|██▌       | 107/427 [00:08<00:17, 18.65it/s]Loading weights:  27%|██▋       | 116/427 [00:08<00:10, 28.76it/s]Loading weights:  28%|██▊       | 120/427 [00:09<00:12, 23.89it/s]Loading weights:  29%|██▉       | 124/427 [00:09<00:11, 25.34it/s]Loading weights:  30%|███       | 129/427 [00:09<00:10, 29.15it/s]Loading weights:  31%|███       | 133/427 [00:09<00:14, 20.06it/s]Loading weights:  32%|███▏      | 136/427 [00:09<00:14, 19.45it/s]Loading weights:  34%|███▎      | 144/427 [00:10<00:09, 29.30it/s]Loading weights:  35%|███▍      | 148/427 [00:10<00:11, 24.58it/s]Loading weights:  36%|███▌      | 152/427 [00:10<00:11, 23.69it/s]Loading weights:  36%|███▋      | 155/427 [00:10<00:12, 21.24it/s]Loading weights:  37%|███▋      | 160/427 [00:10<00:10, 26.34it/s]Loading weights:  39%|███▉      | 168/427 [00:10<00:07, 35.19it/s]Loading weights:  41%|████      | 173/427 [00:11<00:08, 29.13it/s]Loading weights:  42%|████▏     | 181/427 [00:11<00:07, 31.81it/s]Loading weights:  44%|████▎     | 186/427 [00:11<00:08, 27.33it/s]Loading weights:  44%|████▍     | 190/427 [00:11<00:08, 28.47it/s]Loading weights:  46%|████▌     | 195/427 [00:11<00:07, 31.55it/s]Loading weights:  47%|████▋     | 200/427 [00:11<00:07, 31.53it/s]Loading weights:  48%|████▊     | 204/427 [00:12<00:08, 26.03it/s]Loading weights:  48%|████▊     | 207/427 [00:12<00:11, 18.58it/s]Loading weights:  50%|████▉     | 213/427 [00:12<00:08, 24.15it/s]Loading weights:  52%|█████▏    | 221/427 [00:13<00:08, 23.35it/s]Loading weights:  53%|█████▎    | 225/427 [00:13<00:08, 24.08it/s]Loading weights:  53%|█████▎    | 228/427 [00:13<00:09, 20.57it/s]Loading weights:  55%|█████▌    | 235/427 [00:13<00:07, 27.38it/s]Loading weights:  56%|█████▌    | 239/427 [00:13<00:07, 26.68it/s]Loading weights:  57%|█████▋    | 243/427 [00:13<00:07, 23.37it/s]Loading weights:  58%|█████▊    | 246/427 [00:14<00:07, 23.88it/s]Loading weights:  59%|█████▉    | 253/427 [00:14<00:06, 28.65it/s]Loading weights:  60%|██████    | 257/427 [00:14<00:06, 24.48it/s]Loading weights:  61%|██████    | 260/427 [00:15<00:11, 14.01it/s]Loading weights:  62%|██████▏   | 266/427 [00:15<00:08, 19.44it/s]Loading weights:  64%|██████▍   | 275/427 [00:15<00:05, 28.52it/s]Loading weights:  66%|██████▌   | 280/427 [00:15<00:06, 22.23it/s]Loading weights:  68%|██████▊   | 289/427 [00:15<00:04, 29.92it/s]Loading weights:  69%|██████▉   | 294/427 [00:16<00:05, 24.28it/s]Loading weights:  71%|███████   | 303/427 [00:16<00:03, 32.51it/s]Loading weights:  72%|███████▏  | 308/427 [00:16<00:04, 25.21it/s]Loading weights:  73%|███████▎  | 312/427 [00:16<00:04, 23.58it/s]Loading weights:  74%|███████▍  | 316/427 [00:16<00:04, 25.45it/s]Loading weights:  75%|███████▍  | 320/427 [00:17<00:03, 27.04it/s]Loading weights:  77%|███████▋  | 327/427 [00:17<00:02, 33.69it/s]Loading weights:  78%|███████▊  | 331/427 [00:17<00:03, 26.74it/s]Loading weights:  78%|███████▊  | 335/427 [00:17<00:03, 28.99it/s]Loading weights:  79%|███████▉  | 339/427 [00:17<00:02, 30.88it/s]Loading weights:  81%|████████  | 345/427 [00:17<00:03, 23.92it/s]Loading weights:  83%|████████▎ | 354/427 [00:18<00:02, 33.53it/s]Loading weights:  84%|████████▍ | 359/427 [00:18<00:01, 34.28it/s]Loading weights:  85%|████████▌ | 364/427 [00:18<00:02, 26.22it/s]Loading weights:  86%|████████▌ | 368/427 [00:18<00:02, 24.05it/s]Loading weights:  87%|████████▋ | 372/427 [00:18<00:02, 25.48it/s]Loading weights:  89%|████████▉ | 381/427 [00:18<00:01, 36.48it/s]Loading weights:  90%|█████████ | 386/427 [00:19<00:01, 26.93it/s]Loading weights:  91%|█████████▏| 390/427 [00:19<00:01, 28.22it/s]Loading weights:  93%|█████████▎| 398/427 [00:19<00:00, 35.57it/s]Loading weights:  94%|█████████▍| 403/427 [00:19<00:00, 31.28it/s]Loading weights:  96%|█████████▌| 409/427 [00:19<00:00, 35.83it/s]Loading weights:  97%|█████████▋| 414/427 [00:20<00:00, 26.69it/s]Loading weights:  98%|█████████▊| 418/427 [00:20<00:00, 24.34it/s]Loading weights:  99%|█████████▊| 421/427 [00:20<00:00, 24.73it/s]Loading weights: 100%|█████████▉| 425/427 [00:20<00:00, 19.37it/s]Loading weights: 100%|██████████| 427/427 [00:20<00:00, 20.46it/s]
+✅ 模型共 32 层
+
+🟢 Phase 1: Running Baseline (所有MLP正常)
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s]Loading weights:   0%|          | 1/427 [00:00<01:58,  3.60it/s]Loading weights:   0%|          | 2/427 [00:00<01:58,  3.57it/s]Loading weights:   7%|▋         | 28/427 [00:00<00:06, 61.11it/s]Loading weights:  11%|█         | 47/427 [00:00<00:04, 89.97it/s]Loading weights:  17%|█▋        | 71/427 [00:00<00:02, 127.85it/s]Loading weights:  22%|██▏       | 94/427 [00:00<00:02, 154.04it/s]Loading weights:  27%|██▋       | 114/427 [00:01<00:01, 163.24it/s]Loading weights:  31%|███▏      | 134/427 [00:01<00:01, 168.04it/s]Loading weights:  36%|███▌      | 153/427 [00:01<00:01, 156.05it/s]Loading weights:  43%|████▎     | 182/427 [00:01<00:01, 186.05it/s]Loading weights:  47%|████▋     | 202/427 [00:01<00:01, 174.54it/s]Loading weights:  53%|█████▎    | 225/427 [00:01<00:01, 188.91it/s]Loading weights:  57%|█████▋    | 245/427 [00:01<00:01, 181.93it/s]Loading weights:  62%|██████▏   | 264/427 [00:01<00:00, 179.60it/s]Loading weights:  68%|██████▊   | 292/427 [00:02<00:00, 199.40it/s]Loading weights:  73%|███████▎  | 313/427 [00:02<00:00, 177.11it/s]Loading weights:  79%|███████▉  | 339/427 [00:02<00:00, 197.76it/s]Loading weights:  84%|████████▍ | 360/427 [00:02<00:00, 190.47it/s]Loading weights:  89%|████████▉ | 380/427 [00:02<00:00, 192.89it/s]Loading weights:  94%|█████████▎| 400/427 [00:02<00:00, 184.31it/s]Loading weights:  98%|█████████▊| 419/427 [00:02<00:00, 172.61it/s]Loading weights: 100%|██████████| 427/427 [00:02<00:00, 153.91it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+Layer baseline:   0%|          | 0/30 [00:00<?, ?it/s]Layer baseline:   3%|▎         | 1/30 [00:01<00:40,  1.39s/it]Layer baseline:   7%|▋         | 2/30 [00:02<00:35,  1.26s/it]Layer baseline:  10%|█         | 3/30 [00:03<00:33,  1.24s/it]Layer baseline:  13%|█▎        | 4/30 [00:04<00:31,  1.22s/it]Layer baseline:  17%|█▋        | 5/30 [00:06<00:30,  1.21s/it]Layer baseline:  20%|██        | 6/30 [00:07<00:28,  1.20s/it]Layer baseline:  23%|██▎       | 7/30 [00:08<00:27,  1.20s/it]Layer baseline:  27%|██▋       | 8/30 [00:09<00:26,  1.20s/it]Layer baseline:  30%|███       | 9/30 [00:10<00:25,  1.20s/it]Layer baseline:  33%|███▎      | 10/30 [00:12<00:23,  1.20s/it]Layer baseline:  37%|███▋      | 11/30 [00:13<00:22,  1.21s/it]Layer baseline:  40%|████      | 12/30 [00:14<00:21,  1.20s/it]Layer baseline:  43%|████▎     | 13/30 [00:15<00:20,  1.19s/it]Layer baseline:  47%|████▋     | 14/30 [00:16<00:19,  1.19s/it]Layer baseline:  50%|█████     | 15/30 [00:18<00:17,  1.19s/it]Layer baseline:  53%|█████▎    | 16/30 [00:19<00:16,  1.21s/it]Layer baseline:  57%|█████▋    | 17/30 [00:20<00:15,  1.23s/it]Layer baseline:  60%|██████    | 18/30 [00:21<00:15,  1.25s/it]Layer baseline:  63%|██████▎   | 19/30 [00:23<00:13,  1.25s/it]Layer baseline:  67%|██████▋   | 20/30 [00:24<00:12,  1.23s/it]Layer baseline:  70%|███████   | 21/30 [00:25<00:10,  1.22s/it]Layer baseline:  73%|███████▎  | 22/30 [00:26<00:09,  1.21s/it]Layer baseline:  77%|███████▋  | 23/30 [00:28<00:08,  1.24s/it]Layer baseline:  80%|████████  | 24/30 [00:29<00:07,  1.25s/it]Layer baseline:  83%|████████▎ | 25/30 [00:30<00:06,  1.24s/it]Layer baseline:  87%|████████▋ | 26/30 [00:31<00:04,  1.22s/it]Layer baseline:  90%|█████████ | 27/30 [00:32<00:03,  1.21s/it]Layer baseline:  93%|█████████▎| 28/30 [00:34<00:02,  1.20s/it]Layer baseline:  97%|█████████▋| 29/30 [00:35<00:01,  1.19s/it]Layer baseline: 100%|██████████| 30/30 [00:36<00:00,  1.19s/it]Layer baseline: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it]
+✅ Baseline已保存: /tmp/systemd_rq2b/qwen35_9b/baseline.json
+
+🔴 Phase 2: Running Layer-wise MLP Ablation (逐层抑制)
+将运行 32 个实验（每次抑制一层MLP）
+📝 待运行 32 层: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]...
+逐层抑制MLP:   0%|          | 0/32 [00:00<?, ?it/s]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 0 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:15,  3.15it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:02,  3.46it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:06, 58.80it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:04, 81.82it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:00<00:03, 119.15it/s][A
+Loading weights:  20%|██        | 86/427 [00:01<00:02, 139.17it/s][A
+Loading weights:  25%|██▍       | 105/427 [00:01<00:02, 149.80it/s][A
+Loading weights:  30%|███       | 130/427 [00:01<00:01, 175.50it/s][A
+Loading weights:  35%|███▌      | 150/427 [00:01<00:01, 168.55it/s][A
+Loading weights:  40%|████      | 172/427 [00:01<00:01, 181.63it/s][A
+Loading weights:  45%|████▍     | 192/427 [00:01<00:01, 182.18it/s][A
+Loading weights:  50%|████▉     | 212/427 [00:01<00:01, 181.44it/s][A
+Loading weights:  56%|█████▌    | 239/427 [00:01<00:00, 199.74it/s][A
+Loading weights:  61%|██████    | 260/427 [00:01<00:00, 175.39it/s][A
+Loading weights:  67%|██████▋   | 288/427 [00:02<00:00, 201.92it/s][A
+Loading weights:  73%|███████▎  | 310/427 [00:02<00:00, 199.74it/s][A
+Loading weights:  78%|███████▊  | 332/427 [00:02<00:00, 198.71it/s][A
+Loading weights:  83%|████████▎ | 353/427 [00:02<00:00, 199.32it/s][A
+Loading weights:  88%|████████▊ | 374/427 [00:02<00:00, 183.99it/s][A
+Loading weights:  93%|█████████▎| 396/427 [00:02<00:00, 188.21it/s][A
+Loading weights:  97%|█████████▋| 416/427 [00:02<00:00, 190.62it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 153.98it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 0:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 0:   3%|▎         | 1/30 [00:01<00:34,  1.18s/it][A
+Layer 0:   7%|▋         | 2/30 [00:02<00:33,  1.18s/it][A
+Layer 0:  10%|█         | 3/30 [00:03<00:32,  1.19s/it][A
+Layer 0:  13%|█▎        | 4/30 [00:04<00:30,  1.18s/it][A
+Layer 0:  17%|█▋        | 5/30 [00:05<00:29,  1.18s/it][A
+Layer 0:  20%|██        | 6/30 [00:07<00:28,  1.20s/it][A
+Layer 0:  23%|██▎       | 7/30 [00:08<00:27,  1.19s/it][A
+Layer 0:  27%|██▋       | 8/30 [00:09<00:26,  1.21s/it][A
+Layer 0:  30%|███       | 9/30 [00:10<00:25,  1.20s/it][A
+Layer 0:  33%|███▎      | 10/30 [00:11<00:23,  1.19s/it][A
+Layer 0:  37%|███▋      | 11/30 [00:13<00:22,  1.19s/it][A
+Layer 0:  40%|████      | 12/30 [00:14<00:21,  1.19s/it][A
+Layer 0:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 0:  47%|████▋     | 14/30 [00:16<00:19,  1.19s/it][A
+Layer 0:  50%|█████     | 15/30 [00:17<00:17,  1.19s/it][A
+Layer 0:  53%|█████▎    | 16/30 [00:19<00:16,  1.19s/it][A
+Layer 0:  57%|█████▋    | 17/30 [00:20<00:15,  1.19s/it][A
+Layer 0:  60%|██████    | 18/30 [00:21<00:14,  1.19s/it][A
+Layer 0:  63%|██████▎   | 19/30 [00:22<00:13,  1.20s/it][A
+Layer 0:  67%|██████▋   | 20/30 [00:23<00:11,  1.20s/it][A
+Layer 0:  70%|███████   | 21/30 [00:25<00:10,  1.19s/it][A
+Layer 0:  73%|███████▎  | 22/30 [00:26<00:09,  1.19s/it][A
+Layer 0:  77%|███████▋  | 23/30 [00:27<00:08,  1.19s/it][A
+Layer 0:  80%|████████  | 24/30 [00:28<00:07,  1.19s/it][A
+Layer 0:  83%|████████▎ | 25/30 [00:29<00:05,  1.20s/it][A
+Layer 0:  87%|████████▋ | 26/30 [00:31<00:04,  1.20s/it][A
+Layer 0:  90%|█████████ | 27/30 [00:32<00:03,  1.22s/it][A
+Layer 0:  93%|█████████▎| 28/30 [00:33<00:02,  1.21s/it][A
+Layer 0:  97%|█████████▋| 29/30 [00:34<00:01,  1.21s/it][A
+Layer 0: 100%|██████████| 30/30 [00:35<00:00,  1.23s/it][ALayer 0: 100%|██████████| 30/30 [00:35<00:00,  1.20s/it]
+✅ Layer 0 完成并保存
+📊 总进度: 1/32 (3.1%)
+逐层抑制MLP:   3%|▎         | 1/32 [00:56<29:03, 56.23s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 1 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<05:15,  1.35it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:09, 42.64it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:05, 64.05it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:01<00:03, 96.75it/s][A
+Loading weights:  20%|█▉        | 84/427 [00:01<00:03, 113.34it/s][A
+Loading weights:  24%|██▎       | 101/427 [00:01<00:02, 118.78it/s][A
+Loading weights:  30%|██▉       | 128/427 [00:01<00:01, 154.43it/s][A
+Loading weights:  35%|███▍      | 148/427 [00:01<00:01, 144.44it/s][A
+Loading weights:  40%|████      | 172/427 [00:01<00:01, 161.16it/s][A
+Loading weights:  45%|████▍     | 191/427 [00:01<00:01, 165.84it/s][A
+Loading weights:  49%|████▉     | 210/427 [00:01<00:01, 162.92it/s][A
+Loading weights:  55%|█████▍    | 234/427 [00:02<00:01, 177.26it/s][A
+Loading weights:  59%|█████▉    | 253/427 [00:02<00:00, 178.90it/s][A
+Loading weights:  64%|██████▎   | 272/427 [00:02<00:00, 176.09it/s][A
+Loading weights:  68%|██████▊   | 291/427 [00:02<00:00, 179.07it/s][A
+Loading weights:  73%|███████▎  | 310/427 [00:02<00:00, 171.52it/s][A
+Loading weights:  78%|███████▊  | 331/427 [00:02<00:00, 177.47it/s][A
+Loading weights:  82%|████████▏ | 349/427 [00:02<00:00, 174.88it/s][A
+Loading weights:  86%|████████▌ | 367/427 [00:02<00:00, 168.61it/s][A
+Loading weights:  92%|█████████▏| 394/427 [00:02<00:00, 192.61it/s][A
+Loading weights:  97%|█████████▋| 414/427 [00:03<00:00, 182.78it/s][ALoading weights: 100%|██████████| 427/427 [00:03<00:00, 138.49it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 1:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 1:   3%|▎         | 1/30 [00:01<00:37,  1.30s/it][A
+Layer 1:   7%|▋         | 2/30 [00:02<00:34,  1.24s/it][A
+Layer 1:  10%|█         | 3/30 [00:03<00:33,  1.24s/it][A
+Layer 1:  13%|█▎        | 4/30 [00:04<00:31,  1.22s/it][A
+Layer 1:  17%|█▋        | 5/30 [00:06<00:30,  1.21s/it][A
+Layer 1:  20%|██        | 6/30 [00:07<00:29,  1.21s/it][A
+Layer 1:  23%|██▎       | 7/30 [00:08<00:27,  1.20s/it][A
+Layer 1:  27%|██▋       | 8/30 [00:09<00:26,  1.20s/it][A
+Layer 1:  30%|███       | 9/30 [00:10<00:25,  1.21s/it][A
+Layer 1:  33%|███▎      | 10/30 [00:12<00:24,  1.21s/it][A
+Layer 1:  37%|███▋      | 11/30 [00:13<00:22,  1.21s/it][A
+Layer 1:  40%|████      | 12/30 [00:14<00:21,  1.20s/it][A
+Layer 1:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 1:  47%|████▋     | 14/30 [00:16<00:19,  1.20s/it][A
+Layer 1:  50%|█████     | 15/30 [00:18<00:17,  1.20s/it][A
+Layer 1:  53%|█████▎    | 16/30 [00:19<00:16,  1.21s/it][A
+Layer 1:  57%|█████▋    | 17/30 [00:20<00:15,  1.21s/it][A
+Layer 1:  60%|██████    | 18/30 [00:21<00:14,  1.20s/it][A
+Layer 1:  63%|██████▎   | 19/30 [00:22<00:13,  1.21s/it][A
+Layer 1:  67%|██████▋   | 20/30 [00:24<00:12,  1.20s/it][A
+Layer 1:  70%|███████   | 21/30 [00:25<00:10,  1.20s/it][A
+Layer 1:  73%|███████▎  | 22/30 [00:26<00:09,  1.20s/it][A
+Layer 1:  77%|███████▋  | 23/30 [00:27<00:08,  1.19s/it][A
+Layer 1:  80%|████████  | 24/30 [00:28<00:07,  1.19s/it][A
+Layer 1:  83%|████████▎ | 25/30 [00:30<00:05,  1.19s/it][A
+Layer 1:  87%|████████▋ | 26/30 [00:31<00:04,  1.19s/it][A
+Layer 1:  90%|█████████ | 27/30 [00:32<00:03,  1.19s/it][A
+Layer 1:  93%|█████████▎| 28/30 [00:33<00:02,  1.19s/it][A
+Layer 1:  97%|█████████▋| 29/30 [00:34<00:01,  1.20s/it][A
+Layer 1: 100%|██████████| 30/30 [00:36<00:00,  1.19s/it][ALayer 1: 100%|██████████| 30/30 [00:36<00:00,  1.20s/it]
+✅ Layer 1 完成并保存
+📊 总进度: 2/32 (6.2%)
+逐层抑制MLP:   6%|▋         | 2/32 [01:53<28:24, 56.83s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 2 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:43,  2.60it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:23,  2.97it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:07, 52.10it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:05, 75.51it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:00<00:03, 110.80it/s][A
+Loading weights:  19%|█▉        | 83/427 [00:01<00:02, 124.43it/s][A
+Loading weights:  24%|██▎       | 101/427 [00:01<00:02, 134.08it/s][A
+Loading weights:  29%|██▉       | 125/427 [00:01<00:01, 161.46it/s][A
+Loading weights:  34%|███▍      | 147/427 [00:01<00:01, 173.35it/s][A
+Loading weights:  39%|███▉      | 167/427 [00:01<00:01, 174.10it/s][A
+Loading weights:  44%|████▎     | 186/427 [00:01<00:01, 177.15it/s][A
+Loading weights:  48%|████▊     | 205/427 [00:01<00:01, 173.65it/s][A
+Loading weights:  53%|█████▎    | 226/427 [00:01<00:01, 174.35it/s][A
+Loading weights:  59%|█████▉    | 253/427 [00:01<00:00, 194.53it/s][A
+Loading weights:  64%|██████▍   | 273/427 [00:02<00:00, 189.10it/s][A
+Loading weights:  69%|██████▊   | 293/427 [00:02<00:00, 183.25it/s][A
+Loading weights:  73%|███████▎  | 312/427 [00:02<00:00, 176.33it/s][A
+Loading weights:  78%|███████▊  | 333/427 [00:02<00:00, 184.60it/s][A
+Loading weights:  84%|████████▍ | 359/427 [00:02<00:00, 202.66it/s][A
+Loading weights:  89%|████████▉ | 380/427 [00:02<00:00, 202.32it/s][A
+Loading weights:  94%|█████████▍| 401/427 [00:02<00:00, 190.30it/s][A
+Loading weights:  99%|█████████▊| 421/427 [00:02<00:00, 189.10it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 147.21it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 2:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 2:   3%|▎         | 1/30 [00:01<00:34,  1.20s/it][A
+Layer 2:   7%|▋         | 2/30 [00:02<00:33,  1.20s/it][A
+Layer 2:  10%|█         | 3/30 [00:03<00:32,  1.21s/it][A
+Layer 2:  13%|█▎        | 4/30 [00:04<00:31,  1.21s/it][A
+Layer 2:  17%|█▋        | 5/30 [00:06<00:30,  1.21s/it][A
+Layer 2:  20%|██        | 6/30 [00:07<00:29,  1.22s/it][A
+Layer 2:  23%|██▎       | 7/30 [00:08<00:27,  1.21s/it][A
+Layer 2:  27%|██▋       | 8/30 [00:09<00:26,  1.21s/it][A
+Layer 2:  30%|███       | 9/30 [00:10<00:25,  1.21s/it][A
+Layer 2:  33%|███▎      | 10/30 [00:12<00:24,  1.20s/it][A
+Layer 2:  37%|███▋      | 11/30 [00:13<00:22,  1.20s/it][A
+Layer 2:  40%|████      | 12/30 [00:14<00:21,  1.20s/it][A
+Layer 2:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 2:  47%|████▋     | 14/30 [00:16<00:19,  1.20s/it][A
+Layer 2:  50%|█████     | 15/30 [00:18<00:18,  1.22s/it][A
+Layer 2:  53%|█████▎    | 16/30 [00:19<00:17,  1.23s/it][A
+Layer 2:  57%|█████▋    | 17/30 [00:20<00:15,  1.23s/it][A
+Layer 2:  60%|██████    | 18/30 [00:21<00:14,  1.23s/it][A
+Layer 2:  63%|██████▎   | 19/30 [00:23<00:13,  1.22s/it][A
+Layer 2:  67%|██████▋   | 20/30 [00:24<00:12,  1.21s/it][A
+Layer 2:  70%|███████   | 21/30 [00:25<00:10,  1.21s/it][A
+Layer 2:  73%|███████▎  | 22/30 [00:26<00:09,  1.22s/it][A
+Layer 2:  77%|███████▋  | 23/30 [00:27<00:08,  1.21s/it][A
+Layer 2:  80%|████████  | 24/30 [00:29<00:07,  1.21s/it][A
+Layer 2:  83%|████████▎ | 25/30 [00:30<00:06,  1.21s/it][A
+Layer 2:  87%|████████▋ | 26/30 [00:31<00:04,  1.21s/it][A
+Layer 2:  90%|█████████ | 27/30 [00:32<00:03,  1.22s/it][A
+Layer 2:  93%|█████████▎| 28/30 [00:33<00:02,  1.21s/it][A
+Layer 2:  97%|█████████▋| 29/30 [00:35<00:01,  1.21s/it][A
+Layer 2: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it][ALayer 2: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it]
+✅ Layer 2 完成并保存
+📊 总进度: 3/32 (9.4%)
+逐层抑制MLP:   9%|▉         | 3/32 [02:49<27:12, 56.28s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 3 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<04:45,  1.49it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:09, 43.47it/s][A
+Loading weights:  11%|█         | 47/427 [00:00<00:05, 70.34it/s][A
+Loading weights:  17%|█▋        | 73/427 [00:01<00:03, 107.76it/s][A
+Loading weights:  22%|██▏       | 94/427 [00:01<00:02, 129.97it/s][A
+Loading weights:  26%|██▋       | 113/427 [00:01<00:02, 136.92it/s][A
+Loading weights:  31%|███▏      | 134/427 [00:01<00:01, 148.01it/s][A
+Loading weights:  36%|███▌      | 152/427 [00:01<00:01, 149.25it/s][A
+Loading weights:  41%|████      | 173/427 [00:01<00:01, 158.47it/s][A
+Loading weights:  45%|████▌     | 193/427 [00:01<00:01, 159.37it/s][A
+Loading weights:  50%|████▉     | 213/427 [00:01<00:01, 168.73it/s][A
+Loading weights:  56%|█████▌    | 238/427 [00:01<00:01, 188.45it/s][A
+Loading weights:  60%|██████    | 258/427 [00:02<00:01, 168.81it/s][A
+Loading weights:  65%|██████▌   | 279/427 [00:02<00:00, 174.12it/s][A
+Loading weights:  71%|███████   | 303/427 [00:02<00:00, 190.01it/s][A
+Loading weights:  76%|███████▌  | 323/427 [00:02<00:00, 177.61it/s][A
+Loading weights:  81%|████████  | 345/427 [00:02<00:00, 187.17it/s][A
+Loading weights:  85%|████████▌ | 365/427 [00:02<00:00, 178.69it/s][A
+Loading weights:  92%|█████████▏| 391/427 [00:02<00:00, 192.51it/s][A
+Loading weights:  97%|█████████▋| 413/427 [00:02<00:00, 192.21it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 142.95it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 3:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 3:   3%|▎         | 1/30 [00:01<00:35,  1.21s/it][A
+Layer 3:   7%|▋         | 2/30 [00:02<00:33,  1.20s/it][A
+Layer 3:  10%|█         | 3/30 [00:03<00:32,  1.20s/it][A
+Layer 3:  13%|█▎        | 4/30 [00:04<00:31,  1.20s/it][A
+Layer 3:  17%|█▋        | 5/30 [00:06<00:29,  1.20s/it][A
+Layer 3:  20%|██        | 6/30 [00:07<00:28,  1.20s/it][A
+Layer 3:  23%|██▎       | 7/30 [00:08<00:27,  1.20s/it][A
+Layer 3:  27%|██▋       | 8/30 [00:09<00:26,  1.20s/it][A
+Layer 3:  30%|███       | 9/30 [00:10<00:25,  1.20s/it][A
+Layer 3:  33%|███▎      | 10/30 [00:12<00:24,  1.24s/it][A
+Layer 3:  37%|███▋      | 11/30 [00:13<00:23,  1.25s/it][A
+Layer 3:  40%|████      | 12/30 [00:14<00:22,  1.23s/it][A
+Layer 3:  43%|████▎     | 13/30 [00:15<00:20,  1.22s/it][A
+Layer 3:  47%|████▋     | 14/30 [00:17<00:19,  1.24s/it][A
+Layer 3:  50%|█████     | 15/30 [00:18<00:18,  1.23s/it][A
+Layer 3:  53%|█████▎    | 16/30 [00:19<00:17,  1.22s/it][A
+Layer 3:  57%|█████▋    | 17/30 [00:20<00:15,  1.21s/it][A
+Layer 3:  60%|██████    | 18/30 [00:21<00:14,  1.21s/it][A
+Layer 3:  63%|██████▎   | 19/30 [00:23<00:13,  1.20s/it][A
+Layer 3:  67%|██████▋   | 20/30 [00:24<00:12,  1.20s/it][A
+Layer 3:  70%|███████   | 21/30 [00:25<00:10,  1.21s/it][A
+Layer 3:  73%|███████▎  | 22/30 [00:26<00:09,  1.21s/it][A
+Layer 3:  77%|███████▋  | 23/30 [00:27<00:08,  1.20s/it][A
+Layer 3:  80%|████████  | 24/30 [00:29<00:07,  1.23s/it][A
+Layer 3:  83%|████████▎ | 25/30 [00:30<00:06,  1.23s/it][A
+Layer 3:  87%|████████▋ | 26/30 [00:31<00:04,  1.22s/it][A
+Layer 3:  90%|█████████ | 27/30 [00:32<00:03,  1.22s/it][A
+Layer 3:  93%|█████████▎| 28/30 [00:34<00:02,  1.22s/it][A
+Layer 3:  97%|█████████▋| 29/30 [00:35<00:01,  1.21s/it][A
+Layer 3: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it][ALayer 3: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it]
+✅ Layer 3 完成并保存
+📊 总进度: 4/32 (12.5%)
+逐层抑制MLP:  12%|█▎        | 4/32 [03:45<26:12, 56.15s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 4 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:50,  2.50it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:24,  2.94it/s][A
+Loading weights:   5%|▍         | 21/427 [00:00<00:10, 39.25it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:04, 78.02it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:01<00:03, 111.96it/s][A
+Loading weights:  19%|█▉        | 83/427 [00:01<00:02, 125.00it/s][A
+Loading weights:  23%|██▎       | 100/427 [00:01<00:02, 136.43it/s][A
+Loading weights:  28%|██▊       | 118/427 [00:01<00:02, 143.70it/s][A
+Loading weights:  33%|███▎      | 143/427 [00:01<00:01, 160.29it/s][A
+Loading weights:  38%|███▊      | 161/427 [00:01<00:01, 162.23it/s][A
+Loading weights:  43%|████▎     | 183/427 [00:01<00:01, 177.52it/s][A
+Loading weights:  47%|████▋     | 202/427 [00:01<00:01, 167.07it/s][A
+Loading weights:  52%|█████▏    | 224/427 [00:01<00:01, 180.35it/s][A
+Loading weights:  57%|█████▋    | 243/427 [00:02<00:01, 163.67it/s][A
+Loading weights:  61%|██████    | 261/427 [00:02<00:01, 159.42it/s][A
+Loading weights:  66%|██████▌   | 280/427 [00:02<00:00, 167.34it/s][A
+Loading weights:  71%|███████▏  | 305/427 [00:02<00:00, 187.71it/s][A
+Loading weights:  76%|███████▌  | 325/427 [00:02<00:00, 173.61it/s][A
+Loading weights:  81%|████████  | 344/427 [00:02<00:00, 168.99it/s][A
+Loading weights:  85%|████████▍ | 362/427 [00:02<00:00, 168.94it/s][A
+Loading weights:  90%|█████████ | 385/427 [00:02<00:00, 182.37it/s][A
+Loading weights:  95%|█████████▍| 405/427 [00:02<00:00, 182.73it/s][A
+Loading weights:  99%|█████████▉| 424/427 [00:03<00:00, 171.55it/s][ALoading weights: 100%|██████████| 427/427 [00:03<00:00, 138.70it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 4:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 4:   3%|▎         | 1/30 [00:01<00:35,  1.21s/it][A
+Layer 4:   7%|▋         | 2/30 [00:02<00:33,  1.21s/it][A
+Layer 4:  10%|█         | 3/30 [00:03<00:32,  1.20s/it][A
+Layer 4:  13%|█▎        | 4/30 [00:04<00:31,  1.20s/it][A
+Layer 4:  17%|█▋        | 5/30 [00:05<00:29,  1.20s/it][A
+Layer 4:  20%|██        | 6/30 [00:07<00:28,  1.20s/it][A
+Layer 4:  23%|██▎       | 7/30 [00:08<00:27,  1.20s/it][A
+Layer 4:  27%|██▋       | 8/30 [00:09<00:26,  1.20s/it][A
+Layer 4:  30%|███       | 9/30 [00:10<00:25,  1.20s/it][A
+Layer 4:  33%|███▎      | 10/30 [00:12<00:24,  1.20s/it][A
+Layer 4:  37%|███▋      | 11/30 [00:13<00:22,  1.20s/it][A
+Layer 4:  40%|████      | 12/30 [00:14<00:21,  1.21s/it][A
+Layer 4:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 4:  47%|████▋     | 14/30 [00:16<00:19,  1.20s/it][A
+Layer 4:  50%|█████     | 15/30 [00:18<00:18,  1.20s/it][A
+Layer 4:  53%|█████▎    | 16/30 [00:19<00:16,  1.20s/it][A
+Layer 4:  57%|█████▋    | 17/30 [00:20<00:15,  1.20s/it][A
+Layer 4:  60%|██████    | 18/30 [00:21<00:14,  1.20s/it][A
+Layer 4:  63%|██████▎   | 19/30 [00:22<00:13,  1.20s/it][A
+Layer 4:  67%|██████▋   | 20/30 [00:24<00:11,  1.20s/it][A
+Layer 4:  70%|███████   | 21/30 [00:25<00:10,  1.20s/it][A
+Layer 4:  73%|███████▎  | 22/30 [00:26<00:09,  1.22s/it][A
+Layer 4:  77%|███████▋  | 23/30 [00:27<00:08,  1.21s/it][A
+Layer 4:  80%|████████  | 24/30 [00:28<00:07,  1.21s/it][A
+Layer 4:  83%|████████▎ | 25/30 [00:30<00:06,  1.21s/it][A
+Layer 4:  87%|████████▋ | 26/30 [00:31<00:04,  1.21s/it][A
+Layer 4:  90%|█████████ | 27/30 [00:32<00:03,  1.24s/it][A
+Layer 4:  93%|█████████▎| 28/30 [00:33<00:02,  1.24s/it][A
+Layer 4:  97%|█████████▋| 29/30 [00:35<00:01,  1.23s/it][A
+Layer 4: 100%|██████████| 30/30 [00:36<00:00,  1.22s/it][ALayer 4: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it]
+✅ Layer 4 完成并保存
+📊 总进度: 5/32 (15.6%)
+逐层抑制MLP:  16%|█▌        | 5/32 [04:41<25:14, 56.10s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 5 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:37,  2.71it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:12,  3.22it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:07, 54.55it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:05, 76.71it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:00<00:03, 112.68it/s][A
+Loading weights:  19%|█▉        | 82/427 [00:01<00:02, 122.58it/s][A
+Loading weights:  23%|██▎       | 100/427 [00:01<00:02, 134.98it/s][A
+Loading weights:  28%|██▊       | 121/427 [00:01<00:01, 153.25it/s][A
+Loading weights:  34%|███▍      | 147/427 [00:01<00:01, 174.95it/s][A
+Loading weights:  39%|███▉      | 166/427 [00:01<00:01, 169.89it/s][A
+Loading weights:  44%|████▎     | 186/427 [00:01<00:01, 174.76it/s][A
+Loading weights:  48%|████▊     | 205/427 [00:01<00:01, 168.04it/s][A
+Loading weights:  53%|█████▎    | 226/427 [00:01<00:01, 175.04it/s][A
+Loading weights:  58%|█████▊    | 246/427 [00:01<00:01, 180.03it/s][A
+Loading weights:  62%|██████▏   | 265/427 [00:02<00:00, 167.84it/s][A
+Loading weights:  67%|██████▋   | 284/427 [00:02<00:00, 171.40it/s][A
+Loading weights:  72%|███████▏  | 306/427 [00:02<00:00, 170.24it/s][A
+Loading weights:  77%|███████▋  | 328/427 [00:02<00:00, 181.58it/s][A
+Loading weights:  81%|████████▏ | 347/427 [00:02<00:00, 170.31it/s][A
+Loading weights:  85%|████████▌ | 365/427 [00:02<00:00, 164.64it/s][A
+Loading weights:  90%|█████████ | 386/427 [00:02<00:00, 172.11it/s][A
+Loading weights:  95%|█████████▌| 406/427 [00:02<00:00, 175.51it/s][A
+Loading weights:  99%|█████████▉| 424/427 [00:03<00:00, 166.29it/s][ALoading weights: 100%|██████████| 427/427 [00:03<00:00, 141.07it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 5:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 5:   3%|▎         | 1/30 [00:01<00:35,  1.24s/it][A
+Layer 5:   7%|▋         | 2/30 [00:02<00:34,  1.22s/it][A
+Layer 5:  10%|█         | 3/30 [00:03<00:32,  1.21s/it][A
+Layer 5:  13%|█▎        | 4/30 [00:04<00:31,  1.21s/it][A
+Layer 5:  17%|█▋        | 5/30 [00:06<00:30,  1.21s/it][A
+Layer 5:  20%|██        | 6/30 [00:07<00:29,  1.21s/it][A
+Layer 5:  23%|██▎       | 7/30 [00:08<00:27,  1.21s/it][A
+Layer 5:  27%|██▋       | 8/30 [00:09<00:26,  1.22s/it][A
+Layer 5:  30%|███       | 9/30 [00:10<00:25,  1.21s/it][A
+Layer 5:  33%|███▎      | 10/30 [00:12<00:24,  1.22s/it][A
+Layer 5:  37%|███▋      | 11/30 [00:13<00:23,  1.21s/it][A
+Layer 5:  40%|████      | 12/30 [00:14<00:21,  1.21s/it][A
+Layer 5:  43%|████▎     | 13/30 [00:15<00:20,  1.21s/it][A
+Layer 5:  47%|████▋     | 14/30 [00:17<00:19,  1.22s/it][A
+Layer 5:  50%|█████     | 15/30 [00:18<00:18,  1.22s/it][A
+Layer 5:  53%|█████▎    | 16/30 [00:19<00:17,  1.22s/it][A
+Layer 5:  57%|█████▋    | 17/30 [00:20<00:15,  1.21s/it][A
+Layer 5:  60%|██████    | 18/30 [00:21<00:14,  1.21s/it][A
+Layer 5:  63%|██████▎   | 19/30 [00:23<00:13,  1.20s/it][A
+Layer 5:  67%|██████▋   | 20/30 [00:24<00:12,  1.21s/it][A
+Layer 5:  70%|███████   | 21/30 [00:25<00:11,  1.23s/it][A
+Layer 5:  73%|███████▎  | 22/30 [00:26<00:09,  1.24s/it][A
+Layer 5:  77%|███████▋  | 23/30 [00:28<00:08,  1.24s/it][A
+Layer 5:  80%|████████  | 24/30 [00:29<00:07,  1.24s/it][A
+Layer 5:  83%|████████▎ | 25/30 [00:30<00:06,  1.22s/it][A
+Layer 5:  87%|████████▋ | 26/30 [00:31<00:04,  1.22s/it][A
+Layer 5:  90%|█████████ | 27/30 [00:32<00:03,  1.21s/it][A
+Layer 5:  93%|█████████▎| 28/30 [00:34<00:02,  1.21s/it][A
+Layer 5:  97%|█████████▋| 29/30 [00:35<00:01,  1.22s/it][A
+Layer 5: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it][ALayer 5: 100%|██████████| 30/30 [00:36<00:00,  1.22s/it]
+✅ Layer 5 完成并保存
+📊 总进度: 6/32 (18.8%)
+逐层抑制MLP:  19%|█▉        | 6/32 [05:37<24:20, 56.18s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 6 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:41,  2.63it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:32,  2.79it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:08, 48.00it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:05, 70.08it/s][A
+Loading weights:  15%|█▍        | 62/427 [00:01<00:03, 95.12it/s][A
+Loading weights:  19%|█▉        | 82/427 [00:01<00:02, 119.16it/s][A
+Loading weights:  23%|██▎       | 100/427 [00:01<00:02, 133.26it/s][A
+Loading weights:  28%|██▊       | 121/427 [00:01<00:02, 148.97it/s][A
+Loading weights:  34%|███▍      | 146/427 [00:01<00:01, 167.19it/s][A
+Loading weights:  39%|███▊      | 165/427 [00:01<00:01, 163.76it/s][A
+Loading weights:  43%|████▎     | 183/427 [00:01<00:01, 166.28it/s][A
+Loading weights:  47%|████▋     | 202/427 [00:01<00:01, 168.78it/s][A
+Loading weights:  53%|█████▎    | 225/427 [00:01<00:01, 179.20it/s][A
+Loading weights:  57%|█████▋    | 244/427 [00:02<00:01, 174.51it/s][A
+Loading weights:  61%|██████▏   | 262/427 [00:02<00:01, 162.26it/s][A
+Loading weights:  67%|██████▋   | 285/427 [00:02<00:00, 174.66it/s][A
+Loading weights:  72%|███████▏  | 307/427 [00:02<00:00, 185.74it/s][A
+Loading weights:  77%|███████▋  | 330/427 [00:02<00:00, 195.42it/s][A
+Loading weights:  82%|████████▏ | 350/427 [00:02<00:00, 189.10it/s][A
+Loading weights:  87%|████████▋ | 370/427 [00:02<00:00, 177.65it/s][A
+Loading weights:  92%|█████████▏| 392/427 [00:02<00:00, 180.10it/s][A
+Loading weights:  97%|█████████▋| 414/427 [00:02<00:00, 185.66it/s][ALoading weights: 100%|██████████| 427/427 [00:03<00:00, 139.86it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 6:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 6:   3%|▎         | 1/30 [00:01<00:34,  1.20s/it][A
+Layer 6:   7%|▋         | 2/30 [00:02<00:33,  1.20s/it][A
+Layer 6:  10%|█         | 3/30 [00:03<00:32,  1.20s/it][A
+Layer 6:  13%|█▎        | 4/30 [00:04<00:31,  1.22s/it][A
+Layer 6:  17%|█▋        | 5/30 [00:06<00:30,  1.21s/it][A
+Layer 6:  20%|██        | 6/30 [00:07<00:29,  1.22s/it][A
+Layer 6:  23%|██▎       | 7/30 [00:08<00:28,  1.22s/it][A
+Layer 6:  27%|██▋       | 8/30 [00:09<00:26,  1.22s/it][A
+Layer 6:  30%|███       | 9/30 [00:10<00:25,  1.22s/it][A
+Layer 6:  33%|███▎      | 10/30 [00:12<00:24,  1.22s/it][A
+Layer 6:  37%|███▋      | 11/30 [00:13<00:23,  1.21s/it][A
+Layer 6:  40%|████      | 12/30 [00:14<00:21,  1.21s/it][A
+Layer 6:  43%|████▎     | 13/30 [00:15<00:20,  1.22s/it][A
+Layer 6:  47%|████▋     | 14/30 [00:17<00:19,  1.21s/it][A
+Layer 6:  50%|█████     | 15/30 [00:18<00:18,  1.21s/it][A
+Layer 6:  53%|█████▎    | 16/30 [00:19<00:16,  1.21s/it][A
+Layer 6:  57%|█████▋    | 17/30 [00:20<00:15,  1.21s/it][A
+Layer 6:  60%|██████    | 18/30 [00:21<00:14,  1.22s/it][A
+Layer 6:  63%|██████▎   | 19/30 [00:23<00:13,  1.21s/it][A
+Layer 6:  67%|██████▋   | 20/30 [00:24<00:12,  1.22s/it][A
+Layer 6:  70%|███████   | 21/30 [00:25<00:10,  1.21s/it][A
+Layer 6:  73%|███████▎  | 22/30 [00:26<00:09,  1.22s/it][A
+Layer 6:  77%|███████▋  | 23/30 [00:27<00:08,  1.21s/it][A
+Layer 6:  80%|████████  | 24/30 [00:29<00:07,  1.21s/it][A
+Layer 6:  83%|████████▎ | 25/30 [00:30<00:06,  1.21s/it][A
+Layer 6:  87%|████████▋ | 26/30 [00:31<00:04,  1.21s/it][A
+Layer 6:  90%|█████████ | 27/30 [00:32<00:03,  1.23s/it][A
+Layer 6:  93%|█████████▎| 28/30 [00:34<00:02,  1.23s/it][A
+Layer 6:  97%|█████████▋| 29/30 [00:35<00:01,  1.22s/it][A
+Layer 6: 100%|██████████| 30/30 [00:36<00:00,  1.23s/it][ALayer 6: 100%|██████████| 30/30 [00:36<00:00,  1.22s/it]
+✅ Layer 6 完成并保存
+📊 总进度: 7/32 (21.9%)
+逐层抑制MLP:  22%|██▏       | 7/32 [06:38<24:04, 57.78s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 7 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:28,  2.87it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:20,  3.03it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:07, 50.75it/s][A
+Loading weights:  11%|█         | 46/427 [00:00<00:04, 79.80it/s][A
+Loading weights:  16%|█▌        | 67/427 [00:01<00:03, 107.96it/s][A
+Loading weights:  21%|██        | 90/427 [00:01<00:02, 137.96it/s][A
+Loading weights:  25%|██▌       | 108/427 [00:01<00:02, 141.81it/s][A
+Loading weights:  31%|███       | 133/427 [00:01<00:01, 164.46it/s][A
+Loading weights:  36%|███▌      | 152/427 [00:01<00:01, 159.12it/s][A
+Loading weights:  41%|████      | 173/427 [00:01<00:01, 165.34it/s][A
+Loading weights:  46%|████▌     | 196/427 [00:01<00:01, 178.84it/s][A
+Loading weights:  50%|█████     | 215/427 [00:01<00:01, 168.87it/s][A
+Loading weights:  56%|█████▌    | 239/427 [00:01<00:01, 182.20it/s][A
+Loading weights:  60%|██████    | 258/427 [00:02<00:00, 169.38it/s][A
+Loading weights:  65%|██████▌   | 278/427 [00:02<00:00, 171.05it/s][A
+Loading weights:  71%|███████   | 302/427 [00:02<00:00, 184.40it/s][A
+Loading weights:  75%|███████▌  | 321/427 [00:02<00:00, 172.15it/s][A
+Loading weights:  81%|████████  | 345/427 [00:02<00:00, 187.38it/s][A
+Loading weights:  85%|████████▌ | 365/427 [00:02<00:00, 169.66it/s][A
+Loading weights:  90%|█████████ | 386/427 [00:02<00:00, 176.38it/s][A
+Loading weights:  96%|█████████▋| 411/427 [00:02<00:00, 194.33it/s][ALoading weights: 100%|██████████| 427/427 [00:03<00:00, 141.69it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 7:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 7:   3%|▎         | 1/30 [00:01<00:34,  1.20s/it][A
+Layer 7:   7%|▋         | 2/30 [00:02<00:33,  1.20s/it][A
+Layer 7:  10%|█         | 3/30 [00:03<00:32,  1.20s/it][A
+Layer 7:  13%|█▎        | 4/30 [00:04<00:31,  1.20s/it][A
+Layer 7:  17%|█▋        | 5/30 [00:06<00:30,  1.20s/it][A
+Layer 7:  20%|██        | 6/30 [00:07<00:29,  1.22s/it][A
+Layer 7:  23%|██▎       | 7/30 [00:08<00:28,  1.23s/it][A
+Layer 7:  27%|██▋       | 8/30 [00:09<00:27,  1.23s/it][A
+Layer 7:  30%|███       | 9/30 [00:10<00:25,  1.22s/it][A
+Layer 7:  33%|███▎      | 10/30 [00:12<00:24,  1.22s/it][A
+Layer 7:  37%|███▋      | 11/30 [00:13<00:23,  1.21s/it][A
+Layer 7:  40%|████      | 12/30 [00:14<00:21,  1.20s/it][A
+Layer 7:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 7:  47%|████▋     | 14/30 [00:16<00:19,  1.20s/it][A
+Layer 7:  50%|█████     | 15/30 [00:18<00:17,  1.20s/it][A
+Layer 7:  53%|█████▎    | 16/30 [00:19<00:16,  1.21s/it][A
+Layer 7:  57%|█████▋    | 17/30 [00:20<00:15,  1.21s/it][A
+Layer 7:  60%|██████    | 18/30 [00:21<00:14,  1.21s/it][A
+Layer 7:  63%|██████▎   | 19/30 [00:23<00:13,  1.22s/it][A
+Layer 7:  67%|██████▋   | 20/30 [00:24<00:12,  1.24s/it][A
+Layer 7:  70%|███████   | 21/30 [00:25<00:11,  1.23s/it][A
+Layer 7:  73%|███████▎  | 22/30 [00:26<00:09,  1.22s/it][A
+Layer 7:  77%|███████▋  | 23/30 [00:27<00:08,  1.22s/it][A
+Layer 7:  80%|████████  | 24/30 [00:29<00:07,  1.24s/it][A
+Layer 7:  83%|████████▎ | 25/30 [00:30<00:06,  1.23s/it][A
+Layer 7:  87%|████████▋ | 26/30 [00:31<00:04,  1.22s/it][A
+Layer 7:  90%|█████████ | 27/30 [00:32<00:03,  1.23s/it][A
+Layer 7:  93%|█████████▎| 28/30 [00:34<00:02,  1.22s/it][A
+Layer 7:  97%|█████████▋| 29/30 [00:35<00:01,  1.21s/it][A
+Layer 7: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it][ALayer 7: 100%|██████████| 30/30 [00:36<00:00,  1.22s/it]
+✅ Layer 7 完成并保存
+📊 总进度: 8/32 (25.0%)
+逐层抑制MLP:  25%|██▌       | 8/32 [07:34<22:53, 57.24s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 8 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:26,  2.90it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:08,  3.31it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:07, 56.00it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:04, 79.28it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:00<00:03, 108.87it/s][A
+Loading weights:  21%|██▏       | 91/427 [00:01<00:02, 136.86it/s][A
+Loading weights:  26%|██▌       | 111/427 [00:01<00:02, 152.78it/s][A
+Loading weights:  31%|███       | 133/427 [00:01<00:01, 163.82it/s][A
+Loading weights:  36%|███▌      | 152/427 [00:01<00:01, 158.94it/s][A
+Loading weights:  41%|████      | 173/427 [00:01<00:01, 168.32it/s][A
+Loading weights:  46%|████▌     | 196/427 [00:01<00:01, 155.80it/s][A
+Loading weights:  53%|█████▎    | 225/427 [00:01<00:01, 184.93it/s][A
+Loading weights:  57%|█████▋    | 245/427 [00:01<00:00, 183.13it/s][A
+Loading weights:  62%|██████▏   | 265/427 [00:02<00:00, 171.44it/s][A
+Loading weights:  68%|██████▊   | 289/427 [00:02<00:00, 187.05it/s][A
+Loading weights:  72%|███████▏  | 309/427 [00:02<00:00, 179.20it/s][A
+Loading weights:  78%|███████▊  | 332/427 [00:02<00:00, 179.40it/s][A
+Loading weights:  83%|████████▎ | 355/427 [00:02<00:00, 181.94it/s][A
+Loading weights:  88%|████████▊ | 374/427 [00:02<00:00, 177.09it/s][A
+Loading weights:  93%|█████████▎| 398/427 [00:02<00:00, 173.47it/s][A
+Loading weights:  98%|█████████▊| 417/427 [00:02<00:00, 176.41it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 144.77it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 8:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 8:   3%|▎         | 1/30 [00:01<00:37,  1.28s/it][A
+Layer 8:   7%|▋         | 2/30 [00:02<00:35,  1.26s/it][A
+Layer 8:  10%|█         | 3/30 [00:03<00:33,  1.24s/it][A
+Layer 8:  13%|█▎        | 4/30 [00:04<00:31,  1.22s/it][A
+Layer 8:  17%|█▋        | 5/30 [00:06<00:30,  1.21s/it][A
+Layer 8:  20%|██        | 6/30 [00:07<00:29,  1.22s/it][A
+Layer 8:  23%|██▎       | 7/30 [00:08<00:28,  1.22s/it][A
+Layer 8:  27%|██▋       | 8/30 [00:09<00:27,  1.23s/it][A
+Layer 8:  30%|███       | 9/30 [00:11<00:25,  1.22s/it][A
+Layer 8:  33%|███▎      | 10/30 [00:12<00:24,  1.22s/it][A
+Layer 8:  37%|███▋      | 11/30 [00:13<00:23,  1.21s/it][A
+Layer 8:  40%|████      | 12/30 [00:14<00:21,  1.21s/it][A
+Layer 8:  43%|████▎     | 13/30 [00:15<00:20,  1.21s/it][A
+Layer 8:  47%|████▋     | 14/30 [00:17<00:19,  1.21s/it][A
+Layer 8:  50%|█████     | 15/30 [00:18<00:18,  1.23s/it][A
+Layer 8:  53%|█████▎    | 16/30 [00:19<00:17,  1.25s/it][A
+Layer 8:  57%|█████▋    | 17/30 [00:20<00:16,  1.25s/it][A
+Layer 8:  60%|██████    | 18/30 [00:22<00:14,  1.24s/it][A
+Layer 8:  63%|██████▎   | 19/30 [00:23<00:13,  1.25s/it][A
+Layer 8:  67%|██████▋   | 20/30 [00:24<00:12,  1.24s/it][A
+Layer 8:  70%|███████   | 21/30 [00:25<00:11,  1.25s/it][A
+Layer 8:  73%|███████▎  | 22/30 [00:27<00:10,  1.26s/it][A
+Layer 8:  77%|███████▋  | 23/30 [00:28<00:08,  1.24s/it][A
+Layer 8:  80%|████████  | 24/30 [00:29<00:07,  1.23s/it][A
+Layer 8:  83%|████████▎ | 25/30 [00:30<00:06,  1.23s/it][A
+Layer 8:  87%|████████▋ | 26/30 [00:31<00:04,  1.22s/it][A
+Layer 8:  90%|█████████ | 27/30 [00:33<00:03,  1.24s/it][A
+Layer 8:  93%|█████████▎| 28/30 [00:34<00:02,  1.25s/it][A
+Layer 8:  97%|█████████▋| 29/30 [00:35<00:01,  1.26s/it][A
+Layer 8: 100%|██████████| 30/30 [00:37<00:00,  1.24s/it][ALayer 8: 100%|██████████| 30/30 [00:37<00:00,  1.23s/it]
+✅ Layer 8 完成并保存
+📊 总进度: 9/32 (28.1%)
+逐层抑制MLP:  28%|██▊       | 9/32 [08:31<21:51, 57.04s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 9 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:20,  3.03it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:05,  3.40it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:06, 57.68it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:04, 81.60it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:00<00:03, 116.52it/s][A
+Loading weights:  20%|██        | 86/427 [00:01<00:02, 134.22it/s][A
+Loading weights:  25%|██▍       | 105/427 [00:01<00:02, 148.79it/s][A
+Loading weights:  30%|██▉       | 126/427 [00:01<00:01, 164.49it/s][A
+Loading weights:  35%|███▍      | 148/427 [00:01<00:01, 171.60it/s][A
+Loading weights:  40%|███▉      | 169/427 [00:01<00:01, 181.02it/s][A
+Loading weights:  44%|████▍     | 189/427 [00:01<00:01, 171.96it/s][A
+Loading weights:  48%|████▊     | 207/427 [00:01<00:01, 166.61it/s][A
+Loading weights:  54%|█████▍    | 232/427 [00:01<00:01, 187.55it/s][A
+Loading weights:  59%|█████▉    | 253/427 [00:01<00:00, 183.36it/s][A
+Loading weights:  64%|██████▎   | 272/427 [00:02<00:00, 184.46it/s][A
+Loading weights:  69%|██████▊   | 293/427 [00:02<00:00, 184.34it/s][A
+Loading weights:  73%|███████▎  | 312/427 [00:02<00:00, 177.87it/s][A
+Loading weights:  78%|███████▊  | 332/427 [00:02<00:00, 182.08it/s][A
+Loading weights:  84%|████████▍ | 359/427 [00:02<00:00, 194.77it/s][A
+Loading weights:  89%|████████▉ | 381/427 [00:02<00:00, 201.52it/s][A
+Loading weights:  94%|█████████▍| 402/427 [00:02<00:00, 189.22it/s][A
+Loading weights:  99%|█████████▉| 422/427 [00:02<00:00, 181.71it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 150.19it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 9:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 9:   3%|▎         | 1/30 [00:01<00:35,  1.21s/it][A
+Layer 9:   7%|▋         | 2/30 [00:02<00:33,  1.21s/it][A
+Layer 9:  10%|█         | 3/30 [00:03<00:32,  1.20s/it][A
+Layer 9:  13%|█▎        | 4/30 [00:04<00:31,  1.22s/it][A
+Layer 9:  17%|█▋        | 5/30 [00:06<00:30,  1.21s/it][A
+Layer 9:  20%|██        | 6/30 [00:07<00:29,  1.22s/it][A
+Layer 9:  23%|██▎       | 7/30 [00:08<00:27,  1.21s/it][A
+Layer 9:  27%|██▋       | 8/30 [00:09<00:26,  1.20s/it][A
+Layer 9:  30%|███       | 9/30 [00:10<00:25,  1.21s/it][A
+Layer 9:  33%|███▎      | 10/30 [00:12<00:24,  1.21s/it][A
+Layer 9:  37%|███▋      | 11/30 [00:13<00:22,  1.20s/it][A
+Layer 9:  40%|████      | 12/30 [00:14<00:21,  1.20s/it][A
+Layer 9:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 9:  47%|████▋     | 14/30 [00:16<00:19,  1.20s/it][A
+Layer 9:  50%|█████     | 15/30 [00:18<00:17,  1.20s/it][A
+Layer 9:  53%|█████▎    | 16/30 [00:19<00:16,  1.20s/it][A
+Layer 9:  57%|█████▋    | 17/30 [00:20<00:15,  1.20s/it][A
+Layer 9:  60%|██████    | 18/30 [00:21<00:14,  1.20s/it][A
+Layer 9:  63%|██████▎   | 19/30 [00:22<00:13,  1.22s/it][A
+Layer 9:  67%|██████▋   | 20/30 [00:24<00:12,  1.21s/it][A
+Layer 9:  70%|███████   | 21/30 [00:25<00:10,  1.21s/it][A
+Layer 9:  73%|███████▎  | 22/30 [00:26<00:09,  1.21s/it][A
+Layer 9:  77%|███████▋  | 23/30 [00:27<00:08,  1.21s/it][A
+Layer 9:  80%|████████  | 24/30 [00:28<00:07,  1.21s/it][A
+Layer 9:  83%|████████▎ | 25/30 [00:30<00:06,  1.21s/it][A
+Layer 9:  87%|████████▋ | 26/30 [00:31<00:04,  1.21s/it][A
+Layer 9:  90%|█████████ | 27/30 [00:32<00:03,  1.21s/it][A
+Layer 9:  93%|█████████▎| 28/30 [00:33<00:02,  1.20s/it][A
+Layer 9:  97%|█████████▋| 29/30 [00:34<00:01,  1.20s/it][A
+Layer 9: 100%|██████████| 30/30 [00:36<00:00,  1.20s/it][ALayer 9: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it]
+✅ Layer 9 完成并保存
+📊 总进度: 10/32 (31.2%)
+逐层抑制MLP:  31%|███▏      | 10/32 [09:26<20:45, 56.60s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 10 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:31,  2.82it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:11,  3.24it/s][A
+Loading weights:   7%|▋         | 28/427 [00:00<00:07, 56.53it/s][A
+Loading weights:  11%|█         | 46/427 [00:00<00:04, 82.56it/s][A
+Loading weights:  16%|█▌        | 67/427 [00:00<00:03, 108.58it/s][A
+Loading weights:  22%|██▏       | 93/427 [00:01<00:02, 145.11it/s][A
+Loading weights:  26%|██▌       | 112/427 [00:01<00:02, 154.35it/s][A
+Loading weights:  31%|███▏      | 134/427 [00:01<00:01, 167.99it/s][A
+Loading weights:  36%|███▌      | 153/427 [00:01<00:01, 169.17it/s][A
+Loading weights:  41%|████      | 174/427 [00:01<00:01, 175.81it/s][A
+Loading weights:  47%|████▋     | 200/427 [00:01<00:01, 197.19it/s][A
+Loading weights:  52%|█████▏    | 221/427 [00:01<00:01, 196.95it/s][A
+Loading weights:  57%|█████▋    | 242/427 [00:01<00:00, 185.15it/s][A
+Loading weights:  61%|██████▏   | 262/427 [00:01<00:00, 179.88it/s][A
+Loading weights:  67%|██████▋   | 284/427 [00:02<00:00, 188.23it/s][A
+Loading weights:  71%|███████   | 304/427 [00:02<00:00, 187.33it/s][A
+Loading weights:  76%|███████▌  | 325/427 [00:02<00:00, 186.35it/s][A
+Loading weights:  81%|████████  | 346/427 [00:02<00:00, 192.88it/s][A
+Loading weights:  86%|████████▌ | 366/427 [00:02<00:00, 186.42it/s][A
+Loading weights:  92%|█████████▏| 391/427 [00:02<00:00, 192.43it/s][A
+Loading weights:  98%|█████████▊| 417/427 [00:02<00:00, 205.26it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 152.89it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 10:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 10:   3%|▎         | 1/30 [00:01<00:35,  1.21s/it][A
+Layer 10:   7%|▋         | 2/30 [00:02<00:33,  1.20s/it][A
+Layer 10:  10%|█         | 3/30 [00:03<00:32,  1.20s/it][A
+Layer 10:  13%|█▎        | 4/30 [00:04<00:31,  1.20s/it][A
+Layer 10:  17%|█▋        | 5/30 [00:06<00:30,  1.20s/it][A
+Layer 10:  20%|██        | 6/30 [00:07<00:29,  1.21s/it][A
+Layer 10:  23%|██▎       | 7/30 [00:08<00:27,  1.20s/it][A
+Layer 10:  27%|██▋       | 8/30 [00:09<00:26,  1.21s/it][A
+Layer 10:  30%|███       | 9/30 [00:10<00:25,  1.20s/it][A
+Layer 10:  33%|███▎      | 10/30 [00:12<00:23,  1.20s/it][A
+Layer 10:  37%|███▋      | 11/30 [00:13<00:22,  1.20s/it][A
+Layer 10:  40%|████      | 12/30 [00:14<00:21,  1.20s/it][A
+Layer 10:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 10:  47%|████▋     | 14/30 [00:16<00:19,  1.20s/it][A
+Layer 10:  50%|█████     | 15/30 [00:18<00:18,  1.21s/it][A
+Layer 10:  53%|█████▎    | 16/30 [00:19<00:17,  1.22s/it][A
+Layer 10:  57%|█████▋    | 17/30 [00:20<00:15,  1.21s/it][A
+Layer 10:  60%|██████    | 18/30 [00:21<00:14,  1.21s/it][A
+Layer 10:  63%|██████▎   | 19/30 [00:22<00:13,  1.21s/it][A
+Layer 10:  67%|██████▋   | 20/30 [00:24<00:12,  1.22s/it][A
+Layer 10:  70%|███████   | 21/30 [00:25<00:10,  1.21s/it][A
+Layer 10:  73%|███████▎  | 22/30 [00:26<00:09,  1.21s/it][A
+Layer 10:  77%|███████▋  | 23/30 [00:27<00:08,  1.21s/it][A
+Layer 10:  80%|████████  | 24/30 [00:28<00:07,  1.21s/it][A
+Layer 10:  83%|████████▎ | 25/30 [00:30<00:06,  1.20s/it][A
+Layer 10:  87%|████████▋ | 26/30 [00:31<00:04,  1.21s/it][A
+Layer 10:  90%|█████████ | 27/30 [00:32<00:03,  1.21s/it][A
+Layer 10:  93%|█████████▎| 28/30 [00:33<00:02,  1.22s/it][A
+Layer 10:  97%|█████████▋| 29/30 [00:35<00:01,  1.22s/it][A
+Layer 10: 100%|██████████| 30/30 [00:36<00:00,  1.22s/it][ALayer 10: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it]
+✅ Layer 10 完成并保存
+📊 总进度: 11/32 (34.4%)
+逐层抑制MLP:  34%|███▍      | 11/32 [10:22<19:41, 56.27s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 11 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:27,  2.88it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:09,  3.27it/s][A
+Loading weights:   7%|▋         | 28/427 [00:00<00:06, 57.55it/s][A
+Loading weights:  11%|█         | 47/427 [00:00<00:04, 85.98it/s][A
+Loading weights:  17%|█▋        | 72/427 [00:00<00:02, 123.35it/s][A
+Loading weights:  22%|██▏       | 94/427 [00:01<00:02, 142.45it/s][A
+Loading weights:  28%|██▊       | 120/427 [00:01<00:01, 167.66it/s][A
+Loading weights:  33%|███▎      | 141/427 [00:01<00:01, 175.18it/s][A
+Loading weights:  38%|███▊      | 161/427 [00:01<00:01, 173.16it/s][A
+Loading weights:  44%|████▎     | 186/427 [00:01<00:01, 190.57it/s][A
+Loading weights:  48%|████▊     | 207/427 [00:01<00:01, 176.67it/s][A
+Loading weights:  56%|█████▌    | 238/427 [00:01<00:00, 209.92it/s][A
+Loading weights:  61%|██████    | 261/427 [00:01<00:00, 182.56it/s][A
+Loading weights:  67%|██████▋   | 285/427 [00:02<00:00, 195.94it/s][A
+Loading weights:  72%|███████▏  | 307/427 [00:02<00:00, 200.13it/s][A
+Loading weights:  78%|███████▊  | 331/427 [00:02<00:00, 197.67it/s][A
+Loading weights:  84%|████████▍ | 358/427 [00:02<00:00, 216.30it/s][A
+Loading weights:  89%|████████▉ | 381/427 [00:02<00:00, 208.61it/s][A
+Loading weights:  94%|█████████▍| 403/427 [00:02<00:00, 202.66it/s][A
+Loading weights:  99%|█████████▉| 424/427 [00:02<00:00, 198.91it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 157.46it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 11:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 11:   3%|▎         | 1/30 [00:01<00:35,  1.22s/it][A
+Layer 11:   7%|▋         | 2/30 [00:02<00:33,  1.21s/it][A
+Layer 11:  10%|█         | 3/30 [00:03<00:32,  1.20s/it][A
+Layer 11:  13%|█▎        | 4/30 [00:04<00:31,  1.20s/it][A
+Layer 11:  17%|█▋        | 5/30 [00:06<00:30,  1.21s/it][A
+Layer 11:  20%|██        | 6/30 [00:07<00:29,  1.22s/it][A
+Layer 11:  23%|██▎       | 7/30 [00:08<00:27,  1.22s/it][A
+Layer 11:  27%|██▋       | 8/30 [00:09<00:26,  1.22s/it][A
+Layer 11:  30%|███       | 9/30 [00:10<00:25,  1.22s/it][A
+Layer 11:  33%|███▎      | 10/30 [00:12<00:24,  1.22s/it][A
+Layer 11:  37%|███▋      | 11/30 [00:13<00:23,  1.21s/it][A
+Layer 11:  40%|████      | 12/30 [00:14<00:21,  1.21s/it][A
+Layer 11:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 11:  47%|████▋     | 14/30 [00:16<00:19,  1.20s/it][A
+Layer 11:  50%|█████     | 15/30 [00:18<00:18,  1.20s/it][A
+Layer 11:  53%|█████▎    | 16/30 [00:19<00:16,  1.21s/it][A
+Layer 11:  57%|█████▋    | 17/30 [00:20<00:15,  1.20s/it][A
+Layer 11:  60%|██████    | 18/30 [00:21<00:14,  1.22s/it][A
+Layer 11:  63%|██████▎   | 19/30 [00:23<00:13,  1.22s/it][A
+Layer 11:  67%|██████▋   | 20/30 [00:24<00:12,  1.23s/it][A
+Layer 11:  70%|███████   | 21/30 [00:25<00:11,  1.23s/it][A
+Layer 11:  73%|███████▎  | 22/30 [00:26<00:09,  1.22s/it][A
+Layer 11:  77%|███████▋  | 23/30 [00:27<00:08,  1.22s/it][A
+Layer 11:  80%|████████  | 24/30 [00:29<00:07,  1.22s/it][A
+Layer 11:  83%|████████▎ | 25/30 [00:30<00:06,  1.22s/it][A
+Layer 11:  87%|████████▋ | 26/30 [00:31<00:04,  1.21s/it][A
+Layer 11:  90%|█████████ | 27/30 [00:32<00:03,  1.21s/it][A
+Layer 11:  93%|█████████▎| 28/30 [00:33<00:02,  1.21s/it][A
+Layer 11:  97%|█████████▋| 29/30 [00:35<00:01,  1.22s/it][A
+Layer 11: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it][ALayer 11: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it]
+✅ Layer 11 完成并保存
+📊 总进度: 12/32 (37.5%)
+逐层抑制MLP:  38%|███▊      | 12/32 [11:18<18:44, 56.24s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 12 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:26,  2.90it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:07,  3.33it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:07, 52.47it/s][A
+Loading weights:  11%|█         | 48/427 [00:00<00:04, 84.64it/s][A
+Loading weights:  18%|█▊        | 76/427 [00:00<00:02, 129.71it/s][A
+Loading weights:  22%|██▏       | 96/427 [00:01<00:02, 142.40it/s][A
+Loading weights:  28%|██▊       | 119/427 [00:01<00:01, 164.46it/s][A
+Loading weights:  33%|███▎      | 139/427 [00:01<00:01, 168.77it/s][A
+Loading weights:  37%|███▋      | 158/427 [00:01<00:01, 160.62it/s][A
+Loading weights:  43%|████▎     | 183/427 [00:01<00:01, 182.98it/s][A
+Loading weights:  48%|████▊     | 203/427 [00:01<00:01, 179.81it/s][A
+Loading weights:  53%|█████▎    | 226/427 [00:01<00:01, 186.36it/s][A
+Loading weights:  59%|█████▊    | 250/427 [00:01<00:00, 190.41it/s][A
+Loading weights:  63%|██████▎   | 270/427 [00:01<00:00, 192.34it/s][A
+Loading weights:  68%|██████▊   | 292/427 [00:02<00:00, 196.88it/s][A
+Loading weights:  73%|███████▎  | 312/427 [00:02<00:00, 184.35it/s][A
+Loading weights:  80%|███████▉  | 340/427 [00:02<00:00, 203.75it/s][A
+Loading weights:  85%|████████▍ | 361/427 [00:02<00:00, 198.02it/s][A
+Loading weights:  90%|█████████ | 385/427 [00:02<00:00, 203.90it/s][A
+Loading weights:  96%|█████████▌| 410/427 [00:02<00:00, 207.10it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 154.74it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 12:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 12:   3%|▎         | 1/30 [00:01<00:34,  1.20s/it][A
+Layer 12:   7%|▋         | 2/30 [00:02<00:33,  1.19s/it][A
+Layer 12:  10%|█         | 3/30 [00:03<00:32,  1.19s/it][A
+Layer 12:  13%|█▎        | 4/30 [00:04<00:31,  1.19s/it][A
+Layer 12:  17%|█▋        | 5/30 [00:05<00:29,  1.20s/it][A
+Layer 12:  20%|██        | 6/30 [00:07<00:28,  1.20s/it][A
+Layer 12:  23%|██▎       | 7/30 [00:08<00:27,  1.21s/it][A
+Layer 12:  27%|██▋       | 8/30 [00:09<00:26,  1.20s/it][A
+Layer 12:  30%|███       | 9/30 [00:10<00:25,  1.21s/it][A
+Layer 12:  33%|███▎      | 10/30 [00:11<00:24,  1.20s/it][A
+Layer 12:  37%|███▋      | 11/30 [00:13<00:22,  1.20s/it][A
+Layer 12:  40%|████      | 12/30 [00:14<00:21,  1.20s/it][A
+Layer 12:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 12:  47%|████▋     | 14/30 [00:16<00:19,  1.20s/it][A
+Layer 12:  50%|█████     | 15/30 [00:17<00:17,  1.20s/it][A
+Layer 12:  53%|█████▎    | 16/30 [00:19<00:16,  1.20s/it][A
+Layer 12:  57%|█████▋    | 17/30 [00:20<00:15,  1.20s/it][A
+Layer 12:  60%|██████    | 18/30 [00:21<00:14,  1.20s/it][A
+Layer 12:  63%|██████▎   | 19/30 [00:22<00:13,  1.19s/it][A
+Layer 12:  67%|██████▋   | 20/30 [00:23<00:11,  1.19s/it][A
+Layer 12:  70%|███████   | 21/30 [00:25<00:10,  1.20s/it][A
+Layer 12:  73%|███████▎  | 22/30 [00:26<00:09,  1.21s/it][A
+Layer 12:  77%|███████▋  | 23/30 [00:27<00:08,  1.21s/it][A
+Layer 12:  80%|████████  | 24/30 [00:28<00:07,  1.21s/it][A
+Layer 12:  83%|████████▎ | 25/30 [00:30<00:06,  1.24s/it][A
+Layer 12:  87%|████████▋ | 26/30 [00:31<00:05,  1.26s/it][A
+Layer 12:  90%|█████████ | 27/30 [00:32<00:03,  1.24s/it][A
+Layer 12:  93%|█████████▎| 28/30 [00:33<00:02,  1.23s/it][A
+Layer 12:  97%|█████████▋| 29/30 [00:35<00:01,  1.22s/it][A
+Layer 12: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it][ALayer 12: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it]
+✅ Layer 12 完成并保存
+📊 总进度: 13/32 (40.6%)
+逐层抑制MLP:  41%|████      | 13/32 [12:14<17:46, 56.12s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 13 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:23,  2.96it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:07,  3.33it/s][A
+Loading weights:   6%|▌         | 25/427 [00:00<00:07, 52.58it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:04, 80.65it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:00<00:03, 114.66it/s][A
+Loading weights:  19%|█▉        | 82/427 [00:01<00:02, 124.66it/s][A
+Loading weights:  24%|██▎       | 101/427 [00:01<00:02, 138.44it/s][A
+Loading weights:  30%|██▉       | 127/427 [00:01<00:01, 171.20it/s][A
+Loading weights:  34%|███▍      | 147/427 [00:01<00:01, 173.16it/s][A
+Loading weights:  39%|███▉      | 166/427 [00:01<00:01, 174.20it/s][A
+Loading weights:  44%|████▎     | 186/427 [00:01<00:01, 175.69it/s][A
+Loading weights:  48%|████▊     | 205/427 [00:01<00:01, 170.79it/s][A
+Loading weights:  53%|█████▎    | 226/427 [00:01<00:01, 178.91it/s][A
+Loading weights:  58%|█████▊    | 249/427 [00:01<00:00, 186.95it/s][A
+Loading weights:  63%|██████▎   | 268/427 [00:02<00:00, 176.67it/s][A
+Loading weights:  68%|██████▊   | 292/427 [00:02<00:00, 189.75it/s][A
+Loading weights:  73%|███████▎  | 312/427 [00:02<00:00, 175.87it/s][A
+Loading weights:  79%|███████▉  | 339/427 [00:02<00:00, 188.15it/s][A
+Loading weights:  85%|████████▍ | 361/427 [00:02<00:00, 190.11it/s][A
+Loading weights:  90%|████████▉ | 384/427 [00:02<00:00, 195.97it/s][A
+Loading weights:  96%|█████████▌| 408/427 [00:02<00:00, 206.55it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 148.60it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 13:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 13:   3%|▎         | 1/30 [00:01<00:34,  1.19s/it][A
+Layer 13:   7%|▋         | 2/30 [00:02<00:33,  1.19s/it][A
+Layer 13:  10%|█         | 3/30 [00:03<00:32,  1.21s/it][A
+Layer 13:  13%|█▎        | 4/30 [00:04<00:31,  1.21s/it][A
+Layer 13:  17%|█▋        | 5/30 [00:06<00:30,  1.22s/it][A
+Layer 13:  20%|██        | 6/30 [00:07<00:29,  1.22s/it][A
+Layer 13:  23%|██▎       | 7/30 [00:08<00:27,  1.21s/it][A
+Layer 13:  27%|██▋       | 8/30 [00:09<00:26,  1.20s/it][A
+Layer 13:  30%|███       | 9/30 [00:10<00:25,  1.20s/it][A
+Layer 13:  33%|███▎      | 10/30 [00:12<00:23,  1.20s/it][A
+Layer 13:  37%|███▋      | 11/30 [00:13<00:22,  1.20s/it][A
+Layer 13:  40%|████      | 12/30 [00:14<00:21,  1.21s/it][A
+Layer 13:  43%|████▎     | 13/30 [00:15<00:20,  1.21s/it][A
+Layer 13:  47%|████▋     | 14/30 [00:16<00:19,  1.21s/it][A
+Layer 13:  50%|█████     | 15/30 [00:18<00:18,  1.20s/it][A
+Layer 13:  53%|█████▎    | 16/30 [00:19<00:16,  1.20s/it][A
+Layer 13:  57%|█████▋    | 17/30 [00:20<00:15,  1.20s/it][A
+Layer 13:  60%|██████    | 18/30 [00:21<00:14,  1.20s/it][A
+Layer 13:  63%|██████▎   | 19/30 [00:22<00:13,  1.21s/it][A
+Layer 13:  67%|██████▋   | 20/30 [00:24<00:12,  1.20s/it][A
+Layer 13:  70%|███████   | 21/30 [00:25<00:10,  1.20s/it][A
+Layer 13:  73%|███████▎  | 22/30 [00:26<00:09,  1.20s/it][A
+Layer 13:  77%|███████▋  | 23/30 [00:27<00:08,  1.20s/it][A
+Layer 13:  80%|████████  | 24/30 [00:28<00:07,  1.20s/it][A
+Layer 13:  83%|████████▎ | 25/30 [00:30<00:05,  1.20s/it][A
+Layer 13:  87%|████████▋ | 26/30 [00:31<00:04,  1.20s/it][A
+Layer 13:  90%|█████████ | 27/30 [00:32<00:03,  1.19s/it][A
+Layer 13:  93%|█████████▎| 28/30 [00:33<00:02,  1.21s/it][A
+Layer 13:  97%|█████████▋| 29/30 [00:34<00:01,  1.20s/it][A
+Layer 13: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it][ALayer 13: 100%|██████████| 30/30 [00:36<00:00,  1.20s/it]
+✅ Layer 13 完成并保存
+📊 总进度: 14/32 (43.8%)
+逐层抑制MLP:  44%|████▍     | 14/32 [13:09<16:46, 55.92s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 14 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:27,  2.89it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:12,  3.22it/s][A
+Loading weights:   7%|▋         | 28/427 [00:00<00:07, 54.38it/s][A
+Loading weights:  11%|█         | 47/427 [00:00<00:04, 82.15it/s][A
+Loading weights:  16%|█▌        | 68/427 [00:00<00:03, 110.87it/s][A
+Loading weights:  22%|██▏       | 94/427 [00:01<00:02, 147.49it/s][A
+Loading weights:  27%|██▋       | 114/427 [00:01<00:02, 156.02it/s][A
+Loading weights:  31%|███▏      | 134/427 [00:01<00:01, 161.80it/s][A
+Loading weights:  36%|███▌      | 153/427 [00:01<00:01, 158.52it/s][A
+Loading weights:  41%|████      | 174/427 [00:01<00:01, 167.45it/s][A
+Loading weights:  47%|████▋     | 200/427 [00:01<00:01, 189.12it/s][A
+Loading weights:  52%|█████▏    | 220/427 [00:01<00:01, 181.96it/s][A
+Loading weights:  56%|█████▌    | 240/427 [00:01<00:01, 181.55it/s][A
+Loading weights:  61%|██████    | 259/427 [00:02<00:01, 165.39it/s][A
+Loading weights:  67%|██████▋   | 287/427 [00:02<00:00, 190.38it/s][A
+Loading weights:  72%|███████▏  | 307/427 [00:02<00:00, 191.74it/s][A
+Loading weights:  77%|███████▋  | 330/427 [00:02<00:00, 187.23it/s][A
+Loading weights:  84%|████████▍ | 358/427 [00:02<00:00, 210.92it/s][A
+Loading weights:  89%|████████▉ | 380/427 [00:02<00:00, 206.97it/s][A
+Loading weights:  94%|█████████▍| 402/427 [00:02<00:00, 197.83it/s][A
+Loading weights:  99%|█████████▉| 423/427 [00:02<00:00, 190.11it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 150.65it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 14:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 14:   3%|▎         | 1/30 [00:01<00:34,  1.21s/it][A
+Layer 14:   7%|▋         | 2/30 [00:02<00:33,  1.20s/it][A
+Layer 14:  10%|█         | 3/30 [00:03<00:32,  1.20s/it][A
+Layer 14:  13%|█▎        | 4/30 [00:04<00:31,  1.20s/it][A
+Layer 14:  17%|█▋        | 5/30 [00:05<00:29,  1.20s/it][A
+Layer 14:  20%|██        | 6/30 [00:07<00:29,  1.21s/it][A
+Layer 14:  23%|██▎       | 7/30 [00:08<00:27,  1.21s/it][A
+Layer 14:  27%|██▋       | 8/30 [00:09<00:26,  1.21s/it][A
+Layer 14:  30%|███       | 9/30 [00:10<00:25,  1.21s/it][A
+Layer 14:  33%|███▎      | 10/30 [00:12<00:24,  1.21s/it][A
+Layer 14:  37%|███▋      | 11/30 [00:13<00:22,  1.20s/it][A
+Layer 14:  40%|████      | 12/30 [00:14<00:21,  1.20s/it][A
+Layer 14:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 14:  47%|████▋     | 14/30 [00:16<00:19,  1.20s/it][A
+Layer 14:  50%|█████     | 15/30 [00:18<00:17,  1.20s/it][A
+Layer 14:  53%|█████▎    | 16/30 [00:19<00:16,  1.21s/it][A
+Layer 14:  57%|█████▋    | 17/30 [00:20<00:15,  1.21s/it][A
+Layer 14:  60%|██████    | 18/30 [00:21<00:14,  1.20s/it][A
+Layer 14:  63%|██████▎   | 19/30 [00:22<00:13,  1.20s/it][A
+Layer 14:  67%|██████▋   | 20/30 [00:24<00:12,  1.20s/it][A
+Layer 14:  70%|███████   | 21/30 [00:25<00:10,  1.21s/it][A
+Layer 14:  73%|███████▎  | 22/30 [00:26<00:09,  1.20s/it][A
+Layer 14:  77%|███████▋  | 23/30 [00:27<00:08,  1.20s/it][A
+Layer 14:  80%|████████  | 24/30 [00:28<00:07,  1.20s/it][A
+Layer 14:  83%|████████▎ | 25/30 [00:30<00:06,  1.21s/it][A
+Layer 14:  87%|████████▋ | 26/30 [00:31<00:04,  1.22s/it][A
+Layer 14:  90%|█████████ | 27/30 [00:32<00:03,  1.21s/it][A
+Layer 14:  93%|█████████▎| 28/30 [00:33<00:02,  1.21s/it][A
+Layer 14:  97%|█████████▋| 29/30 [00:34<00:01,  1.21s/it][A
+Layer 14: 100%|██████████| 30/30 [00:36<00:00,  1.20s/it][ALayer 14: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it]
+✅ Layer 14 完成并保存
+📊 总进度: 15/32 (46.9%)
+逐层抑制MLP:  47%|████▋     | 15/32 [14:05<15:50, 55.93s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 15 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:25,  2.94it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:09,  3.27it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:07, 55.82it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:04, 79.75it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:00<00:03, 113.35it/s][A
+Loading weights:  22%|██▏       | 94/427 [00:01<00:02, 151.07it/s][A
+Loading weights:  27%|██▋       | 114/427 [00:01<00:01, 160.04it/s][A
+Loading weights:  31%|███▏      | 134/427 [00:01<00:01, 158.37it/s][A
+Loading weights:  36%|███▌      | 153/427 [00:01<00:01, 158.60it/s][A
+Loading weights:  42%|████▏     | 178/427 [00:01<00:01, 180.72it/s][A
+Loading weights:  47%|████▋     | 200/427 [00:01<00:01, 190.92it/s][A
+Loading weights:  52%|█████▏    | 221/427 [00:01<00:01, 189.85it/s][A
+Loading weights:  56%|█████▋    | 241/427 [00:01<00:01, 179.55it/s][A
+Loading weights:  61%|██████    | 260/427 [00:01<00:00, 168.09it/s][A
+Loading weights:  67%|██████▋   | 287/427 [00:02<00:00, 191.44it/s][A
+Loading weights:  72%|███████▏  | 307/427 [00:02<00:00, 188.64it/s][A
+Loading weights:  77%|███████▋  | 327/427 [00:02<00:00, 188.43it/s][A
+Loading weights:  81%|████████▏ | 347/427 [00:02<00:00, 185.09it/s][A
+Loading weights:  86%|████████▌ | 366/427 [00:02<00:00, 183.97it/s][A
+Loading weights:  92%|█████████▏| 394/427 [00:02<00:00, 210.62it/s][A
+Loading weights:  97%|█████████▋| 416/427 [00:02<00:00, 202.01it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 151.90it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 15:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 15:   3%|▎         | 1/30 [00:01<00:35,  1.22s/it][A
+Layer 15:   7%|▋         | 2/30 [00:02<00:33,  1.21s/it][A
+Layer 15:  10%|█         | 3/30 [00:03<00:32,  1.21s/it][A
+Layer 15:  13%|█▎        | 4/30 [00:04<00:31,  1.22s/it][A
+Layer 15:  17%|█▋        | 5/30 [00:06<00:30,  1.21s/it][A
+Layer 15:  20%|██        | 6/30 [00:07<00:28,  1.21s/it][A
+Layer 15:  23%|██▎       | 7/30 [00:08<00:27,  1.21s/it][A
+Layer 15:  27%|██▋       | 8/30 [00:09<00:26,  1.21s/it][A
+Layer 15:  30%|███       | 9/30 [00:10<00:25,  1.20s/it][A
+Layer 15:  33%|███▎      | 10/30 [00:12<00:23,  1.20s/it][A
+Layer 15:  37%|███▋      | 11/30 [00:13<00:22,  1.20s/it][A
+Layer 15:  40%|████      | 12/30 [00:14<00:21,  1.20s/it][A
+Layer 15:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 15:  47%|████▋     | 14/30 [00:16<00:19,  1.20s/it][A
+Layer 15:  50%|█████     | 15/30 [00:18<00:18,  1.21s/it][A
+Layer 15:  53%|█████▎    | 16/30 [00:19<00:17,  1.22s/it][A
+Layer 15:  57%|█████▋    | 17/30 [00:20<00:15,  1.21s/it][A
+Layer 15:  60%|██████    | 18/30 [00:21<00:14,  1.21s/it][A
+Layer 15:  63%|██████▎   | 19/30 [00:22<00:13,  1.20s/it][A
+Layer 15:  67%|██████▋   | 20/30 [00:24<00:12,  1.21s/it][A
+Layer 15:  70%|███████   | 21/30 [00:25<00:10,  1.21s/it][A
+Layer 15:  73%|███████▎  | 22/30 [00:26<00:09,  1.20s/it][A
+Layer 15:  77%|███████▋  | 23/30 [00:27<00:08,  1.20s/it][A
+Layer 15:  80%|████████  | 24/30 [00:28<00:07,  1.20s/it][A
+Layer 15:  83%|████████▎ | 25/30 [00:30<00:05,  1.20s/it][A
+Layer 15:  87%|████████▋ | 26/30 [00:31<00:04,  1.20s/it][A
+Layer 15:  90%|█████████ | 27/30 [00:32<00:03,  1.19s/it][A
+Layer 15:  93%|█████████▎| 28/30 [00:33<00:02,  1.19s/it][A
+Layer 15:  97%|█████████▋| 29/30 [00:34<00:01,  1.19s/it][A
+Layer 15: 100%|██████████| 30/30 [00:36<00:00,  1.19s/it][ALayer 15: 100%|██████████| 30/30 [00:36<00:00,  1.20s/it]
+✅ Layer 15 完成并保存
+📊 总进度: 16/32 (50.0%)
+逐层抑制MLP:  50%|█████     | 16/32 [15:01<14:52, 55.77s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 16 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:20,  3.02it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:21,  2.99it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:07, 51.85it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:05, 75.20it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:00<00:03, 110.53it/s][A
+Loading weights:  19%|█▉        | 82/427 [00:01<00:02, 121.83it/s][A
+Loading weights:  24%|██▎       | 101/427 [00:01<00:02, 137.68it/s][A
+Loading weights:  30%|███       | 130/427 [00:01<00:01, 177.62it/s][A
+Loading weights:  35%|███▌      | 151/427 [00:01<00:01, 176.34it/s][A
+Loading weights:  40%|████      | 172/427 [00:01<00:01, 185.11it/s][A
+Loading weights:  45%|████▍     | 192/427 [00:01<00:01, 180.46it/s][A
+Loading weights:  49%|████▉     | 211/427 [00:01<00:01, 174.68it/s][A
+Loading weights:  55%|█████▌    | 236/427 [00:01<00:01, 185.73it/s][A
+Loading weights:  60%|█████▉    | 256/427 [00:01<00:00, 183.95it/s][A
+Loading weights:  65%|██████▌   | 278/427 [00:02<00:00, 192.73it/s][A
+Loading weights:  71%|███████   | 302/427 [00:02<00:00, 199.81it/s][A
+Loading weights:  76%|███████▌  | 323/427 [00:02<00:00, 187.79it/s][A
+Loading weights:  81%|████████  | 345/427 [00:02<00:00, 195.26it/s][A
+Loading weights:  85%|████████▌ | 365/427 [00:02<00:00, 184.70it/s][A
+Loading weights:  90%|█████████ | 386/427 [00:02<00:00, 189.50it/s][A
+Loading weights:  96%|█████████▌| 408/427 [00:02<00:00, 196.55it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 147.92it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 16:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 16:   3%|▎         | 1/30 [00:01<00:34,  1.21s/it][A
+Layer 16:   7%|▋         | 2/30 [00:02<00:34,  1.22s/it][A
+Layer 16:  10%|█         | 3/30 [00:03<00:32,  1.21s/it][A
+Layer 16:  13%|█▎        | 4/30 [00:04<00:31,  1.21s/it][A
+Layer 16:  17%|█▋        | 5/30 [00:06<00:30,  1.24s/it][A
+Layer 16:  20%|██        | 6/30 [00:07<00:30,  1.25s/it][A
+Layer 16:  23%|██▎       | 7/30 [00:08<00:28,  1.24s/it][A
+Layer 16:  27%|██▋       | 8/30 [00:09<00:27,  1.23s/it][A
+Layer 16:  30%|███       | 9/30 [00:11<00:25,  1.23s/it][A
+Layer 16:  33%|███▎      | 10/30 [00:12<00:24,  1.22s/it][A
+Layer 16:  37%|███▋      | 11/30 [00:13<00:23,  1.21s/it][A
+Layer 16:  40%|████      | 12/30 [00:14<00:21,  1.21s/it][A
+Layer 16:  43%|████▎     | 13/30 [00:15<00:20,  1.21s/it][A
+Layer 16:  47%|████▋     | 14/30 [00:17<00:19,  1.21s/it][A
+Layer 16:  50%|█████     | 15/30 [00:18<00:18,  1.20s/it][A
+Layer 16:  53%|█████▎    | 16/30 [00:19<00:16,  1.20s/it][A
+Layer 16:  57%|█████▋    | 17/30 [00:20<00:15,  1.20s/it][A
+Layer 16:  60%|██████    | 18/30 [00:21<00:14,  1.21s/it][A
+Layer 16:  63%|██████▎   | 19/30 [00:23<00:13,  1.20s/it][A
+Layer 16:  67%|██████▋   | 20/30 [00:24<00:12,  1.20s/it][A
+Layer 16:  70%|███████   | 21/30 [00:25<00:10,  1.20s/it][A
+Layer 16:  73%|███████▎  | 22/30 [00:26<00:09,  1.23s/it][A
+Layer 16:  77%|███████▋  | 23/30 [00:27<00:08,  1.22s/it][A
+Layer 16:  80%|████████  | 24/30 [00:29<00:07,  1.21s/it][A
+Layer 16:  83%|████████▎ | 25/30 [00:30<00:06,  1.21s/it][A
+Layer 16:  87%|████████▋ | 26/30 [00:31<00:04,  1.22s/it][A
+Layer 16:  90%|█████████ | 27/30 [00:32<00:03,  1.21s/it][A
+Layer 16:  93%|█████████▎| 28/30 [00:34<00:02,  1.21s/it][A
+Layer 16:  97%|█████████▋| 29/30 [00:35<00:01,  1.20s/it][A
+Layer 16: 100%|██████████| 30/30 [00:36<00:00,  1.20s/it][ALayer 16: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it]
+✅ Layer 16 完成并保存
+📊 总进度: 17/32 (53.1%)
+逐层抑制MLP:  53%|█████▎    | 17/32 [15:57<13:58, 55.87s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 17 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<04:25,  1.61it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:08, 49.65it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:05, 72.53it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:00<00:03, 107.77it/s][A
+Loading weights:  20%|█▉        | 85/427 [00:01<00:02, 127.67it/s][A
+Loading weights:  24%|██▍       | 104/427 [00:01<00:02, 141.93it/s][A
+Loading weights:  30%|███       | 130/427 [00:01<00:01, 173.40it/s][A
+Loading weights:  35%|███▌      | 151/427 [00:01<00:01, 172.30it/s][A
+Loading weights:  41%|████      | 173/427 [00:01<00:01, 177.94it/s][A
+Loading weights:  45%|████▌     | 194/427 [00:01<00:01, 185.17it/s][A
+Loading weights:  50%|█████     | 214/427 [00:01<00:01, 180.00it/s][A
+Loading weights:  56%|█████▌    | 237/427 [00:01<00:01, 189.41it/s][A
+Loading weights:  60%|██████    | 257/427 [00:01<00:00, 189.25it/s][A
+Loading weights:  65%|██████▌   | 278/427 [00:02<00:00, 192.34it/s][A
+Loading weights:  70%|███████   | 299/427 [00:02<00:00, 192.67it/s][A
+Loading weights:  75%|███████▍  | 319/427 [00:02<00:00, 182.76it/s][A
+Loading weights:  81%|████████  | 345/427 [00:02<00:00, 200.64it/s][A
+Loading weights:  86%|████████▌ | 366/427 [00:02<00:00, 184.78it/s][A
+Loading weights:  92%|█████████▏| 393/427 [00:02<00:00, 205.06it/s][A
+Loading weights:  97%|█████████▋| 414/427 [00:02<00:00, 197.62it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 153.93it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 17:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 17:   3%|▎         | 1/30 [00:01<00:34,  1.20s/it][A
+Layer 17:   7%|▋         | 2/30 [00:02<00:33,  1.20s/it][A
+Layer 17:  10%|█         | 3/30 [00:03<00:32,  1.20s/it][A
+Layer 17:  13%|█▎        | 4/30 [00:04<00:31,  1.22s/it][A
+Layer 17:  17%|█▋        | 5/30 [00:06<00:30,  1.21s/it][A
+Layer 17:  20%|██        | 6/30 [00:07<00:29,  1.22s/it][A
+Layer 17:  23%|██▎       | 7/30 [00:08<00:27,  1.21s/it][A
+Layer 17:  27%|██▋       | 8/30 [00:09<00:26,  1.21s/it][A
+Layer 17:  30%|███       | 9/30 [00:10<00:25,  1.20s/it][A
+Layer 17:  33%|███▎      | 10/30 [00:12<00:24,  1.22s/it][A
+Layer 17:  37%|███▋      | 11/30 [00:13<00:23,  1.21s/it][A
+Layer 17:  40%|████      | 12/30 [00:14<00:21,  1.21s/it][A
+Layer 17:  43%|████▎     | 13/30 [00:15<00:20,  1.21s/it][A
+Layer 17:  47%|████▋     | 14/30 [00:16<00:19,  1.21s/it][A
+Layer 17:  50%|█████     | 15/30 [00:18<00:18,  1.21s/it][A
+Layer 17:  53%|█████▎    | 16/30 [00:19<00:16,  1.21s/it][A
+Layer 17:  57%|█████▋    | 17/30 [00:20<00:15,  1.20s/it][A
+Layer 17:  60%|██████    | 18/30 [00:21<00:14,  1.21s/it][A
+Layer 17:  63%|██████▎   | 19/30 [00:22<00:13,  1.20s/it][A
+Layer 17:  67%|██████▋   | 20/30 [00:24<00:12,  1.22s/it][A
+Layer 17:  70%|███████   | 21/30 [00:25<00:10,  1.21s/it][A
+Layer 17:  73%|███████▎  | 22/30 [00:26<00:09,  1.21s/it][A
+Layer 17:  77%|███████▋  | 23/30 [00:27<00:08,  1.20s/it][A
+Layer 17:  80%|████████  | 24/30 [00:28<00:07,  1.20s/it][A
+Layer 17:  83%|████████▎ | 25/30 [00:30<00:05,  1.20s/it][A
+Layer 17:  87%|████████▋ | 26/30 [00:31<00:04,  1.20s/it][A
+Layer 17:  90%|█████████ | 27/30 [00:32<00:03,  1.20s/it][A
+Layer 17:  93%|█████████▎| 28/30 [00:33<00:02,  1.20s/it][A
+Layer 17:  97%|█████████▋| 29/30 [00:34<00:01,  1.20s/it][A
+Layer 17: 100%|██████████| 30/30 [00:36<00:00,  1.19s/it][ALayer 17: 100%|██████████| 30/30 [00:36<00:00,  1.20s/it]
+✅ Layer 17 完成并保存
+📊 总进度: 18/32 (56.2%)
+逐层抑制MLP:  56%|█████▋    | 18/32 [16:52<13:01, 55.83s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 18 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:25,  2.93it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:12,  3.22it/s][A
+Loading weights:   7%|▋         | 28/427 [00:00<00:07, 56.33it/s][A
+Loading weights:  11%|█         | 47/427 [00:00<00:04, 84.25it/s][A
+Loading weights:  17%|█▋        | 72/427 [00:00<00:02, 123.66it/s][A
+Loading weights:  22%|██▏       | 95/427 [00:01<00:02, 147.61it/s][A
+Loading weights:  28%|██▊       | 119/427 [00:01<00:01, 165.99it/s][A
+Loading weights:  33%|███▎      | 139/427 [00:01<00:01, 172.99it/s][A
+Loading weights:  37%|███▋      | 159/427 [00:01<00:01, 170.01it/s][A
+Loading weights:  43%|████▎     | 185/427 [00:01<00:01, 193.45it/s][A
+Loading weights:  48%|████▊     | 206/427 [00:01<00:01, 175.51it/s][A
+Loading weights:  55%|█████▍    | 233/427 [00:01<00:00, 196.44it/s][A
+Loading weights:  59%|█████▉    | 254/427 [00:01<00:00, 182.52it/s][A
+Loading weights:  65%|██████▌   | 278/427 [00:02<00:00, 191.69it/s][A
+Loading weights:  70%|██████▉   | 298/427 [00:02<00:00, 189.09it/s][A
+Loading weights:  74%|███████▍  | 318/427 [00:02<00:00, 175.71it/s][A
+Loading weights:  81%|████████  | 345/427 [00:02<00:00, 192.71it/s][A
+Loading weights:  85%|████████▌ | 365/427 [00:02<00:00, 184.78it/s][A
+Loading weights:  90%|█████████ | 386/427 [00:02<00:00, 186.66it/s][A
+Loading weights:  96%|█████████▋| 412/427 [00:02<00:00, 198.70it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 152.44it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 18:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 18:   3%|▎         | 1/30 [00:01<00:34,  1.20s/it][A
+Layer 18:   7%|▋         | 2/30 [00:02<00:33,  1.19s/it][A
+Layer 18:  10%|█         | 3/30 [00:03<00:32,  1.19s/it][A
+Layer 18:  13%|█▎        | 4/30 [00:04<00:31,  1.20s/it][A
+Layer 18:  17%|█▋        | 5/30 [00:06<00:30,  1.22s/it][A
+Layer 18:  20%|██        | 6/30 [00:07<00:29,  1.24s/it][A
+Layer 18:  23%|██▎       | 7/30 [00:08<00:28,  1.23s/it][A
+Layer 18:  27%|██▋       | 8/30 [00:09<00:26,  1.22s/it][A
+Layer 18:  30%|███       | 9/30 [00:10<00:25,  1.22s/it][A
+Layer 18:  33%|███▎      | 10/30 [00:12<00:24,  1.22s/it][A
+Layer 18:  37%|███▋      | 11/30 [00:13<00:23,  1.22s/it][A
+Layer 18:  40%|████      | 12/30 [00:14<00:21,  1.21s/it][A
+Layer 18:  43%|████▎     | 13/30 [00:15<00:20,  1.21s/it][A
+Layer 18:  47%|████▋     | 14/30 [00:16<00:19,  1.20s/it][A
+Layer 18:  50%|█████     | 15/30 [00:18<00:18,  1.20s/it][A
+Layer 18:  53%|█████▎    | 16/30 [00:19<00:16,  1.20s/it][A
+Layer 18:  57%|█████▋    | 17/30 [00:20<00:15,  1.20s/it][A
+Layer 18:  60%|██████    | 18/30 [00:21<00:14,  1.20s/it][A
+Layer 18:  63%|██████▎   | 19/30 [00:22<00:13,  1.20s/it][A
+Layer 18:  67%|██████▋   | 20/30 [00:24<00:12,  1.21s/it][A
+Layer 18:  70%|███████   | 21/30 [00:25<00:10,  1.21s/it][A
+Layer 18:  73%|███████▎  | 22/30 [00:26<00:09,  1.20s/it][A
+Layer 18:  77%|███████▋  | 23/30 [00:27<00:08,  1.20s/it][A
+Layer 18:  80%|████████  | 24/30 [00:29<00:07,  1.21s/it][A
+Layer 18:  83%|████████▎ | 25/30 [00:30<00:06,  1.20s/it][A
+Layer 18:  87%|████████▋ | 26/30 [00:31<00:04,  1.20s/it][A
+Layer 18:  90%|█████████ | 27/30 [00:32<00:03,  1.20s/it][A
+Layer 18:  93%|█████████▎| 28/30 [00:33<00:02,  1.20s/it][A
+Layer 18:  97%|█████████▋| 29/30 [00:34<00:01,  1.20s/it][A
+Layer 18: 100%|██████████| 30/30 [00:36<00:00,  1.22s/it][ALayer 18: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it]
+✅ Layer 18 完成并保存
+📊 总进度: 19/32 (59.4%)
+逐层抑制MLP:  59%|█████▉    | 19/32 [17:48<12:05, 55.77s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 19 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:24,  2.96it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:09,  3.29it/s][A
+Loading weights:   7%|▋         | 28/427 [00:00<00:07, 56.09it/s][A
+Loading weights:  11%|█         | 48/427 [00:00<00:04, 86.51it/s][A
+Loading weights:  17%|█▋        | 73/427 [00:00<00:02, 119.70it/s][A
+Loading weights:  23%|██▎       | 100/427 [00:01<00:02, 151.77it/s][A
+Loading weights:  28%|██▊       | 121/427 [00:01<00:01, 166.46it/s][A
+Loading weights:  34%|███▍      | 147/427 [00:01<00:01, 188.71it/s][A
+Loading weights:  40%|███▉      | 169/427 [00:01<00:01, 183.84it/s][A
+Loading weights:  44%|████▍     | 189/427 [00:01<00:01, 186.53it/s][A
+Loading weights:  49%|████▉     | 209/427 [00:01<00:01, 184.07it/s][A
+Loading weights:  56%|█████▌    | 238/427 [00:01<00:00, 194.52it/s][A
+Loading weights:  60%|██████    | 258/427 [00:01<00:00, 194.51it/s][A
+Loading weights:  66%|██████▌   | 280/427 [00:01<00:00, 194.03it/s][A
+Loading weights:  72%|███████▏  | 307/427 [00:02<00:00, 205.97it/s][A
+Loading weights:  77%|███████▋  | 328/427 [00:02<00:00, 200.73it/s][A
+Loading weights:  82%|████████▏ | 352/427 [00:02<00:00, 205.35it/s][A
+Loading weights:  87%|████████▋ | 373/427 [00:02<00:00, 202.67it/s][A
+Loading weights:  93%|█████████▎| 399/427 [00:02<00:00, 211.73it/s][A
+Loading weights:  99%|█████████▊| 421/427 [00:02<00:00, 202.30it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 159.26it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 19:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 19:   3%|▎         | 1/30 [00:01<00:34,  1.20s/it][A
+Layer 19:   7%|▋         | 2/30 [00:02<00:33,  1.20s/it][A
+Layer 19:  10%|█         | 3/30 [00:03<00:32,  1.20s/it][A
+Layer 19:  13%|█▎        | 4/30 [00:04<00:31,  1.19s/it][A
+Layer 19:  17%|█▋        | 5/30 [00:05<00:29,  1.19s/it][A
+Layer 19:  20%|██        | 6/30 [00:07<00:28,  1.19s/it][A
+Layer 19:  23%|██▎       | 7/30 [00:08<00:27,  1.19s/it][A
+Layer 19:  27%|██▋       | 8/30 [00:09<00:26,  1.20s/it][A
+Layer 19:  30%|███       | 9/30 [00:10<00:25,  1.21s/it][A
+Layer 19:  33%|███▎      | 10/30 [00:12<00:24,  1.21s/it][A
+Layer 19:  37%|███▋      | 11/30 [00:13<00:22,  1.21s/it][A
+Layer 19:  40%|████      | 12/30 [00:14<00:21,  1.20s/it][A
+Layer 19:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 19:  47%|████▋     | 14/30 [00:16<00:19,  1.22s/it][A
+Layer 19:  50%|█████     | 15/30 [00:18<00:18,  1.22s/it][A
+Layer 19:  53%|█████▎    | 16/30 [00:19<00:16,  1.21s/it][A
+Layer 19:  57%|█████▋    | 17/30 [00:20<00:15,  1.22s/it][A
+Layer 19:  60%|██████    | 18/30 [00:21<00:14,  1.22s/it][A
+Layer 19:  63%|██████▎   | 19/30 [00:22<00:13,  1.21s/it][A
+Layer 19:  67%|██████▋   | 20/30 [00:24<00:12,  1.20s/it][A
+Layer 19:  70%|███████   | 21/30 [00:25<00:10,  1.21s/it][A
+Layer 19:  73%|███████▎  | 22/30 [00:26<00:09,  1.21s/it][A
+Layer 19:  77%|███████▋  | 23/30 [00:27<00:08,  1.20s/it][A
+Layer 19:  80%|████████  | 24/30 [00:28<00:07,  1.21s/it][A
+Layer 19:  83%|████████▎ | 25/30 [00:30<00:06,  1.21s/it][A
+Layer 19:  87%|████████▋ | 26/30 [00:31<00:04,  1.21s/it][A
+Layer 19:  90%|█████████ | 27/30 [00:32<00:03,  1.21s/it][A
+Layer 19:  93%|█████████▎| 28/30 [00:33<00:02,  1.21s/it][A
+Layer 19:  97%|█████████▋| 29/30 [00:34<00:01,  1.20s/it][A
+Layer 19: 100%|██████████| 30/30 [00:36<00:00,  1.20s/it][ALayer 19: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it]
+✅ Layer 19 完成并保存
+📊 总进度: 20/32 (62.5%)
+逐层抑制MLP:  62%|██████▎   | 20/32 [18:44<11:08, 55.74s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 20 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<04:35,  1.55it/s][A
+Loading weights:   7%|▋         | 28/427 [00:00<00:08, 49.22it/s][A
+Loading weights:  11%|█         | 47/427 [00:00<00:05, 73.64it/s][A
+Loading weights:  17%|█▋        | 72/427 [00:00<00:03, 111.15it/s][A
+Loading weights:  22%|██▏       | 96/427 [00:01<00:02, 138.15it/s][A
+Loading weights:  28%|██▊       | 120/427 [00:01<00:01, 157.26it/s][A
+Loading weights:  33%|███▎      | 143/427 [00:01<00:01, 172.18it/s][A
+Loading weights:  38%|███▊      | 164/427 [00:01<00:01, 178.26it/s][A
+Loading weights:  44%|████▎     | 186/427 [00:01<00:01, 188.25it/s][A
+Loading weights:  48%|████▊     | 207/427 [00:01<00:01, 175.05it/s][A
+Loading weights:  56%|█████▌    | 238/427 [00:01<00:00, 207.35it/s][A
+Loading weights:  61%|██████    | 261/427 [00:01<00:00, 183.02it/s][A
+Loading weights:  68%|██████▊   | 289/427 [00:02<00:00, 206.53it/s][A
+Loading weights:  73%|███████▎  | 312/427 [00:02<00:00, 189.48it/s][A
+Loading weights:  79%|███████▉  | 337/427 [00:02<00:00, 199.40it/s][A
+Loading weights:  85%|████████▍ | 361/427 [00:02<00:00, 203.39it/s][A
+Loading weights:  90%|████████▉ | 383/427 [00:02<00:00, 202.94it/s][A
+Loading weights:  96%|█████████▋| 412/427 [00:02<00:00, 218.29it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 157.20it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 20:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 20:   3%|▎         | 1/30 [00:01<00:36,  1.27s/it][A
+Layer 20:   7%|▋         | 2/30 [00:02<00:34,  1.23s/it][A
+Layer 20:  10%|█         | 3/30 [00:03<00:32,  1.22s/it][A
+Layer 20:  13%|█▎        | 4/30 [00:04<00:31,  1.21s/it][A
+Layer 20:  17%|█▋        | 5/30 [00:06<00:30,  1.21s/it][A
+Layer 20:  20%|██        | 6/30 [00:07<00:29,  1.21s/it][A
+Layer 20:  23%|██▎       | 7/30 [00:08<00:27,  1.21s/it][A
+Layer 20:  27%|██▋       | 8/30 [00:09<00:26,  1.21s/it][A
+Layer 20:  30%|███       | 9/30 [00:10<00:25,  1.22s/it][A
+Layer 20:  33%|███▎      | 10/30 [00:12<00:24,  1.22s/it][A
+Layer 20:  37%|███▋      | 11/30 [00:13<00:23,  1.22s/it][A
+Layer 20:  40%|████      | 12/30 [00:14<00:21,  1.22s/it][A
+Layer 20:  43%|████▎     | 13/30 [00:15<00:20,  1.22s/it][A
+Layer 20:  47%|████▋     | 14/30 [00:17<00:19,  1.21s/it][A
+Layer 20:  50%|█████     | 15/30 [00:18<00:18,  1.20s/it][A
+Layer 20:  53%|█████▎    | 16/30 [00:19<00:16,  1.20s/it][A
+Layer 20:  57%|█████▋    | 17/30 [00:20<00:15,  1.20s/it][A
+Layer 20:  60%|██████    | 18/30 [00:21<00:14,  1.21s/it][A
+Layer 20:  63%|██████▎   | 19/30 [00:23<00:13,  1.20s/it][A
+Layer 20:  67%|██████▋   | 20/30 [00:24<00:12,  1.21s/it][A
+Layer 20:  70%|███████   | 21/30 [00:25<00:10,  1.20s/it][A
+Layer 20:  73%|███████▎  | 22/30 [00:26<00:09,  1.21s/it][A
+Layer 20:  77%|███████▋  | 23/30 [00:27<00:08,  1.20s/it][A
+Layer 20:  80%|████████  | 24/30 [00:29<00:07,  1.22s/it][A
+Layer 20:  83%|████████▎ | 25/30 [00:30<00:06,  1.21s/it][A
+Layer 20:  87%|████████▋ | 26/30 [00:31<00:04,  1.21s/it][A
+Layer 20:  90%|█████████ | 27/30 [00:32<00:03,  1.21s/it][A
+Layer 20:  93%|█████████▎| 28/30 [00:33<00:02,  1.23s/it][A
+Layer 20:  97%|█████████▋| 29/30 [00:35<00:01,  1.25s/it][A
+Layer 20: 100%|██████████| 30/30 [00:36<00:00,  1.26s/it][ALayer 20: 100%|██████████| 30/30 [00:36<00:00,  1.22s/it]
+✅ Layer 20 完成并保存
+📊 总进度: 21/32 (65.6%)
+逐层抑制MLP:  66%|██████▌   | 21/32 [19:40<10:13, 55.76s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 21 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:23,  2.98it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:10,  3.26it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:07, 54.70it/s][A
+Loading weights:  11%|█         | 47/427 [00:00<00:04, 85.77it/s][A
+Loading weights:  16%|█▌        | 68/427 [00:00<00:03, 114.46it/s][A
+Loading weights:  22%|██▏       | 94/427 [00:01<00:02, 149.48it/s][A
+Loading weights:  26%|██▋       | 113/427 [00:01<00:02, 156.17it/s][A
+Loading weights:  31%|███▏      | 134/427 [00:01<00:01, 166.22it/s][A
+Loading weights:  36%|███▌      | 153/427 [00:01<00:01, 158.78it/s][A
+Loading weights:  41%|████      | 174/427 [00:01<00:01, 167.75it/s][A
+Loading weights:  47%|████▋     | 199/427 [00:01<00:01, 187.98it/s][A
+Loading weights:  51%|█████▏    | 219/427 [00:01<00:01, 182.61it/s][A
+Loading weights:  56%|█████▌    | 239/427 [00:01<00:01, 184.83it/s][A
+Loading weights:  60%|██████    | 258/427 [00:01<00:00, 177.00it/s][A
+Loading weights:  65%|██████▌   | 279/427 [00:02<00:00, 184.24it/s][A
+Loading weights:  71%|███████▏  | 305/427 [00:02<00:00, 202.81it/s][A
+Loading weights:  76%|███████▋  | 326/427 [00:02<00:00, 182.86it/s][A
+Loading weights:  81%|████████  | 346/427 [00:02<00:00, 182.54it/s][A
+Loading weights:  85%|████████▌ | 365/427 [00:02<00:00, 180.88it/s][A
+Loading weights:  92%|█████████▏| 393/427 [00:02<00:00, 200.79it/s][A
+Loading weights:  97%|█████████▋| 414/427 [00:02<00:00, 191.73it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 150.99it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 21:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 21:   3%|▎         | 1/30 [00:01<00:35,  1.22s/it][A
+Layer 21:   7%|▋         | 2/30 [00:02<00:35,  1.25s/it][A
+Layer 21:  10%|█         | 3/30 [00:03<00:34,  1.28s/it][A
+Layer 21:  13%|█▎        | 4/30 [00:05<00:32,  1.26s/it][A
+Layer 21:  17%|█▋        | 5/30 [00:06<00:31,  1.27s/it][A
+Layer 21:  20%|██        | 6/30 [00:07<00:30,  1.28s/it][A
+Layer 21:  23%|██▎       | 7/30 [00:08<00:29,  1.27s/it][A
+Layer 21:  27%|██▋       | 8/30 [00:10<00:27,  1.25s/it][A
+Layer 21:  30%|███       | 9/30 [00:11<00:26,  1.24s/it][A
+Layer 21:  33%|███▎      | 10/30 [00:12<00:24,  1.23s/it][A
+Layer 21:  37%|███▋      | 11/30 [00:13<00:23,  1.22s/it][A
+Layer 21:  40%|████      | 12/30 [00:14<00:21,  1.22s/it][A
+Layer 21:  43%|████▎     | 13/30 [00:16<00:20,  1.21s/it][A
+Layer 21:  47%|████▋     | 14/30 [00:17<00:19,  1.22s/it][A
+Layer 21:  50%|█████     | 15/30 [00:18<00:18,  1.22s/it][A
+Layer 21:  53%|█████▎    | 16/30 [00:19<00:17,  1.23s/it][A
+Layer 21:  57%|█████▋    | 17/30 [00:21<00:15,  1.22s/it][A
+Layer 21:  60%|██████    | 18/30 [00:22<00:14,  1.22s/it][A
+Layer 21:  63%|██████▎   | 19/30 [00:23<00:13,  1.23s/it][A
+Layer 21:  67%|██████▋   | 20/30 [00:24<00:12,  1.22s/it][A
+Layer 21:  70%|███████   | 21/30 [00:25<00:10,  1.22s/it][A
+Layer 21:  73%|███████▎  | 22/30 [00:27<00:09,  1.21s/it][A
+Layer 21:  77%|███████▋  | 23/30 [00:28<00:08,  1.21s/it][A
+Layer 21:  80%|████████  | 24/30 [00:29<00:07,  1.22s/it][A
+Layer 21:  83%|████████▎ | 25/30 [00:30<00:06,  1.22s/it][A
+Layer 21:  87%|████████▋ | 26/30 [00:31<00:04,  1.22s/it][A
+Layer 21:  90%|█████████ | 27/30 [00:33<00:03,  1.22s/it][A
+Layer 21:  93%|█████████▎| 28/30 [00:34<00:02,  1.22s/it][A
+Layer 21:  97%|█████████▋| 29/30 [00:35<00:01,  1.21s/it][A
+Layer 21: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it][ALayer 21: 100%|██████████| 30/30 [00:36<00:00,  1.23s/it]
+✅ Layer 21 完成并保存
+📊 总进度: 22/32 (68.8%)
+逐层抑制MLP:  69%|██████▉   | 22/32 [20:36<09:19, 55.95s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 22 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<04:20,  1.64it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:08, 49.59it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:05, 71.08it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:00<00:03, 104.74it/s][A
+Loading weights:  19%|█▉        | 83/427 [00:01<00:02, 118.96it/s][A
+Loading weights:  24%|██▎       | 101/427 [00:01<00:02, 129.44it/s][A
+Loading weights:  30%|██▉       | 128/427 [00:01<00:01, 165.21it/s][A
+Loading weights:  35%|███▍      | 148/427 [00:01<00:01, 164.51it/s][A
+Loading weights:  39%|███▉      | 168/427 [00:01<00:01, 172.06it/s][A
+Loading weights:  44%|████▍     | 187/427 [00:01<00:01, 170.43it/s][A
+Loading weights:  48%|████▊     | 206/427 [00:01<00:01, 164.36it/s][A
+Loading weights:  53%|█████▎    | 227/427 [00:01<00:01, 170.21it/s][A
+Loading weights:  59%|█████▉    | 252/427 [00:01<00:00, 189.15it/s][A
+Loading weights:  64%|██████▎   | 272/427 [00:02<00:00, 172.02it/s][A
+Loading weights:  69%|██████▊   | 293/427 [00:02<00:00, 169.18it/s][A
+Loading weights:  73%|███████▎  | 312/427 [00:02<00:00, 172.08it/s][A
+Loading weights:  78%|███████▊  | 333/427 [00:02<00:00, 174.01it/s][A
+Loading weights:  84%|████████▍ | 359/427 [00:02<00:00, 189.77it/s][A
+Loading weights:  89%|████████▉ | 379/427 [00:02<00:00, 181.74it/s][A
+Loading weights:  93%|█████████▎| 398/427 [00:02<00:00, 181.14it/s][A
+Loading weights:  98%|█████████▊| 417/427 [00:02<00:00, 167.17it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 143.19it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 22:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 22:   3%|▎         | 1/30 [00:01<00:37,  1.28s/it][A
+Layer 22:   7%|▋         | 2/30 [00:02<00:34,  1.25s/it][A
+Layer 22:  10%|█         | 3/30 [00:03<00:33,  1.23s/it][A
+Layer 22:  13%|█▎        | 4/30 [00:04<00:32,  1.24s/it][A
+Layer 22:  17%|█▋        | 5/30 [00:06<00:30,  1.24s/it][A
+Layer 22:  20%|██        | 6/30 [00:07<00:29,  1.23s/it][A
+Layer 22:  23%|██▎       | 7/30 [00:08<00:28,  1.23s/it][A
+Layer 22:  27%|██▋       | 8/30 [00:09<00:27,  1.23s/it][A
+Layer 22:  30%|███       | 9/30 [00:11<00:25,  1.24s/it][A
+Layer 22:  33%|███▎      | 10/30 [00:12<00:24,  1.23s/it][A
+Layer 22:  37%|███▋      | 11/30 [00:13<00:23,  1.22s/it][A
+Layer 22:  40%|████      | 12/30 [00:14<00:22,  1.23s/it][A
+Layer 22:  43%|████▎     | 13/30 [00:16<00:20,  1.23s/it][A
+Layer 22:  47%|████▋     | 14/30 [00:17<00:19,  1.23s/it][A
+Layer 22:  50%|█████     | 15/30 [00:18<00:18,  1.22s/it][A
+Layer 22:  53%|█████▎    | 16/30 [00:19<00:17,  1.22s/it][A
+Layer 22:  57%|█████▋    | 17/30 [00:20<00:15,  1.22s/it][A
+Layer 22:  60%|██████    | 18/30 [00:22<00:14,  1.22s/it][A
+Layer 22:  63%|██████▎   | 19/30 [00:23<00:13,  1.23s/it][A
+Layer 22:  67%|██████▋   | 20/30 [00:24<00:12,  1.22s/it][A
+Layer 22:  70%|███████   | 21/30 [00:25<00:10,  1.22s/it][A
+Layer 22:  73%|███████▎  | 22/30 [00:26<00:09,  1.22s/it][A
+Layer 22:  77%|███████▋  | 23/30 [00:28<00:08,  1.21s/it][A
+Layer 22:  80%|████████  | 24/30 [00:29<00:07,  1.22s/it][A
+Layer 22:  83%|████████▎ | 25/30 [00:30<00:06,  1.28s/it][A
+Layer 22:  87%|████████▋ | 26/30 [00:32<00:05,  1.26s/it][A
+Layer 22:  90%|█████████ | 27/30 [00:33<00:03,  1.24s/it][A
+Layer 22:  93%|█████████▎| 28/30 [00:34<00:02,  1.22s/it][A
+Layer 22:  97%|█████████▋| 29/30 [00:35<00:01,  1.21s/it][A
+Layer 22: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it][ALayer 22: 100%|██████████| 30/30 [00:36<00:00,  1.23s/it]
+✅ Layer 22 完成并保存
+📊 总进度: 23/32 (71.9%)
+逐层抑制MLP:  72%|███████▏  | 23/32 [21:33<08:27, 56.41s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 23 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:26,  2.90it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:08,  3.31it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:07, 55.93it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:04, 78.68it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:00<00:03, 113.69it/s][A
+Loading weights:  19%|█▉        | 82/427 [00:01<00:02, 123.69it/s][A
+Loading weights:  23%|██▎       | 100/427 [00:01<00:02, 137.79it/s][A
+Loading weights:  28%|██▊       | 121/427 [00:01<00:02, 152.56it/s][A
+Loading weights:  34%|███▍      | 146/427 [00:01<00:01, 177.95it/s][A
+Loading weights:  39%|███▉      | 166/427 [00:01<00:01, 167.91it/s][A
+Loading weights:  44%|████▎     | 186/427 [00:01<00:01, 168.86it/s][A
+Loading weights:  48%|████▊     | 204/427 [00:01<00:01, 168.89it/s][A
+Loading weights:  52%|█████▏    | 222/427 [00:01<00:01, 171.28it/s][A
+Loading weights:  56%|█████▌    | 240/427 [00:01<00:01, 166.69it/s][A
+Loading weights:  60%|██████    | 258/427 [00:02<00:01, 163.94it/s][A
+Loading weights:  65%|██████▌   | 278/427 [00:02<00:00, 172.09it/s][A
+Loading weights:  69%|██████▉   | 296/427 [00:02<00:00, 165.27it/s][A
+Loading weights:  73%|███████▎  | 313/427 [00:02<00:00, 156.39it/s][A
+Loading weights:  78%|███████▊  | 331/427 [00:02<00:00, 162.12it/s][A
+Loading weights:  84%|████████▍ | 359/427 [00:02<00:00, 189.33it/s][A
+Loading weights:  89%|████████▉ | 379/427 [00:02<00:00, 184.55it/s][A
+Loading weights:  93%|█████████▎| 398/427 [00:02<00:00, 180.75it/s][A
+Loading weights:  98%|█████████▊| 417/427 [00:02<00:00, 172.08it/s][ALoading weights: 100%|██████████| 427/427 [00:03<00:00, 141.63it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 23:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 23:   3%|▎         | 1/30 [00:01<00:34,  1.20s/it][A
+Layer 23:   7%|▋         | 2/30 [00:02<00:33,  1.21s/it][A
+Layer 23:  10%|█         | 3/30 [00:03<00:32,  1.21s/it][A
+Layer 23:  13%|█▎        | 4/30 [00:04<00:31,  1.21s/it][A
+Layer 23:  17%|█▋        | 5/30 [00:06<00:30,  1.22s/it][A
+Layer 23:  20%|██        | 6/30 [00:07<00:29,  1.21s/it][A
+Layer 23:  23%|██▎       | 7/30 [00:08<00:28,  1.22s/it][A
+Layer 23:  27%|██▋       | 8/30 [00:09<00:26,  1.21s/it][A
+Layer 23:  30%|███       | 9/30 [00:10<00:25,  1.21s/it][A
+Layer 23:  33%|███▎      | 10/30 [00:12<00:24,  1.20s/it][A
+Layer 23:  37%|███▋      | 11/30 [00:13<00:22,  1.20s/it][A
+Layer 23:  40%|████      | 12/30 [00:14<00:21,  1.20s/it][A
+Layer 23:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 23:  47%|████▋     | 14/30 [00:16<00:19,  1.20s/it][A
+Layer 23:  50%|█████     | 15/30 [00:18<00:18,  1.21s/it][A
+Layer 23:  53%|█████▎    | 16/30 [00:19<00:16,  1.21s/it][A
+Layer 23:  57%|█████▋    | 17/30 [00:20<00:15,  1.21s/it][A
+Layer 23:  60%|██████    | 18/30 [00:21<00:14,  1.20s/it][A
+Layer 23:  63%|██████▎   | 19/30 [00:23<00:13,  1.23s/it][A
+Layer 23:  67%|██████▋   | 20/30 [00:24<00:12,  1.22s/it][A
+Layer 23:  70%|███████   | 21/30 [00:25<00:10,  1.22s/it][A
+Layer 23:  73%|███████▎  | 22/30 [00:26<00:09,  1.22s/it][A
+Layer 23:  77%|███████▋  | 23/30 [00:27<00:08,  1.23s/it][A
+Layer 23:  80%|████████  | 24/30 [00:29<00:07,  1.22s/it][A
+Layer 23:  83%|████████▎ | 25/30 [00:30<00:06,  1.22s/it][A
+Layer 23:  87%|████████▋ | 26/30 [00:31<00:04,  1.22s/it][A
+Layer 23:  90%|█████████ | 27/30 [00:32<00:03,  1.21s/it][A
+Layer 23:  93%|█████████▎| 28/30 [00:33<00:02,  1.21s/it][A
+Layer 23:  97%|█████████▋| 29/30 [00:35<00:01,  1.21s/it][A
+Layer 23: 100%|██████████| 30/30 [00:36<00:00,  1.20s/it][ALayer 23: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it]
+✅ Layer 23 完成并保存
+📊 总进度: 24/32 (75.0%)
+逐层抑制MLP:  75%|███████▌  | 24/32 [22:29<07:29, 56.23s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 24 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<04:28,  1.59it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:08, 49.23it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:05, 71.96it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:00<00:03, 107.68it/s][A
+Loading weights:  20%|█▉        | 85/427 [00:01<00:02, 127.48it/s][A
+Loading weights:  24%|██▍       | 104/427 [00:01<00:02, 138.63it/s][A
+Loading weights:  30%|██▉       | 127/427 [00:01<00:01, 161.47it/s][A
+Loading weights:  34%|███▍      | 147/427 [00:01<00:01, 171.25it/s][A
+Loading weights:  39%|███▉      | 167/427 [00:01<00:01, 169.73it/s][A
+Loading weights:  44%|████▎     | 186/427 [00:01<00:01, 174.65it/s][A
+Loading weights:  48%|████▊     | 205/427 [00:01<00:01, 170.63it/s][A
+Loading weights:  53%|█████▎    | 226/427 [00:01<00:01, 177.02it/s][A
+Loading weights:  58%|█████▊    | 249/427 [00:01<00:00, 186.30it/s][A
+Loading weights:  63%|██████▎   | 269/427 [00:02<00:00, 175.20it/s][A
+Loading weights:  68%|██████▊   | 292/427 [00:02<00:00, 185.06it/s][A
+Loading weights:  73%|███████▎  | 311/427 [00:02<00:00, 179.45it/s][A
+Loading weights:  78%|███████▊  | 332/427 [00:02<00:00, 187.74it/s][A
+Loading weights:  83%|████████▎ | 355/427 [00:02<00:00, 197.18it/s][A
+Loading weights:  88%|████████▊ | 375/427 [00:02<00:00, 181.24it/s][A
+Loading weights:  93%|█████████▎| 398/427 [00:02<00:00, 186.48it/s][A
+Loading weights:  98%|█████████▊| 417/427 [00:02<00:00, 176.27it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 147.44it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 24:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 24:   3%|▎         | 1/30 [00:01<00:34,  1.20s/it][A
+Layer 24:   7%|▋         | 2/30 [00:02<00:33,  1.20s/it][A
+Layer 24:  10%|█         | 3/30 [00:03<00:32,  1.20s/it][A
+Layer 24:  13%|█▎        | 4/30 [00:04<00:31,  1.21s/it][A
+Layer 24:  17%|█▋        | 5/30 [00:06<00:31,  1.24s/it][A
+Layer 24:  20%|██        | 6/30 [00:07<00:29,  1.24s/it][A
+Layer 24:  23%|██▎       | 7/30 [00:08<00:28,  1.23s/it][A
+Layer 24:  27%|██▋       | 8/30 [00:09<00:27,  1.23s/it][A
+Layer 24:  30%|███       | 9/30 [00:11<00:25,  1.22s/it][A
+Layer 24:  33%|███▎      | 10/30 [00:12<00:24,  1.21s/it][A
+Layer 24:  37%|███▋      | 11/30 [00:13<00:22,  1.20s/it][A
+Layer 24:  40%|████      | 12/30 [00:14<00:21,  1.20s/it][A
+Layer 24:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 24:  47%|████▋     | 14/30 [00:17<00:19,  1.22s/it][A
+Layer 24:  50%|█████     | 15/30 [00:18<00:18,  1.25s/it][A
+Layer 24:  53%|█████▎    | 16/30 [00:19<00:17,  1.24s/it][A
+Layer 24:  57%|█████▋    | 17/30 [00:20<00:15,  1.23s/it][A
+Layer 24:  60%|██████    | 18/30 [00:21<00:14,  1.22s/it][A
+Layer 24:  63%|██████▎   | 19/30 [00:23<00:13,  1.23s/it][A
+Layer 24:  67%|██████▋   | 20/30 [00:24<00:12,  1.22s/it][A
+Layer 24:  70%|███████   | 21/30 [00:25<00:11,  1.23s/it][A
+Layer 24:  73%|███████▎  | 22/30 [00:26<00:09,  1.22s/it][A
+Layer 24:  77%|███████▋  | 23/30 [00:28<00:08,  1.21s/it][A
+Layer 24:  80%|████████  | 24/30 [00:29<00:07,  1.21s/it][A
+Layer 24:  83%|████████▎ | 25/30 [00:30<00:06,  1.23s/it][A
+Layer 24:  87%|████████▋ | 26/30 [00:31<00:04,  1.24s/it][A
+Layer 24:  90%|█████████ | 27/30 [00:33<00:03,  1.25s/it][A
+Layer 24:  93%|█████████▎| 28/30 [00:34<00:02,  1.26s/it][A
+Layer 24:  97%|█████████▋| 29/30 [00:35<00:01,  1.24s/it][A
+Layer 24: 100%|██████████| 30/30 [00:36<00:00,  1.23s/it][ALayer 24: 100%|██████████| 30/30 [00:36<00:00,  1.23s/it]
+✅ Layer 24 完成并保存
+📊 总进度: 25/32 (78.1%)
+逐层抑制MLP:  78%|███████▊  | 25/32 [23:26<06:34, 56.38s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 25 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:23,  2.97it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:22,  2.97it/s][A
+Loading weights:   7%|▋         | 28/427 [00:00<00:07, 52.91it/s][A
+Loading weights:  11%|█         | 46/427 [00:00<00:04, 79.75it/s][A
+Loading weights:  16%|█▌        | 67/427 [00:00<00:03, 108.75it/s][A
+Loading weights:  20%|██        | 87/427 [00:01<00:02, 129.85it/s][A
+Loading weights:  25%|██▍       | 105/427 [00:01<00:02, 141.38it/s][A
+Loading weights:  30%|██▉       | 127/427 [00:01<00:01, 162.08it/s][A
+Loading weights:  35%|███▍      | 148/427 [00:01<00:01, 169.21it/s][A
+Loading weights:  39%|███▉      | 167/427 [00:01<00:01, 172.54it/s][A
+Loading weights:  44%|████▎     | 186/427 [00:01<00:01, 176.48it/s][A
+Loading weights:  48%|████▊     | 205/427 [00:01<00:01, 167.88it/s][A
+Loading weights:  53%|█████▎    | 226/427 [00:01<00:01, 175.95it/s][A
+Loading weights:  57%|█████▋    | 245/427 [00:01<00:01, 174.91it/s][A
+Loading weights:  62%|██████▏   | 263/427 [00:02<00:01, 162.96it/s][A
+Loading weights:  67%|██████▋   | 288/427 [00:02<00:00, 181.06it/s][A
+Loading weights:  72%|███████▏  | 307/427 [00:02<00:00, 168.52it/s][A
+Loading weights:  78%|███████▊  | 331/427 [00:02<00:00, 181.27it/s][A
+Loading weights:  82%|████████▏ | 350/427 [00:02<00:00, 175.34it/s][A
+Loading weights:  86%|████████▌ | 368/427 [00:02<00:00, 165.71it/s][A
+Loading weights:  90%|█████████ | 386/427 [00:02<00:00, 168.22it/s][A
+Loading weights:  96%|█████████▋| 411/427 [00:02<00:00, 182.75it/s][ALoading weights: 100%|██████████| 427/427 [00:03<00:00, 140.86it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 25:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 25:   3%|▎         | 1/30 [00:01<00:34,  1.20s/it][A
+Layer 25:   7%|▋         | 2/30 [00:02<00:33,  1.20s/it][A
+Layer 25:  10%|█         | 3/30 [00:03<00:32,  1.19s/it][A
+Layer 25:  13%|█▎        | 4/30 [00:04<00:31,  1.21s/it][A
+Layer 25:  17%|█▋        | 5/30 [00:06<00:30,  1.20s/it][A
+Layer 25:  20%|██        | 6/30 [00:07<00:28,  1.20s/it][A
+Layer 25:  23%|██▎       | 7/30 [00:08<00:27,  1.21s/it][A
+Layer 25:  27%|██▋       | 8/30 [00:09<00:26,  1.21s/it][A
+Layer 25:  30%|███       | 9/30 [00:10<00:25,  1.20s/it][A
+Layer 25:  33%|███▎      | 10/30 [00:12<00:24,  1.21s/it][A
+Layer 25:  37%|███▋      | 11/30 [00:13<00:22,  1.21s/it][A
+Layer 25:  40%|████      | 12/30 [00:14<00:21,  1.20s/it][A
+Layer 25:  43%|████▎     | 13/30 [00:15<00:20,  1.20s/it][A
+Layer 25:  47%|████▋     | 14/30 [00:16<00:19,  1.20s/it][A
+Layer 25:  50%|█████     | 15/30 [00:18<00:18,  1.21s/it][A
+Layer 25:  53%|█████▎    | 16/30 [00:19<00:16,  1.20s/it][A
+Layer 25:  57%|█████▋    | 17/30 [00:20<00:15,  1.20s/it][A
+Layer 25:  60%|██████    | 18/30 [00:21<00:14,  1.20s/it][A
+Layer 25:  63%|██████▎   | 19/30 [00:22<00:13,  1.21s/it][A
+Layer 25:  67%|██████▋   | 20/30 [00:24<00:12,  1.21s/it][A
+Layer 25:  70%|███████   | 21/30 [00:25<00:11,  1.24s/it][A
+Layer 25:  73%|███████▎  | 22/30 [00:26<00:09,  1.23s/it][A
+Layer 25:  77%|███████▋  | 23/30 [00:27<00:08,  1.23s/it][A
+Layer 25:  80%|████████  | 24/30 [00:29<00:07,  1.22s/it][A
+Layer 25:  83%|████████▎ | 25/30 [00:30<00:06,  1.21s/it][A
+Layer 25:  87%|████████▋ | 26/30 [00:31<00:04,  1.21s/it][A
+Layer 25:  90%|█████████ | 27/30 [00:32<00:03,  1.22s/it][A
+Layer 25:  93%|█████████▎| 28/30 [00:33<00:02,  1.23s/it][A
+Layer 25:  97%|█████████▋| 29/30 [00:35<00:01,  1.22s/it][A
+Layer 25: 100%|██████████| 30/30 [00:36<00:00,  1.23s/it][ALayer 25: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it]
+✅ Layer 25 完成并保存
+📊 总进度: 26/32 (81.2%)
+逐层抑制MLP:  81%|████████▏ | 26/32 [24:22<05:37, 56.33s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 26 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<05:01,  1.41it/s][A
+Loading weights:   6%|▌         | 26/427 [00:00<00:09, 42.91it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:05, 67.30it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:01<00:03, 101.94it/s][A
+Loading weights:  20%|█▉        | 85/427 [00:01<00:02, 121.84it/s][A
+Loading weights:  24%|██▍       | 104/427 [00:01<00:02, 136.19it/s][A
+Loading weights:  30%|███       | 130/427 [00:01<00:01, 166.00it/s][A
+Loading weights:  35%|███▌      | 151/427 [00:01<00:01, 165.45it/s][A
+Loading weights:  40%|████      | 172/427 [00:01<00:01, 160.37it/s][A
+Loading weights:  47%|████▋     | 200/427 [00:01<00:01, 190.40it/s][A
+Loading weights:  52%|█████▏    | 221/427 [00:01<00:01, 188.50it/s][A
+Loading weights:  57%|█████▋    | 242/427 [00:01<00:01, 174.86it/s][A
+Loading weights:  61%|██████    | 261/427 [00:02<00:00, 167.22it/s][A
+Loading weights:  67%|██████▋   | 288/427 [00:02<00:00, 191.46it/s][A
+Loading weights:  72%|███████▏  | 309/427 [00:02<00:00, 174.64it/s][A
+Loading weights:  78%|███████▊  | 331/427 [00:02<00:00, 182.90it/s][A
+Loading weights:  82%|████████▏ | 350/427 [00:02<00:00, 182.03it/s][A
+Loading weights:  86%|████████▋ | 369/427 [00:02<00:00, 167.47it/s][A
+Loading weights:  92%|█████████▏| 394/427 [00:02<00:00, 183.31it/s][A
+Loading weights:  97%|█████████▋| 413/427 [00:02<00:00, 175.87it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 143.29it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 26:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 26:   3%|▎         | 1/30 [00:01<00:34,  1.20s/it][A
+Layer 26:   7%|▋         | 2/30 [00:02<00:33,  1.20s/it][A
+Layer 26:  10%|█         | 3/30 [00:03<00:32,  1.20s/it][A
+Layer 26:  13%|█▎        | 4/30 [00:04<00:31,  1.21s/it][A
+Layer 26:  17%|█▋        | 5/30 [00:06<00:30,  1.21s/it][A
+Layer 26:  20%|██        | 6/30 [00:07<00:29,  1.22s/it][A
+Layer 26:  23%|██▎       | 7/30 [00:08<00:27,  1.21s/it][A
+Layer 26:  27%|██▋       | 8/30 [00:09<00:26,  1.21s/it][A
+Layer 26:  30%|███       | 9/30 [00:10<00:25,  1.21s/it][A
+Layer 26:  33%|███▎      | 10/30 [00:12<00:24,  1.21s/it][A
+Layer 26:  37%|███▋      | 11/30 [00:13<00:22,  1.21s/it][A
+Layer 26:  40%|████      | 12/30 [00:14<00:21,  1.21s/it][A
+Layer 26:  43%|████▎     | 13/30 [00:15<00:20,  1.21s/it][A
+Layer 26:  47%|████▋     | 14/30 [00:16<00:19,  1.20s/it][A
+Layer 26:  50%|█████     | 15/30 [00:18<00:17,  1.20s/it][A
+Layer 26:  53%|█████▎    | 16/30 [00:19<00:16,  1.20s/it][A
+Layer 26:  57%|█████▋    | 17/30 [00:20<00:15,  1.19s/it][A
+Layer 26:  60%|██████    | 18/30 [00:21<00:14,  1.22s/it][A
+Layer 26:  63%|██████▎   | 19/30 [00:22<00:13,  1.22s/it][A
+Layer 26:  67%|██████▋   | 20/30 [00:24<00:12,  1.22s/it][A
+Layer 26:  70%|███████   | 21/30 [00:25<00:11,  1.24s/it][A
+Layer 26:  73%|███████▎  | 22/30 [00:26<00:09,  1.23s/it][A
+Layer 26:  77%|███████▋  | 23/30 [00:27<00:08,  1.23s/it][A
+Layer 26:  80%|████████  | 24/30 [00:29<00:07,  1.24s/it][A
+Layer 26:  83%|████████▎ | 25/30 [00:30<00:06,  1.24s/it][A
+Layer 26:  87%|████████▋ | 26/30 [00:31<00:04,  1.25s/it][A
+Layer 26:  90%|█████████ | 27/30 [00:32<00:03,  1.25s/it][A
+Layer 26:  93%|█████████▎| 28/30 [00:34<00:02,  1.24s/it][A
+Layer 26:  97%|█████████▋| 29/30 [00:35<00:01,  1.23s/it][A
+Layer 26: 100%|██████████| 30/30 [00:36<00:00,  1.22s/it][ALayer 26: 100%|██████████| 30/30 [00:36<00:00,  1.22s/it]
+✅ Layer 26 完成并保存
+📊 总进度: 27/32 (84.4%)
+逐层抑制MLP:  84%|████████▍ | 27/32 [25:18<04:41, 56.29s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 27 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:22,  2.99it/s][A
+Loading weights:   0%|          | 2/427 [00:00<03:27,  2.05it/s][A
+Loading weights:   7%|▋         | 28/427 [00:01<00:10, 39.18it/s][A
+Loading weights:  11%|█         | 47/427 [00:01<00:05, 63.99it/s][A
+Loading weights:  16%|█▌        | 68/427 [00:01<00:03, 92.05it/s][A
+Loading weights:  22%|██▏       | 95/427 [00:01<00:02, 127.35it/s][A
+Loading weights:  28%|██▊       | 119/427 [00:01<00:02, 143.31it/s][A
+Loading weights:  34%|███▎      | 144/427 [00:01<00:01, 167.40it/s][A
+Loading weights:  39%|███▊      | 165/427 [00:01<00:01, 171.68it/s][A
+Loading weights:  44%|████▎     | 186/427 [00:01<00:01, 178.66it/s][A
+Loading weights:  48%|████▊     | 206/427 [00:01<00:01, 167.16it/s][A
+Loading weights:  56%|█████▌    | 238/427 [00:02<00:00, 204.98it/s][A
+Loading weights:  61%|██████    | 261/427 [00:02<00:00, 181.25it/s][A
+Loading weights:  68%|██████▊   | 290/427 [00:02<00:00, 205.85it/s][A
+Loading weights:  73%|███████▎  | 313/427 [00:02<00:00, 186.42it/s][A
+Loading weights:  80%|███████▉  | 341/427 [00:02<00:00, 202.22it/s][A
+Loading weights:  85%|████████▌ | 364/427 [00:02<00:00, 202.73it/s][A
+Loading weights:  90%|█████████ | 386/427 [00:02<00:00, 203.11it/s][A
+Loading weights:  96%|█████████▋| 412/427 [00:02<00:00, 217.72it/s][ALoading weights: 100%|██████████| 427/427 [00:03<00:00, 142.03it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 27:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 27:   3%|▎         | 1/30 [00:01<00:35,  1.23s/it][A
+Layer 27:   7%|▋         | 2/30 [00:02<00:33,  1.21s/it][A
+Layer 27:  10%|█         | 3/30 [00:03<00:32,  1.21s/it][A
+Layer 27:  13%|█▎        | 4/30 [00:04<00:31,  1.22s/it][A
+Layer 27:  17%|█▋        | 5/30 [00:06<00:30,  1.21s/it][A
+Layer 27:  20%|██        | 6/30 [00:07<00:29,  1.22s/it][A
+Layer 27:  23%|██▎       | 7/30 [00:08<00:27,  1.21s/it][A
+Layer 27:  27%|██▋       | 8/30 [00:09<00:26,  1.21s/it][A
+Layer 27:  30%|███       | 9/30 [00:10<00:25,  1.23s/it][A
+Layer 27:  33%|███▎      | 10/30 [00:12<00:24,  1.24s/it][A
+Layer 27:  37%|███▋      | 11/30 [00:13<00:23,  1.24s/it][A
+Layer 27:  40%|████      | 12/30 [00:14<00:22,  1.23s/it][A
+Layer 27:  43%|████▎     | 13/30 [00:15<00:20,  1.22s/it][A
+Layer 27:  47%|████▋     | 14/30 [00:17<00:19,  1.21s/it][A
+Layer 27:  50%|█████     | 15/30 [00:18<00:18,  1.21s/it][A
+Layer 27:  53%|█████▎    | 16/30 [00:19<00:16,  1.20s/it][A
+Layer 27:  57%|█████▋    | 17/30 [00:20<00:15,  1.20s/it][A
+Layer 27:  60%|██████    | 18/30 [00:21<00:14,  1.21s/it][A
+Layer 27:  63%|██████▎   | 19/30 [00:23<00:13,  1.21s/it][A
+Layer 27:  67%|██████▋   | 20/30 [00:24<00:12,  1.20s/it][A
+Layer 27:  70%|███████   | 21/30 [00:25<00:10,  1.20s/it][A
+Layer 27:  73%|███████▎  | 22/30 [00:26<00:09,  1.20s/it][A
+Layer 27:  77%|███████▋  | 23/30 [00:27<00:08,  1.20s/it][A
+Layer 27:  80%|████████  | 24/30 [00:29<00:07,  1.21s/it][A
+Layer 27:  83%|████████▎ | 25/30 [00:30<00:06,  1.21s/it][A
+Layer 27:  87%|████████▋ | 26/30 [00:31<00:04,  1.23s/it][A
+Layer 27:  90%|█████████ | 27/30 [00:32<00:03,  1.25s/it][A
+Layer 27:  93%|█████████▎| 28/30 [00:34<00:02,  1.24s/it][A
+Layer 27:  97%|█████████▋| 29/30 [00:35<00:01,  1.24s/it][A
+Layer 27: 100%|██████████| 30/30 [00:36<00:00,  1.23s/it][ALayer 27: 100%|██████████| 30/30 [00:36<00:00,  1.22s/it]
+✅ Layer 27 完成并保存
+📊 总进度: 28/32 (87.5%)
+逐层抑制MLP:  88%|████████▊ | 28/32 [26:15<03:45, 56.25s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 28 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:20,  3.02it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:07,  3.34it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:07, 55.85it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:04, 78.11it/s][A
+Loading weights:  16%|█▌        | 67/427 [00:00<00:03, 113.54it/s][A
+Loading weights:  21%|██        | 90/427 [00:01<00:02, 139.76it/s][A
+Loading weights:  25%|██▌       | 108/427 [00:01<00:02, 146.69it/s][A
+Loading weights:  30%|██▉       | 127/427 [00:01<00:01, 156.24it/s][A
+Loading weights:  35%|███▍      | 148/427 [00:01<00:01, 164.18it/s][A
+Loading weights:  40%|████      | 171/427 [00:01<00:01, 176.14it/s][A
+Loading weights:  44%|████▍     | 190/427 [00:01<00:01, 178.84it/s][A
+Loading weights:  49%|████▉     | 209/427 [00:01<00:01, 172.40it/s][A
+Loading weights:  54%|█████▍    | 232/427 [00:01<00:01, 187.79it/s][A
+Loading weights:  59%|█████▉    | 253/427 [00:01<00:00, 189.01it/s][A
+Loading weights:  64%|██████▍   | 273/427 [00:02<00:00, 181.84it/s][A
+Loading weights:  68%|██████▊   | 292/427 [00:02<00:00, 184.00it/s][A
+Loading weights:  73%|███████▎  | 311/427 [00:02<00:00, 177.83it/s][A
+Loading weights:  78%|███████▊  | 332/427 [00:02<00:00, 184.70it/s][A
+Loading weights:  83%|████████▎ | 354/427 [00:02<00:00, 194.01it/s][A
+Loading weights:  88%|████████▊ | 374/427 [00:02<00:00, 185.73it/s][A
+Loading weights:  93%|█████████▎| 398/427 [00:02<00:00, 198.96it/s][A
+Loading weights:  98%|█████████▊| 419/427 [00:02<00:00, 180.06it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 149.54it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 28:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 28:   3%|▎         | 1/30 [00:01<00:36,  1.24s/it][A
+Layer 28:   7%|▋         | 2/30 [00:02<00:34,  1.22s/it][A
+Layer 28:  10%|█         | 3/30 [00:03<00:32,  1.22s/it][A
+Layer 28:  13%|█▎        | 4/30 [00:04<00:32,  1.26s/it][A
+Layer 28:  17%|█▋        | 5/30 [00:06<00:31,  1.25s/it][A
+Layer 28:  20%|██        | 6/30 [00:07<00:29,  1.24s/it][A
+Layer 28:  23%|██▎       | 7/30 [00:08<00:28,  1.24s/it][A
+Layer 28:  27%|██▋       | 8/30 [00:09<00:27,  1.25s/it][A
+Layer 28:  30%|███       | 9/30 [00:11<00:26,  1.24s/it][A
+Layer 28:  33%|███▎      | 10/30 [00:12<00:24,  1.23s/it][A
+Layer 28:  37%|███▋      | 11/30 [00:13<00:23,  1.22s/it][A
+Layer 28:  40%|████      | 12/30 [00:14<00:21,  1.22s/it][A
+Layer 28:  43%|████▎     | 13/30 [00:15<00:20,  1.22s/it][A
+Layer 28:  47%|████▋     | 14/30 [00:17<00:19,  1.21s/it][A
+Layer 28:  50%|█████     | 15/30 [00:18<00:18,  1.22s/it][A
+Layer 28:  53%|█████▎    | 16/30 [00:19<00:17,  1.24s/it][A
+Layer 28:  57%|█████▋    | 17/30 [00:20<00:16,  1.24s/it][A
+Layer 28:  60%|██████    | 18/30 [00:22<00:14,  1.24s/it][A
+Layer 28:  63%|██████▎   | 19/30 [00:23<00:13,  1.23s/it][A
+Layer 28:  67%|██████▋   | 20/30 [00:24<00:12,  1.25s/it][A
+Layer 28:  70%|███████   | 21/30 [00:25<00:11,  1.24s/it][A
+Layer 28:  73%|███████▎  | 22/30 [00:27<00:09,  1.24s/it][A
+Layer 28:  77%|███████▋  | 23/30 [00:28<00:08,  1.22s/it][A
+Layer 28:  80%|████████  | 24/30 [00:29<00:07,  1.22s/it][A
+Layer 28:  83%|████████▎ | 25/30 [00:30<00:06,  1.22s/it][A
+Layer 28:  87%|████████▋ | 26/30 [00:32<00:04,  1.22s/it][A
+Layer 28:  90%|█████████ | 27/30 [00:33<00:03,  1.22s/it][A
+Layer 28:  93%|█████████▎| 28/30 [00:34<00:02,  1.22s/it][A
+Layer 28:  97%|█████████▋| 29/30 [00:35<00:01,  1.21s/it][A
+Layer 28: 100%|██████████| 30/30 [00:36<00:00,  1.22s/it][ALayer 28: 100%|██████████| 30/30 [00:36<00:00,  1.23s/it]
+✅ Layer 28 完成并保存
+📊 总进度: 29/32 (90.6%)
+逐层抑制MLP:  91%|█████████ | 29/32 [27:12<02:49, 56.53s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 29 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:33,  2.77it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:12,  3.20it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:07, 54.89it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:04, 78.12it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:00<00:03, 115.29it/s][A
+Loading weights:  21%|██        | 90/427 [00:01<00:02, 144.03it/s][A
+Loading weights:  26%|██▌       | 109/427 [00:01<00:02, 146.93it/s][A
+Loading weights:  31%|███       | 133/427 [00:01<00:01, 170.05it/s][A
+Loading weights:  36%|███▌      | 153/427 [00:01<00:01, 155.90it/s][A
+Loading weights:  42%|████▏     | 178/427 [00:01<00:01, 177.37it/s][A
+Loading weights:  47%|████▋     | 201/427 [00:01<00:01, 187.92it/s][A
+Loading weights:  52%|█████▏    | 224/427 [00:01<00:01, 197.51it/s][A
+Loading weights:  57%|█████▋    | 245/427 [00:01<00:00, 189.15it/s][A
+Loading weights:  62%|██████▏   | 265/427 [00:02<00:00, 171.87it/s][A
+Loading weights:  68%|██████▊   | 292/427 [00:02<00:00, 190.79it/s][A
+Loading weights:  73%|███████▎  | 312/427 [00:02<00:00, 174.80it/s][A
+Loading weights:  78%|███████▊  | 333/427 [00:02<00:00, 180.27it/s][A
+Loading weights:  84%|████████▍ | 359/427 [00:02<00:00, 197.66it/s][A
+Loading weights:  89%|████████▉ | 380/427 [00:02<00:00, 187.33it/s][A
+Loading weights:  94%|█████████▎| 400/427 [00:02<00:00, 182.23it/s][A
+Loading weights:  98%|█████████▊| 419/427 [00:02<00:00, 177.50it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 148.97it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 29:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 29:   3%|▎         | 1/30 [00:01<00:34,  1.21s/it][A
+Layer 29:   7%|▋         | 2/30 [00:02<00:33,  1.21s/it][A
+Layer 29:  10%|█         | 3/30 [00:03<00:32,  1.21s/it][A
+Layer 29:  13%|█▎        | 4/30 [00:04<00:31,  1.20s/it][A
+Layer 29:  17%|█▋        | 5/30 [00:06<00:30,  1.21s/it][A
+Layer 29:  20%|██        | 6/30 [00:07<00:29,  1.21s/it][A
+Layer 29:  23%|██▎       | 7/30 [00:08<00:27,  1.21s/it][A
+Layer 29:  27%|██▋       | 8/30 [00:09<00:26,  1.22s/it][A
+Layer 29:  30%|███       | 9/30 [00:10<00:25,  1.22s/it][A
+Layer 29:  33%|███▎      | 10/30 [00:12<00:24,  1.22s/it][A
+Layer 29:  37%|███▋      | 11/30 [00:13<00:23,  1.22s/it][A
+Layer 29:  40%|████      | 12/30 [00:14<00:21,  1.22s/it][A
+Layer 29:  43%|████▎     | 13/30 [00:15<00:20,  1.22s/it][A
+Layer 29:  47%|████▋     | 14/30 [00:17<00:19,  1.22s/it][A
+Layer 29:  50%|█████     | 15/30 [00:18<00:18,  1.21s/it][A
+Layer 29:  53%|█████▎    | 16/30 [00:19<00:16,  1.21s/it][A
+Layer 29:  57%|█████▋    | 17/30 [00:20<00:15,  1.21s/it][A
+Layer 29:  60%|██████    | 18/30 [00:21<00:14,  1.22s/it][A
+Layer 29:  63%|██████▎   | 19/30 [00:23<00:13,  1.22s/it][A
+Layer 29:  67%|██████▋   | 20/30 [00:24<00:12,  1.24s/it][A
+Layer 29:  70%|███████   | 21/30 [00:25<00:11,  1.24s/it][A
+Layer 29:  73%|███████▎  | 22/30 [00:26<00:09,  1.24s/it][A
+Layer 29:  77%|███████▋  | 23/30 [00:28<00:08,  1.25s/it][A
+Layer 29:  80%|████████  | 24/30 [00:29<00:07,  1.24s/it][A
+Layer 29:  83%|████████▎ | 25/30 [00:30<00:06,  1.23s/it][A
+Layer 29:  87%|████████▋ | 26/30 [00:31<00:04,  1.23s/it][A
+Layer 29:  90%|█████████ | 27/30 [00:33<00:03,  1.24s/it][A
+Layer 29:  93%|█████████▎| 28/30 [00:34<00:02,  1.26s/it][A
+Layer 29:  97%|█████████▋| 29/30 [00:35<00:01,  1.25s/it][A
+Layer 29: 100%|██████████| 30/30 [00:36<00:00,  1.23s/it][ALayer 29: 100%|██████████| 30/30 [00:36<00:00,  1.23s/it]
+✅ Layer 29 完成并保存
+📊 总进度: 30/32 (93.8%)
+逐层抑制MLP:  94%|█████████▍| 30/32 [28:09<01:53, 56.65s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 30 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:44,  2.58it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:30,  2.82it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:08, 49.58it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:05, 71.70it/s][A
+Loading weights:  15%|█▌        | 66/427 [00:01<00:03, 106.67it/s][A
+Loading weights:  21%|██        | 88/427 [00:01<00:02, 130.41it/s][A
+Loading weights:  25%|██▍       | 106/427 [00:01<00:02, 141.83it/s][A
+Loading weights:  30%|███       | 130/427 [00:01<00:01, 167.08it/s][A
+Loading weights:  35%|███▌      | 150/427 [00:01<00:01, 163.02it/s][A
+Loading weights:  40%|████      | 172/427 [00:01<00:01, 177.06it/s][A
+Loading weights:  45%|████▍     | 192/427 [00:01<00:01, 180.90it/s][A
+Loading weights:  50%|████▉     | 212/427 [00:01<00:01, 168.41it/s][A
+Loading weights:  56%|█████▌    | 239/427 [00:01<00:00, 189.32it/s][A
+Loading weights:  61%|██████    | 259/427 [00:02<00:00, 176.81it/s][A
+Loading weights:  66%|██████▌   | 280/427 [00:02<00:00, 184.15it/s][A
+Loading weights:  72%|███████▏  | 306/427 [00:02<00:00, 190.27it/s][A
+Loading weights:  77%|███████▋  | 329/427 [00:02<00:00, 190.08it/s][A
+Loading weights:  83%|████████▎ | 355/427 [00:02<00:00, 206.48it/s][A
+Loading weights:  88%|████████▊ | 376/427 [00:02<00:00, 195.30it/s][A
+Loading weights:  93%|█████████▎| 399/427 [00:02<00:00, 197.69it/s][A
+Loading weights:  98%|█████████▊| 419/427 [00:02<00:00, 187.19it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 146.86it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 30:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 30:   3%|▎         | 1/30 [00:01<00:35,  1.21s/it][A
+Layer 30:   7%|▋         | 2/30 [00:02<00:33,  1.20s/it][A
+Layer 30:  10%|█         | 3/30 [00:03<00:32,  1.20s/it][A
+Layer 30:  13%|█▎        | 4/30 [00:04<00:31,  1.20s/it][A
+Layer 30:  17%|█▋        | 5/30 [00:06<00:30,  1.20s/it][A
+Layer 30:  20%|██        | 6/30 [00:07<00:29,  1.23s/it][A
+Layer 30:  23%|██▎       | 7/30 [00:08<00:28,  1.22s/it][A
+Layer 30:  27%|██▋       | 8/30 [00:09<00:27,  1.24s/it][A
+Layer 30:  30%|███       | 9/30 [00:10<00:25,  1.23s/it][A
+Layer 30:  33%|███▎      | 10/30 [00:12<00:24,  1.22s/it][A
+Layer 30:  37%|███▋      | 11/30 [00:13<00:23,  1.22s/it][A
+Layer 30:  40%|████      | 12/30 [00:14<00:22,  1.24s/it][A
+Layer 30:  43%|████▎     | 13/30 [00:15<00:21,  1.25s/it][A
+Layer 30:  47%|████▋     | 14/30 [00:17<00:19,  1.24s/it][A
+Layer 30:  50%|█████     | 15/30 [00:18<00:18,  1.23s/it][A
+Layer 30:  53%|█████▎    | 16/30 [00:19<00:17,  1.24s/it][A
+Layer 30:  57%|█████▋    | 17/30 [00:20<00:16,  1.24s/it][A
+Layer 30:  60%|██████    | 18/30 [00:22<00:14,  1.23s/it][A
+Layer 30:  63%|██████▎   | 19/30 [00:23<00:13,  1.23s/it][A
+Layer 30:  67%|██████▋   | 20/30 [00:24<00:12,  1.22s/it][A
+Layer 30:  70%|███████   | 21/30 [00:25<00:10,  1.22s/it][A
+Layer 30:  73%|███████▎  | 22/30 [00:26<00:09,  1.23s/it][A
+Layer 30:  77%|███████▋  | 23/30 [00:28<00:08,  1.23s/it][A
+Layer 30:  80%|████████  | 24/30 [00:29<00:07,  1.22s/it][A
+Layer 30:  83%|████████▎ | 25/30 [00:30<00:06,  1.24s/it][A
+Layer 30:  87%|████████▋ | 26/30 [00:31<00:04,  1.24s/it][A
+Layer 30:  90%|█████████ | 27/30 [00:33<00:03,  1.23s/it][A
+Layer 30:  93%|█████████▎| 28/30 [00:34<00:02,  1.22s/it][A
+Layer 30:  97%|█████████▋| 29/30 [00:35<00:01,  1.21s/it][A
+Layer 30: 100%|██████████| 30/30 [00:36<00:00,  1.21s/it][ALayer 30: 100%|██████████| 30/30 [00:36<00:00,  1.22s/it]
+✅ Layer 30 完成并保存
+📊 总进度: 31/32 (96.9%)
+逐层抑制MLP:  97%|█████████▋| 31/32 [29:05<00:56, 56.53s/it]
+────────────────────────────────────────────────────────────
+🔴 抑制 Layer 31 的MLP
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s][A
+Loading weights:   0%|          | 1/427 [00:00<02:39,  2.67it/s][A
+Loading weights:   0%|          | 2/427 [00:00<02:29,  2.85it/s][A
+Loading weights:   6%|▋         | 27/427 [00:00<00:07, 50.02it/s][A
+Loading weights:  10%|█         | 43/427 [00:00<00:05, 72.16it/s][A
+Loading weights:  15%|█▌        | 65/427 [00:01<00:03, 95.33it/s][A
+Loading weights:  22%|██▏       | 95/427 [00:01<00:02, 140.40it/s][A
+Loading weights:  28%|██▊       | 118/427 [00:01<00:01, 159.70it/s][A
+Loading weights:  32%|███▏      | 138/427 [00:01<00:01, 161.00it/s][A
+Loading weights:  37%|███▋      | 157/427 [00:01<00:01, 158.08it/s][A
+Loading weights:  42%|████▏     | 179/427 [00:01<00:01, 169.59it/s][A
+Loading weights:  47%|████▋     | 200/427 [00:01<00:01, 175.92it/s][A
+Loading weights:  51%|█████▏    | 219/427 [00:01<00:01, 163.25it/s][A
+Loading weights:  56%|█████▋    | 241/427 [00:01<00:01, 175.74it/s][A
+Loading weights:  61%|██████    | 260/427 [00:02<00:01, 164.49it/s][A
+Loading weights:  67%|██████▋   | 288/427 [00:02<00:00, 192.75it/s][A
+Loading weights:  72%|███████▏  | 309/427 [00:02<00:00, 177.14it/s][A
+Loading weights:  78%|███████▊  | 331/427 [00:02<00:00, 187.21it/s][A
+Loading weights:  82%|████████▏ | 351/427 [00:02<00:00, 184.19it/s][A
+Loading weights:  87%|████████▋ | 370/427 [00:02<00:00, 176.83it/s][A
+Loading weights:  93%|█████████▎| 396/427 [00:02<00:00, 195.95it/s][A
+Loading weights:  97%|█████████▋| 416/427 [00:02<00:00, 189.91it/s][ALoading weights: 100%|██████████| 427/427 [00:02<00:00, 142.84it/s]
+Loading data to CPU...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+
+Layer 31:   0%|          | 0/30 [00:00<?, ?it/s][A
+Layer 31:   3%|▎         | 1/30 [00:01<00:36,  1.25s/it][A
+Layer 31:   7%|▋         | 2/30 [00:02<00:34,  1.23s/it][A
+Layer 31:  10%|█         | 3/30 [00:03<00:33,  1.23s/it][A
+Layer 31:  13%|█▎        | 4/30 [00:04<00:32,  1.23s/it][A
+Layer 31:  17%|█▋        | 5/30 [00:06<00:30,  1.23s/it][A
+Layer 31:  20%|██        | 6/30 [00:07<00:29,  1.22s/it][A
+Layer 31:  23%|██▎       | 7/30 [00:08<00:28,  1.23s/it][A
+Layer 31:  27%|██▋       | 8/30 [00:09<00:26,  1.22s/it][A
+Layer 31:  30%|███       | 9/30 [00:11<00:25,  1.22s/it][A
+Layer 31:  33%|███▎      | 10/30 [00:12<00:24,  1.21s/it][A
+Layer 31:  37%|███▋      | 11/30 [00:13<00:23,  1.21s/it][A
+Layer 31:  40%|████      | 12/30 [00:14<00:21,  1.21s/it][A
+Layer 31:  43%|████▎     | 13/30 [00:15<00:20,  1.21s/it][A
+Layer 31:  47%|████▋     | 14/30 [00:17<00:19,  1.23s/it][A
+Layer 31:  50%|█████     | 15/30 [00:18<00:18,  1.25s/it][A
+Layer 31:  53%|█████▎    | 16/30 [00:19<00:17,  1.25s/it][A
+Layer 31:  57%|█████▋    | 17/30 [00:20<00:16,  1.25s/it][A
+Layer 31:  60%|██████    | 18/30 [00:22<00:14,  1.24s/it][A
+Layer 31:  63%|██████▎   | 19/30 [00:23<00:13,  1.25s/it][A
+Layer 31:  67%|██████▋   | 20/30 [00:24<00:12,  1.24s/it][A
+Layer 31:  70%|███████   | 21/30 [00:25<00:11,  1.23s/it][A
+Layer 31:  73%|███████▎  | 22/30 [00:27<00:09,  1.23s/it][A
+Layer 31:  77%|███████▋  | 23/30 [00:28<00:08,  1.25s/it][A
+Layer 31:  80%|████████  | 24/30 [00:29<00:07,  1.24s/it][A
+Layer 31:  83%|████████▎ | 25/30 [00:30<00:06,  1.23s/it][A
+Layer 31:  87%|████████▋ | 26/30 [00:32<00:04,  1.23s/it][A
+Layer 31:  90%|█████████ | 27/30 [00:33<00:03,  1.22s/it][A
+Layer 31:  93%|█████████▎| 28/30 [00:34<00:02,  1.21s/it][A
+Layer 31:  97%|█████████▋| 29/30 [00:35<00:01,  1.24s/it][A
+Layer 31: 100%|██████████| 30/30 [00:36<00:00,  1.23s/it][ALayer 31: 100%|██████████| 30/30 [00:36<00:00,  1.23s/it]
+✅ Layer 31 完成并保存
+📊 总进度: 32/32 (100.0%)
+逐层抑制MLP: 100%|██████████| 32/32 [30:02<00:00, 56.70s/it]逐层抑制MLP: 100%|██████████| 32/32 [30:02<00:00, 56.33s/it]
+
+📝 生成汇总报告...
+
+✅ 汇总已保存: /tmp/systemd_rq2b/qwen35_9b/summary.json
+
+================================================================================
+✅ 实验完成！
+📁 结果保存在: /tmp/systemd_rq2b/qwen35_9b
+================================================================================

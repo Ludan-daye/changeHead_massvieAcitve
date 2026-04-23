@@ -1,0 +1,6 @@
+{
+  "model": "llama2_13b",
+  "func_pct": 25.087076822916664,
+  "func_tokens": 30827,
+  "total_tokens": 122880
+}

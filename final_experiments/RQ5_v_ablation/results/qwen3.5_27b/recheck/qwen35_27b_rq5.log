@@ -1,0 +1,94 @@
+/bin/bash: warning: setlocale: LC_ALL: cannot change locale (zh_CN.UTF-8)
+
+================================================================================
+EXPERIMENT 5 (Multi-K, Single-Layer): Projection-Removal of Top-K v Directions
+================================================================================
+
+Model: qwen3.5_27b
+Ablation Layer: 54
+Measure Layer:  54 (= layer_id)
+K values: [1, 5, 20]
+Samples: 15
+Ablate bias: False
+
+[1/4] Loading model...
+loading model qwen3.5_27b
+  → using dtype=float16 (default)
+`torch_dtype` is deprecated! Use `dtype` instead!
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/851 [00:00<?, ?it/s]Loading weights:   0%|          | 1/851 [00:00<01:53,  7.52it/s]Loading weights:   0%|          | 2/851 [00:00<03:50,  3.68it/s]Loading weights:   2%|▏         | 14/851 [00:00<00:27, 30.80it/s]Loading weights:   3%|▎         | 27/851 [00:00<00:14, 55.55it/s]Loading weights:   5%|▍         | 40/851 [00:00<00:10, 75.11it/s]Loading weights:   6%|▌         | 51/851 [00:01<00:11, 67.00it/s]Loading weights:   8%|▊         | 67/851 [00:01<00:09, 84.94it/s]Loading weights:  10%|▉         | 81/851 [00:01<00:08, 91.65it/s]Loading weights:  11%|█         | 93/851 [00:01<00:08, 91.29it/s]Loading weights:  12%|█▏        | 103/851 [00:01<00:08, 88.92it/s]Loading weights:  14%|█▍        | 119/851 [00:01<00:06, 105.83it/s]Loading weights:  16%|█▌        | 133/851 [00:01<00:06, 107.98it/s]Loading weights:  17%|█▋        | 145/851 [00:01<00:06, 110.92it/s]Loading weights:  18%|█▊        | 157/851 [00:02<00:07, 91.19it/s] Loading weights:  20%|██        | 172/851 [00:02<00:06, 103.28it/s]Loading weights:  22%|██▏       | 185/851 [00:02<00:06, 109.10it/s]Loading weights:  23%|██▎       | 197/851 [00:02<00:06, 104.63it/s]Loading weights:  24%|██▍       | 208/851 [00:02<00:07, 86.81it/s] Loading weights:  26%|██▋       | 224/851 [00:02<00:06, 92.57it/s]Loading weights:  28%|██▊       | 239/851 [00:02<00:05, 104.65it/s]Loading weights:  30%|██▉       | 253/851 [00:02<00:05, 107.08it/s]Loading weights:  31%|███       | 265/851 [00:03<00:06, 93.58it/s] Loading weights:  33%|███▎      | 279/851 [00:03<00:05, 100.75it/s]Loading weights:  34%|███▍      | 293/851 [00:03<00:05, 105.10it/s]Loading weights:  36%|███▌      | 306/851 [00:03<00:04, 110.96it/s]Loading weights:  37%|███▋      | 318/851 [00:03<00:05, 96.05it/s] Loading weights:  39%|███▉      | 332/851 [00:03<00:05, 103.23it/s]Loading weights:  41%|████      | 346/851 [00:03<00:04, 104.59it/s]Loading weights:  42%|████▏     | 360/851 [00:03<00:04, 104.92it/s]Loading weights:  44%|████▎     | 371/851 [00:04<00:05, 91.50it/s] Loading weights:  45%|████▌     | 385/851 [00:04<00:04, 96.02it/s]Loading weights:  47%|████▋     | 399/851 [00:04<00:04, 103.33it/s]Loading weights:  48%|████▊     | 412/851 [00:04<00:04, 91.35it/s] Loading weights:  50%|████▉     | 423/851 [00:04<00:04, 94.19it/s]Loading weights:  51%|█████▏    | 438/851 [00:04<00:04, 100.60it/s]Loading weights:  53%|█████▎    | 452/851 [00:04<00:04, 99.13it/s] Loading weights:  55%|█████▍    | 465/851 [00:05<00:03, 102.59it/s]Loading weights:  56%|█████▌    | 476/851 [00:05<00:03, 95.83it/s] Loading weights:  58%|█████▊    | 491/851 [00:05<00:03, 104.01it/s]Loading weights:  59%|█████▉    | 505/851 [00:05<00:03, 107.22it/s]Loading weights:  61%|██████    | 519/851 [00:05<00:03, 107.55it/s]Loading weights:  62%|██████▏   | 530/851 [00:05<00:03, 99.70it/s] Loading weights:  64%|██████▍   | 544/851 [00:05<00:03, 93.99it/s]Loading weights:  66%|██████▌   | 559/851 [00:06<00:02, 101.56it/s]Loading weights:  67%|██████▋   | 573/851 [00:06<00:02, 103.97it/s]Loading weights:  69%|██████▊   | 584/851 [00:06<00:02, 103.71it/s]Loading weights:  70%|███████   | 598/851 [00:06<00:02, 107.24it/s]Loading weights:  72%|███████▏  | 612/851 [00:06<00:02, 106.93it/s]Loading weights:  74%|███████▎  | 626/851 [00:06<00:02, 107.79it/s]Loading weights:  75%|███████▍  | 637/851 [00:06<00:02, 102.69it/s]Loading weights:  76%|███████▌  | 648/851 [00:06<00:02, 100.47it/s]Loading weights:  78%|███████▊  | 664/851 [00:06<00:01, 110.42it/s]Loading weights:  80%|███████▉  | 678/851 [00:07<00:01, 113.04it/s]Loading weights:  81%|████████  | 690/851 [00:07<00:01, 100.15it/s]Loading weights:  82%|████████▏ | 702/851 [00:07<00:01, 96.08it/s] Loading weights:  84%|████████▍ | 716/851 [00:07<00:01, 104.76it/s]Loading weights:  86%|████████▌ | 730/851 [00:07<00:01, 111.90it/s]Loading weights:  87%|████████▋ | 742/851 [00:07<00:01, 91.16it/s] Loading weights:  89%|████████▉ | 756/851 [00:07<00:00, 102.33it/s]Loading weights:  90%|█████████ | 768/851 [00:08<00:00, 91.21it/s] Loading weights:  92%|█████████▏| 784/851 [00:08<00:00, 106.17it/s]Loading weights:  94%|█████████▎| 796/851 [00:08<00:00, 94.24it/s] Loading weights:  95%|█████████▌| 809/851 [00:08<00:00, 101.89it/s]Loading weights:  97%|█████████▋| 822/851 [00:08<00:00, 104.43it/s]Loading weights:  98%|█████████▊| 834/851 [00:08<00:00, 107.94it/s]Loading weights:  99%|█████████▉| 846/851 [00:08<00:00, 83.81it/s] Loading weights: 100%|██████████| 851/851 [00:08<00:00, 95.61it/s]
+
+[2/4] Measuring baseline massive activations...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+Measuring MA:   0%|          | 0/15 [00:00<?, ?it/s]Measuring MA:   7%|▋         | 1/15 [00:02<00:41,  2.94s/it]Measuring MA:  13%|█▎        | 2/15 [00:05<00:35,  2.71s/it]Measuring MA:  20%|██        | 3/15 [00:08<00:31,  2.66s/it]Measuring MA:  27%|██▋       | 4/15 [00:10<00:29,  2.64s/it]Measuring MA:  33%|███▎      | 5/15 [00:13<00:26,  2.64s/it]Measuring MA:  40%|████      | 6/15 [00:15<00:23,  2.63s/it]Measuring MA:  47%|████▋     | 7/15 [00:18<00:20,  2.61s/it]Measuring MA:  53%|█████▎    | 8/15 [00:21<00:18,  2.64s/it]Measuring MA:  60%|██████    | 9/15 [00:24<00:16,  2.69s/it]Measuring MA:  67%|██████▋   | 10/15 [00:26<00:13,  2.66s/it]Measuring MA:  73%|███████▎  | 11/15 [00:29<00:10,  2.65s/it]Measuring MA:  80%|████████  | 12/15 [00:31<00:07,  2.64s/it]Measuring MA:  87%|████████▋ | 13/15 [00:34<00:05,  2.63s/it]Measuring MA:  93%|█████████▎| 14/15 [00:37<00:02,  2.61s/it]Measuring MA: 100%|██████████| 15/15 [00:39<00:00,  2.60s/it]Measuring MA: 100%|██████████| 15/15 [00:39<00:00,  2.64s/it]
+  Baseline Top1 (mean): 763.20
+  Baseline Top1 (max):  896.00
+  Detected MA dims: [3994, 3456]
+    Dim 3994: max = 896.00
+    Dim 3456: max = 146.00
+
+[3/4] Running projection-removal ablations for K in [1, 5, 20] ...
+
+  --- K = 1 ---
+  W_down shape: [5120, 17408]
+  sigma_1 = 3.6525
+  sigma_2 = 3.2570
+  eta (sigma_1/sigma_2) = 1.1214
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Measuring MA:   0%|          | 0/15 [00:00<?, ?it/s]Measuring MA:   7%|▋         | 1/15 [00:05<01:11,  5.13s/it]Measuring MA:  13%|█▎        | 2/15 [00:10<01:06,  5.09s/it]Measuring MA:  20%|██        | 3/15 [00:15<01:01,  5.10s/it]Measuring MA:  27%|██▋       | 4/15 [00:20<00:56,  5.12s/it]Measuring MA:  33%|███▎      | 5/15 [00:23<00:45,  4.50s/it]Measuring MA:  40%|████      | 6/15 [00:26<00:34,  3.85s/it]Measuring MA:  47%|████▋     | 7/15 [00:29<00:27,  3.44s/it]Measuring MA:  53%|█████▎    | 8/15 [00:31<00:22,  3.17s/it]Measuring MA:  60%|██████    | 9/15 [00:34<00:17,  2.99s/it]Measuring MA:  67%|██████▋   | 10/15 [00:37<00:15,  3.05s/it]Measuring MA:  73%|███████▎  | 11/15 [00:42<00:14,  3.69s/it]Measuring MA:  80%|████████  | 12/15 [00:47<00:12,  4.15s/it]Measuring MA:  87%|████████▋ | 13/15 [00:52<00:08,  4.27s/it]Measuring MA:  93%|█████████▎| 14/15 [00:54<00:03,  3.76s/it]Measuring MA: 100%|██████████| 15/15 [00:57<00:00,  3.41s/it]Measuring MA: 100%|██████████| 15/15 [00:57<00:00,  3.83s/it]
+  Ablated Top1 (mean): 231.13
+  Ablated Top1 (max):  252.00
+  ΔMA (top1 mean): -69.7%
+  ΔMA (top1 max):  -71.9%
+  ΔMA (Dim 3994):    -71.9%
+  ΔMA (Dim 3456):    -6.2%
+
+  --- K = 5 ---
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Measuring MA:   0%|          | 0/15 [00:00<?, ?it/s]Measuring MA:   7%|▋         | 1/15 [00:02<00:36,  2.63s/it]Measuring MA:  13%|█▎        | 2/15 [00:05<00:33,  2.60s/it]Measuring MA:  20%|██        | 3/15 [00:07<00:31,  2.61s/it]Measuring MA:  27%|██▋       | 4/15 [00:10<00:28,  2.59s/it]Measuring MA:  33%|███▎      | 5/15 [00:12<00:25,  2.58s/it]Measuring MA:  40%|████      | 6/15 [00:15<00:23,  2.58s/it]Measuring MA:  47%|████▋     | 7/15 [00:18<00:20,  2.59s/it]Measuring MA:  53%|█████▎    | 8/15 [00:20<00:18,  2.59s/it]Measuring MA:  60%|██████    | 9/15 [00:23<00:15,  2.58s/it]Measuring MA:  67%|██████▋   | 10/15 [00:25<00:12,  2.59s/it]Measuring MA:  73%|███████▎  | 11/15 [00:28<00:10,  2.59s/it]Measuring MA:  80%|████████  | 12/15 [00:31<00:07,  2.59s/it]Measuring MA:  87%|████████▋ | 13/15 [00:33<00:05,  2.60s/it]Measuring MA:  93%|█████████▎| 14/15 [00:36<00:02,  2.60s/it]Measuring MA: 100%|██████████| 15/15 [00:38<00:00,  2.61s/it]Measuring MA: 100%|██████████| 15/15 [00:38<00:00,  2.59s/it]
+  Ablated Top1 (mean): 215.80
+  Ablated Top1 (max):  235.00
+  ΔMA (top1 mean): -71.7%
+  ΔMA (top1 max):  -73.8%
+  ΔMA (Dim 3994):    -73.8%
+  ΔMA (Dim 3456):    -2.7%
+
+  --- K = 20 ---
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Measuring MA:   0%|          | 0/15 [00:00<?, ?it/s]Measuring MA:   7%|▋         | 1/15 [00:02<00:36,  2.63s/it]Measuring MA:  13%|█▎        | 2/15 [00:05<00:33,  2.57s/it]Measuring MA:  20%|██        | 3/15 [00:07<00:30,  2.57s/it]Measuring MA:  27%|██▋       | 4/15 [00:10<00:28,  2.58s/it]Measuring MA:  33%|███▎      | 5/15 [00:12<00:25,  2.58s/it]Measuring MA:  40%|████      | 6/15 [00:15<00:23,  2.58s/it]Measuring MA:  47%|████▋     | 7/15 [00:18<00:20,  2.59s/it]Measuring MA:  53%|█████▎    | 8/15 [00:20<00:18,  2.59s/it]Measuring MA:  60%|██████    | 9/15 [00:23<00:15,  2.58s/it]Measuring MA:  67%|██████▋   | 10/15 [00:25<00:12,  2.58s/it]Measuring MA:  73%|███████▎  | 11/15 [00:28<00:10,  2.58s/it]Measuring MA:  80%|████████  | 12/15 [00:31<00:07,  2.59s/it]Measuring MA:  87%|████████▋ | 13/15 [00:33<00:05,  2.61s/it]Measuring MA:  93%|█████████▎| 14/15 [00:36<00:02,  2.60s/it]Measuring MA: 100%|██████████| 15/15 [00:38<00:00,  2.60s/it]Measuring MA: 100%|██████████| 15/15 [00:38<00:00,  2.59s/it]
+  Ablated Top1 (mean): 211.67
+  Ablated Top1 (max):  230.00
+  ΔMA (top1 mean): -72.3%
+  ΔMA (top1 max):  -74.3%
+  ΔMA (Dim 3994):    -74.3%
+  ΔMA (Dim 3456):    -2.7%
+
+[4/4] Saving results...
+
+================================================================================
+SUMMARY
+================================================================================
+  Model: qwen3.5_27b
+  Layer: 54
+  eta (σ₁/σ₂): 1.12
+  Baseline MA (top1 mean): 763.20
+  K=1    ablated MA:     231.13   ΔMA: -69.7%
+  K=5    ablated MA:     215.80   ΔMA: -71.7%
+  K=20   ablated MA:     211.67   ΔMA: -72.3%
+
+  Saved: /tmp/systemd_rq2b/rq4rq5/qwen35_27b_rq5_L54/qwen3.5_27b_v_ablation_multi_results.json
+================================================================================

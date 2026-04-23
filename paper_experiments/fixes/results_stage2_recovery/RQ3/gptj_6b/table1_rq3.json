@@ -1,0 +1,6 @@
+{
+  "model": "gptj_6b",
+  "func_pct": 28.369140625,
+  "func_tokens": 17430,
+  "total_tokens": 61440
+}

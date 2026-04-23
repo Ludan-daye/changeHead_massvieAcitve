@@ -1,0 +1,6 @@
+{
+  "model": "qwen3_30b_a3b",
+  "key_layer": 3,
+  "base_ma": 1212.0,
+  "delta_top1_pct": -18.492849284928493
+}

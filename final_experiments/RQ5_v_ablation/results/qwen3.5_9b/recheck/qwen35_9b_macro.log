@@ -1,0 +1,65 @@
+/bin/bash: warning: setlocale: LC_ALL: cannot change locale (zh_CN.UTF-8)
+
+================================================================================
+EXPERIMENT 5 (MACRO): Multi-layer macro v₁ projection-out ablation
+================================================================================
+
+Model: qwen3.5_9b
+Origin layers (for macro aggregation): [18, 22, 25, 26]
+MA capture layer: 26
+Samples: 20
+
+[1/6] Loading model...
+loading model qwen3.5_9b
+  → using dtype=bfloat16 (stable, avoids fp16 Inf overflow on qwen3.5_9b)
+`torch_dtype` is deprecated! Use `dtype` instead!
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/427 [00:00<?, ?it/s]Loading weights:   0%|          | 1/427 [00:00<02:00,  3.52it/s]Loading weights:   0%|          | 2/427 [00:00<02:15,  3.14it/s]Loading weights:   6%|▋         | 27/427 [00:00<00:07, 54.03it/s]Loading weights:  10%|█         | 43/427 [00:00<00:04, 77.41it/s]Loading weights:  15%|█▌        | 66/427 [00:00<00:03, 111.74it/s]Loading weights:  19%|█▉        | 82/427 [00:01<00:02, 121.40it/s]Loading weights:  23%|██▎       | 99/427 [00:01<00:02, 133.96it/s]Loading weights:  28%|██▊       | 120/427 [00:01<00:02, 148.82it/s]Loading weights:  33%|███▎      | 141/427 [00:01<00:01, 159.39it/s]Loading weights:  37%|███▋      | 159/427 [00:01<00:01, 154.05it/s]Loading weights:  43%|████▎     | 182/427 [00:01<00:01, 170.52it/s]Loading weights:  47%|████▋     | 200/427 [00:01<00:01, 171.28it/s]Loading weights:  51%|█████     | 218/427 [00:01<00:01, 162.76it/s]Loading weights:  56%|█████▌    | 240/427 [00:01<00:01, 166.24it/s]Loading weights:  60%|██████    | 258/427 [00:02<00:01, 165.13it/s]Loading weights:  65%|██████▌   | 278/427 [00:02<00:00, 163.45it/s]Loading weights:  71%|███████   | 302/427 [00:02<00:00, 180.24it/s]Loading weights:  75%|███████▌  | 321/427 [00:02<00:00, 170.87it/s]Loading weights:  80%|███████▉  | 341/427 [00:02<00:00, 175.00it/s]Loading weights:  84%|████████▍ | 360/427 [00:02<00:00, 176.94it/s]Loading weights:  89%|████████▉ | 381/427 [00:02<00:00, 183.40it/s]Loading weights:  94%|█████████▎| 400/427 [00:02<00:00, 168.86it/s]Loading weights:  98%|█████████▊| 418/427 [00:03<00:00, 167.26it/s]Loading weights: 100%|██████████| 427/427 [00:03<00:00, 140.30it/s]
+
+[2/6] Measuring baseline MA...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+Measuring MA:   0%|          | 0/20 [00:00<?, ?it/s]Measuring MA:   5%|▌         | 1/20 [00:01<00:25,  1.33s/it]Measuring MA:  10%|█         | 2/20 [00:02<00:20,  1.13s/it]Measuring MA:  15%|█▌        | 3/20 [00:03<00:18,  1.08s/it]Measuring MA:  20%|██        | 4/20 [00:04<00:17,  1.07s/it]Measuring MA:  25%|██▌       | 5/20 [00:05<00:15,  1.05s/it]Measuring MA:  30%|███       | 6/20 [00:06<00:14,  1.04s/it]Measuring MA:  35%|███▌      | 7/20 [00:07<00:13,  1.05s/it]Measuring MA:  40%|████      | 8/20 [00:08<00:12,  1.04s/it]Measuring MA:  45%|████▌     | 9/20 [00:09<00:11,  1.04s/it]Measuring MA:  50%|█████     | 10/20 [00:10<00:10,  1.03s/it]Measuring MA:  55%|█████▌    | 11/20 [00:11<00:09,  1.03s/it]Measuring MA:  60%|██████    | 12/20 [00:12<00:08,  1.04s/it]Measuring MA:  65%|██████▌   | 13/20 [00:13<00:07,  1.04s/it]Measuring MA:  70%|███████   | 14/20 [00:14<00:06,  1.04s/it]Measuring MA:  75%|███████▌  | 15/20 [00:15<00:05,  1.05s/it]Measuring MA:  80%|████████  | 16/20 [00:16<00:04,  1.04s/it]Measuring MA:  85%|████████▌ | 17/20 [00:17<00:03,  1.03s/it]Measuring MA:  90%|█████████ | 18/20 [00:18<00:02,  1.04s/it]Measuring MA:  95%|█████████▌| 19/20 [00:19<00:01,  1.03s/it]Measuring MA: 100%|██████████| 20/20 [00:20<00:00,  1.02s/it]Measuring MA: 100%|██████████| 20/20 [00:20<00:00,  1.05s/it]
+  baseline top1_mean = 365.70
+  ma_dims = [3994, 4042]
+
+[3/6] Computing macro v1 via Δh SVD...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+  macro σ₁ = 11916.387
+  macro η (σ₁/σ₂) = 2.487
+  macro v₁ shape = (4096,)
+
+[4/6] Projecting out macro v₁ from W_down of layers [18, 22, 25, 26]...
+  L18: dense W_down (4096, 12288) ablated
+  L22: dense W_down (4096, 12288) ablated
+  L25: dense W_down (4096, 12288) ablated
+  L26: dense W_down (4096, 12288) ablated
+
+[5/6] Measuring ablated MA...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Measuring MA:   0%|          | 0/20 [00:00<?, ?it/s]Measuring MA:   5%|▌         | 1/20 [00:01<00:21,  1.13s/it]Measuring MA:  10%|█         | 2/20 [00:02<00:19,  1.06s/it]Measuring MA:  15%|█▌        | 3/20 [00:03<00:17,  1.05s/it]Measuring MA:  20%|██        | 4/20 [00:04<00:16,  1.04s/it]Measuring MA:  25%|██▌       | 5/20 [00:05<00:15,  1.05s/it]Measuring MA:  30%|███       | 6/20 [00:06<00:14,  1.05s/it]Measuring MA:  35%|███▌      | 7/20 [00:07<00:13,  1.05s/it]Measuring MA:  40%|████      | 8/20 [00:08<00:12,  1.05s/it]Measuring MA:  45%|████▌     | 9/20 [00:09<00:11,  1.05s/it]Measuring MA:  50%|█████     | 10/20 [00:10<00:10,  1.04s/it]Measuring MA:  55%|█████▌    | 11/20 [00:11<00:09,  1.04s/it]Measuring MA:  60%|██████    | 12/20 [00:12<00:08,  1.05s/it]Measuring MA:  65%|██████▌   | 13/20 [00:13<00:07,  1.04s/it]Measuring MA:  70%|███████   | 14/20 [00:14<00:06,  1.04s/it]Measuring MA:  75%|███████▌  | 15/20 [00:15<00:05,  1.04s/it]Measuring MA:  80%|████████  | 16/20 [00:16<00:04,  1.04s/it]Measuring MA:  85%|████████▌ | 17/20 [00:17<00:03,  1.04s/it]Measuring MA:  90%|█████████ | 18/20 [00:18<00:02,  1.06s/it]Measuring MA:  95%|█████████▌| 19/20 [00:20<00:01,  1.07s/it]Measuring MA: 100%|██████████| 20/20 [00:21<00:00,  1.07s/it]Measuring MA: 100%|██████████| 20/20 [00:21<00:00,  1.05s/it]
+  ablated top1_mean = 156.30
+
+[6/6] Restoring original weights...
+
+================================================================================
+RESULTS
+================================================================================
+  Baseline MA: 365.70
+  Ablated  MA: 156.30
+  ΔMA (top1 mean): -57.3%
+  ΔMA (top1 max):  -56.9%
+  Macro η (σ₁/σ₂): 2.487
+
+  Saved: /tmp/systemd_rq2b/rq4rq5/qwen35_9b_macro/qwen3.5_9b_macro_v_ablation_results.json
+================================================================================

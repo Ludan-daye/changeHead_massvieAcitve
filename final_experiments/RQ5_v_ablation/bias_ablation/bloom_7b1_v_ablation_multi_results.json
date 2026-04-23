@@ -1,0 +1,55 @@
+{
+  "model": "bloom_7b1",
+  "layer_id": 3,
+  "measure_layer_id": 12,
+  "method": "projection_removal_top_k_v",
+  "ablate_bias": true,
+  "k_values": [
+    1
+  ],
+  "nsamples": 30,
+  "seed": 0,
+  "timestamp": "2026-04-23T17:26:29.768709",
+  "svd_info": {
+    "sigma_1": 15.11251163482666,
+    "sigma_2": 10.691046714782715,
+    "eta": 1.413567066192627,
+    "W_shape": [
+      4096,
+      16384
+    ],
+    "bias_shape": [
+      4096
+    ],
+    "bias_norm_original": 3.753185749053955,
+    "bias_max_abs_original": 1.9375
+  },
+  "baseline": {
+    "top1_mean": 3631.3333333333335,
+    "top1_max": 3926.0,
+    "ma_dims": [
+      1947,
+      3448
+    ],
+    "per_dim_max": {
+      "1947": 3926.0,
+      "3448": 139.75
+    }
+  },
+  "ablations": {
+    "1": {
+      "top1_mean": 3625.5333333333333,
+      "top1_max": 3910.0,
+      "per_dim_max": {
+        "1947": 3910.0,
+        "3448": 138.0
+      },
+      "delta_ma_mean_pct": -0.1597209473104511,
+      "delta_ma_max_pct": -0.4075394803871625,
+      "per_dim_pct": {
+        "1947": -0.4075394803871625,
+        "3448": -1.2522361359570662
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+=== H(C) entropy test: falcon_7b L3 ===
+Loading model/data...
+loading model falcon_7b
+  → using dtype=float16 (default)
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/196 [00:00<?, ?it/s]Loading weights:   1%|          | 1/196 [00:00<00:47,  4.11it/s]Loading weights:   5%|▌         | 10/196 [00:00<00:05, 34.88it/s]Loading weights:   9%|▊         | 17/196 [00:00<00:04, 44.44it/s]Loading weights:  12%|█▏        | 23/196 [00:00<00:03, 46.36it/s]Loading weights:  15%|█▍        | 29/196 [00:00<00:03, 45.62it/s]Loading weights:  18%|█▊        | 35/196 [00:00<00:03, 48.19it/s]Loading weights:  21%|██        | 41/196 [00:00<00:03, 50.46it/s]Loading weights:  24%|██▍       | 47/196 [00:01<00:03, 44.41it/s]Loading weights:  30%|██▉       | 58/196 [00:01<00:02, 53.88it/s]Loading weights:  33%|███▎      | 64/196 [00:01<00:02, 50.10it/s]Loading weights:  36%|███▌      | 70/196 [00:01<00:02, 48.44it/s]Loading weights:  39%|███▉      | 76/196 [00:01<00:02, 47.65it/s]Loading weights:  42%|████▏     | 83/196 [00:01<00:02, 46.86it/s]Loading weights:  48%|████▊     | 94/196 [00:02<00:02, 47.40it/s]Loading weights:  51%|█████     | 100/196 [00:02<00:01, 48.77it/s]Loading weights:  55%|█████▍    | 107/196 [00:02<00:01, 48.26it/s]Loading weights:  58%|█████▊    | 113/196 [00:02<00:01, 47.92it/s]Loading weights:  63%|██████▎   | 124/196 [00:02<00:01, 49.49it/s]Loading weights:  67%|██████▋   | 131/196 [00:02<00:01, 52.34it/s]Loading weights:  72%|███████▏  | 142/196 [00:02<00:00, 56.04it/s]Loading weights:  76%|███████▌  | 149/196 [00:03<00:00, 54.52it/s]Loading weights:  82%|████████▏ | 160/196 [00:03<00:00, 56.62it/s]Loading weights:  86%|████████▌ | 168/196 [00:03<00:00, 61.17it/s]Loading weights:  89%|████████▉ | 175/196 [00:03<00:00, 57.93it/s]Loading weights:  94%|█████████▍| 184/196 [00:03<00:00, 54.57it/s]Loading weights: 100%|██████████| 196/196 [00:04<00:00, 45.15it/s]Loading weights: 100%|██████████| 196/196 [00:04<00:00, 48.63it/s]
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Couldn't reach 'togethercomputer/RedPajama-Data-1T-Sample' on the Hub (OfflineModeIsEnabled)), using wikitext instead
+Using the latest cached version of the dataset since wikitext couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'wikitext-2-raw-v1' at /home/vicuna/.cache/huggingface/datasets/wikitext/wikitext-2-raw-v1/0.0.0/b08601e04326c79dfdd32d625aee71d232d685c3 (last modified on Wed Apr 15 08:45:52 2026).
+Token indices sequence length is longer than the specified maximum sequence length for this model (2782307 > 2048). Running this sequence through the model will result in indexing errors
+Computing v₁ from W_down SVD...
+  v₁ shape: (18176,), top singular 13.2736, ratio σ₁/σ₂=1.365
+Running 30 sequences...
+  0%|          | 0/30 [00:00<?, ?it/s]  3%|▎         | 1/30 [00:02<01:13,  2.52s/it]  7%|▋         | 2/30 [00:04<01:07,  2.42s/it] 10%|█         | 3/30 [00:07<01:05,  2.41s/it] 13%|█▎        | 4/30 [00:09<01:01,  2.37s/it] 17%|█▋        | 5/30 [00:11<00:59,  2.37s/it] 20%|██        | 6/30 [00:14<00:56,  2.37s/it] 23%|██▎       | 7/30 [00:16<00:54,  2.37s/it] 27%|██▋       | 8/30 [00:19<00:52,  2.37s/it] 30%|███       | 9/30 [00:21<00:49,  2.38s/it] 33%|███▎      | 10/30 [00:23<00:47,  2.38s/it] 37%|███▋      | 11/30 [00:26<00:45,  2.39s/it] 40%|████      | 12/30 [00:28<00:42,  2.37s/it] 43%|████▎     | 13/30 [00:31<00:41,  2.47s/it] 47%|████▋     | 14/30 [00:33<00:39,  2.44s/it] 50%|█████     | 15/30 [00:36<00:36,  2.44s/it] 53%|█████▎    | 16/30 [00:38<00:33,  2.43s/it] 57%|█████▋    | 17/30 [00:40<00:31,  2.42s/it] 60%|██████    | 18/30 [00:43<00:29,  2.43s/it] 63%|██████▎   | 19/30 [00:45<00:26,  2.44s/it] 67%|██████▋   | 20/30 [00:48<00:24,  2.41s/it] 70%|███████   | 21/30 [00:50<00:21,  2.40s/it] 73%|███████▎  | 22/30 [00:52<00:19,  2.39s/it] 77%|███████▋  | 23/30 [00:55<00:16,  2.40s/it] 80%|████████  | 24/30 [00:57<00:14,  2.38s/it] 83%|████████▎ | 25/30 [00:59<00:11,  2.37s/it] 87%|████████▋ | 26/30 [01:02<00:09,  2.37s/it] 90%|█████████ | 27/30 [01:04<00:07,  2.36s/it] 93%|█████████▎| 28/30 [01:07<00:04,  2.36s/it] 97%|█████████▋| 29/30 [01:09<00:02,  2.36s/it]100%|██████████| 30/30 [01:11<00:00,  2.37s/it]100%|██████████| 30/30 [01:11<00:00,  2.39s/it]
+Collected 122820 position records
+Spearman ρ(entropy, |h₂·v₁|) = 0.1340  p=0.000e+00
+Cohen's d (bottom-10% entropy vs rest) = -0.0929
+Cohen's d (bottom-10% vs top-10% entropy) = -0.2222
+
+Saved summary: /tmp/hc_secondary/systemd_falcon_7b/exp5c_entropy_results.json
+Saved raw: /tmp/hc_secondary/systemd_falcon_7b/exp5c_raw_positions.npz  (1.07 MB)
+
+Top-100 |h₂·v₁| positions entropy distribution:
+  median percentile: 52.7%
+  % in bottom-20 H: 2.0%
+  % in bottom-40 H: 18.0%

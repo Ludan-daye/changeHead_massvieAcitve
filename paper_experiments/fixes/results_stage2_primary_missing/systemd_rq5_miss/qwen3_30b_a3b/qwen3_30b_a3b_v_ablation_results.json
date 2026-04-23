@@ -1,0 +1,48 @@
+{
+  "model": "qwen3_30b_a3b",
+  "layer_id": 1,
+  "nsamples": 30,
+  "seed": 0,
+  "timestamp": "2026-04-22T23:45:42.612936",
+  "svd_info": {
+    "sigma_1": 0.20150041580200195,
+    "sigma_2": 0.17578259110450745,
+    "eta": 1.146304726600647,
+    "W_shape": [
+      2048,
+      768
+    ],
+    "moe_per_expert_sigma1_mean": 3.2513539623469114,
+    "moe_per_expert_sigma2_mean": 2.6860228553414345,
+    "moe_num_experts": 128
+  },
+  "baseline": {
+    "top1_mean": 93.625,
+    "top1_max": 139.0,
+    "ma_dims": [
+      940,
+      1992
+    ],
+    "per_dim_max": {
+      "940": 139.0,
+      "1992": 6.5
+    }
+  },
+  "ablated": {
+    "top1_mean": 9.079166666666667,
+    "top1_max": 13.4375,
+    "per_dim_max": {
+      "571": 13.4375,
+      "1340": 7.6875
+    }
+  },
+  "delta_ma": {
+    "top1_mean_pct": -90.30262572318647,
+    "top1_max_pct": -90.33273381294964,
+    "per_dim_pct": {
+      "940": -100.0,
+      "1992": -100.0
+    }
+  },
+  "theoretical_prediction_pct": 97.12088208773886
+}

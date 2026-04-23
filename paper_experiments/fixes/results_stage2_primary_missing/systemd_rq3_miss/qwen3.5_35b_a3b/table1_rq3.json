@@ -1,0 +1,10 @@
+{
+  "model": "qwen3.5_35b_a3b",
+  "func_pct": 27.643229166666668,
+  "struct_pct": 17.805989583333336,
+  "content_pct": 54.55078125,
+  "func_tokens": 33968,
+  "struct_tokens": 21880,
+  "content_tokens": 67032,
+  "total_tokens": 122880
+}

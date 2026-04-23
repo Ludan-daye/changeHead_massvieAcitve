@@ -1,0 +1,49 @@
+[19:03:16] === full_rerun started PID=494478 ===
+[19:03:16] waiting for master ALL DONE (or PID 447500 exit) ...
+[19:42:16] detected ALL DONE in master log
+[19:42:16] === starting consolidated reruns ===
+[19:42:16] --- glm4_32b (L=0) ---
+[19:42:16] SKIP  glm4_32b_rq1 (already has real data)
+[19:42:16] START glm4_32b_rq2a
+[21:48:28] OK    glm4_32b_rq2a (rc=0)
+[21:48:28] START glm4_32b_rq3
+[21:55:39] OK    glm4_32b_rq3 (rc=0)
+[21:55:39] START glm4_32b_rq4
+[21:57:21] OK    glm4_32b_rq4 (rc=0)
+[21:57:21] START glm4_32b_rq5
+[22:00:56] OK    glm4_32b_rq5 (rc=0)
+[22:00:56] START glm4_32b_rq6exp6
+[22:12:42] OK    glm4_32b_rq6exp6 (rc=0)
+[22:12:42] START glm4_32b_hc
+[22:17:46] OK    glm4_32b_hc (rc=0)
+[22:17:46] --- qwen3_30b_a3b (L=1) ---
+[22:17:46] START qwen3_30b_a3b_rq1
+[22:58:10] OK    qwen3_30b_a3b_rq1 (rc=0)
+[22:58:10] START qwen3_30b_a3b_rq2a
+[23:38:48] OK    qwen3_30b_a3b_rq2a (rc=0)
+[23:38:48] START qwen3_30b_a3b_rq3
+[23:42:45] OK    qwen3_30b_a3b_rq3 (rc=0)
+[23:42:45] START qwen3_30b_a3b_rq4
+[23:43:40] OK    qwen3_30b_a3b_rq4 (rc=0)
+[23:43:40] START qwen3_30b_a3b_rq5
+[23:45:46] OK    qwen3_30b_a3b_rq5 (rc=0)
+[23:45:46] START qwen3_30b_a3b_rq6exp6
+[23:49:53] OK    qwen3_30b_a3b_rq6exp6 (rc=0)
+[23:49:53] START qwen3_30b_a3b_hc
+[23:52:43] OK    qwen3_30b_a3b_hc (rc=0)
+[23:52:43] --- qwen3.5_35b_a3b (L=9) ---
+[23:52:43] START qwen3.5_35b_a3b_rq1
+[00:24:40] OK    qwen3.5_35b_a3b_rq1 (rc=0)
+[00:24:40] START qwen3.5_35b_a3b_rq2a
+[00:56:28] OK    qwen3.5_35b_a3b_rq2a (rc=0)
+[00:56:28] START qwen3.5_35b_a3b_rq3
+[01:00:32] OK    qwen3.5_35b_a3b_rq3 (rc=0)
+[01:00:32] START qwen3.5_35b_a3b_rq4
+[01:01:44] OK    qwen3.5_35b_a3b_rq4 (rc=0)
+[01:01:44] START qwen3.5_35b_a3b_rq5
+[01:04:08] OK    qwen3.5_35b_a3b_rq5 (rc=0)
+[01:04:08] START qwen3.5_35b_a3b_rq6exp6
+[01:08:34] OK    qwen3.5_35b_a3b_rq6exp6 (rc=0)
+[01:08:34] START qwen3.5_35b_a3b_hc
+[01:12:47] OK    qwen3.5_35b_a3b_hc (rc=0)
+[01:12:47] === ALL RERUNS COMPLETE ===

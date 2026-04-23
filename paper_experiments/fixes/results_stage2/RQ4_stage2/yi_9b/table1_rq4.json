@@ -1,0 +1,8 @@
+{
+  "model": "yi_9b",
+  "layer_id": 8,
+  "sigma1_sigma2": 1.434351068350148,
+  "cos_sim": -0.001362849483166318,
+  "ma_type": "Type III (multi-direction)",
+  "r_squared": 0.8760550278923405
+}

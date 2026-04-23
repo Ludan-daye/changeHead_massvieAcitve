@@ -1,0 +1,37 @@
+=== H(C) entropy test: gptj_6b L2 ===
+Loading model/data...
+loading model gptj_6b
+  → using dtype=float16 (default)
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/285 [00:00<?, ?it/s]Loading weights:   1%|          | 2/285 [00:00<01:27,  3.23it/s]Loading weights:   7%|▋         | 20/285 [00:00<00:08, 32.46it/s]Loading weights:  11%|█         | 30/285 [00:01<00:07, 32.28it/s]Loading weights:  14%|█▍        | 40/285 [00:01<00:06, 37.38it/s]Loading weights:  18%|█▊        | 50/285 [00:01<00:07, 33.28it/s]Loading weights:  21%|██        | 60/285 [00:01<00:06, 33.59it/s]Loading weights:  25%|██▍       | 70/285 [00:02<00:05, 38.27it/s]Loading weights:  28%|██▊       | 80/285 [00:02<00:05, 34.93it/s]Loading weights:  32%|███▏      | 90/285 [00:02<00:05, 36.55it/s]Loading weights:  35%|███▌      | 100/285 [00:03<00:05, 35.73it/s]Loading weights:  39%|███▊      | 110/285 [00:03<00:04, 43.06it/s]Loading weights:  41%|████      | 116/285 [00:03<00:03, 44.03it/s]Loading weights:  43%|████▎     | 122/285 [00:03<00:04, 36.59it/s]Loading weights:  46%|████▌     | 130/285 [00:03<00:03, 42.62it/s]Loading weights:  48%|████▊     | 136/285 [00:03<00:03, 41.33it/s]Loading weights:  49%|████▉     | 141/285 [00:04<00:04, 34.79it/s]Loading weights:  53%|█████▎    | 150/285 [00:04<00:03, 34.93it/s]Loading weights:  56%|█████▌    | 160/285 [00:04<00:03, 41.27it/s]Loading weights:  60%|█████▉    | 170/285 [00:04<00:03, 30.01it/s]Loading weights:  64%|██████▍   | 183/285 [00:05<00:02, 42.50it/s]Loading weights:  67%|██████▋   | 190/285 [00:05<00:02, 32.01it/s]Loading weights:  70%|███████   | 200/285 [00:05<00:02, 39.74it/s]Loading weights:  72%|███████▏  | 206/285 [00:05<00:01, 42.27it/s]Loading weights:  74%|███████▍  | 212/285 [00:05<00:02, 34.04it/s]Loading weights:  77%|███████▋  | 220/285 [00:06<00:01, 39.71it/s]Loading weights:  81%|████████  | 230/285 [00:06<00:01, 33.31it/s]Loading weights:  84%|████████▍ | 240/285 [00:06<00:01, 36.67it/s]Loading weights:  88%|████████▊ | 250/285 [00:06<00:00, 35.74it/s]Loading weights:  91%|█████████ | 260/285 [00:07<00:00, 38.59it/s]Loading weights:  93%|█████████▎| 266/285 [00:07<00:00, 39.93it/s]Loading weights:  95%|█████████▌| 271/285 [00:07<00:00, 30.97it/s]Loading weights:  98%|█████████▊| 280/285 [00:07<00:00, 31.96it/s]Loading weights: 100%|██████████| 285/285 [00:07<00:00, 36.02it/s]
+[1mGPTJForCausalLM LOAD REPORT[0m from: /mnt/d5f4cfb6-8afe-40a4-8650-2965046cd208/pretrained_model/gpt-j-6b
+Key                                     | Status     |  | 
+----------------------------------------+------------+--+-
+transformer.h.{0...27}.attn.bias        | UNEXPECTED |  | 
+transformer.h.{0...27}.attn.masked_bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Couldn't reach 'togethercomputer/RedPajama-Data-1T-Sample' on the Hub (OfflineModeIsEnabled)), using wikitext instead
+Using the latest cached version of the dataset since wikitext couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'wikitext-2-raw-v1' at /home/vicuna/.cache/huggingface/datasets/wikitext/wikitext-2-raw-v1/0.0.0/b08601e04326c79dfdd32d625aee71d232d685c3 (last modified on Wed Apr 15 08:45:52 2026).
+Token indices sequence length is longer than the specified maximum sequence length for this model (2428601 > 2048). Running this sequence through the model will result in indexing errors
+Computing v₁ from W_down SVD...
+  v₁ shape: (16384,), top singular 14.4155, ratio σ₁/σ₂=2.517
+Running 30 sequences...
+  0%|          | 0/30 [00:00<?, ?it/s]  3%|▎         | 1/30 [00:01<00:30,  1.06s/it]  7%|▋         | 2/30 [00:01<00:24,  1.13it/s] 10%|█         | 3/30 [00:02<00:22,  1.19it/s] 13%|█▎        | 4/30 [00:03<00:21,  1.23it/s] 17%|█▋        | 5/30 [00:04<00:20,  1.25it/s] 20%|██        | 6/30 [00:04<00:18,  1.26it/s] 23%|██▎       | 7/30 [00:05<00:18,  1.28it/s] 27%|██▋       | 8/30 [00:06<00:17,  1.28it/s] 30%|███       | 9/30 [00:07<00:16,  1.29it/s] 33%|███▎      | 10/30 [00:08<00:15,  1.29it/s] 37%|███▋      | 11/30 [00:08<00:14,  1.29it/s] 40%|████      | 12/30 [00:09<00:13,  1.29it/s] 43%|████▎     | 13/30 [00:10<00:13,  1.29it/s] 47%|████▋     | 14/30 [00:11<00:12,  1.30it/s] 50%|█████     | 15/30 [00:11<00:11,  1.30it/s] 53%|█████▎    | 16/30 [00:12<00:10,  1.29it/s] 57%|█████▋    | 17/30 [00:13<00:10,  1.30it/s] 60%|██████    | 18/30 [00:14<00:09,  1.29it/s] 63%|██████▎   | 19/30 [00:14<00:08,  1.28it/s] 67%|██████▋   | 20/30 [00:15<00:07,  1.27it/s] 70%|███████   | 21/30 [00:16<00:07,  1.28it/s] 73%|███████▎  | 22/30 [00:17<00:06,  1.28it/s] 77%|███████▋  | 23/30 [00:18<00:05,  1.28it/s] 80%|████████  | 24/30 [00:18<00:04,  1.28it/s] 83%|████████▎ | 25/30 [00:19<00:03,  1.29it/s] 87%|████████▋ | 26/30 [00:20<00:03,  1.29it/s] 90%|█████████ | 27/30 [00:21<00:02,  1.29it/s] 93%|█████████▎| 28/30 [00:21<00:01,  1.30it/s] 97%|█████████▋| 29/30 [00:22<00:00,  1.30it/s]100%|██████████| 30/30 [00:23<00:00,  1.30it/s]100%|██████████| 30/30 [00:23<00:00,  1.28it/s]
+Collected 61380 position records
+Spearman ρ(entropy, |h₂·v₁|) = 0.0397  p=7.812e-23
+Cohen's d (bottom-10% entropy vs rest) = 0.0158
+Cohen's d (bottom-10% vs top-10% entropy) = -0.0321
+
+Saved summary: /tmp/hc_secondary/systemd_gptj_6b/exp5c_entropy_results.json
+Saved raw: /tmp/hc_secondary/systemd_gptj_6b/exp5c_raw_positions.npz  (0.54 MB)
+
+Top-100 |h₂·v₁| positions entropy distribution:
+  median percentile: 78.9%
+  % in bottom-20 H: 12.0%
+  % in bottom-40 H: 25.0%

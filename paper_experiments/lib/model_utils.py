@@ -592,6 +592,59 @@ def get_mlp_up_proj(model_name, layer):
         raise ValueError(f"Cannot find MLP up-projection weight for model '{model_name}'")
 
 
+def get_mlp_module_for_hook(model_name, layer):
+    """
+    Return the module whose forward_hook(...) fires ONCE per MLP block call and
+    whose output equals the MLP block's residual contribution (so zeroing the
+    hook's output cleanly "disables the MLP").
+
+    Why this exists (Bug fix 2026-04-23):
+        Most HF decoder layers wrap MLP ops as `layer.mlp` (llama/qwen/gpt2/...).
+        OPT does NOT — `OPTDecoderLayer` exposes `layer.fc1 / layer.fc2`
+        directly (no `.mlp` wrapper). Code that hard-coded
+        `layer.mlp.register_forward_hook(...)` raised AttributeError on OPT,
+        making opt_6.7b's RQ2a experiment silently fail (exp2a == null in
+        v2 summary, and RQ2b single-layer ablation also only reduced MA by
+        11.59% because its hook never fired on OPT's real MLP compute path).
+
+    For OPT we return `layer.fc2` — the down-projection. Its forward output is
+    exactly `W_down(activation(W_up(x)))`, which is what the decoder layer adds
+    to the residual as the MLP contribution. Zeroing its output is equivalent
+    to setting the MLP residual delta to 0, i.e. disabling MLP entirely for
+    that layer.
+
+    Args:
+        model_name: str
+        layer: the transformer decoder layer module
+
+    Returns:
+        nn.Module to register a forward hook on.
+    """
+    # MoE layers: prefer hooking `layer.mlp` (the SparseMoeBlock) whose
+    # forward output is the mixture-of-experts residual contribution.
+    if _is_moe_layer(layer):
+        return layer.mlp
+    # OPT: no `.mlp` wrapper — hook the down-projection `fc2` directly.
+    if "opt" in model_name and not hasattr(layer, "mlp"):
+        if hasattr(layer, "fc2"):
+            return layer.fc2
+        raise AttributeError(
+            f"OPT-style layer has neither .mlp nor .fc2 (got attrs: "
+            f"{[a for a in dir(layer) if not a.startswith('_')][:10]})"
+        )
+    # Default path: all other architectures expose `.mlp`.
+    mlp = getattr(layer, "mlp", None)
+    if mlp is not None:
+        return mlp
+    # Last-resort fallback: OPT-shaped without the explicit "opt" name guard.
+    if hasattr(layer, "fc2"):
+        return layer.fc2
+    raise AttributeError(
+        f"Cannot find an MLP module to hook on this layer (model={model_name}). "
+        f"Attrs: {[a for a in dir(layer) if not a.startswith('_')][:10]}"
+    )
+
+
 def get_mlp_submodules(model_name, layer):
     """
     Get MLP submodule references for hook registration.

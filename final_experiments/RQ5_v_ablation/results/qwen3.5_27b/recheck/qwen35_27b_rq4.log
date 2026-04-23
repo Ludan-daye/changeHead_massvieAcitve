@@ -1,0 +1,193 @@
+/bin/bash: warning: setlocale: LC_ALL: cannot change locale (zh_CN.UTF-8)
+
+================================================================================
+EXPERIMENT 3: SVD ALIGNMENT ANALYSIS - LAYER 54
+================================================================================
+
+Research Question:
+  Where exactly in the MLP are massive activations generated?
+
+Method:
+  1. SVD decomposition of W₂ matrix
+  2. Compute token alignment with principal direction v₁
+  3. Compare function words vs content words
+  4. Regression: alignment → massive activation
+
+================================================================================
+
+Loading model qwen3.5_27b...
+loading model qwen3.5_27b
+  → using dtype=float16 (default)
+`torch_dtype` is deprecated! Use `dtype` instead!
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/851 [00:00<?, ?it/s]Loading weights:   0%|          | 1/851 [00:00<04:06,  3.44it/s]Loading weights:   0%|          | 2/851 [00:00<05:03,  2.80it/s]Loading weights:   2%|▏         | 13/851 [00:00<00:36, 22.75it/s]Loading weights:   3%|▎         | 27/851 [00:00<00:18, 44.35it/s]Loading weights:   5%|▍         | 40/851 [00:01<00:13, 61.98it/s]Loading weights:   6%|▌         | 49/851 [00:01<00:12, 62.14it/s]Loading weights:   8%|▊         | 66/851 [00:01<00:09, 86.54it/s]Loading weights:   9%|▉         | 79/851 [00:01<00:07, 96.89it/s]Loading weights:  11%|█         | 91/851 [00:01<00:07, 96.49it/s]Loading weights:  12%|█▏        | 102/851 [00:01<00:09, 81.39it/s]Loading weights:  14%|█▍        | 120/851 [00:01<00:07, 96.91it/s]Loading weights:  16%|█▌        | 134/851 [00:01<00:07, 102.12it/s]Loading weights:  17%|█▋        | 147/851 [00:02<00:06, 108.74it/s]Loading weights:  19%|█▊        | 159/851 [00:02<00:07, 93.15it/s] Loading weights:  20%|██        | 173/851 [00:02<00:06, 103.54it/s]Loading weights:  22%|██▏       | 186/851 [00:02<00:06, 110.01it/s]Loading weights:  24%|██▎       | 200/851 [00:02<00:05, 109.70it/s]Loading weights:  25%|██▍       | 212/851 [00:02<00:06, 94.87it/s] Loading weights:  27%|██▋       | 226/851 [00:02<00:06, 104.05it/s]Loading weights:  28%|██▊       | 239/851 [00:02<00:05, 108.18it/s]Loading weights:  30%|██▉       | 252/851 [00:03<00:05, 105.72it/s]Loading weights:  31%|███       | 263/851 [00:03<00:06, 96.85it/s] Loading weights:  33%|███▎      | 278/851 [00:03<00:05, 107.86it/s]Loading weights:  34%|███▍      | 292/851 [00:03<00:05, 109.56it/s]Loading weights:  36%|███▌      | 304/851 [00:03<00:05, 107.02it/s]Loading weights:  37%|███▋      | 315/851 [00:03<00:05, 99.43it/s] Loading weights:  39%|███▉      | 332/851 [00:03<00:04, 110.98it/s]Loading weights:  40%|████      | 344/851 [00:03<00:04, 110.14it/s]Loading weights:  42%|████▏     | 358/851 [00:04<00:04, 117.01it/s]Loading weights:  43%|████▎     | 370/851 [00:04<00:05, 90.35it/s] Loading weights:  45%|████▌     | 385/851 [00:04<00:04, 99.56it/s]Loading weights:  47%|████▋     | 399/851 [00:04<00:04, 104.54it/s]Loading weights:  48%|████▊     | 411/851 [00:04<00:04, 99.99it/s] Loading weights:  50%|████▉     | 422/851 [00:04<00:04, 96.67it/s]Loading weights:  51%|█████▏    | 438/851 [00:04<00:03, 103.73it/s]Loading weights:  53%|█████▎    | 449/851 [00:05<00:04, 94.99it/s] Loading weights:  55%|█████▍    | 466/851 [00:05<00:03, 110.20it/s]Loading weights:  56%|█████▌    | 478/851 [00:05<00:03, 101.41it/s]Loading weights:  58%|█████▊    | 491/851 [00:05<00:03, 108.24it/s]Loading weights:  59%|█████▉    | 505/851 [00:05<00:03, 109.10it/s]Loading weights:  61%|██████    | 517/851 [00:05<00:03, 91.03it/s] Loading weights:  62%|██████▏   | 527/851 [00:05<00:03, 92.83it/s]Loading weights:  64%|██████▍   | 543/851 [00:05<00:02, 104.50it/s]Loading weights:  65%|██████▌   | 557/851 [00:06<00:02, 106.48it/s]Loading weights:  67%|██████▋   | 571/851 [00:06<00:02, 106.66it/s]Loading weights:  68%|██████▊   | 582/851 [00:06<00:02, 90.95it/s] Loading weights:  70%|███████   | 597/851 [00:06<00:02, 103.88it/s]Loading weights:  72%|███████▏  | 610/851 [00:06<00:02, 104.80it/s]Loading weights:  73%|███████▎  | 621/851 [00:06<00:02, 104.29it/s]Loading weights:  74%|███████▍  | 632/851 [00:06<00:02, 84.13it/s] Loading weights:  76%|███████▋  | 649/851 [00:07<00:02, 100.10it/s]Loading weights:  78%|███████▊  | 662/851 [00:07<00:01, 97.67it/s] Loading weights:  79%|███████▉  | 673/851 [00:07<00:01, 99.00it/s]Loading weights:  80%|████████  | 684/851 [00:07<00:02, 80.41it/s]Loading weights:  82%|████████▏ | 702/851 [00:07<00:01, 95.14it/s]Loading weights:  84%|████████▍ | 713/851 [00:07<00:01, 87.04it/s]Loading weights:  85%|████████▍ | 723/851 [00:07<00:01, 89.09it/s]Loading weights:  86%|████████▌ | 733/851 [00:07<00:01, 86.07it/s]Loading weights:  87%|████████▋ | 742/851 [00:08<00:01, 83.37it/s]Loading weights:  89%|████████▉ | 756/851 [00:08<00:01, 91.37it/s]Loading weights:  90%|█████████ | 769/851 [00:08<00:00, 98.41it/s]Loading weights:  92%|█████████▏| 780/851 [00:08<00:00, 99.27it/s]Loading weights:  93%|█████████▎| 791/851 [00:08<00:00, 75.99it/s]Loading weights:  95%|█████████▍| 807/851 [00:08<00:00, 92.02it/s]Loading weights:  96%|█████████▌| 818/851 [00:08<00:00, 83.18it/s]Loading weights:  98%|█████████▊| 837/851 [00:09<00:00, 89.17it/s]Loading weights: 100%|█████████▉| 847/851 [00:09<00:00, 87.17it/s]Loading weights: 100%|██████████| 851/851 [00:09<00:00, 91.84it/s]
+✓ Model loaded on cuda:0
+
+================================================================================
+PHASE 1: SVD DECOMPOSITION OF W₂ (Layer 54)
+================================================================================
+
+W₂ effective shape for SVD: torch.Size([17408, 5120])
+
+Performing SVD decomposition...
+U shape: torch.Size([17408, 5120])
+S shape: torch.Size([5120])
+Vh shape: torch.Size([5120, 5120])
+
+────────────────────────────────────────────────────────────
+SINGULAR VALUE SPECTRUM
+────────────────────────────────────────────────────────────
+σ₁ (largest):  3.6510
+σ₂:            3.2560
+σ₃:            3.1246
+σ₁₀:           2.8459
+σ₅₀:           2.5359
+σ₁₀₀:          2.4223
+
+Amplification ratio (σ₁/σ₂): 1.12×
+Explained variance by σ₁: 0.1%
+
+================================================================================
+PHASE 2: COLLECTING TOKEN ACTIVATIONS
+================================================================================
+
+Loading dataset...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+Processing 15 samples...
+Collecting activations:   0%|          | 0/15 [00:00<?, ?it/s]Collecting activations:   7%|▋         | 1/15 [00:00<00:11,  1.22it/s]Collecting activations:  13%|█▎        | 2/15 [00:01<00:09,  1.43it/s]Collecting activations:  20%|██        | 3/15 [00:01<00:07,  1.57it/s]Collecting activations:  27%|██▋       | 4/15 [00:02<00:06,  1.63it/s]Collecting activations:  33%|███▎      | 5/15 [00:03<00:05,  1.69it/s]Collecting activations:  40%|████      | 6/15 [00:03<00:05,  1.73it/s]Collecting activations:  47%|████▋     | 7/15 [00:04<00:04,  1.74it/s]Collecting activations:  53%|█████▎    | 8/15 [00:04<00:03,  1.77it/s]Collecting activations:  60%|██████    | 9/15 [00:05<00:03,  1.78it/s]Collecting activations:  67%|██████▋   | 10/15 [00:05<00:02,  1.79it/s]Collecting activations:  73%|███████▎  | 11/15 [00:06<00:02,  1.79it/s]Collecting activations:  80%|████████  | 12/15 [00:07<00:01,  1.79it/s]Collecting activations:  87%|████████▋ | 13/15 [00:07<00:01,  1.76it/s]Collecting activations:  93%|█████████▎| 14/15 [00:08<00:00,  1.78it/s]Collecting activations: 100%|██████████| 15/15 [00:08<00:00,  1.78it/s]Collecting activations: 100%|██████████| 15/15 [00:08<00:00,  1.72it/s]
+
+✓ Collected 7680 token activations
+
+Computing alignment with v₁...
+Computing alignments:   0%|          | 0/7680 [00:00<?, ?it/s]Computing alignments:   7%|▋         | 519/7680 [00:00<00:01, 5188.79it/s]Computing alignments:  14%|█▍        | 1072/7680 [00:00<00:01, 5386.57it/s]Computing alignments:  22%|██▏       | 1675/7680 [00:00<00:01, 5678.11it/s]Computing alignments:  30%|██▉       | 2283/7680 [00:00<00:00, 5835.96it/s]Computing alignments:  37%|███▋      | 2871/7680 [00:00<00:00, 5850.77it/s]Computing alignments:  45%|████▌     | 3457/7680 [00:00<00:00, 5721.53it/s]Computing alignments:  53%|█████▎    | 4051/7680 [00:00<00:00, 5790.62it/s]Computing alignments:  60%|██████    | 4631/7680 [00:00<00:00, 5692.13it/s]Computing alignments:  68%|██████▊   | 5201/7680 [00:01<00:00, 3026.37it/s]Computing alignments:  75%|███████▍  | 5749/7680 [00:01<00:00, 3488.78it/s]Computing alignments:  82%|████████▏ | 6294/7680 [00:01<00:00, 3903.95it/s]Computing alignments:  88%|████████▊ | 6793/7680 [00:01<00:00, 4154.33it/s]Computing alignments:  95%|█████████▍| 7288/7680 [00:01<00:00, 4155.17it/s]Computing alignments: 100%|██████████| 7680/7680 [00:01<00:00, 4444.94it/s]
+✓ Computed alignments for 7680 tokens
+
+================================================================================
+PHASE 3: FUNCTION WORDS VS CONTENT WORDS ANALYSIS
+================================================================================
+
+Function words: 3042 tokens
+Content words:  4638 tokens
+
+────────────────────────────────────────────────────────────
+ALIGNMENT WITH v₁ (cosine similarity)
+────────────────────────────────────────────────────────────
+Function words: μ=-0.069 ± 0.053
+Content words:  μ=-0.073 ± 0.059
+
+Two-sample t-test:
+  t-statistic = 3.340
+  p-value = 8.41e-04
+  ✓ Highly significant difference (p < 0.001)
+  Cohen's d = 0.079 (effect size)
+
+────────────────────────────────────────────────────────────
+MASSIVE ACTIVATION (MA Dim)
+────────────────────────────────────────────────────────────
+Function words: μ=17.16 ± 34.15
+Content words:  μ=19.45 ± 40.45
+
+Trigger rate (|activation| > 136.9):
+  Function words: 0.8%
+  Content words:  0.5%
+
+────────────────────────────────────────────────────────────
+TOP 30 MOST ALIGNED TOKENS
+────────────────────────────────────────────────────────────
+ 1. [C] '2' - alignment=0.163, ma_dim=24.2
+ 2. [C] ' ' - alignment=0.155, ma_dim=24.8
+ 3. [F] ' .' - alignment=0.119, ma_dim=27.1
+ 4. [C] '4' - alignment=0.116, ma_dim=16.4
+ 5. [C] 'record' - alignment=0.113, ma_dim=23.2
+ 6. [F] ' .' - alignment=0.109, ma_dim=23.8
+ 7. [C] ' Nag' - alignment=0.096, ma_dim=17.0
+ 8. [C] ' Fuj' - alignment=0.095, ma_dim=15.3
+ 9. [C] ' R' - alignment=0.090, ma_dim=22.6
+10. [F] ' .' - alignment=0.088, ma_dim=17.1
+11. [C] 'ay' - alignment=0.087, ma_dim=13.2
+12. [F] ' ,' - alignment=0.086, ma_dim=14.9
+13. [C] 'hiro' - alignment=0.081, ma_dim=8.6
+14. [F] ' .' - alignment=0.080, ma_dim=14.1
+15. [C] 'ed' - alignment=0.078, ma_dim=13.4
+16. [C] ' Kur' - alignment=0.077, ma_dim=7.9
+17. [C] 'ria' - alignment=0.076, ma_dim=9.8
+18. [F] ' .' - alignment=0.073, ma_dim=12.6
+19. [C] 'ak' - alignment=0.073, ma_dim=12.4
+20. [C] ' Wish' - alignment=0.073, ma_dim=19.2
+21. [C] ' Sh' - alignment=0.073, ma_dim=9.8
+22. [F] ' .' - alignment=0.070, ma_dim=14.9
+23. [F] ' .' - alignment=0.069, ma_dim=14.1
+24. [C] ' Fuj' - alignment=0.066, ma_dim=11.4
+25. [C] 'uki' - alignment=0.063, ma_dim=7.2
+26. [C] ' Oz' - alignment=0.063, ma_dim=10.6
+27. [C] 'ria' - alignment=0.063, ma_dim=10.0
+28. [F] ' ,' - alignment=0.061, ma_dim=13.1
+29. [C] 'ria' - alignment=0.061, ma_dim=8.5
+30. [C] ' Fuj' - alignment=0.060, ma_dim=10.7
+
+In top 30: 9 function words (30.0%), 21 content words (70.0%)
+
+================================================================================
+PHASE 4: CAUSAL REGRESSION ANALYSIS
+================================================================================
+
+Linear Regression: MA_dim ~ projection
+────────────────────────────────────────────────────────────
+  y = -3.9227 × projection + 0.7901
+  R² = 0.9923
+  p-value = 0.00e+00
+  std_err = 0.0040
+
+✓ Strong linear relationship (R² > 0.7)
+  Projection strength explains 99.2% of variance in massive activations
+
+================================================================================
+PHASE 5: GENERATING VISUALIZATIONS
+================================================================================
+
+Generating Figure 1: Singular value spectrum...
+  ✓ Saved: exp3_singular_values.png
+Generating Figure 2: Alignment distribution comparison...
+/root/changeHead_massvieAcitve/paper_experiments/RQ4_svd_alignment/exp3_svd_alignment_analysis.py:546: MatplotlibDeprecationWarning: The 'labels' parameter of boxplot() has been renamed 'tick_labels' since Matplotlib 3.9; support for the old name will be dropped in 3.11.
+  bp = ax2.boxplot(box_data, labels=['Content Words', 'Function Words'],
+  ✓ Saved: exp3_alignment_comparison.png
+Generating Figure 3: Projection-activation regression...
+  ✓ Saved: exp3_projection_regression.png
+Generating Figure 4: Top tokens analysis...
+  ✓ Saved: exp3_top_tokens.png
+Generating Figure 5: Trigger rate comparison...
+  ✓ Saved: exp3_trigger_rate.png
+
+✅ All visualizations saved to: /tmp/systemd_rq2b/rq4rq5/qwen35_27b_rq4_L54
+
+================================================================================
+GENERATING SUMMARY REPORT
+================================================================================
+
+✅ Summary report saved to: /tmp/systemd_rq2b/rq4rq5/qwen35_27b_rq4_L54/EXPERIMENT_3_SUMMARY.txt
+✅ Detailed JSON results saved to: /tmp/systemd_rq2b/rq4rq5/qwen35_27b_rq4_L54/exp3_detailed_results.json
+
+  Table 1 data: σ₁/σ₂=1.12, Cos Sim=-0.0690, Type=Type III (multi-direction)
+
+================================================================================
+✅ EXPERIMENT 3 COMPLETE
+================================================================================
+
+Results saved to: /tmp/systemd_rq2b/rq4rq5/qwen35_27b_rq4_L54
+
+Generated files:
+  📊 exp3_singular_values.png - Singular value spectrum
+  📊 exp3_alignment_comparison.png - Function vs content words alignment
+  📊 exp3_projection_regression.png - Causal regression analysis
+  📊 exp3_top_tokens.png - Top aligned tokens analysis
+  📊 exp3_trigger_rate.png - Massive activation trigger rates
+  📄 EXPERIMENT_3_SUMMARY.txt - Detailed text report
+  📄 exp3_detailed_results.json - Full numerical results
+
+================================================================================
+

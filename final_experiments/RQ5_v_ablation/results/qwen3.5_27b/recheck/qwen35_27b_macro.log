@@ -1,0 +1,53 @@
+/bin/bash: warning: setlocale: LC_ALL: cannot change locale (zh_CN.UTF-8)
+
+================================================================================
+EXPERIMENT 5 (MACRO): Multi-layer macro v₁ projection-out ablation
+================================================================================
+
+Model: qwen3.5_27b
+Origin layers (for macro aggregation): [50, 52, 54, 56]
+MA capture layer: 54
+Samples: 10
+
+[1/6] Loading model...
+loading model qwen3.5_27b
+  → using dtype=float16 (default)
+`torch_dtype` is deprecated! Use `dtype` instead!
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/851 [00:00<?, ?it/s]Loading weights:   2%|▏         | 14/851 [00:00<00:06, 126.76it/s]Loading weights:   3%|▎         | 27/851 [00:00<00:06, 119.91it/s]Loading weights:   5%|▍         | 40/851 [00:00<00:06, 123.86it/s]Loading weights:   6%|▌         | 53/851 [00:00<00:08, 92.03it/s] Loading weights:   8%|▊         | 67/851 [00:00<00:07, 100.97it/s]Loading weights:   9%|▉         | 80/851 [00:00<00:07, 108.34it/s]Loading weights:  11%|█         | 94/851 [00:00<00:06, 108.99it/s]Loading weights:  12%|█▏        | 106/851 [00:01<00:08, 92.49it/s]Loading weights:  14%|█▍        | 121/851 [00:01<00:07, 100.20it/s]Loading weights:  16%|█▌        | 134/851 [00:01<00:06, 107.03it/s]Loading weights:  17%|█▋        | 148/851 [00:01<00:06, 107.20it/s]Loading weights:  19%|█▉        | 160/851 [00:01<00:07, 96.57it/s] Loading weights:  20%|██        | 171/851 [00:01<00:06, 99.50it/s]Loading weights:  22%|██▏       | 186/851 [00:01<00:06, 105.14it/s]Loading weights:  24%|██▎       | 200/851 [00:01<00:05, 112.72it/s]Loading weights:  25%|██▍       | 212/851 [00:02<00:06, 98.55it/s] Loading weights:  27%|██▋       | 226/851 [00:02<00:06, 103.76it/s]Loading weights:  28%|██▊       | 240/851 [00:02<00:06, 98.40it/s] Loading weights:  30%|██▉       | 255/851 [00:02<00:05, 105.58it/s]Loading weights:  31%|███▏      | 266/851 [00:02<00:05, 102.33it/s]Loading weights:  33%|███▎      | 280/851 [00:02<00:05, 103.57it/s]Loading weights:  34%|███▍      | 292/851 [00:02<00:05, 101.33it/s]Loading weights:  36%|███▌      | 303/851 [00:03<00:07, 77.52it/s] Loading weights:  39%|███▉      | 332/851 [00:03<00:04, 111.68it/s]Loading weights:  41%|████      | 347/851 [00:03<00:04, 112.84it/s]Loading weights:  42%|████▏     | 359/851 [00:03<00:04, 109.65it/s]Loading weights:  44%|████▎     | 371/851 [00:03<00:04, 104.91it/s]Loading weights:  45%|████▌     | 384/851 [00:03<00:04, 102.53it/s]Loading weights:  47%|████▋     | 399/851 [00:03<00:04, 112.96it/s]Loading weights:  48%|████▊     | 412/851 [00:03<00:04, 103.88it/s]Loading weights:  50%|████▉     | 424/851 [00:04<00:04, 105.29it/s]Loading weights:  51%|█████▏    | 438/851 [00:04<00:03, 110.53it/s]Loading weights:  53%|█████▎    | 450/851 [00:04<00:03, 100.66it/s]Loading weights:  55%|█████▍    | 465/851 [00:04<00:03, 110.27it/s]Loading weights:  56%|█████▌    | 477/851 [00:04<00:03, 105.91it/s]Loading weights:  58%|█████▊    | 491/851 [00:04<00:03, 112.58it/s]Loading weights:  59%|█████▉    | 503/851 [00:04<00:03, 113.99it/s]Loading weights:  61%|██████    | 518/851 [00:04<00:02, 117.26it/s]Loading weights:  62%|██████▏   | 530/851 [00:05<00:03, 103.54it/s]Loading weights:  64%|██████▍   | 543/851 [00:05<00:02, 105.25it/s]Loading weights:  65%|██████▌   | 557/851 [00:05<00:02, 100.72it/s]Loading weights:  67%|██████▋   | 572/851 [00:05<00:02, 112.15it/s]Loading weights:  69%|██████▊   | 584/851 [00:05<00:02, 105.74it/s]Loading weights:  70%|███████   | 598/851 [00:05<00:02, 107.36it/s]Loading weights:  72%|███████▏  | 611/851 [00:05<00:02, 81.26it/s] Loading weights:  73%|███████▎  | 623/851 [00:06<00:02, 83.66it/s]Loading weights:  74%|███████▍  | 633/851 [00:06<00:03, 57.14it/s]Loading weights:  76%|███████▋  | 649/851 [00:06<00:02, 74.03it/s]Loading weights:  78%|███████▊  | 662/851 [00:06<00:02, 80.76it/s]Loading weights:  79%|███████▉  | 676/851 [00:06<00:01, 91.39it/s]Loading weights:  81%|████████  | 687/851 [00:06<00:02, 76.47it/s]Loading weights: 100%|██████████| 851/851 [00:07<00:00, 121.36it/s]
+Some parameters are on the meta device because they were offloaded to the cpu.
+
+[2/6] Measuring baseline MA...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Token indices sequence length is longer than the specified maximum sequence length for this model (2505800 > 262144). Running this sequence through the model will result in indexing errors
+Measuring MA:   0%|          | 0/10 [00:00<?, ?it/s]Measuring MA:  10%|█         | 1/10 [00:03<00:28,  3.18s/it]Measuring MA:  20%|██        | 2/10 [00:05<00:20,  2.60s/it]Measuring MA:  30%|███       | 3/10 [00:07<00:15,  2.28s/it]Measuring MA:  40%|████      | 4/10 [00:09<00:13,  2.18s/it]Measuring MA:  50%|█████     | 5/10 [00:11<00:10,  2.16s/it]Measuring MA:  60%|██████    | 6/10 [00:13<00:08,  2.12s/it]Measuring MA:  70%|███████   | 7/10 [00:15<00:06,  2.05s/it]Measuring MA:  80%|████████  | 8/10 [00:17<00:04,  2.03s/it]Measuring MA:  90%|█████████ | 9/10 [00:19<00:02,  2.05s/it]Measuring MA: 100%|██████████| 10/10 [00:21<00:00,  2.10s/it]Measuring MA: 100%|██████████| 10/10 [00:21<00:00,  2.17s/it]
+  baseline top1_mean = 733.20
+  ma_dims = [3994, 3456]
+
+[3/6] Computing macro v1 via Δh SVD...
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Dataset 'togethercomputer/RedPajama-Data-1T-Sample' doesn't exist on the Hub or cannot be accessed.), using wikitext instead
+  macro σ₁ = 4866.978
+  macro η (σ₁/σ₂) = 1.833
+  macro v₁ shape = (5120,)
+
+[4/6] Projecting out macro v₁ from W_down of layers [50, 52, 54, 56]...
+  L50: dense W_down (5120, 17408) ablated
+Traceback (most recent call last):
+  File "/root/changeHead_massvieAcitve/paper_experiments/RQ5_v_matrix_ablation/exp5_macro_v_ablation.py", line 314, in <module>
+    main()
+  File "/root/changeHead_massvieAcitve/paper_experiments/RQ5_v_matrix_ablation/exp5_macro_v_ablation.py", line 229, in main
+    W_orig_saved = lib.project_out_mlp_down_proj(args.model, layers[lid], v1_macro)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/changeHead_massvieAcitve/paper_experiments/RQ5_v_matrix_ablation/../lib/model_utils.py", line 510, in project_out_mlp_down_proj
+    set_mlp_down_proj(model_name, layer, W_ablated)
+  File "/root/changeHead_massvieAcitve/paper_experiments/RQ5_v_matrix_ablation/../lib/model_utils.py", line 424, in set_mlp_down_proj
+    layer.mlp.down_proj.weight.data = new_weight
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Attempted to call `variable.set_data(tensor)`, but `variable` and `tensor` have incompatible tensor type.

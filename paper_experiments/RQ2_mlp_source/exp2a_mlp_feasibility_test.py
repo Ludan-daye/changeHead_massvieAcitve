@@ -31,7 +31,13 @@ import monkey_patch as mp
 
 class MLPDisableHook:
     """
-    Hook to disable MLP layers by zeroing their output
+    Hook to disable MLP layers by zeroing their output.
+
+    Handles both shapes of forward-hook output:
+      - Tensor (most MLPs, and OPT's `fc2` down-projection)
+      - Tuple[Tensor, ...]  (some wrappers / MoE SparseMoeBlock which returns
+        a tuple of (hidden_states, router_logits) — we must zero only the
+        first element so the tuple shape the caller expects is preserved).
     """
     def __init__(self, layer_id, mode='disable_all'):
         """
@@ -44,13 +50,20 @@ class MLPDisableHook:
 
     def __call__(self, module, input, output):
         """
-        Hook function that zeros out MLP output
+        Hook function that zeros out MLP output. Preserves tuple shape if
+        present so callers doing `h, *rest = mlp(x)` don't break.
         """
-        if self.mode == 'disable_all':
-            # Zero out entire MLP output
-            return torch.zeros_like(output)
-        else:
+        if self.mode != 'disable_all':
             return output
+        if isinstance(output, tuple):
+            # Zero first element (hidden_states); keep the rest untouched.
+            if len(output) == 0:
+                return output
+            zeroed = torch.zeros_like(output[0]) if torch.is_tensor(output[0]) else output[0]
+            return (zeroed,) + tuple(output[1:])
+        # Plain tensor output (typical for .mlp on llama/qwen/..., and for
+        # .fc2 on OPT): zero it.
+        return torch.zeros_like(output)
 
 
 def run_experiment(args, mode='baseline'):
@@ -89,8 +102,13 @@ def run_experiment(args, mode='baseline'):
                 hook = MLPDisableHook(layer_id, mode='disable_all')
                 print(f"  Layer {layer_id}: Disabling MLP")
 
-                # Register hook on the MLP module
-                handle = layer.mlp.register_forward_hook(hook)
+                # Bug fix (2026-04-23): OPT's OPTDecoderLayer has no `.mlp` —
+                # exp2a previously hard-coded `layer.mlp.register_forward_hook`
+                # which raised AttributeError on OPT (exp2a == null in v2
+                # summary for opt_6.7b). Use architecture-aware helper that
+                # returns `layer.fc2` for OPT and `layer.mlp` for other models.
+                mlp_mod = lib.get_mlp_module_for_hook(args.model, layer)
+                handle = mlp_mod.register_forward_hook(hook)
                 hooks.append(handle)
 
     # Load data
@@ -111,9 +129,12 @@ def run_experiment(args, mode='baseline'):
     if mode == 'baseline':
         for layer_id in range(len(layers)):
             layer = layers[layer_id]
-            # MLP module
-            mlp_module = getattr(layer, 'mlp', None)
-            if mlp_module:
+            # MLP module (arch-aware; OPT has no .mlp, use .fc2).
+            try:
+                mlp_module = lib.get_mlp_module_for_hook(args.model, layer)
+            except AttributeError:
+                mlp_module = None
+            if mlp_module is not None:
                 h = mlp_module.register_forward_hook(make_output_hook(mlp_output_store, layer_id))
                 ratio_hooks.append(h)
             # Attention module

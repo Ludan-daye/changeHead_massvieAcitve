@@ -1,0 +1,55 @@
+{
+  "model": "gptj_6b",
+  "layer_id": 2,
+  "measure_layer_id": 2,
+  "method": "projection_removal_top_k_v",
+  "ablate_bias": true,
+  "k_values": [
+    1
+  ],
+  "nsamples": 30,
+  "seed": 0,
+  "timestamp": "2026-04-23T18:38:50.820543",
+  "svd_info": {
+    "sigma_1": 14.419354438781738,
+    "sigma_2": 5.727525234222412,
+    "eta": 2.5175540447235107,
+    "W_shape": [
+      4096,
+      16384
+    ],
+    "bias_shape": [
+      4096
+    ],
+    "bias_norm_original": 10.173052787780762,
+    "bias_max_abs_original": 3.65625
+  },
+  "baseline": {
+    "top1_mean": 3677.4,
+    "top1_max": 4038.0,
+    "ma_dims": [
+      3019,
+      939
+    ],
+    "per_dim_max": {
+      "3019": 4038.0,
+      "939": 602.5
+    }
+  },
+  "ablations": {
+    "1": {
+      "top1_mean": 374.9,
+      "top1_max": 417.75,
+      "per_dim_max": {
+        "1497": 417.75,
+        "3563": 274.0
+      },
+      "delta_ma_mean_pct": -89.80529722086257,
+      "delta_ma_max_pct": -89.65453194650817,
+      "per_dim_pct": {
+        "3019": -100.0,
+        "939": -100.0
+      }
+    }
+  }
+}

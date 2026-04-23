@@ -1,0 +1,28 @@
+bash: warning: setlocale: LC_ALL: cannot change locale (zh_CN.UTF-8)
+[Tue Apr 21 20:33:21 UTC 2026] === qwen3_1.7b L=0 ===
+[Tue Apr 21 20:34:01 UTC 2026] done qwen3_1.7b rc=0
+[Tue Apr 21 20:34:01 UTC 2026] === qwen3_4b L=0 ===
+[Tue Apr 21 20:34:44 UTC 2026] done qwen3_4b rc=0
+[Tue Apr 21 20:34:44 UTC 2026] === qwen3_8b L=2 ===
+[Tue Apr 21 20:35:39 UTC 2026] done qwen3_8b rc=0
+[Tue Apr 21 20:35:39 UTC 2026] === llama3.1_8b L=1 ===
+[Tue Apr 21 20:36:34 UTC 2026] done llama3.1_8b rc=0
+[Tue Apr 21 20:36:34 UTC 2026] === glm4_9b L=1 ===
+[Tue Apr 21 20:37:52 UTC 2026] done glm4_9b rc=0
+[Tue Apr 21 20:37:52 UTC 2026] === yi_9b L=8 ===
+[Tue Apr 21 20:38:48 UTC 2026] done yi_9b rc=0
+[Tue Apr 21 20:38:48 UTC 2026] === qwen2_7b L=3 ===
+[Tue Apr 21 20:39:48 UTC 2026] done qwen2_7b rc=0
+[Tue Apr 21 20:39:48 UTC 2026] === qwen2.5_7b L=3 ===
+[Tue Apr 21 20:40:42 UTC 2026] done qwen2.5_7b rc=0
+[Tue Apr 21 20:40:42 UTC 2026] === qwen3.5_9b L=22 ===
+[Tue Apr 21 20:41:58 UTC 2026] done qwen3.5_9b rc=0
+[Tue Apr 21 20:41:58 UTC 2026] === qwen1.5_14b L=3 ===
+[Tue Apr 21 20:43:06 UTC 2026] done qwen1.5_14b rc=0
+[Tue Apr 21 20:43:06 UTC 2026] === qwen3_14b L=6 ===
+[Tue Apr 21 20:44:19 UTC 2026] done qwen3_14b rc=0
+[Tue Apr 21 20:44:19 UTC 2026] === qwen3.5_27b L=9 ===
+[Tue Apr 21 20:46:43 UTC 2026] done qwen3.5_27b rc=0
+[Tue Apr 21 20:46:43 UTC 2026] === qwen3_32b L=6 ===
+[Tue Apr 21 20:48:29 UTC 2026] done qwen3_32b rc=0
+[Tue Apr 21 20:48:29 UTC 2026] ALL_RQ4_DONE

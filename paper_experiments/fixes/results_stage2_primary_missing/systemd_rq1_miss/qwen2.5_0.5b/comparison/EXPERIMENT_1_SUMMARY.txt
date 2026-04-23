@@ -1,0 +1,95 @@
+================================================================================
+EXPERIMENT 1: FEASIBILITY TEST - SUMMARY REPORT
+================================================================================
+Generated: 2026-04-22 13:10:20
+
+RESEARCH QUESTION:
+  Do attention heads generate massive activations?
+
+METHODOLOGY:
+  1. Baseline: Run model with all attention heads active
+  2. All Disabled: Run model with all 144 attention heads zeroed out
+  3. Compare massive activation magnitudes
+
+================================================================================
+KEY FINDINGS
+================================================================================
+
+1️⃣ MA PRIMARY DIMENSION (Primary Massive Activation Dimension)
+----------------------------------------------------------------------
+  Baseline Peak Value:       23.18 (Layer 17)
+  All Heads Disabled Value:  34.57
+  Absolute Change:           11.39
+  Percentage Change:         49.16%
+
+  Conclusion: 🔍 MODERATE CHANGE - Partial contribution from heads
+
+2️⃣ DIMENSION 138 (Secondary Massive Activation Dimension)
+----------------------------------------------------------------------
+  Baseline Peak Value:       135.35 (Layer 23)
+  All Heads Disabled Value:  97.90
+  Absolute Change:           -37.45
+  Percentage Change:         -27.67%
+
+  Conclusion: ⚠️ SIGNIFICANT DECREASE - Heads may contribute to generation
+
+3️⃣ OVERALL TOP1 ACTIVATION
+----------------------------------------------------------------------
+  Baseline Peak Value:       1623.90 (Layer 15)
+  All Heads Disabled Value:  926.73
+  Absolute Change:           -697.17
+  Percentage Change:         -42.93%
+
+
+================================================================================
+LAYER-WISE DETAILED ANALYSIS
+================================================================================
+
+Layer   Baseline Top1   Disabled Top1   Change       % Change    
+----------------------------------------------------------------------
+0       3.15            3.69            0.54         17.00       %
+1       5.32            5.31            -0.01        -0.22       %
+2       735.78          73.69           -662.10      -89.99      %
+3       1585.03         889.20          -695.83      -43.90      %
+4       1587.03         890.70          -696.33      -43.88      %
+5       1611.97         916.70          -695.27      -43.13      %
+6       1612.97         917.43          -695.53      -43.12      %
+7       1613.97         918.43          -695.53      -43.09      %
+8       1614.97         919.43          -695.53      -43.07      %
+9       1615.97         920.23          -695.73      -43.05      %
+10      1617.90         921.73          -696.17      -43.03      %
+11      1618.90         922.73          -696.17      -43.00      %
+12      1619.90         923.73          -696.17      -42.98      %
+13      1620.90         924.23          -696.67      -42.98      %
+14      1621.90         925.23          -696.67      -42.95      %
+15      1623.90         926.73          -697.17      -42.93      %
+16      1623.90         926.73          -697.17      -42.93      %
+17      1623.90         926.23          -697.67      -42.96      %
+18      1622.90         925.73          -697.17      -42.96      %
+19      1620.97         926.55          -694.42      -42.84      %
+20      1617.67         922.05          -695.62      -43.00      %
+21      66.40           418.93          352.53       530.90      %
+22      69.26           432.71          363.45       524.74      %
+23      135.37          434.77          299.40       221.18      %
+
+================================================================================
+OVERALL CONCLUSION
+================================================================================
+
+
+⚠️ ATTENTION HEADS SIGNIFICANTLY CONTRIBUTE TO MASSIVE ACTIVATIONS
+
+The experiment shows that disabling all attention heads reduces massive
+activations by >20% on average. This suggests:
+
+  1. Attention heads DO participate in generating massive activations
+  2. Further experiments needed to identify which specific heads are responsible
+  3. Possible multi-head cooperation effects
+
+NEXT STEPS:
+  → Proceed to Experiment 2: Single-layer restoration
+  → Identify critical layers
+  → Then proceed to Experiment 3: Single-head restoration within critical layers
+
+
+================================================================================

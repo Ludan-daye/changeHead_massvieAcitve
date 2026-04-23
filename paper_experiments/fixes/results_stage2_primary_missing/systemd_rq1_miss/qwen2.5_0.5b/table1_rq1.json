@@ -1,0 +1,6 @@
+{
+  "model": "qwen2.5_0.5b",
+  "key_layer": 15,
+  "base_ma": 1623.9,
+  "delta_top1_pct": -42.93162551060205
+}

@@ -1,0 +1,6 @@
+{
+  "model": "llama2_7b_chat",
+  "key_layer": 26,
+  "base_ma": 2194.5666666666666,
+  "delta_top1_pct": -76.15142321187174
+}

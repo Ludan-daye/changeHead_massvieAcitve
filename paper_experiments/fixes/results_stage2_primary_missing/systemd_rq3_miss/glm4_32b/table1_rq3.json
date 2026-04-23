@@ -1,0 +1,10 @@
+{
+  "model": "glm4_32b",
+  "func_pct": 28.302408854166668,
+  "struct_pct": 18.350423177083332,
+  "content_pct": 53.34716796875,
+  "func_tokens": 34778,
+  "struct_tokens": 22549,
+  "content_tokens": 65553,
+  "total_tokens": 122880
+}

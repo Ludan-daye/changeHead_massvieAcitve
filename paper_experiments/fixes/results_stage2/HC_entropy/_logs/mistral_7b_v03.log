@@ -1,0 +1,28 @@
+=== H(C) entropy test: mistral_7b_v03 L0 ===
+Loading model/data...
+loading model mistral_7b_v03
+  → using dtype=float16 (default)
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:   5%|▍         | 14/291 [00:00<00:02, 100.10it/s]Loading weights:   9%|▊         | 25/291 [00:00<00:03, 82.18it/s] Loading weights:  12%|█▏        | 34/291 [00:00<00:03, 76.96it/s]Loading weights:  14%|█▍        | 42/291 [00:00<00:03, 67.75it/s]Loading weights:  17%|█▋        | 50/291 [00:00<00:03, 67.30it/s]Loading weights:  20%|█▉        | 58/291 [00:00<00:03, 66.39it/s]Loading weights:  23%|██▎       | 67/291 [00:01<00:04, 55.43it/s]Loading weights:  26%|██▋       | 77/291 [00:01<00:03, 57.99it/s]Loading weights:  29%|██▉       | 85/291 [00:01<00:03, 59.36it/s]Loading weights:  32%|███▏      | 94/291 [00:01<00:03, 62.66it/s]Loading weights:  35%|███▌      | 103/291 [00:01<00:03, 57.44it/s]Loading weights:  38%|███▊      | 112/291 [00:01<00:03, 56.81it/s]Loading weights:  42%|████▏     | 121/291 [00:01<00:02, 59.86it/s]Loading weights:  45%|████▍     | 130/291 [00:02<00:02, 56.59it/s]Loading weights:  48%|████▊     | 139/291 [00:02<00:02, 55.77it/s]Loading weights:  51%|█████     | 148/291 [00:02<00:02, 55.08it/s]Loading weights:  54%|█████▍    | 157/291 [00:02<00:02, 50.49it/s]Loading weights:  57%|█████▋    | 166/291 [00:02<00:02, 53.83it/s]Loading weights:  60%|██████    | 175/291 [00:02<00:01, 58.58it/s]Loading weights:  63%|██████▎   | 184/291 [00:03<00:01, 62.19it/s]Loading weights:  66%|██████▋   | 193/291 [00:03<00:01, 61.91it/s]Loading weights:  69%|██████▉   | 202/291 [00:03<00:01, 65.18it/s]Loading weights:  73%|███████▎  | 211/291 [00:03<00:01, 63.64it/s]Loading weights:  76%|███████▌  | 220/291 [00:03<00:01, 61.12it/s]Loading weights:  79%|███████▊  | 229/291 [00:03<00:00, 67.39it/s]Loading weights:  82%|████████▏ | 238/291 [00:03<00:00, 65.67it/s]Loading weights:  85%|████████▍ | 247/291 [00:03<00:00, 65.63it/s]Loading weights:  88%|████████▊ | 256/291 [00:04<00:00, 66.62it/s]Loading weights:  91%|█████████▏| 266/291 [00:04<00:00, 63.26it/s]Loading weights:  94%|█████████▍| 274/291 [00:04<00:00, 64.84it/s]Loading weights:  97%|█████████▋| 283/291 [00:04<00:00, 68.58it/s]Loading weights: 100%|██████████| 291/291 [00:04<00:00, 63.44it/s]
+`trust_remote_code` is not supported anymore.
+Please check that the Hugging Face dataset 'togethercomputer/RedPajama-Data-1T-Sample' isn't based on a loading script and remove `trust_remote_code`.
+If the dataset is based on a loading script, please ask the dataset author to remove it and convert it to a standard format like Parquet.
+Failed to load RedPajama dataset (Couldn't reach 'togethercomputer/RedPajama-Data-1T-Sample' on the Hub (OfflineModeIsEnabled)), using wikitext instead
+Using the latest cached version of the dataset since wikitext couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'wikitext-2-raw-v1' at /home/vicuna/.cache/huggingface/datasets/wikitext/wikitext-2-raw-v1/0.0.0/b08601e04326c79dfdd32d625aee71d232d685c3 (last modified on Wed Apr 15 08:45:52 2026).
+Computing v₁ from W_down SVD...
+  v₁ shape: (14336,), top singular 1.2922, ratio σ₁/σ₂=1.080
+Running 30 sequences...
+  0%|          | 0/30 [00:00<?, ?it/s]  3%|▎         | 1/30 [00:01<00:51,  1.76s/it]  7%|▋         | 2/30 [00:03<00:44,  1.58s/it] 10%|█         | 3/30 [00:04<00:41,  1.52s/it] 13%|█▎        | 4/30 [00:06<00:38,  1.50s/it] 17%|█▋        | 5/30 [00:07<00:37,  1.48s/it] 20%|██        | 6/30 [00:09<00:35,  1.48s/it] 23%|██▎       | 7/30 [00:10<00:33,  1.47s/it] 27%|██▋       | 8/30 [00:11<00:32,  1.47s/it] 30%|███       | 9/30 [00:13<00:30,  1.46s/it] 33%|███▎      | 10/30 [00:14<00:29,  1.46s/it] 37%|███▋      | 11/30 [00:16<00:27,  1.46s/it] 40%|████      | 12/30 [00:17<00:26,  1.46s/it] 43%|████▎     | 13/30 [00:19<00:24,  1.46s/it] 47%|████▋     | 14/30 [00:20<00:23,  1.46s/it] 50%|█████     | 15/30 [00:22<00:21,  1.46s/it] 53%|█████▎    | 16/30 [00:23<00:20,  1.46s/it] 57%|█████▋    | 17/30 [00:25<00:19,  1.46s/it] 60%|██████    | 18/30 [00:26<00:17,  1.46s/it] 63%|██████▎   | 19/30 [00:28<00:16,  1.46s/it] 67%|██████▋   | 20/30 [00:29<00:14,  1.47s/it] 70%|███████   | 21/30 [00:30<00:13,  1.47s/it] 73%|███████▎  | 22/30 [00:32<00:11,  1.46s/it] 77%|███████▋  | 23/30 [00:33<00:10,  1.46s/it] 80%|████████  | 24/30 [00:35<00:08,  1.47s/it] 83%|████████▎ | 25/30 [00:36<00:07,  1.46s/it] 87%|████████▋ | 26/30 [00:38<00:05,  1.47s/it] 90%|█████████ | 27/30 [00:39<00:04,  1.47s/it] 93%|█████████▎| 28/30 [00:41<00:02,  1.47s/it] 97%|█████████▋| 29/30 [00:42<00:01,  1.47s/it]100%|██████████| 30/30 [00:44<00:00,  1.48s/it]100%|██████████| 30/30 [00:44<00:00,  1.47s/it]
+Collected 122820 position records
+Spearman ρ(entropy, |h₂·v₁|) = -0.1879  p=0.000e+00
+Cohen's d (bottom-10% entropy vs rest) = 0.5939
+Cohen's d (bottom-10% vs top-10% entropy) = 0.7603
+
+Saved summary: /tmp/hc_secondary/systemd_mistral_7b_v03/exp5c_entropy_results.json
+Saved raw: /tmp/hc_secondary/systemd_mistral_7b_v03/exp5c_raw_positions.npz  (1.06 MB)
+
+Top-100 |h₂·v₁| positions entropy distribution:
+  median percentile: 88.6%
+  % in bottom-20 H: 14.0%
+  % in bottom-40 H: 29.0%
