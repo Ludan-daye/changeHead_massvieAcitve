@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Large raw dumps (uncomment if repo size matters)
+# *.pkl
+# experiments/HC_entropy/results/**/*.npz
+
+# Local files
+*.swp
+.idea/
+.vscode/

@@ -1,0 +1,8 @@
+{
+  "model": "gpt2",
+  "layer_id": 3,
+  "sigma1_sigma2": 3.0514103848478396,
+  "cos_sim": -0.012331417638914141,
+  "ma_type": "Type III (multi-direction)",
+  "r_squared": 0.388739318294086
+}

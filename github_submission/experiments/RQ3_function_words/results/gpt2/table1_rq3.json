@@ -1,0 +1,6 @@
+{
+  "model": "gpt2",
+  "func_pct": 27.457682291666668,
+  "func_tokens": 8435,
+  "total_tokens": 30720
+}

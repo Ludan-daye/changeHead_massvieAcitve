@@ -1,0 +1,159 @@
+{
+  "model": "bloom_7b1",
+  "layer_id": 3,
+  "nsamples": 30,
+  "seqlen": 1024,
+  "n_positions": 61380,
+  "v1_top_singular": 15.113432884216309,
+  "v1_sigma_ratio": 1.4134742028372798,
+  "spearman_rho": -0.19187268344074573,
+  "spearman_pval": 0.0,
+  "cohens_d_bottom10_vs_rest": 0.2786680033318803,
+  "cohens_d_bottom10_vs_top10": 0.4784633737556611,
+  "decile_stats": [
+    {
+      "decile": 1,
+      "entropy_range": [
+        2.808768294926267e-05,
+        0.13212670534849166
+      ],
+      "n": 6138,
+      "mean_align_abs": 0.38778614481023743,
+      "median_align_abs": 0.364597886800766,
+      "max_align_abs": 1.9742721319198608
+    },
+    {
+      "decile": 2,
+      "entropy_range": [
+        0.13212670534849166,
+        0.6739389300346375
+      ],
+      "n": 6138,
+      "mean_align_abs": 0.3730105241810986,
+      "median_align_abs": 0.33493995666503906,
+      "max_align_abs": 2.2963616847991943
+    },
+    {
+      "decile": 3,
+      "entropy_range": [
+        0.6739389300346375,
+        1.2928788542747498
+      ],
+      "n": 6138,
+      "mean_align_abs": 0.36187973564400244,
+      "median_align_abs": 0.32904237508773804,
+      "max_align_abs": 2.0948972702026367
+    },
+    {
+      "decile": 4,
+      "entropy_range": [
+        1.2928788542747498,
+        1.828756618499756
+      ],
+      "n": 6138,
+      "mean_align_abs": 0.35296566148698827,
+      "median_align_abs": 0.31360292434692383,
+      "max_align_abs": 1.7190834283828735
+    },
+    {
+      "decile": 5,
+      "entropy_range": [
+        1.828756618499756,
+        2.314764618873596
+      ],
+      "n": 6138,
+      "mean_align_abs": 0.3471164148472797,
+      "median_align_abs": 0.30644190311431885,
+      "max_align_abs": 1.6223297119140625
+    },
+    {
+      "decile": 6,
+      "entropy_range": [
+        2.314764618873596,
+        2.816792154312134
+      ],
+      "n": 6138,
+      "mean_align_abs": 0.3341417163998889,
+      "median_align_abs": 0.2842622697353363,
+      "max_align_abs": 2.678182601928711
+    },
+    {
+      "decile": 7,
+      "entropy_range": [
+        2.816792154312134,
+        3.3585382938385013
+      ],
+      "n": 6138,
+      "mean_align_abs": 0.30304616120001787,
+      "median_align_abs": 0.24417589604854584,
+      "max_align_abs": 2.7878503799438477
+    },
+    {
+      "decile": 8,
+      "entropy_range": [
+        3.3585382938385013,
+        3.940183830261231
+      ],
+      "n": 6138,
+      "mean_align_abs": 0.2742758085141726,
+      "median_align_abs": 0.21393994241952896,
+      "max_align_abs": 3.0737006664276123
+    },
+    {
+      "decile": 9,
+      "entropy_range": [
+        3.940183830261231,
+        4.663878631591796
+      ],
+      "n": 6138,
+      "mean_align_abs": 0.2559536618396637,
+      "median_align_abs": 0.1943613886833191,
+      "max_align_abs": 3.0833959579467773
+    },
+    {
+      "decile": 10,
+      "entropy_range": [
+        4.663878631591796,
+        8.571208953857422
+      ],
+      "n": 6138,
+      "mean_align_abs": 0.2692459045929677,
+      "median_align_abs": 0.20452066510915756,
+      "max_align_abs": 4.146416664123535
+    }
+  ],
+  "topK_entropy_distribution": {
+    "50": {
+      "median_entropy_percentile": 55.286738351254485,
+      "mean_entropy_percentile": 51.09876181166504,
+      "frac_in_bottom_20pct_entropy": 0.32,
+      "frac_in_bottom_30pct_entropy": 0.42,
+      "frac_in_bottom_40pct_entropy": 0.46,
+      "frac_in_bottom_50pct_entropy": 0.48
+    },
+    "100": {
+      "median_entropy_percentile": 50.975887911371785,
+      "mean_entropy_percentile": 49.273884001303365,
+      "frac_in_bottom_20pct_entropy": 0.3,
+      "frac_in_bottom_30pct_entropy": 0.36,
+      "frac_in_bottom_40pct_entropy": 0.46,
+      "frac_in_bottom_50pct_entropy": 0.49
+    },
+    "200": {
+      "median_entropy_percentile": 50.079830563701535,
+      "mean_entropy_percentile": 49.2905017921147,
+      "frac_in_bottom_20pct_entropy": 0.285,
+      "frac_in_bottom_30pct_entropy": 0.34,
+      "frac_in_bottom_40pct_entropy": 0.435,
+      "frac_in_bottom_50pct_entropy": 0.495
+    },
+    "500": {
+      "median_entropy_percentile": 42.75904203323558,
+      "mean_entropy_percentile": 45.66662430759205,
+      "frac_in_bottom_20pct_entropy": 0.278,
+      "frac_in_bottom_30pct_entropy": 0.366,
+      "frac_in_bottom_40pct_entropy": 0.476,
+      "frac_in_bottom_50pct_entropy": 0.57
+    }
+  }
+}

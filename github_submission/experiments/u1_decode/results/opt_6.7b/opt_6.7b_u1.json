@@ -1,0 +1,1359 @@
+{
+  "opt_6.7b": {
+    "n_positions": 61380,
+    "topK": 500,
+    "unique_tokens_count": 299,
+    "concentration_ratio": 0.598,
+    "token_list_full": [
+      [
+        " Gamb",
+        20
+      ],
+      [
+        " Osiris",
+        12
+      ],
+      [
+        "alky",
+        12
+      ],
+      [
+        " Aust",
+        10
+      ],
+      [
+        " MacArthur",
+        9
+      ],
+      [
+        " Jackets",
+        9
+      ],
+      [
+        " Carey",
+        8
+      ],
+      [
+        "worthiness",
+        8
+      ],
+      [
+        " Monteneg",
+        6
+      ],
+      [
+        " Hann",
+        6
+      ],
+      [
+        " Sega",
+        5
+      ],
+      [
+        " Jacqu",
+        5
+      ],
+      [
+        " Hitchcock",
+        5
+      ],
+      [
+        " Horus",
+        5
+      ],
+      [
+        " Arn",
+        4
+      ],
+      [
+        " Canaan",
+        4
+      ],
+      [
+        " Fuj",
+        4
+      ],
+      [
+        " Lank",
+        4
+      ],
+      [
+        " Sanford",
+        4
+      ],
+      [
+        " Nek",
+        4
+      ],
+      [
+        "\ufffd",
+        4
+      ],
+      [
+        " Confederate",
+        4
+      ],
+      [
+        " Sak",
+        4
+      ],
+      [
+        " Faul",
+        3
+      ],
+      [
+        " Sloven",
+        3
+      ],
+      [
+        " Joh",
+        3
+      ],
+      [
+        " fru",
+        3
+      ],
+      [
+        " Ord",
+        3
+      ],
+      [
+        " Dah",
+        3
+      ],
+      [
+        " nour",
+        3
+      ],
+      [
+        " Kap",
+        3
+      ],
+      [
+        " Raphael",
+        3
+      ],
+      [
+        " Wald",
+        3
+      ],
+      [
+        "pty",
+        3
+      ],
+      [
+        " spir",
+        3
+      ],
+      [
+        " aer",
+        3
+      ],
+      [
+        " Lomb",
+        3
+      ],
+      [
+        "ksh",
+        2
+      ],
+      [
+        " microsc",
+        2
+      ],
+      [
+        " Wass",
+        2
+      ],
+      [
+        " dorsal",
+        2
+      ],
+      [
+        " Bermuda",
+        2
+      ],
+      [
+        " Sok",
+        2
+      ],
+      [
+        " Balk",
+        2
+      ],
+      [
+        "ombo",
+        2
+      ],
+      [
+        " Apost",
+        2
+      ],
+      [
+        " Hodg",
+        2
+      ],
+      [
+        " parachute",
+        2
+      ],
+      [
+        "jun",
+        2
+      ],
+      [
+        " Khe",
+        2
+      ],
+      [
+        " Nass",
+        2
+      ],
+      [
+        " Agg",
+        2
+      ],
+      [
+        " Dyn",
+        2
+      ],
+      [
+        " Shu",
+        2
+      ],
+      [
+        " Columb",
+        2
+      ],
+      [
+        " Cullen",
+        2
+      ],
+      [
+        " Oswald",
+        2
+      ],
+      [
+        " Lep",
+        2
+      ],
+      [
+        " uter",
+        2
+      ],
+      [
+        " Leone",
+        2
+      ],
+      [
+        " Pon",
+        2
+      ],
+      [
+        " Nam",
+        2
+      ],
+      [
+        "opl",
+        2
+      ],
+      [
+        " fres",
+        2
+      ],
+      [
+        " Henri",
+        2
+      ],
+      [
+        " Fernandez",
+        2
+      ],
+      [
+        " Hav",
+        2
+      ],
+      [
+        " divine",
+        2
+      ],
+      [
+        " lymph",
+        2
+      ],
+      [
+        " Astron",
+        2
+      ],
+      [
+        " Nash",
+        2
+      ],
+      [
+        " multipl",
+        2
+      ],
+      [
+        "iop",
+        2
+      ],
+      [
+        " Surrey",
+        2
+      ],
+      [
+        " pageant",
+        2
+      ],
+      [
+        " Fam",
+        2
+      ],
+      [
+        " Nebraska",
+        2
+      ],
+      [
+        " phylogen",
+        1
+      ],
+      [
+        " 45",
+        1
+      ],
+      [
+        " Moff",
+        1
+      ],
+      [
+        "rophic",
+        1
+      ],
+      [
+        "ipel",
+        1
+      ],
+      [
+        " Tarant",
+        1
+      ],
+      [
+        " Dodge",
+        1
+      ],
+      [
+        " mitochondrial",
+        1
+      ],
+      [
+        " Papua",
+        1
+      ],
+      [
+        " Ruk",
+        1
+      ],
+      [
+        "ugu",
+        1
+      ],
+      [
+        " decom",
+        1
+      ],
+      [
+        " Lore",
+        1
+      ],
+      [
+        " Conan",
+        1
+      ],
+      [
+        " Sylv",
+        1
+      ],
+      [
+        " sequ",
+        1
+      ],
+      [
+        " Croat",
+        1
+      ],
+      [
+        " pelvic",
+        1
+      ],
+      [
+        " Miy",
+        1
+      ],
+      [
+        " Hik",
+        1
+      ],
+      [
+        "esley",
+        1
+      ],
+      [
+        " VII",
+        1
+      ],
+      [
+        " Ning",
+        1
+      ],
+      [
+        " Hirosh",
+        1
+      ],
+      [
+        " Ou",
+        1
+      ],
+      [
+        "aina",
+        1
+      ],
+      [
+        " Quin",
+        1
+      ],
+      [
+        " kindergarten",
+        1
+      ],
+      [
+        " Sev",
+        1
+      ],
+      [
+        " Rite",
+        1
+      ],
+      [
+        " Schwe",
+        1
+      ],
+      [
+        " basal",
+        1
+      ],
+      [
+        " Fraz",
+        1
+      ],
+      [
+        " Poo",
+        1
+      ],
+      [
+        " Johannes",
+        1
+      ],
+      [
+        " Tobias",
+        1
+      ],
+      [
+        " Suk",
+        1
+      ],
+      [
+        " Pow",
+        1
+      ],
+      [
+        " Cre",
+        1
+      ],
+      [
+        " Wer",
+        1
+      ],
+      [
+        " =",
+        1
+      ],
+      [
+        " Kaz",
+        1
+      ],
+      [
+        "idal",
+        1
+      ],
+      [
+        " Mord",
+        1
+      ],
+      [
+        " Ae",
+        1
+      ],
+      [
+        "roo",
+        1
+      ],
+      [
+        " Wor",
+        1
+      ],
+      [
+        " Chrysler",
+        1
+      ],
+      [
+        " Yellowstone",
+        1
+      ],
+      [
+        " Everett",
+        1
+      ],
+      [
+        " Bour",
+        1
+      ],
+      [
+        " Lear",
+        1
+      ],
+      [
+        " Sieg",
+        1
+      ],
+      [
+        " Hein",
+        1
+      ],
+      [
+        "ocaly",
+        1
+      ],
+      [
+        " Modest",
+        1
+      ],
+      [
+        " a",
+        1
+      ],
+      [
+        " Sne",
+        1
+      ],
+      [
+        " Ran",
+        1
+      ],
+      [
+        " Pom",
+        1
+      ],
+      [
+        " Guinea",
+        1
+      ],
+      [
+        " Mongol",
+        1
+      ],
+      [
+        "ymes",
+        1
+      ],
+      [
+        " aviation",
+        1
+      ],
+      [
+        " organic",
+        1
+      ],
+      [
+        " Khal",
+        1
+      ],
+      [
+        " Burr",
+        1
+      ],
+      [
+        " dealership",
+        1
+      ],
+      [
+        " ellipt",
+        1
+      ],
+      [
+        " Isle",
+        1
+      ],
+      [
+        " rented",
+        1
+      ],
+      [
+        " reve",
+        1
+      ],
+      [
+        " gymn",
+        1
+      ],
+      [
+        " Bian",
+        1
+      ],
+      [
+        " Bapt",
+        1
+      ],
+      [
+        "autical",
+        1
+      ],
+      [
+        " asc",
+        1
+      ],
+      [
+        " Carolyn",
+        1
+      ],
+      [
+        " northwest",
+        1
+      ],
+      [
+        " Atkinson",
+        1
+      ],
+      [
+        " Eleanor",
+        1
+      ],
+      [
+        " imperson",
+        1
+      ],
+      [
+        " Dion",
+        1
+      ],
+      [
+        " inhab",
+        1
+      ],
+      [
+        " Recre",
+        1
+      ],
+      [
+        " Vader",
+        1
+      ],
+      [
+        " GA",
+        1
+      ],
+      [
+        " Harmon",
+        1
+      ],
+      [
+        " Basil",
+        1
+      ],
+      [
+        "hash",
+        1
+      ],
+      [
+        " Expl",
+        1
+      ],
+      [
+        " Cran",
+        1
+      ],
+      [
+        " Sic",
+        1
+      ],
+      [
+        " Eisen",
+        1
+      ],
+      [
+        " Zel",
+        1
+      ],
+      [
+        "alog",
+        1
+      ],
+      [
+        " Pf",
+        1
+      ],
+      [
+        " Stevenson",
+        1
+      ],
+      [
+        " Sek",
+        1
+      ],
+      [
+        " Sac",
+        1
+      ],
+      [
+        " Cooke",
+        1
+      ],
+      [
+        " Clyde",
+        1
+      ],
+      [
+        " tert",
+        1
+      ],
+      [
+        " Jak",
+        1
+      ],
+      [
+        " shrimp",
+        1
+      ],
+      [
+        " the",
+        1
+      ],
+      [
+        " Cec",
+        1
+      ],
+      [
+        " Yugoslav",
+        1
+      ],
+      [
+        "agin",
+        1
+      ],
+      [
+        "omical",
+        1
+      ],
+      [
+        " Jas",
+        1
+      ],
+      [
+        " Abyss",
+        1
+      ],
+      [
+        " Hermes",
+        1
+      ],
+      [
+        " Alban",
+        1
+      ],
+      [
+        " parach",
+        1
+      ],
+      [
+        " Rog",
+        1
+      ],
+      [
+        " bron",
+        1
+      ],
+      [
+        " Kru",
+        1
+      ],
+      [
+        " Comb",
+        1
+      ],
+      [
+        " turb",
+        1
+      ],
+      [
+        " turrets",
+        1
+      ],
+      [
+        " torpedo",
+        1
+      ],
+      [
+        " embryos",
+        1
+      ],
+      [
+        " Salman",
+        1
+      ],
+      [
+        " epile",
+        1
+      ],
+      [
+        " transport",
+        1
+      ],
+      [
+        " Ara",
+        1
+      ],
+      [
+        " arsen",
+        1
+      ],
+      [
+        " Blackhawks",
+        1
+      ],
+      [
+        " Nin",
+        1
+      ],
+      [
+        " Mith",
+        1
+      ],
+      [
+        " Chak",
+        1
+      ],
+      [
+        " Chattanooga",
+        1
+      ],
+      [
+        " Cir",
+        1
+      ],
+      [
+        " Muk",
+        1
+      ],
+      [
+        " Napoleon",
+        1
+      ],
+      [
+        " HMS",
+        1
+      ],
+      [
+        " Wilmington",
+        1
+      ],
+      [
+        " sulfur",
+        1
+      ],
+      [
+        " he",
+        1
+      ],
+      [
+        " Nob",
+        1
+      ],
+      [
+        " figur",
+        1
+      ],
+      [
+        " Cecil",
+        1
+      ],
+      [
+        " Croatian",
+        1
+      ],
+      [
+        " Lem",
+        1
+      ],
+      [
+        " illiter",
+        1
+      ],
+      [
+        " precip",
+        1
+      ],
+      [
+        " Wyoming",
+        1
+      ],
+      [
+        " unknow",
+        1
+      ],
+      [
+        " Pred",
+        1
+      ],
+      [
+        " Gareth",
+        1
+      ],
+      [
+        " Shinji",
+        1
+      ],
+      [
+        " amph",
+        1
+      ],
+      [
+        " Ame",
+        1
+      ],
+      [
+        " Roh",
+        1
+      ],
+      [
+        "idy",
+        1
+      ],
+      [
+        " Miz",
+        1
+      ],
+      [
+        " inscription",
+        1
+      ],
+      [
+        " pH",
+        1
+      ],
+      [
+        " oxid",
+        1
+      ],
+      [
+        " paraph",
+        1
+      ],
+      [
+        " Rh",
+        1
+      ],
+      [
+        "icky",
+        1
+      ],
+      [
+        " Pumpkin",
+        1
+      ],
+      [
+        " Amit",
+        1
+      ],
+      [
+        " rejo",
+        1
+      ],
+      [
+        " nost",
+        1
+      ],
+      [
+        " Dickens",
+        1
+      ],
+      [
+        " remed",
+        1
+      ],
+      [
+        " Baal",
+        1
+      ],
+      [
+        " cosmos",
+        1
+      ],
+      [
+        "uki",
+        1
+      ],
+      [
+        " quint",
+        1
+      ],
+      [
+        " muzzle",
+        1
+      ],
+      [
+        " blister",
+        1
+      ],
+      [
+        " deton",
+        1
+      ],
+      [
+        " epis",
+        1
+      ],
+      [
+        " Valkyrie",
+        1
+      ],
+      [
+        " omn",
+        1
+      ],
+      [
+        " Anglic",
+        1
+      ],
+      [
+        " Claude",
+        1
+      ],
+      [
+        "eely",
+        1
+      ],
+      [
+        "omorph",
+        1
+      ],
+      [
+        " Mut",
+        1
+      ],
+      [
+        " psychiatry",
+        1
+      ],
+      [
+        " Som",
+        1
+      ],
+      [
+        " Tra",
+        1
+      ],
+      [
+        " neon",
+        1
+      ],
+      [
+        " Jud",
+        1
+      ],
+      [
+        " Cald",
+        1
+      ],
+      [
+        " Jennings",
+        1
+      ],
+      [
+        "lem",
+        1
+      ],
+      [
+        " numerical",
+        1
+      ],
+      [
+        " Cour",
+        1
+      ],
+      [
+        "opot",
+        1
+      ],
+      [
+        " HTC",
+        1
+      ],
+      [
+        " prehistoric",
+        1
+      ],
+      [
+        " Andrea",
+        1
+      ],
+      [
+        " Argent",
+        1
+      ],
+      [
+        "robat",
+        1
+      ],
+      [
+        " Aero",
+        1
+      ],
+      [
+        " recreational",
+        1
+      ],
+      [
+        " multif",
+        1
+      ],
+      [
+        " Schl",
+        1
+      ],
+      [
+        " hypot",
+        1
+      ],
+      [
+        " SOS",
+        1
+      ],
+      [
+        " Savannah",
+        1
+      ],
+      [
+        " Spe",
+        1
+      ],
+      [
+        " Trevor",
+        1
+      ],
+      [
+        " Loft",
+        1
+      ],
+      [
+        " Gat",
+        1
+      ],
+      [
+        " Kris",
+        1
+      ],
+      [
+        " Mich",
+        1
+      ],
+      [
+        " Wis",
+        1
+      ],
+      [
+        " prefix",
+        1
+      ],
+      [
+        " infantry",
+        1
+      ],
+      [
+        " blot",
+        1
+      ],
+      [
+        "etic",
+        1
+      ],
+      [
+        " omnip",
+        1
+      ],
+      [
+        " Valerie",
+        1
+      ],
+      [
+        " Chronicles",
+        1
+      ],
+      [
+        " Confeder",
+        1
+      ]
+    ],
+    "top30_positions": [
+      {
+        "text": " phylogen",
+        "align_abs": 0.9365667104721069,
+        "entropy": 0.658643364906311
+      },
+      {
+        "text": " Osiris",
+        "align_abs": 0.8695504665374756,
+        "entropy": 1.9552662372589111
+      },
+      {
+        "text": " 45",
+        "align_abs": 0.8608002066612244,
+        "entropy": 4.875472545623779
+      },
+      {
+        "text": "ksh",
+        "align_abs": 0.8545255661010742,
+        "entropy": 0.14389875531196594
+      },
+      {
+        "text": " Osiris",
+        "align_abs": 0.8322415351867676,
+        "entropy": 1.8105396032333374
+      },
+      {
+        "text": " Osiris",
+        "align_abs": 0.830583930015564,
+        "entropy": 0.23599861562252045
+      },
+      {
+        "text": "ksh",
+        "align_abs": 0.8291059732437134,
+        "entropy": 0.043606020510196686
+      },
+      {
+        "text": " Moff",
+        "align_abs": 0.8261787295341492,
+        "entropy": 1.3323643207550049
+      },
+      {
+        "text": " Osiris",
+        "align_abs": 0.8157601356506348,
+        "entropy": 0.23747119307518005
+      },
+      {
+        "text": " Sega",
+        "align_abs": 0.8139538764953613,
+        "entropy": 2.613206148147583
+      },
+      {
+        "text": "rophic",
+        "align_abs": 0.8124876022338867,
+        "entropy": 6.345962047576904
+      },
+      {
+        "text": "ipel",
+        "align_abs": 0.8108406662940979,
+        "entropy": 0.039738431572914124
+      },
+      {
+        "text": " Sega",
+        "align_abs": 0.8084795475006104,
+        "entropy": 3.858553409576416
+      },
+      {
+        "text": " Osiris",
+        "align_abs": 0.8076109886169434,
+        "entropy": 1.9637644290924072
+      },
+      {
+        "text": " Tarant",
+        "align_abs": 0.8071094751358032,
+        "entropy": 0.009027971886098385
+      },
+      {
+        "text": " Arn",
+        "align_abs": 0.801092267036438,
+        "entropy": 0.01164233684539795
+      },
+      {
+        "text": " Dodge",
+        "align_abs": 0.7944998145103455,
+        "entropy": 4.808831214904785
+      },
+      {
+        "text": " Canaan",
+        "align_abs": 0.7887549996376038,
+        "entropy": 1.7872467041015625
+      },
+      {
+        "text": " Osiris",
+        "align_abs": 0.7877112030982971,
+        "entropy": 0.7210704684257507
+      },
+      {
+        "text": " mitochondrial",
+        "align_abs": 0.7856529951095581,
+        "entropy": 1.9789698123931885
+      },
+      {
+        "text": " Papua",
+        "align_abs": 0.7805573344230652,
+        "entropy": 0.4289279878139496
+      },
+      {
+        "text": " microsc",
+        "align_abs": 0.780014157295227,
+        "entropy": 0.0002813848841469735
+      },
+      {
+        "text": " Gamb",
+        "align_abs": 0.7792804837226868,
+        "entropy": 3.749927520751953
+      },
+      {
+        "text": " Osiris",
+        "align_abs": 0.7792176008224487,
+        "entropy": 2.2333338260650635
+      },
+      {
+        "text": " Osiris",
+        "align_abs": 0.7784993052482605,
+        "entropy": 2.792224407196045
+      },
+      {
+        "text": " Ruk",
+        "align_abs": 0.7771950960159302,
+        "entropy": 0.005330474115908146
+      },
+      {
+        "text": " Arn",
+        "align_abs": 0.7717450857162476,
+        "entropy": 0.008180400356650352
+      },
+      {
+        "text": " microsc",
+        "align_abs": 0.7711938619613647,
+        "entropy": 0.0002852924808394164
+      },
+      {
+        "text": "ugu",
+        "align_abs": 0.7682704329490662,
+        "entropy": 1.1081383228302002
+      },
+      {
+        "text": " Canaan",
+        "align_abs": 0.7679948806762695,
+        "entropy": 1.7039463520050049
+      }
+    ],
+    "_source": "systemd_u1_5models_newprev.json"
+  }
+}

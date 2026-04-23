@@ -1,0 +1,10 @@
+{
+  "model": "yi_9b",
+  "func_pct": 24.457194010416668,
+  "struct_pct": 25.26123046875,
+  "content_pct": 50.281575520833336,
+  "func_tokens": 30053,
+  "struct_tokens": 31041,
+  "content_tokens": 61786,
+  "total_tokens": 122880
+}

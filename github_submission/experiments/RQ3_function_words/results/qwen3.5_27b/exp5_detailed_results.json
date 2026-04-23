@@ -1,0 +1,779 @@
+{
+  "timestamp": "2026-04-19T11:23:42.717903",
+  "args": {
+    "model": "qwen3.5_27b",
+    "layer_id": 54,
+    "nsamples": 30,
+    "seqlen": 1024,
+    "savedir": "results/wikitext_run/RQ3_origin/qwen3.5_27b",
+    "access_token": "type in your access token here",
+    "revision": "main"
+  },
+  "func_pct": 0.0,
+  "concentration": {},
+  "asymmetry": {},
+  "stability": {},
+  "alignment": {},
+  "word_stats": {
+    " no": {
+      "count": 0,
+      "contexts": 0
+    },
+    " of": {
+      "count": 0,
+      "contexts": 0
+    },
+    " the": {
+      "count": 0,
+      "contexts": 0
+    },
+    " to": {
+      "count": 0,
+      "contexts": 0
+    },
+    " as": {
+      "count": 0,
+      "contexts": 0
+    },
+    " is": {
+      "count": 0,
+      "contexts": 0
+    },
+    " a": {
+      "count": 0,
+      "contexts": 0
+    },
+    " by": {
+      "count": 0,
+      "contexts": 0
+    },
+    " and": {
+      "count": 0,
+      "contexts": 0
+    },
+    " for": {
+      "count": 0,
+      "contexts": 0
+    },
+    " in": {
+      "count": 0,
+      "contexts": 0
+    },
+    " it": {
+      "count": 0,
+      "contexts": 0
+    },
+    " its": {
+      "count": 0,
+      "contexts": 0
+    },
+    " during": {
+      "count": 0,
+      "contexts": 0
+    },
+    " are": {
+      "count": 0,
+      "contexts": 0
+    },
+    " against": {
+      "count": 0,
+      "contexts": 0
+    },
+    " The": {
+      "count": 0,
+      "contexts": 0
+    },
+    " over": {
+      "count": 0,
+      "contexts": 0
+    },
+    " on": {
+      "count": 0,
+      "contexts": 0
+    },
+    " While": {
+      "count": 0,
+      "contexts": 0
+    },
+    " also": {
+      "count": 0,
+      "contexts": 0
+    },
+    "a": {
+      "count": 0,
+      "contexts": 0
+    },
+    " from": {
+      "count": 0,
+      "contexts": 0
+    },
+    " with": {
+      "count": 0,
+      "contexts": 0
+    },
+    " A": {
+      "count": 0,
+      "contexts": 0
+    },
+    " was": {
+      "count": 0,
+      "contexts": 0
+    },
+    " May": {
+      "count": 0,
+      "contexts": 0
+    },
+    " It": {
+      "count": 0,
+      "contexts": 0
+    },
+    " After": {
+      "count": 0,
+      "contexts": 0
+    },
+    " an": {
+      "count": 0,
+      "contexts": 0
+    },
+    " that": {
+      "count": 0,
+      "contexts": 0
+    },
+    " into": {
+      "count": 0,
+      "contexts": 0
+    },
+    " not": {
+      "count": 0,
+      "contexts": 0
+    },
+    " but": {
+      "count": 0,
+      "contexts": 0
+    },
+    " would": {
+      "count": 0,
+      "contexts": 0
+    },
+    " As": {
+      "count": 0,
+      "contexts": 0
+    },
+    " where": {
+      "count": 0,
+      "contexts": 0
+    },
+    " through": {
+      "count": 0,
+      "contexts": 0
+    },
+    " can": {
+      "count": 0,
+      "contexts": 0
+    },
+    " be": {
+      "count": 0,
+      "contexts": 0
+    },
+    " they": {
+      "count": 0,
+      "contexts": 0
+    },
+    " when": {
+      "count": 0,
+      "contexts": 0
+    },
+    " them": {
+      "count": 0,
+      "contexts": 0
+    },
+    " those": {
+      "count": 0,
+      "contexts": 0
+    },
+    " although": {
+      "count": 0,
+      "contexts": 0
+    },
+    " very": {
+      "count": 0,
+      "contexts": 0
+    },
+    " During": {
+      "count": 0,
+      "contexts": 0
+    },
+    " only": {
+      "count": 0,
+      "contexts": 0
+    },
+    " at": {
+      "count": 0,
+      "contexts": 0
+    },
+    " has": {
+      "count": 0,
+      "contexts": 0
+    },
+    " their": {
+      "count": 0,
+      "contexts": 0
+    },
+    " will": {
+      "count": 0,
+      "contexts": 0
+    },
+    " if": {
+      "count": 0,
+      "contexts": 0
+    },
+    " or": {
+      "count": 0,
+      "contexts": 0
+    },
+    " being": {
+      "count": 0,
+      "contexts": 0
+    },
+    " They": {
+      "count": 0,
+      "contexts": 0
+    },
+    " which": {
+      "count": 0,
+      "contexts": 0
+    },
+    " unless": {
+      "count": 0,
+      "contexts": 0
+    },
+    " To": {
+      "count": 0,
+      "contexts": 0
+    },
+    " have": {
+      "count": 0,
+      "contexts": 0
+    },
+    " without": {
+      "count": 0,
+      "contexts": 0
+    },
+    " his": {
+      "count": 0,
+      "contexts": 0
+    },
+    " her": {
+      "count": 0,
+      "contexts": 0
+    },
+    " while": {
+      "count": 0,
+      "contexts": 0
+    },
+    " does": {
+      "count": 0,
+      "contexts": 0
+    },
+    " With": {
+      "count": 0,
+      "contexts": 0
+    },
+    "on": {
+      "count": 0,
+      "contexts": 0
+    },
+    " do": {
+      "count": 0,
+      "contexts": 0
+    },
+    " No": {
+      "count": 0,
+      "contexts": 0
+    },
+    "is": {
+      "count": 0,
+      "contexts": 0
+    },
+    " these": {
+      "count": 0,
+      "contexts": 0
+    },
+    " this": {
+      "count": 0,
+      "contexts": 0
+    },
+    " so": {
+      "count": 0,
+      "contexts": 0
+    },
+    " he": {
+      "count": 0,
+      "contexts": 0
+    },
+    " At": {
+      "count": 0,
+      "contexts": 0
+    },
+    " within": {
+      "count": 0,
+      "contexts": 0
+    },
+    "or": {
+      "count": 0,
+      "contexts": 0
+    },
+    " This": {
+      "count": 0,
+      "contexts": 0
+    },
+    " until": {
+      "count": 0,
+      "contexts": 0
+    },
+    " had": {
+      "count": 0,
+      "contexts": 0
+    },
+    " been": {
+      "count": 0,
+      "contexts": 0
+    },
+    " under": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Without": {
+      "count": 0,
+      "contexts": 0
+    },
+    " just": {
+      "count": 0,
+      "contexts": 0
+    },
+    " after": {
+      "count": 0,
+      "contexts": 0
+    },
+    " In": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Its": {
+      "count": 0,
+      "contexts": 0
+    },
+    "iT": {
+      "count": 0,
+      "contexts": 0
+    },
+    " were": {
+      "count": 0,
+      "contexts": 0
+    },
+    " could": {
+      "count": 0,
+      "contexts": 0
+    },
+    " When": {
+      "count": 0,
+      "contexts": 0
+    },
+    " him": {
+      "count": 0,
+      "contexts": 0
+    },
+    " CAN": {
+      "count": 0,
+      "contexts": 0
+    },
+    " about": {
+      "count": 0,
+      "contexts": 0
+    },
+    " An": {
+      "count": 0,
+      "contexts": 0
+    },
+    " He": {
+      "count": 0,
+      "contexts": 0
+    },
+    " before": {
+      "count": 0,
+      "contexts": 0
+    },
+    " If": {
+      "count": 0,
+      "contexts": 0
+    },
+    " too": {
+      "count": 0,
+      "contexts": 0
+    },
+    " between": {
+      "count": 0,
+      "contexts": 0
+    },
+    " On": {
+      "count": 0,
+      "contexts": 0
+    },
+    " By": {
+      "count": 0,
+      "contexts": 0
+    },
+    "be": {
+      "count": 0,
+      "contexts": 0
+    },
+    " His": {
+      "count": 0,
+      "contexts": 0
+    },
+    " did": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Will": {
+      "count": 0,
+      "contexts": 0
+    },
+    "The": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Since": {
+      "count": 0,
+      "contexts": 0
+    },
+    " since": {
+      "count": 0,
+      "contexts": 0
+    },
+    " US": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Being": {
+      "count": 0,
+      "contexts": 0
+    },
+    " For": {
+      "count": 0,
+      "contexts": 0
+    },
+    " But": {
+      "count": 0,
+      "contexts": 0
+    },
+    " should": {
+      "count": 0,
+      "contexts": 0
+    },
+    " because": {
+      "count": 0,
+      "contexts": 0
+    },
+    " That": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Of": {
+      "count": 0,
+      "contexts": 0
+    },
+    " must": {
+      "count": 0,
+      "contexts": 0
+    },
+    "it": {
+      "count": 0,
+      "contexts": 0
+    },
+    " among": {
+      "count": 0,
+      "contexts": 0
+    },
+    " may": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Over": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Her": {
+      "count": 0,
+      "contexts": 0
+    },
+    "an": {
+      "count": 0,
+      "contexts": 0
+    },
+    " She": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Has": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Though": {
+      "count": 0,
+      "contexts": 0
+    },
+    " she": {
+      "count": 0,
+      "contexts": 0
+    },
+    "by": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Our": {
+      "count": 0,
+      "contexts": 0
+    },
+    "as": {
+      "count": 0,
+      "contexts": 0
+    },
+    " though": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Among": {
+      "count": 0,
+      "contexts": 0
+    },
+    "at": {
+      "count": 0,
+      "contexts": 0
+    },
+    "its": {
+      "count": 0,
+      "contexts": 0
+    },
+    "can": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Although": {
+      "count": 0,
+      "contexts": 0
+    },
+    " These": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Before": {
+      "count": 0,
+      "contexts": 0
+    },
+    " might": {
+      "count": 0,
+      "contexts": 0
+    },
+    " our": {
+      "count": 0,
+      "contexts": 0
+    },
+    "us": {
+      "count": 0,
+      "contexts": 0
+    },
+    " TO": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Against": {
+      "count": 0,
+      "contexts": 0
+    },
+    " SO": {
+      "count": 0,
+      "contexts": 0
+    },
+    "and": {
+      "count": 0,
+      "contexts": 0
+    },
+    "if": {
+      "count": 0,
+      "contexts": 0
+    },
+    "of": {
+      "count": 0,
+      "contexts": 0
+    },
+    "the": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Be": {
+      "count": 0,
+      "contexts": 0
+    },
+    "do": {
+      "count": 0,
+      "contexts": 0
+    },
+    " we": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Can": {
+      "count": 0,
+      "contexts": 0
+    },
+    "OR": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Only": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Between": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Under": {
+      "count": 0,
+      "contexts": 0
+    },
+    " We": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Not": {
+      "count": 0,
+      "contexts": 0
+    },
+    "but": {
+      "count": 0,
+      "contexts": 0
+    },
+    "in": {
+      "count": 0,
+      "contexts": 0
+    },
+    "yes": {
+      "count": 0,
+      "contexts": 0
+    },
+    "over": {
+      "count": 0,
+      "contexts": 0
+    },
+    "our": {
+      "count": 0,
+      "contexts": 0
+    },
+    " us": {
+      "count": 0,
+      "contexts": 0
+    },
+    "her": {
+      "count": 0,
+      "contexts": 0
+    },
+    " From": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Because": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Through": {
+      "count": 0,
+      "contexts": 0
+    },
+    "he": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Their": {
+      "count": 0,
+      "contexts": 0
+    },
+    "to": {
+      "count": 0,
+      "contexts": 0
+    },
+    " And": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Within": {
+      "count": 0,
+      "contexts": 0
+    },
+    "A": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Those": {
+      "count": 0,
+      "contexts": 0
+    },
+    "SO": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Is": {
+      "count": 0,
+      "contexts": 0
+    },
+    "BE": {
+      "count": 0,
+      "contexts": 0
+    },
+    "no": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Or": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Also": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Where": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Would": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Too": {
+      "count": 0,
+      "contexts": 0
+    },
+    " WAS": {
+      "count": 0,
+      "contexts": 0
+    },
+    "under": {
+      "count": 0,
+      "contexts": 0
+    },
+    "had": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Just": {
+      "count": 0,
+      "contexts": 0
+    },
+    " Us": {
+      "count": 0,
+      "contexts": 0
+    }
+  }
+}

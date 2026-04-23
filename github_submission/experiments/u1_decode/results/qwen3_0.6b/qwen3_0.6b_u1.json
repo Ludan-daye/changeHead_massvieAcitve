@@ -1,0 +1,1238 @@
+{
+  "qwen3_0.6b": {
+    "n_positions": 122820,
+    "topK": 500,
+    "unique_tokens_count": 263,
+    "concentration_ratio": 0.526,
+    "token_list_full": [
+      [
+        " NBA",
+        27
+      ],
+      [
+        " NHL",
+        25
+      ],
+      [
+        " States",
+        21
+      ],
+      [
+        " playoffs",
+        13
+      ],
+      [
+        " Carolina",
+        13
+      ],
+      [
+        " Jewish",
+        13
+      ],
+      [
+        " PlayStation",
+        8
+      ],
+      [
+        " most",
+        8
+      ],
+      [
+        " Knicks",
+        7
+      ],
+      [
+        " troops",
+        7
+      ],
+      [
+        " FIFA",
+        6
+      ],
+      [
+        " Billboard",
+        5
+      ],
+      [
+        " UNESCO",
+        5
+      ],
+      [
+        " video",
+        5
+      ],
+      [
+        " Broadway",
+        5
+      ],
+      [
+        " world",
+        4
+      ],
+      [
+        " entire",
+        4
+      ],
+      [
+        " absence",
+        4
+      ],
+      [
+        " Angeles",
+        4
+      ],
+      [
+        " Treasury",
+        4
+      ],
+      [
+        " popular",
+        4
+      ],
+      [
+        " two",
+        4
+      ],
+      [
+        " Celtics",
+        3
+      ],
+      [
+        " Canucks",
+        3
+      ],
+      [
+        " Press",
+        3
+      ],
+      [
+        " aviation",
+        3
+      ],
+      [
+        " glamorous",
+        3
+      ],
+      [
+        " Circuit",
+        3
+      ],
+      [
+        " teammates",
+        3
+      ],
+      [
+        " devout",
+        3
+      ],
+      [
+        " Hollywood",
+        3
+      ],
+      [
+        " Aviation",
+        3
+      ],
+      [
+        " acclaim",
+        3
+      ],
+      [
+        " million",
+        3
+      ],
+      [
+        " comedy",
+        3
+      ],
+      [
+        " first",
+        3
+      ],
+      [
+        " UK",
+        3
+      ],
+      [
+        " Court",
+        2
+      ],
+      [
+        " ESPN",
+        2
+      ],
+      [
+        " NCAA",
+        2
+      ],
+      [
+        " Appeals",
+        2
+      ],
+      [
+        " prowess",
+        2
+      ],
+      [
+        " soundtrack",
+        2
+      ],
+      [
+        " death",
+        2
+      ],
+      [
+        " Senators",
+        2
+      ],
+      [
+        " life",
+        2
+      ],
+      [
+        " rights",
+        2
+      ],
+      [
+        " hilarious",
+        2
+      ],
+      [
+        " only",
+        2
+      ],
+      [
+        " music",
+        2
+      ],
+      [
+        " concussion",
+        2
+      ],
+      [
+        " critic",
+        2
+      ],
+      [
+        " game",
+        2
+      ],
+      [
+        " turmoil",
+        2
+      ],
+      [
+        " reasons",
+        2
+      ],
+      [
+        " Actress",
+        2
+      ],
+      [
+        " vicinity",
+        2
+      ],
+      [
+        " candidate",
+        2
+      ],
+      [
+        " synagogue",
+        2
+      ],
+      [
+        " shoreline",
+        2
+      ],
+      [
+        " atrocities",
+        2
+      ],
+      [
+        " early",
+        2
+      ],
+      [
+        " defenseman",
+        2
+      ],
+      [
+        " airspace",
+        2
+      ],
+      [
+        " Republic",
+        2
+      ],
+      [
+        " Sox",
+        2
+      ],
+      [
+        " comedic",
+        2
+      ],
+      [
+        " playoff",
+        2
+      ],
+      [
+        " earliest",
+        2
+      ],
+      [
+        " disorder",
+        2
+      ],
+      [
+        " career",
+        1
+      ],
+      [
+        " basketball",
+        1
+      ],
+      [
+        " impact",
+        1
+      ],
+      [
+        " Memphis",
+        1
+      ],
+      [
+        " confiscated",
+        1
+      ],
+      [
+        " makeshift",
+        1
+      ],
+      [
+        " Lakers",
+        1
+      ],
+      [
+        " psychiat",
+        1
+      ],
+      [
+        " cancer",
+        1
+      ],
+      [
+        " brutality",
+        1
+      ],
+      [
+        " treason",
+        1
+      ],
+      [
+        " planners",
+        1
+      ],
+      [
+        " crumbling",
+        1
+      ],
+      [
+        " unanimous",
+        1
+      ],
+      [
+        " impending",
+        1
+      ],
+      [
+        " American",
+        1
+      ],
+      [
+        " goalt",
+        1
+      ],
+      [
+        " comedian",
+        1
+      ],
+      [
+        " Rights",
+        1
+      ],
+      [
+        " counterparts",
+        1
+      ],
+      [
+        " such",
+        1
+      ],
+      [
+        " frivol",
+        1
+      ],
+      [
+        " eye",
+        1
+      ],
+      [
+        " Football",
+        1
+      ],
+      [
+        " Doyle",
+        1
+      ],
+      [
+        " known",
+        1
+      ],
+      [
+        " season",
+        1
+      ],
+      [
+        " timid",
+        1
+      ],
+      [
+        " Nintendo",
+        1
+      ],
+      [
+        " Union",
+        1
+      ],
+      [
+        " fruition",
+        1
+      ],
+      [
+        " Holocaust",
+        1
+      ],
+      [
+        " planning",
+        1
+      ],
+      [
+        "ling",
+        1
+      ],
+      [
+        " televised",
+        1
+      ],
+      [
+        " trou",
+        1
+      ],
+      [
+        " Yorker",
+        1
+      ],
+      [
+        " autobi",
+        1
+      ],
+      [
+        " screenplay",
+        1
+      ],
+      [
+        "e",
+        1
+      ],
+      [
+        " downtown",
+        1
+      ],
+      [
+        " Baseball",
+        1
+      ],
+      [
+        " activities",
+        1
+      ],
+      [
+        " reckless",
+        1
+      ],
+      [
+        " IPCC",
+        1
+      ],
+      [
+        " lonely",
+        1
+      ],
+      [
+        " dealt",
+        1
+      ],
+      [
+        " vote",
+        1
+      ],
+      [
+        " Service",
+        1
+      ],
+      [
+        " athlete",
+        1
+      ],
+      [
+        " intricate",
+        1
+      ],
+      [
+        " hunger",
+        1
+      ],
+      [
+        " Americans",
+        1
+      ],
+      [
+        " lyrics",
+        1
+      ],
+      [
+        " Canadiens",
+        1
+      ],
+      [
+        " published",
+        1
+      ],
+      [
+        " activity",
+        1
+      ],
+      [
+        " seriously",
+        1
+      ],
+      [
+        " harassment",
+        1
+      ],
+      [
+        " imminent",
+        1
+      ],
+      [
+        " further",
+        1
+      ],
+      [
+        " Yugosl",
+        1
+      ],
+      [
+        " photographers",
+        1
+      ],
+      [
+        " terrain",
+        1
+      ],
+      [
+        " Pacers",
+        1
+      ],
+      [
+        " Illustrated",
+        1
+      ],
+      [
+        " clergy",
+        1
+      ],
+      [
+        " sexual",
+        1
+      ],
+      [
+        " quirky",
+        1
+      ],
+      [
+        " expired",
+        1
+      ],
+      [
+        " anime",
+        1
+      ],
+      [
+        " ceasefire",
+        1
+      ],
+      [
+        "izing",
+        1
+      ],
+      [
+        " similarities",
+        1
+      ],
+      [
+        " homeland",
+        1
+      ],
+      [
+        " color",
+        1
+      ],
+      [
+        " erection",
+        1
+      ],
+      [
+        " unusual",
+        1
+      ],
+      [
+        " spokesperson",
+        1
+      ],
+      [
+        " Planning",
+        1
+      ],
+      [
+        " Chile",
+        1
+      ],
+      [
+        " next",
+        1
+      ],
+      [
+        " overarching",
+        1
+      ],
+      [
+        " Congressman",
+        1
+      ],
+      [
+        " chemistry",
+        1
+      ],
+      [
+        " Wizards",
+        1
+      ],
+      [
+        " counterpart",
+        1
+      ],
+      [
+        " Canadian",
+        1
+      ],
+      [
+        " literature",
+        1
+      ],
+      [
+        " orderly",
+        1
+      ],
+      [
+        " plagiarism",
+        1
+      ],
+      [
+        " cameo",
+        1
+      ],
+      [
+        " profitable",
+        1
+      ],
+      [
+        " convinced",
+        1
+      ],
+      [
+        " controversy",
+        1
+      ],
+      [
+        " Scottish",
+        1
+      ],
+      [
+        " purposes",
+        1
+      ],
+      [
+        " largest",
+        1
+      ],
+      [
+        " sacram",
+        1
+      ],
+      [
+        " baseball",
+        1
+      ],
+      [
+        " sky",
+        1
+      ],
+      [
+        " Avalanche",
+        1
+      ],
+      [
+        " layer",
+        1
+      ],
+      [
+        " months",
+        1
+      ],
+      [
+        " choir",
+        1
+      ],
+      [
+        " Florida",
+        1
+      ],
+      [
+        " remarkable",
+        1
+      ],
+      [
+        " hours",
+        1
+      ],
+      [
+        " costly",
+        1
+      ],
+      [
+        " Yorkshire",
+        1
+      ],
+      [
+        " hopeful",
+        1
+      ],
+      [
+        " role",
+        1
+      ],
+      [
+        " revenge",
+        1
+      ],
+      [
+        " California",
+        1
+      ],
+      [
+        " richest",
+        1
+      ],
+      [
+        " story",
+        1
+      ],
+      [
+        " populace",
+        1
+      ],
+      [
+        " fearless",
+        1
+      ],
+      [
+        " Jersey",
+        1
+      ],
+      [
+        " theatrical",
+        1
+      ],
+      [
+        " years",
+        1
+      ],
+      [
+        " circumstances",
+        1
+      ],
+      [
+        "ological",
+        1
+      ],
+      [
+        " like",
+        1
+      ],
+      [
+        " songwriter",
+        1
+      ],
+      [
+        " severe",
+        1
+      ],
+      [
+        " Shakespeare",
+        1
+      ],
+      [
+        " guitarist",
+        1
+      ],
+      [
+        " Taliban",
+        1
+      ],
+      [
+        " pregnant",
+        1
+      ],
+      [
+        " prison",
+        1
+      ],
+      [
+        " royalties",
+        1
+      ],
+      [
+        " oversight",
+        1
+      ],
+      [
+        " disappointment",
+        1
+      ],
+      [
+        " terrifying",
+        1
+      ],
+      [
+        " accurate",
+        1
+      ],
+      [
+        " infantry",
+        1
+      ],
+      [
+        " vital",
+        1
+      ],
+      [
+        " drummer",
+        1
+      ],
+      [
+        " belief",
+        1
+      ],
+      [
+        " continent",
+        1
+      ],
+      [
+        " Germany",
+        1
+      ],
+      [
+        " desperate",
+        1
+      ],
+      [
+        " midst",
+        1
+      ],
+      [
+        " artillery",
+        1
+      ],
+      [
+        " player",
+        1
+      ],
+      [
+        " Tampa",
+        1
+      ],
+      [
+        " albums",
+        1
+      ],
+      [
+        " United",
+        1
+      ],
+      [
+        " Church",
+        1
+      ],
+      [
+        " purely",
+        1
+      ],
+      [
+        " elections",
+        1
+      ],
+      [
+        " particularly",
+        1
+      ],
+      [
+        " smarter",
+        1
+      ],
+      [
+        " much",
+        1
+      ],
+      [
+        " Hemisphere",
+        1
+      ],
+      [
+        " last",
+        1
+      ],
+      [
+        " visible",
+        1
+      ],
+      [
+        " playable",
+        1
+      ],
+      [
+        " worst",
+        1
+      ],
+      [
+        " Prize",
+        1
+      ],
+      [
+        " chemotherapy",
+        1
+      ],
+      [
+        " debate",
+        1
+      ],
+      [
+        " staunch",
+        1
+      ],
+      [
+        "sdale",
+        1
+      ],
+      [
+        " happening",
+        1
+      ],
+      [
+        " fond",
+        1
+      ],
+      [
+        " disasters",
+        1
+      ],
+      [
+        " secretly",
+        1
+      ],
+      [
+        " Catholic",
+        1
+      ],
+      [
+        " weeks",
+        1
+      ],
+      [
+        " ones",
+        1
+      ],
+      [
+        " referendum",
+        1
+      ],
+      [
+        " sports",
+        1
+      ],
+      [
+        " War",
+        1
+      ],
+      [
+        " highest",
+        1
+      ],
+      [
+        " perseverance",
+        1
+      ],
+      [
+        " crucial",
+        1
+      ],
+      [
+        " many",
+        1
+      ],
+      [
+        " demand",
+        1
+      ],
+      [
+        " indicating",
+        1
+      ],
+      [
+        " selfish",
+        1
+      ],
+      [
+        " parach",
+        1
+      ],
+      [
+        " species",
+        1
+      ],
+      [
+        " decade",
+        1
+      ],
+      [
+        " thriller",
+        1
+      ],
+      [
+        " Colorado",
+        1
+      ],
+      [
+        " reunited",
+        1
+      ],
+      [
+        " of",
+        1
+      ],
+      [
+        " time",
+        1
+      ],
+      [
+        " tool",
+        1
+      ],
+      [
+        " Many",
+        1
+      ],
+      [
+        " Haiti",
+        1
+      ]
+    ],
+    "top30_positions": [
+      {
+        "text": " career",
+        "align_abs": 1.5251902341842651,
+        "entropy": 4.640180587768555
+      },
+      {
+        "text": " Billboard",
+        "align_abs": 1.3536474704742432,
+        "entropy": 0.22007477283477783
+      },
+      {
+        "text": " Court",
+        "align_abs": 1.3382365703582764,
+        "entropy": 2.4790823459625244
+      },
+      {
+        "text": " Billboard",
+        "align_abs": 1.330691933631897,
+        "entropy": 1.8909852504730225
+      },
+      {
+        "text": " ESPN",
+        "align_abs": 1.3108885288238525,
+        "entropy": 1.2292759418487549
+      },
+      {
+        "text": " Billboard",
+        "align_abs": 1.2907885313034058,
+        "entropy": 2.2639803886413574
+      },
+      {
+        "text": " Knicks",
+        "align_abs": 1.269932508468628,
+        "entropy": 1.8119704723358154
+      },
+      {
+        "text": " NCAA",
+        "align_abs": 1.2587170600891113,
+        "entropy": 3.237701654434204
+      },
+      {
+        "text": " Knicks",
+        "align_abs": 1.2533881664276123,
+        "entropy": 1.1622294187545776
+      },
+      {
+        "text": " Celtics",
+        "align_abs": 1.2524380683898926,
+        "entropy": 1.2168397903442383
+      },
+      {
+        "text": " NCAA",
+        "align_abs": 1.245835304260254,
+        "entropy": 3.891508102416992
+      },
+      {
+        "text": " Billboard",
+        "align_abs": 1.2328004837036133,
+        "entropy": 3.2698683738708496
+      },
+      {
+        "text": " PlayStation",
+        "align_abs": 1.2106114625930786,
+        "entropy": 0.7373246550559998
+      },
+      {
+        "text": " Court",
+        "align_abs": 1.205801248550415,
+        "entropy": 2.316087245941162
+      },
+      {
+        "text": " UNESCO",
+        "align_abs": 1.205798864364624,
+        "entropy": 0.8498125672340393
+      },
+      {
+        "text": " Canucks",
+        "align_abs": 1.1931556463241577,
+        "entropy": 2.189526081085205
+      },
+      {
+        "text": " basketball",
+        "align_abs": 1.1893224716186523,
+        "entropy": 1.165527105331421
+      },
+      {
+        "text": " Knicks",
+        "align_abs": 1.188077449798584,
+        "entropy": 1.0381799936294556
+      },
+      {
+        "text": " Knicks",
+        "align_abs": 1.1880756616592407,
+        "entropy": 1.503390908241272
+      },
+      {
+        "text": " impact",
+        "align_abs": 1.1845862865447998,
+        "entropy": 3.6416311264038086
+      },
+      {
+        "text": " Knicks",
+        "align_abs": 1.171148657798767,
+        "entropy": 1.858852744102478
+      },
+      {
+        "text": " Memphis",
+        "align_abs": 1.1663089990615845,
+        "entropy": 3.7831077575683594
+      },
+      {
+        "text": " ESPN",
+        "align_abs": 1.1647493839263916,
+        "entropy": 4.790683269500732
+      },
+      {
+        "text": " Appeals",
+        "align_abs": 1.155861496925354,
+        "entropy": 0.27225372195243835
+      },
+      {
+        "text": " confiscated",
+        "align_abs": 1.1433069705963135,
+        "entropy": 1.2066258192062378
+      },
+      {
+        "text": " PlayStation",
+        "align_abs": 1.1407549381256104,
+        "entropy": 0.06517605483531952
+      },
+      {
+        "text": " PlayStation",
+        "align_abs": 1.1357483863830566,
+        "entropy": 1.5501515865325928
+      },
+      {
+        "text": " Billboard",
+        "align_abs": 1.1341936588287354,
+        "entropy": 0.2694774866104126
+      },
+      {
+        "text": " makeshift",
+        "align_abs": 1.1298346519470215,
+        "entropy": 3.145944833755493
+      },
+      {
+        "text": " prowess",
+        "align_abs": 1.1278469562530518,
+        "entropy": 2.4234864711761475
+      }
+    ],
+    "hidden_size": 1024,
+    "u1_top_dim_weight": 0.8619398474693298,
+    "u1_top_dim_idx": 35,
+    "u1_top5_dims": [
+      35,
+      277,
+      3,
+      13,
+      23
+    ],
+    "u1_top5_weights": [
+      0.8619398474693298,
+      0.1682526022195816,
+      0.11177641153335571,
+      0.10445858538150787,
+      0.09774653613567352
+    ],
+    "u1_entropy_bits": 2.865788875093791,
+    "u1_effective_dim": 7.2893434399038775,
+    "u1_sparsity_pct_top1": 74.29405212402344,
+    "u1_sparsity_pct_top5": 80.42093658447266,
+    "singular_top": 3.996133804321289,
+    "sigma_ratio": 1.4051406804784201,
+    "_source": "systemd_full_tokens.json"
+  }
+}

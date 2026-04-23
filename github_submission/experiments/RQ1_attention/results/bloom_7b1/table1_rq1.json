@@ -1,0 +1,6 @@
+{
+  "model": "bloom_7b",
+  "key_layer": 12,
+  "base_ma": 3631.3333333333335,
+  "delta_top1_pct": -99.9363719421241
+}

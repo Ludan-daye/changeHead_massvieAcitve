@@ -1,0 +1,8 @@
+{
+  "model": "glm4_9b",
+  "layer_id": 1,
+  "sigma1_sigma2": 3.25964317662735,
+  "cos_sim": 0.04572405237533525,
+  "ma_type": "Type III (multi-direction)",
+  "r_squared": 0.8851664517327001
+}

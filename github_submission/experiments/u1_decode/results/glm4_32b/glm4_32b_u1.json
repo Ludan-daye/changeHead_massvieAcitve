@@ -1,0 +1,295 @@
+{
+  "glm4_32b": {
+    "n_positions": 122820,
+    "topK": 500,
+    "unique_tokens_count": 33,
+    "concentration_ratio": 0.066,
+    "token_list_full": [
+      [
+        " @",
+        383
+      ],
+      [
+        " Mint",
+        15
+      ],
+      [
+        " Confederate",
+        12
+      ],
+      [
+        " original",
+        11
+      ],
+      [
+        " elections",
+        9
+      ],
+      [
+        "urt",
+        8
+      ],
+      [
+        "79",
+        7
+      ],
+      [
+        "ns",
+        7
+      ],
+      [
+        " July",
+        7
+      ],
+      [
+        "54",
+        6
+      ],
+      [
+        " footage",
+        5
+      ],
+      [
+        " washed",
+        3
+      ],
+      [
+        " solid",
+        3
+      ],
+      [
+        " dwarf",
+        2
+      ],
+      [
+        " navigation",
+        2
+      ],
+      [
+        " streets",
+        2
+      ],
+      [
+        "hat",
+        2
+      ],
+      [
+        " tempting",
+        1
+      ],
+      [
+        "rank",
+        1
+      ],
+      [
+        " contribute",
+        1
+      ],
+      [
+        " Dragon",
+        1
+      ],
+      [
+        " patrol",
+        1
+      ],
+      [
+        " \ufffd",
+        1
+      ],
+      [
+        " consultation",
+        1
+      ],
+      [
+        "wick",
+        1
+      ],
+      [
+        " Louisiana",
+        1
+      ],
+      [
+        " Thus",
+        1
+      ],
+      [
+        "TV",
+        1
+      ],
+      [
+        "atisfied",
+        1
+      ],
+      [
+        "wan",
+        1
+      ],
+      [
+        "led",
+        1
+      ],
+      [
+        " oracle",
+        1
+      ],
+      [
+        "rief",
+        1
+      ]
+    ],
+    "top30_positions": [
+      {
+        "text": " tempting",
+        "align_abs": 188859.09375,
+        "entropy": 1.353150725364685
+      },
+      {
+        "text": " Confederate",
+        "align_abs": 187342.625,
+        "entropy": 1.8397547006607056
+      },
+      {
+        "text": " Confederate",
+        "align_abs": 187150.71875,
+        "entropy": 0.22101564705371857
+      },
+      {
+        "text": "79",
+        "align_abs": 186716.171875,
+        "entropy": 0.05048848316073418
+      },
+      {
+        "text": "79",
+        "align_abs": 186492.1875,
+        "entropy": 0.0643487274646759
+      },
+      {
+        "text": " Confederate",
+        "align_abs": 186451.78125,
+        "entropy": 2.063412666320801
+      },
+      {
+        "text": " Confederate",
+        "align_abs": 186233.609375,
+        "entropy": 0.32843372225761414
+      },
+      {
+        "text": " washed",
+        "align_abs": 185958.453125,
+        "entropy": 2.3371262550354004
+      },
+      {
+        "text": " Confederate",
+        "align_abs": 185809.65625,
+        "entropy": 0.8036081790924072
+      },
+      {
+        "text": "79",
+        "align_abs": 185742.3125,
+        "entropy": 0.7734131813049316
+      },
+      {
+        "text": "79",
+        "align_abs": 185669.8125,
+        "entropy": 0.12621472775936127
+      },
+      {
+        "text": " footage",
+        "align_abs": 185375.71875,
+        "entropy": 0.8399500846862793
+      },
+      {
+        "text": " footage",
+        "align_abs": 185132.9375,
+        "entropy": 2.314103603363037
+      },
+      {
+        "text": " Confederate",
+        "align_abs": 184794.0625,
+        "entropy": 0.011824427172541618
+      },
+      {
+        "text": " Confederate",
+        "align_abs": 184262.5,
+        "entropy": 2.5853404998779297
+      },
+      {
+        "text": "79",
+        "align_abs": 183836.40625,
+        "entropy": 0.052248138934373856
+      },
+      {
+        "text": "79",
+        "align_abs": 183645.84375,
+        "entropy": 0.05908461660146713
+      },
+      {
+        "text": " washed",
+        "align_abs": 183147.21875,
+        "entropy": 0.08737155050039291
+      },
+      {
+        "text": " dwarf",
+        "align_abs": 183139.671875,
+        "entropy": 0.002992776921018958
+      },
+      {
+        "text": " Confederate",
+        "align_abs": 182614.46875,
+        "entropy": 2.326179265975952
+      },
+      {
+        "text": "54",
+        "align_abs": 182565.015625,
+        "entropy": 1.1775834560394287
+      },
+      {
+        "text": " elections",
+        "align_abs": 182522.28125,
+        "entropy": 2.4263131618499756
+      },
+      {
+        "text": "ns",
+        "align_abs": 182014.828125,
+        "entropy": 1.641089677810669
+      },
+      {
+        "text": " navigation",
+        "align_abs": 181256.5,
+        "entropy": 2.4007349014282227
+      },
+      {
+        "text": "ns",
+        "align_abs": 181237.796875,
+        "entropy": 1.413277506828308
+      },
+      {
+        "text": " Confederate",
+        "align_abs": 181045.09375,
+        "entropy": 2.4946820735931396
+      },
+      {
+        "text": "rank",
+        "align_abs": 180837.015625,
+        "entropy": 0.002628552494570613
+      },
+      {
+        "text": " Confederate",
+        "align_abs": 180595.828125,
+        "entropy": 1.860985279083252
+      },
+      {
+        "text": "54",
+        "align_abs": 180266.453125,
+        "entropy": 0.07791241258382797
+      },
+      {
+        "text": " Confederate",
+        "align_abs": 180055.0625,
+        "entropy": 0.677126944065094
+      }
+    ],
+    "_source": "results_stage2_primary_missing/systemd_u1_rerun.json"
+  }
+}

@@ -1,0 +1,96 @@
+
+================================================================================
+EXPERIMENT 3: SVD ALIGNMENT ANALYSIS - LAYER 0
+================================================================================
+
+Research Question:
+  Where exactly in the MLP are massive activations generated?
+
+Method:
+  1. SVD decomposition of W₂ matrix
+  2. Compute token alignment with principal direction v₁
+  3. Compare function words vs content words
+  4. Regression: alignment → massive activation
+
+================================================================================
+
+Loading model llama2_13b...
+loading model llama2_13b
+  → using dtype=float16 (default)
+Traceback (most recent call last):
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 761, in hf_raise_for_status
+    response.raise_for_status()
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/httpx/_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Client error '403 Forbidden' for url 'https://hf-mirror.com/meta-llama/Llama-2-13b-hf/resolve/main/config.json'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1669, in _get_metadata_or_catch_error
+    metadata = get_hf_file_metadata(
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1591, in get_hf_file_metadata
+    response = _httpx_follow_relative_redirects_with_backoff(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 692, in _httpx_follow_relative_redirects_with_backoff
+    hf_raise_for_status(response)
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 849, in hf_raise_for_status
+    raise _format(HfHubHTTPError, message, response) from e
+huggingface_hub.errors.HfHubHTTPError: (Request ID: Root=1-69e9e5a9-55bb864d0ba206211e89a8ff;3a1e3a70-24b0-4a94-8a89-fac30d40f0f1)
+
+403 Forbidden: Please enable access to public gated repositories in your fine-grained token settings to view this repository..
+Cannot access content at: https://hf-mirror.com/meta-llama/Llama-2-13b-hf/resolve/main/config.json.
+Make sure your token has the correct permissions.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/transformers/utils/hub.py", line 422, in cached_files
+    hf_hub_download(
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 997, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1148, in _hf_hub_download_to_cache_dir
+    _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1785, in _raise_on_head_call_error
+    raise LocalEntryNotFoundError(
+huggingface_hub.errors.LocalEntryNotFoundError: An error happened while trying to locate the file on the Hub and we cannot find the requested files in the local cache. Please check your connection and try again or make sure your Internet connection is on.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/root/changeHead_massvieAcitve/paper_experiments/RQ4_svd_alignment/exp3_multi_v.py", line 1067, in <module>
+    main()
+  File "/root/changeHead_massvieAcitve/paper_experiments/RQ4_svd_alignment/exp3_multi_v.py", line 987, in main
+    model, tokenizer, device, layers, hidden_size, seq_len = lib.load_llm(args)
+                                                             ^^^^^^^^^^^^^^^^^^
+  File "/root/changeHead_massvieAcitve/paper_experiments/RQ4_svd_alignment/../lib/load_model.py", line 103, in load_llm
+    model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=dtype, cache_dir=cache_dir, low_cpu_mem_usage=True, device_map="auto", attn_implementation=attn_impl, **token_kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/transformers/models/auto/auto_factory.py", line 329, in from_pretrained
+    config, kwargs = AutoConfig.from_pretrained(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/transformers/models/auto/configuration_auto.py", line 1483, in from_pretrained
+    config_dict, unused_kwargs = PreTrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/transformers/configuration_utils.py", line 670, in get_config_dict
+    config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/transformers/configuration_utils.py", line 725, in _get_config_dict
+    resolved_config_file = cached_file(
+                           ^^^^^^^^^^^^
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/transformers/utils/hub.py", line 278, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/miniconda3/envs/py312/lib/python3.12/site-packages/transformers/utils/hub.py", line 498, in cached_files
+    raise OSError(
+OSError: We couldn't connect to 'https://hf-mirror.com' to load the files, and couldn't find them in the cached files.
+Check your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.

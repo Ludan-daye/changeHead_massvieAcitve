@@ -34,3 +34,11 @@ paper_experiments/results/**/*.npy
 
 # Claude local settings (keep committed project settings if any)
 .claude/settings.local.json
+
+# Large tarball (content extracted in same dir)
+final_report/RQ4_svd_alignment/data/*.tar.gz
+github_submission/*.tar.gz
+
+# Claude session state
+.patrol_state.json
+.claude/scheduled_tasks.lock

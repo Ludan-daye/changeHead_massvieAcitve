@@ -161,3 +161,45 @@ print(d['critical_layer'])
 2. MoE 两个 ⏸ 暂缓是否 OK？如果本轮要做，需要额外设计框架。
 3. glm4_32b 是否本轮修？还是先放弃？
 4. 批次 1 (gptj_6b pilot) 通过的验收数字 **-85% ~ -99%** 是否接受？
+
+---
+
+## 七、2026-04-22 Stage 2 RQ3+RQ4 执行后剩余项
+
+> 说明：今晚在 secondary（8.138.30.52:6007）修了 B13/B14/B15 三个 bug 并跑完 6 个模型，primary 之前跑完 15 dense。以下是 stage 2 尚未完成项。
+
+### 7.1 ⚠ 延办：1 runs（GPU 竞争导致 OOM，非代码问题）
+
+| 模型 | 运行 | 状态 | 原因 | 建议 |
+|---|---|---|---|---|
+| `llama2_13b` | RQ3 | ❌ OOM × 2 | secondary 其他用户持续占 51GB/80GB；试过 `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` + `seqlen=512` 都失败 | **primary 空闲时补跑 ~10 min**；数据文件：`fixes/logs/pipeline_20260421_231037/llama2_13b__RQ3*.log` |
+
+### 7.2 ➕ 结果搬运：secondary → primary
+
+| 源 | 目的 | 内容 | 命令 |
+|---|---|---|---|
+| `vicuna@8.138.30.52:/home/vicuna/ma/paper_experiments/fixes/results/` | `/Users/a1-6/importantfile/Research/ma/paper_experiments/fixes/results_secondary/` | 11 runs（opt/gptj/bloom/falcon/mistral × RQ3+RQ4，llama2_13b × RQ4）| `rsync -av -e "ssh -p 6007" vicuna@8.138.30.52:~/ma/paper_experiments/fixes/results/ ./fixes/results_secondary/` |
+
+### 7.3 ⚠ Tier D：3 个架构不兼容模型（stage 2 primary 跳过）
+
+| 模型 | 失败原因 | 处理方案 |
+|---|---|---|
+| `qwen3.5_9b` | B10：Qwen3_5DecoderLayer 全用 `linear_attn`（GatedDeltaNet），不是标准 self_attn | 架构根本不同 → **Tier D 附录讨论，不纳入主结论** |
+| `qwen3.5_27b` | B10 同上 | 同上 |
+| `glm4_9b` | B11：ChatGLM shim `GlmMLP.gate_up_proj` 缺失 — 实际问题：GLMBlock 用 `self_attention`（下划线）+ fused gate_up | secondary **已用 forward-hook 绕过**（hook 不重写 forward）。primary 同款修复已 push — 需要 primary 重跑。**可补 ~12 min** |
+
+### 7.4 ✅ 已完成并验证的 3 个 bug fix（本轮成果）
+
+| ID | 现象 | 修复 | 验证 |
+|---|---|---|---|
+| **B13** | OPT 用 `self_attn_layer_norm`/`final_layer_norm`，llama 补丁找 `input_layernorm` 失败 | `enable_custom_block` 把 `opt_*` 路由到 forward-hook（不重写 forward）| ✓ opt_6.7b RQ3+RQ4 |
+| **B14** | gptj/bloom/falcon 的 `modify_gpt2.py` 前向改写撞 `ln_1` / `_get_embed_positions` / `get_head_mask` | 同 B13 思路，`enable_custom_block` 把 gptj/bloom/falcon 也路由到 forward-hook | ✓ 三个模型 RQ3+RQ4 |
+| **B15** | Falcon 本地权重自带 `modeling_falcon.py`（transformers 4.x，缺 `get_head_mask`）| `lib/load_model.py` falcon 分支强制 `trust_remote_code=False`（用 tx 5.x 原生 `FalconForCausalLM`）| ✓ falcon_7b RQ3+RQ4 |
+
+### 7.5 Stage 2 RQ3+RQ4 整体进度快照
+
+| 服务器 | 模型数 | RQ3 ok | RQ4 ok | 备注 |
+|---|:-:|:-:|:-:|---|
+| Primary | 15 | 11 | 11 | + 1 skip + 3 Tier D（qwen3.5×2、glm4_9b）|
+| Secondary | 6 | 5 | 6 | 新修 bug 打通 opt/gptj/bloom/falcon/mistral，llama2_13b RQ3 延办 |
+| **合计** | **21/26** | **16** | **17** | **剩 llama2_13b RQ3 + 3 Tier D = 4 runs**；MoE（qwen3_30b_a3b / qwen3.5_35b_a3b）不纳入 |

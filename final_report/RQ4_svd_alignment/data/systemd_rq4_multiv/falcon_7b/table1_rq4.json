@@ -1,0 +1,8 @@
+{
+  "model": "falcon_7b",
+  "layer_id": 3,
+  "sigma1_sigma2": 1.365324335003188,
+  "cos_sim": 0.004959942394119059,
+  "ma_type": "Type III (multi-direction)",
+  "r_squared": 0.9883938185727501
+}

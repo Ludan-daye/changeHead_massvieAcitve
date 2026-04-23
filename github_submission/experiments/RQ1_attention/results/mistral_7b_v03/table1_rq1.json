@@ -1,0 +1,6 @@
+{
+  "model": "mistral_7b",
+  "key_layer": 19,
+  "base_ma": 318.3666666666667,
+  "delta_top1_pct": -18.725787875615122
+}

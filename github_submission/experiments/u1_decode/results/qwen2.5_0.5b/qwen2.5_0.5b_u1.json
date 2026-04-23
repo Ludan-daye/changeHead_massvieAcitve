@@ -1,0 +1,687 @@
+{
+  "qwen2.5_0.5b": {
+    "n_positions": 122820,
+    "topK": 500,
+    "unique_tokens_count": 131,
+    "concentration_ratio": 0.262,
+    "token_list_full": [
+      [
+        " The",
+        153
+      ],
+      [
+        " G",
+        27
+      ],
+      [
+        " Sh",
+        26
+      ],
+      [
+        " M",
+        21
+      ],
+      [
+        " rituals",
+        15
+      ],
+      [
+        " K",
+        12
+      ],
+      [
+        " N",
+        11
+      ],
+      [
+        " NBA",
+        10
+      ],
+      [
+        " S",
+        10
+      ],
+      [
+        " \ufffd",
+        7
+      ],
+      [
+        " St",
+        7
+      ],
+      [
+        " depicting",
+        7
+      ],
+      [
+        "\u306e",
+        6
+      ],
+      [
+        " Steve",
+        6
+      ],
+      [
+        " H",
+        6
+      ],
+      [
+        " torture",
+        5
+      ],
+      [
+        " W",
+        5
+      ],
+      [
+        " E",
+        5
+      ],
+      [
+        " P",
+        4
+      ],
+      [
+        " activists",
+        4
+      ],
+      [
+        " Jorge",
+        4
+      ],
+      [
+        " sculptures",
+        4
+      ],
+      [
+        " brutal",
+        3
+      ],
+      [
+        " Sarah",
+        3
+      ],
+      [
+        " overturned",
+        3
+      ],
+      [
+        " Mike",
+        3
+      ],
+      [
+        " activism",
+        3
+      ],
+      [
+        " depict",
+        3
+      ],
+      [
+        " D",
+        3
+      ],
+      [
+        " devotion",
+        3
+      ],
+      [
+        " Robert",
+        3
+      ],
+      [
+        " operates",
+        3
+      ],
+      [
+        " turmoil",
+        2
+      ],
+      [
+        " revered",
+        2
+      ],
+      [
+        " horrific",
+        2
+      ],
+      [
+        " portrays",
+        2
+      ],
+      [
+        " Tina",
+        2
+      ],
+      [
+        " Rachel",
+        2
+      ],
+      [
+        " sophisticated",
+        2
+      ],
+      [
+        " depicts",
+        2
+      ],
+      [
+        " =",
+        2
+      ],
+      [
+        " the",
+        2
+      ],
+      [
+        " mysterious",
+        2
+      ],
+      [
+        " intense",
+        2
+      ],
+      [
+        " humans",
+        2
+      ],
+      [
+        " comedian",
+        2
+      ],
+      [
+        " Darwin",
+        2
+      ],
+      [
+        " O",
+        2
+      ],
+      [
+        " quirky",
+        1
+      ],
+      [
+        " majestic",
+        1
+      ],
+      [
+        " U",
+        1
+      ],
+      [
+        " blockbuster",
+        1
+      ],
+      [
+        " showcased",
+        1
+      ],
+      [
+        " exquisite",
+        1
+      ],
+      [
+        " orchestrated",
+        1
+      ],
+      [
+        " Jessica",
+        1
+      ],
+      [
+        " deception",
+        1
+      ],
+      [
+        " seeks",
+        1
+      ],
+      [
+        " El",
+        1
+      ],
+      [
+        " chemotherapy",
+        1
+      ],
+      [
+        " expansive",
+        1
+      ],
+      [
+        " automotive",
+        1
+      ],
+      [
+        " towering",
+        1
+      ],
+      [
+        " trendy",
+        1
+      ],
+      [
+        " Royal",
+        1
+      ],
+      [
+        " feminine",
+        1
+      ],
+      [
+        " V",
+        1
+      ],
+      [
+        " documenting",
+        1
+      ],
+      [
+        " CIA",
+        1
+      ],
+      [
+        " enact",
+        1
+      ],
+      [
+        " unpredictable",
+        1
+      ],
+      [
+        " facilitate",
+        1
+      ],
+      [
+        " John",
+        1
+      ],
+      [
+        " announced",
+        1
+      ],
+      [
+        " Elizabeth",
+        1
+      ],
+      [
+        " ritual",
+        1
+      ],
+      [
+        " monitoring",
+        1
+      ],
+      [
+        " remarkable",
+        1
+      ],
+      [
+        " incredibly",
+        1
+      ],
+      [
+        " oppressive",
+        1
+      ],
+      [
+        " wrote",
+        1
+      ],
+      [
+        " A",
+        1
+      ],
+      [
+        " denounced",
+        1
+      ],
+      [
+        " activist",
+        1
+      ],
+      [
+        " dazzling",
+        1
+      ],
+      [
+        " portrayal",
+        1
+      ],
+      [
+        " UNESCO",
+        1
+      ],
+      [
+        " Th",
+        1
+      ],
+      [
+        " humanitarian",
+        1
+      ],
+      [
+        " embodies",
+        1
+      ],
+      [
+        " Laura",
+        1
+      ],
+      [
+        " disappointing",
+        1
+      ],
+      [
+        " staunch",
+        1
+      ],
+      [
+        " Claude",
+        1
+      ],
+      [
+        " a",
+        1
+      ],
+      [
+        "\u304c",
+        1
+      ],
+      [
+        " Sam",
+        1
+      ],
+      [
+        " cinematic",
+        1
+      ],
+      [
+        " uphold",
+        1
+      ],
+      [
+        " T",
+        1
+      ],
+      [
+        " Emily",
+        1
+      ],
+      [
+        " magnificent",
+        1
+      ],
+      [
+        " generous",
+        1
+      ],
+      [
+        " extensive",
+        1
+      ],
+      [
+        " Kevin",
+        1
+      ],
+      [
+        " traditions",
+        1
+      ],
+      [
+        " employing",
+        1
+      ],
+      [
+        " inspiring",
+        1
+      ],
+      [
+        " Charles",
+        1
+      ],
+      [
+        " perform",
+        1
+      ],
+      [
+        " arsenal",
+        1
+      ],
+      [
+        " obscure",
+        1
+      ],
+      [
+        " Canadian",
+        1
+      ],
+      [
+        " groundbreaking",
+        1
+      ],
+      [
+        " legendary",
+        1
+      ],
+      [
+        " appalling",
+        1
+      ],
+      [
+        " performing",
+        1
+      ],
+      [
+        " mythology",
+        1
+      ],
+      [
+        " protests",
+        1
+      ],
+      [
+        " celebrities",
+        1
+      ],
+      [
+        " Human",
+        1
+      ],
+      [
+        " harvested",
+        1
+      ],
+      [
+        " drastic",
+        1
+      ],
+      [
+        " Daniel",
+        1
+      ],
+      [
+        " musicians",
+        1
+      ],
+      [
+        " renovated",
+        1
+      ],
+      [
+        " George",
+        1
+      ],
+      [
+        " relocated",
+        1
+      ],
+      [
+        " sluggish",
+        1
+      ],
+      [
+        " Chris",
+        1
+      ],
+      [
+        " widespread",
+        1
+      ]
+    ],
+    "top30_positions": [
+      {
+        "text": " quirky",
+        "align_abs": 1.0941658020019531,
+        "entropy": 1.645689606666565
+      },
+      {
+        "text": " torture",
+        "align_abs": 1.0169543027877808,
+        "entropy": 4.682486057281494
+      },
+      {
+        "text": " majestic",
+        "align_abs": 0.9700865745544434,
+        "entropy": 3.448591709136963
+      },
+      {
+        "text": " rituals",
+        "align_abs": 0.9085739850997925,
+        "entropy": 2.5282418727874756
+      },
+      {
+        "text": " rituals",
+        "align_abs": 0.9062409400939941,
+        "entropy": 3.7635366916656494
+      },
+      {
+        "text": " \ufffd",
+        "align_abs": 0.9043048620223999,
+        "entropy": 1.4255980253219604
+      },
+      {
+        "text": " turmoil",
+        "align_abs": 0.8994983434677124,
+        "entropy": 3.286971092224121
+      },
+      {
+        "text": " U",
+        "align_abs": 0.8967606425285339,
+        "entropy": 1.7410929203033447
+      },
+      {
+        "text": " rituals",
+        "align_abs": 0.8936824202537537,
+        "entropy": 2.444340944290161
+      },
+      {
+        "text": " \ufffd",
+        "align_abs": 0.8934026956558228,
+        "entropy": 3.2973904609680176
+      },
+      {
+        "text": " St",
+        "align_abs": 0.8925607204437256,
+        "entropy": 4.895655632019043
+      },
+      {
+        "text": " brutal",
+        "align_abs": 0.885168194770813,
+        "entropy": 1.5640606880187988
+      },
+      {
+        "text": " rituals",
+        "align_abs": 0.8832272887229919,
+        "entropy": 0.7042204737663269
+      },
+      {
+        "text": " revered",
+        "align_abs": 0.8787537813186646,
+        "entropy": 2.5431253910064697
+      },
+      {
+        "text": " turmoil",
+        "align_abs": 0.8763719797134399,
+        "entropy": 2.6930413246154785
+      },
+      {
+        "text": " blockbuster",
+        "align_abs": 0.873772919178009,
+        "entropy": 3.86456036567688
+      },
+      {
+        "text": " M",
+        "align_abs": 0.8724945783615112,
+        "entropy": 4.597107887268066
+      },
+      {
+        "text": " NBA",
+        "align_abs": 0.8692231178283691,
+        "entropy": 3.5906450748443604
+      },
+      {
+        "text": " rituals",
+        "align_abs": 0.8675411939620972,
+        "entropy": 3.43403959274292
+      },
+      {
+        "text": " showcased",
+        "align_abs": 0.8621346950531006,
+        "entropy": 2.1589293479919434
+      },
+      {
+        "text": " horrific",
+        "align_abs": 0.8579446077346802,
+        "entropy": 4.541346073150635
+      },
+      {
+        "text": " rituals",
+        "align_abs": 0.8552517294883728,
+        "entropy": 1.7300649881362915
+      },
+      {
+        "text": " \ufffd",
+        "align_abs": 0.853873610496521,
+        "entropy": 2.8996973037719727
+      },
+      {
+        "text": " exquisite",
+        "align_abs": 0.8532137274742126,
+        "entropy": 5.155150890350342
+      },
+      {
+        "text": " brutal",
+        "align_abs": 0.8500639200210571,
+        "entropy": 2.02243971824646
+      },
+      {
+        "text": "\u306e",
+        "align_abs": 0.8456960916519165,
+        "entropy": 6.721553325653076
+      },
+      {
+        "text": " The",
+        "align_abs": 0.8374843597412109,
+        "entropy": 6.675484657287598
+      },
+      {
+        "text": " rituals",
+        "align_abs": 0.8357837796211243,
+        "entropy": 2.7742507457733154
+      },
+      {
+        "text": " Sarah",
+        "align_abs": 0.8354335427284241,
+        "entropy": 4.616512775421143
+      },
+      {
+        "text": " orchestrated",
+        "align_abs": 0.8347052335739136,
+        "entropy": 4.9988017082214355
+      }
+    ],
+    "_source": "results_stage2_primary_missing/systemd_u1_rerun.json"
+  }
+}

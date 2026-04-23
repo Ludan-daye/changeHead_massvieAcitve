@@ -1,0 +1,8 @@
+{
+  "model": "llama3.1_8b",
+  "layer_id": 1,
+  "sigma1_sigma2": 1.384803003243723,
+  "cos_sim": -0.05750425075003304,
+  "ma_type": "Type III (multi-direction)",
+  "r_squared": 0.9984083473259786
+}

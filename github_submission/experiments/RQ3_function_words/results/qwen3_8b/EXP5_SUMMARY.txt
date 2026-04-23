@@ -1,0 +1,84 @@
+================================================================================
+EXPERIMENT 5: Function Words SVD Space Mapping Analysis
+================================================================================
+
+Timestamp: 2026-04-19T11:03:41.867436
+Model: qwen3_8b, Layer: 6
+Samples: 30
+
+ANALYSIS 1: CONCENTRATION ON SINGULAR VECTORS
+--------------------------------------------------------------------------------
+Top 10 Most Concentrated Words (Low-Dimensional):
+  A              : top_5=0.387, top_3=0.288
+   be            : top_5=0.371, top_3=0.248
+   with          : top_5=0.371, top_3=0.248
+   the           : top_5=0.371, top_3=0.248
+   at            : top_5=0.371, top_3=0.248
+   Will          : top_5=0.323, top_3=0.233
+   Before        : top_5=0.313, top_3=0.210
+  to             : top_5=0.279, top_3=0.189
+   AS            : top_5=0.277, top_3=0.197
+  our            : top_5=0.266, top_3=0.183
+
+
+ANALYSIS 2: LEFT-RIGHT ASYMMETRY
+--------------------------------------------------------------------------------
+Asymmetry Ratio (Left / Right concentration):
+  Ratio > 1: Left space more concentrated (early determination)
+  Ratio < 1: Right space more concentrated (late determination)
+
+  to             : ratio=11.141 (left=0.189, right=0.017)
+   Also          : ratio=6.337 (left=0.141, right=0.022)
+   Has           : ratio=5.751 (left=0.128, right=0.022)
+   Those         : ratio=5.520 (left=0.155, right=0.028)
+   Through       : ratio=4.260 (left=0.111, right=0.026)
+   But           : ratio=4.064 (left=0.154, right=0.038)
+   Its           : ratio=4.021 (left=0.108, right=0.027)
+   Before        : ratio=3.955 (left=0.210, right=0.053)
+   Or            : ratio=3.540 (left=0.123, right=0.035)
+   Over          : ratio=3.247 (left=0.163, right=0.050)
+
+
+ANALYSIS 3: CROSS-CONTEXT STABILITY
+--------------------------------------------------------------------------------
+Mean Cosine Similarity (Higher = More Stable):
+  but            : stability=0.984 (±0.000), n=2
+   Before        : stability=0.936 (±0.000), n=2
+   Because       : stability=0.934 (±0.019), n=7
+   Those         : stability=0.908 (±0.015), n=3
+   Though        : stability=0.907 (±0.035), n=6
+   Also          : stability=0.904 (±0.032), n=5
+   Although      : stability=0.904 (±0.052), n=21
+   Not           : stability=0.900 (±0.023), n=5
+   While         : stability=0.896 (±0.036), n=30
+   Only          : stability=0.893 (±0.055), n=5
+
+
+ANALYSIS 4: PRINCIPAL DIRECTION ALIGNMENT
+--------------------------------------------------------------------------------
+Alignment with v₁ (Principal Singular Direction):
+   The           : v₁_align=0.132 (±0.024)
+   In            : v₁_align=0.118 (±0.018)
+   This          : v₁_align=0.113 (±0.012)
+   After         : v₁_align=0.111 (±0.010)
+   To            : v₁_align=0.109 (±0.006)
+   On            : v₁_align=0.109 (±0.022)
+   With          : v₁_align=0.108 (±0.007)
+   As            : v₁_align=0.107 (±0.018)
+   Though        : v₁_align=0.107 (±0.006)
+   While         : v₁_align=0.106 (±0.006)
+
+
+KEY FINDINGS
+================================================================================
+1. Concentration: Function words with high concentration (top_5 > 0.5)
+   suggest low-dimensional representation in singular space
+
+2. Asymmetry: Ratio > 1 indicates information determined in Linear1,
+   ratio < 1 indicates late determination in Linear2
+
+3. Stability: High stability (>0.8) suggests context-independent
+   function word representations
+
+4. Alignment: Strong v₁ alignment suggests function words drive
+   massive activations along principal singular direction

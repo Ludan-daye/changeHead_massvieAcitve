@@ -1,0 +1,4 @@
+No raw per-model result directory located for model 'qwen3_14b' in experiment 'RQ1_attention'.
+However, aggregated metrics for this (model × experiment) cell are present in
+  aggregated/ALL_EXPERIMENTS_SUMMARY_v2.json
+under key 'qwen3_14b' -> (see experiment-specific field, e.g. 'exp1' for RQ1).

@@ -1,0 +1,450 @@
+{
+  "qwen3_4b": {
+    "n_positions": 122820,
+    "topK": 500,
+    "unique_tokens_count": 66,
+    "concentration_ratio": 0.132,
+    "token_list_full": [
+      [
+        " the",
+        368
+      ],
+      [
+        " Republic",
+        17
+      ],
+      [
+        " ",
+        15
+      ],
+      [
+        "cock",
+        8
+      ],
+      [
+        "orian",
+        7
+      ],
+      [
+        " Francisco",
+        5
+      ],
+      [
+        " Philadelphia",
+        5
+      ],
+      [
+        " Portland",
+        3
+      ],
+      [
+        " ,",
+        3
+      ],
+      [
+        " Kingdom",
+        3
+      ],
+      [
+        " by",
+        2
+      ],
+      [
+        " .",
+        2
+      ],
+      [
+        " (",
+        2
+      ],
+      [
+        " =",
+        2
+      ],
+      [
+        "ological",
+        2
+      ],
+      [
+        "etic",
+        2
+      ],
+      [
+        " documentary",
+        2
+      ],
+      [
+        "ulum",
+        2
+      ],
+      [
+        " Metropolitan",
+        2
+      ],
+      [
+        " Globe",
+        2
+      ],
+      [
+        " career",
+        1
+      ],
+      [
+        " Memphis",
+        1
+      ],
+      [
+        " Championship",
+        1
+      ],
+      [
+        " game",
+        1
+      ],
+      [
+        " in",
+        1
+      ],
+      [
+        " environmental",
+        1
+      ],
+      [
+        " NCAA",
+        1
+      ],
+      [
+        " unten",
+        1
+      ],
+      [
+        "ayan",
+        1
+      ],
+      [
+        " defense",
+        1
+      ],
+      [
+        " Clinton",
+        1
+      ],
+      [
+        " Royal",
+        1
+      ],
+      [
+        " and",
+        1
+      ],
+      [
+        " Tournament",
+        1
+      ],
+      [
+        "us",
+        1
+      ],
+      [
+        " comedian",
+        1
+      ],
+      [
+        " turmoil",
+        1
+      ],
+      [
+        " America",
+        1
+      ],
+      [
+        "incible",
+        1
+      ],
+      [
+        "iah",
+        1
+      ],
+      [
+        " Sarah",
+        1
+      ],
+      [
+        "apeake",
+        1
+      ],
+      [
+        " Patrick",
+        1
+      ],
+      [
+        "sey",
+        1
+      ],
+      [
+        " Minnesota",
+        1
+      ],
+      [
+        "volent",
+        1
+      ],
+      [
+        " Presidential",
+        1
+      ],
+      [
+        "dehyde",
+        1
+      ],
+      [
+        "abric",
+        1
+      ],
+      [
+        " civilization",
+        1
+      ],
+      [
+        " horrors",
+        1
+      ],
+      [
+        " dis",
+        1
+      ],
+      [
+        " Civil",
+        1
+      ],
+      [
+        " Indianapolis",
+        1
+      ],
+      [
+        " Staples",
+        1
+      ],
+      [
+        "scopic",
+        1
+      ],
+      [
+        " War",
+        1
+      ],
+      [
+        " volleyball",
+        1
+      ],
+      [
+        " protagonists",
+        1
+      ],
+      [
+        "insky",
+        1
+      ],
+      [
+        " basketball",
+        1
+      ],
+      [
+        " activism",
+        1
+      ],
+      [
+        "rophic",
+        1
+      ],
+      [
+        " Memorial",
+        1
+      ],
+      [
+        "Arthur",
+        1
+      ],
+      [
+        "berg",
+        1
+      ]
+    ],
+    "top30_positions": [
+      {
+        "text": " the",
+        "align_abs": 0.9046341776847839,
+        "entropy": 8.460625648498535
+      },
+      {
+        "text": " the",
+        "align_abs": 0.9017764329910278,
+        "entropy": 5.915010929107666
+      },
+      {
+        "text": " the",
+        "align_abs": 0.8732362389564514,
+        "entropy": 5.097333908081055
+      },
+      {
+        "text": " the",
+        "align_abs": 0.8397706747055054,
+        "entropy": 8.501039505004883
+      },
+      {
+        "text": " the",
+        "align_abs": 0.8339316248893738,
+        "entropy": 5.460510730743408
+      },
+      {
+        "text": " the",
+        "align_abs": 0.8191394805908203,
+        "entropy": 1.3701790571212769
+      },
+      {
+        "text": " the",
+        "align_abs": 0.8046431541442871,
+        "entropy": 6.301170349121094
+      },
+      {
+        "text": " the",
+        "align_abs": 0.8019188046455383,
+        "entropy": 8.104695320129395
+      },
+      {
+        "text": " the",
+        "align_abs": 0.7870040535926819,
+        "entropy": 5.723996639251709
+      },
+      {
+        "text": " the",
+        "align_abs": 0.7687026858329773,
+        "entropy": 5.336225509643555
+      },
+      {
+        "text": " the",
+        "align_abs": 0.7680405378341675,
+        "entropy": 0.98585444688797
+      },
+      {
+        "text": " the",
+        "align_abs": 0.7622459530830383,
+        "entropy": 1.4268113374710083
+      },
+      {
+        "text": " the",
+        "align_abs": 0.7497101426124573,
+        "entropy": 6.904052734375
+      },
+      {
+        "text": " the",
+        "align_abs": 0.7413662672042847,
+        "entropy": 1.306322693824768
+      },
+      {
+        "text": " the",
+        "align_abs": 0.7391638159751892,
+        "entropy": 6.473883628845215
+      },
+      {
+        "text": " the",
+        "align_abs": 0.7366237640380859,
+        "entropy": 5.878787517547607
+      },
+      {
+        "text": " the",
+        "align_abs": 0.7357549667358398,
+        "entropy": 0.40943750739097595
+      },
+      {
+        "text": " ",
+        "align_abs": 0.716927707195282,
+        "entropy": 0.7763488292694092
+      },
+      {
+        "text": " the",
+        "align_abs": 0.7166526913642883,
+        "entropy": 4.3733696937561035
+      },
+      {
+        "text": " the",
+        "align_abs": 0.7138955593109131,
+        "entropy": 2.341494083404541
+      },
+      {
+        "text": " career",
+        "align_abs": 0.7048212289810181,
+        "entropy": 4.654649257659912
+      },
+      {
+        "text": " the",
+        "align_abs": 0.7002002000808716,
+        "entropy": 1.0205209255218506
+      },
+      {
+        "text": " the",
+        "align_abs": 0.6991814374923706,
+        "entropy": 2.762916326522827
+      },
+      {
+        "text": " the",
+        "align_abs": 0.6985511183738708,
+        "entropy": 1.6243984699249268
+      },
+      {
+        "text": " the",
+        "align_abs": 0.6958439350128174,
+        "entropy": 6.211606025695801
+      },
+      {
+        "text": " the",
+        "align_abs": 0.6921322345733643,
+        "entropy": 2.9961960315704346
+      },
+      {
+        "text": " the",
+        "align_abs": 0.6917043924331665,
+        "entropy": 1.8786386251449585
+      },
+      {
+        "text": " the",
+        "align_abs": 0.6828783750534058,
+        "entropy": 0.5784485936164856
+      },
+      {
+        "text": " the",
+        "align_abs": 0.6819587349891663,
+        "entropy": 0.5536991953849792
+      },
+      {
+        "text": " the",
+        "align_abs": 0.6783956289291382,
+        "entropy": 3.1074259281158447
+      }
+    ],
+    "hidden_size": 2560,
+    "u1_top_dim_weight": 0.6892735362052917,
+    "u1_top_dim_idx": 0,
+    "u1_top5_dims": [
+      0,
+      77,
+      21,
+      11,
+      373
+    ],
+    "u1_top5_weights": [
+      0.6892735362052917,
+      0.2792748808860779,
+      0.19253870844841003,
+      0.18670572340488434,
+      0.18221578001976013
+    ],
+    "u1_entropy_bits": 4.1375207782742605,
+    "u1_effective_dim": 17.600210495936786,
+    "u1_sparsity_pct_top1": 47.50979995727539,
+    "u1_sparsity_pct_top5": 65.82252502441406,
+    "singular_top": 9.420647621154785,
+    "sigma_ratio": 1.7153310940394886,
+    "_source": "systemd_full_tokens.json"
+  }
+}

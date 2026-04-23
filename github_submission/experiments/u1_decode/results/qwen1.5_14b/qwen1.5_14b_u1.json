@@ -1,0 +1,318 @@
+{
+  "qwen1.5_14b": {
+    "n_positions": 122820,
+    "topK": 500,
+    "unique_tokens_count": 33,
+    "concentration_ratio": 0.066,
+    "token_list_full": [
+      [
+        " the",
+        449
+      ],
+      [
+        "1",
+        12
+      ],
+      [
+        " Palin",
+        3
+      ],
+      [
+        "2",
+        3
+      ],
+      [
+        " Manchester",
+        2
+      ],
+      [
+        " Wings",
+        2
+      ],
+      [
+        " Freeman",
+        2
+      ],
+      [
+        " a",
+        2
+      ],
+      [
+        " Championship",
+        1
+      ],
+      [
+        " anime",
+        1
+      ],
+      [
+        "8",
+        1
+      ],
+      [
+        " Townsend",
+        1
+      ],
+      [
+        " Other",
+        1
+      ],
+      [
+        " For",
+        1
+      ],
+      [
+        " NCAA",
+        1
+      ],
+      [
+        " Rock",
+        1
+      ],
+      [
+        " Mumbai",
+        1
+      ],
+      [
+        " Trust",
+        1
+      ],
+      [
+        " NBA",
+        1
+      ],
+      [
+        "s",
+        1
+      ],
+      [
+        " death",
+        1
+      ],
+      [
+        " actress",
+        1
+      ],
+      [
+        " It",
+        1
+      ],
+      [
+        " career",
+        1
+      ],
+      [
+        " sky",
+        1
+      ],
+      [
+        " monitoring",
+        1
+      ],
+      [
+        " Center",
+        1
+      ],
+      [
+        " American",
+        1
+      ],
+      [
+        " team",
+        1
+      ],
+      [
+        " environmental",
+        1
+      ],
+      [
+        " McKay",
+        1
+      ],
+      [
+        " Arts",
+        1
+      ],
+      [
+        " NHL",
+        1
+      ]
+    ],
+    "top30_positions": [
+      {
+        "text": " Palin",
+        "align_abs": 0.48663952946662903,
+        "entropy": 3.961177110671997
+      },
+      {
+        "text": " Manchester",
+        "align_abs": 0.431563138961792,
+        "entropy": 0.27164533734321594
+      },
+      {
+        "text": " Championship",
+        "align_abs": 0.4209645688533783,
+        "entropy": 4.594639778137207
+      },
+      {
+        "text": " anime",
+        "align_abs": 0.417600154876709,
+        "entropy": 1.7653694152832031
+      },
+      {
+        "text": "8",
+        "align_abs": 0.4064626693725586,
+        "entropy": 4.476995944976807
+      },
+      {
+        "text": " Townsend",
+        "align_abs": 0.37963417172431946,
+        "entropy": 1.3385229110717773
+      },
+      {
+        "text": " Other",
+        "align_abs": 0.3695714473724365,
+        "entropy": 7.135666370391846
+      },
+      {
+        "text": " For",
+        "align_abs": 0.36655184626579285,
+        "entropy": 4.556751251220703
+      },
+      {
+        "text": " NCAA",
+        "align_abs": 0.36643925309181213,
+        "entropy": 4.756525993347168
+      },
+      {
+        "text": " Rock",
+        "align_abs": 0.3643418252468109,
+        "entropy": 3.545192003250122
+      },
+      {
+        "text": " Mumbai",
+        "align_abs": 0.35974016785621643,
+        "entropy": 2.346362590789795
+      },
+      {
+        "text": " Trust",
+        "align_abs": 0.3586268424987793,
+        "entropy": 0.24078580737113953
+      },
+      {
+        "text": " Wings",
+        "align_abs": 0.35840851068496704,
+        "entropy": 1.5109169483184814
+      },
+      {
+        "text": " NBA",
+        "align_abs": 0.35626092553138733,
+        "entropy": 2.0131680965423584
+      },
+      {
+        "text": "s",
+        "align_abs": 0.354473739862442,
+        "entropy": 3.866070032119751
+      },
+      {
+        "text": "2",
+        "align_abs": 0.3514053225517273,
+        "entropy": 0.03251374512910843
+      },
+      {
+        "text": " death",
+        "align_abs": 0.3461259603500366,
+        "entropy": 5.4474334716796875
+      },
+      {
+        "text": " actress",
+        "align_abs": 0.34455606341362,
+        "entropy": 0.22076964378356934
+      },
+      {
+        "text": " It",
+        "align_abs": 0.34399792551994324,
+        "entropy": 3.4867544174194336
+      },
+      {
+        "text": " career",
+        "align_abs": 0.3432930111885071,
+        "entropy": 4.208826541900635
+      },
+      {
+        "text": " the",
+        "align_abs": 0.3402150869369507,
+        "entropy": 0.3372696340084076
+      },
+      {
+        "text": "2",
+        "align_abs": 0.3399164378643036,
+        "entropy": 0.002457336988300085
+      },
+      {
+        "text": " Manchester",
+        "align_abs": 0.33888113498687744,
+        "entropy": 0.13454702496528625
+      },
+      {
+        "text": "1",
+        "align_abs": 0.3383273184299469,
+        "entropy": 0.047465864568948746
+      },
+      {
+        "text": " Wings",
+        "align_abs": 0.33746337890625,
+        "entropy": 0.9776568412780762
+      },
+      {
+        "text": " sky",
+        "align_abs": 0.337258905172348,
+        "entropy": 4.999072074890137
+      },
+      {
+        "text": " monitoring",
+        "align_abs": 0.3368309736251831,
+        "entropy": 5.837602615356445
+      },
+      {
+        "text": " Center",
+        "align_abs": 0.33338668942451477,
+        "entropy": 3.257061719894409
+      },
+      {
+        "text": " Freeman",
+        "align_abs": 0.3333548903465271,
+        "entropy": 0.5220417976379395
+      },
+      {
+        "text": " American",
+        "align_abs": 0.33327150344848633,
+        "entropy": 0.28807052969932556
+      }
+    ],
+    "hidden_size": 5120,
+    "u1_top_dim_weight": 0.6525219082832336,
+    "u1_top_dim_idx": 2485,
+    "u1_top5_dims": [
+      2485,
+      2191,
+      496,
+      156,
+      4122
+    ],
+    "u1_top5_weights": [
+      0.6525219082832336,
+      0.5150529146194458,
+      0.37698662281036377,
+      0.08245304226875305,
+      0.05714460834860802
+    ],
+    "u1_entropy_bits": 3.608349423626295,
+    "u1_effective_dim": 12.196112207809902,
+    "u1_sparsity_pct_top1": 42.578514099121094,
+    "u1_sparsity_pct_top5": 84.32479095458984,
+    "singular_top": 7.465641975402832,
+    "sigma_ratio": 1.3079921292831984,
+    "_source": "systemd_full_tokens.json"
+  }
+}

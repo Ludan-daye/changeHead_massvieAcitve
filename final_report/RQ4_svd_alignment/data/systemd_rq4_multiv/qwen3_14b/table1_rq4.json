@@ -1,0 +1,8 @@
+{
+  "model": "qwen3_14b",
+  "layer_id": 6,
+  "sigma1_sigma2": 1.33336494324026,
+  "cos_sim": -0.021707127339511526,
+  "ma_type": "Type III (multi-direction)",
+  "r_squared": 0.9998876667053658
+}

@@ -1,0 +1,6 @@
+{
+  "model": "qwen3_8b",
+  "func_pct": 27.590332031249996,
+  "func_tokens": 33903,
+  "total_tokens": 122880
+}

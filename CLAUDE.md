@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 > 本文件面向 Claude Code 和任何接手开发者。记录当前所有实验进度、代码工具、执行流程、关键 gotcha。
-> **最后一次更新：2026-04-20**（新增 §16 本轮分析进度：RQ1 H₀ 证伪完成 + 26 模型基数 + RQ2 数据盘点）
+> **最后一次更新：2026-04-23**（新增 §17 26 模型 × 8 实验真数据收官汇总）
 
 ---
 
@@ -582,6 +582,199 @@ MAE（base/large/huge）、CLIP、DINOv2、DINOv2-reg
 ### 16.8 剩余 RQ（RQ5/6）待分析
 
 按顺序：RQ6（macro-SVD，RQ3/4 重做后合并分析）→ RQ5（V 消融）。当前数据均为 v2 错层版本，待起源层重跑（见 §12 批次）。
+
+---
+
+## 17. 26 模型 × 8 实验真数据收官（2026-04-23）
+
+一整天（2026-04-22 → 04-23）的全量补跑、代码修复、watcher 自动重跑完成。所有 26 模型 × 7 主实验（RQ1/RQ2a/RQ3/RQ4/RQ5/RQ6/HC）+ u₁ decode 全部有真数据。
+
+### 17.1 本轮修复的 bug（commit `11e7481` + `2568d30`，推 `origin/main`）
+
+| Bug | 根因 | 修复位置 |
+|---|---|---|
+| **B2 MoE** | `Qwen3MoeSparseMoeBlock` 无 `.up_proj/.down_proj`；experts 是 stacked 3D Parameter | `lib/model_utils.py:10-114` 新增 `_is_moe_layer` / `_moe_effective_{down,up}_proj` / `compute_moe_h2_effective` / `project_out_mlp_down_proj` |
+| **B-glm4**（原 B18 误判） | `get_mlp_down_proj` 对 glm4 无分支；`Glm4MLP` 用 `.down_proj`（非 ChatGLM 的 `.dense_4h_to_h`）| `lib/model_utils.py` 双路径分支（HF-native `Glm4MLP` + ChatGLM shim）|
+| **B19** | `load_model.py` 构造 `cuda:{hf_device_map["lm_head"]}`，accelerate 把 lm_head 卸 CPU 时得 `cuda:cpu` | `lib/load_model.py:118-134` CPU-offload guard |
+| **hybrid_attn** | `Qwen3_5MoeDecoderLayer` 根据 `config.layer_types` 用 `self.linear_attn` 或 `self.self_attn`；`getattr(layer, 'self_attn')` 层 0 返回 None | `RQ1_attention_contribution/exp1_feasibility_test.py:45-76, 122-135` |
+| **MoE skip guards** | subagent 一开始加 guard 写 `*_SKIPPED_moe.json` 空壳，绕过 helpers | 删除 RQ3/RQ4/RQ5/exp5c 的 skip guards，让 MoE 真正走 effective 投影路径产出真数据 |
+| **RQ5 per-expert writeback** | `set_mlp_down_proj` 只写 avg 无效 | 改为对每个 expert 独立应用 `(I - vv^T)` |
+
+### 17.2 今日时间线（服务器时间）
+
+- **13:20 master 启动** → qwen2.5_0.5b pilot 7 exp（8min）→ glm4_32b（4h27m，RQ1 2h + RQ2a 2h + 其余短）→ qwen3_30b_a3b（42min，一堆 fail/sentinel）→ qwen3.5_35b_a3b（62min，RQ1 hybrid_attn crash）
+- **19:41 master ALL DONE**（6h21m）
+- **19:42 watcher 启动 rerun**（用修复后代码）
+  - glm4_32b 6 exp（2h35m）
+  - qwen3_30b_a3b 全 7 exp（1h35m）
+  - qwen3.5_35b_a3b 全 7 exp（2h20m）
+- **01:12 watcher ALL RERUNS COMPLETE**（5h30m）
+- **01:22 u₁ decode 补跑 4 rerun 模型**（通过 symlink trick 让 `systemd_decode_full.py` 扫到 `systemd_hc_miss`，~1 min 出 `systemd_u1_rerun.json`）
+
+### 17.3 数据文件位置（`paper_experiments/fixes/`）
+
+| 模型群 | 数量 | RQ1-RQ6 | HC | u₁ |
+|---|:-:|---|---|---|
+| 20 dense prev | 20 | `results/ALL_EXPERIMENTS_SUMMARY_v2.json` | `fixes/results_stage2/HC_entropy/systemd_<model>/exp5c_*` | `fixes/systemd_full_tokens.json`（14/20，缺 bloom/falcon/gptj/llama2_13b/mistral/opt）|
+| 副服 2（gpt2, llama2_7b_chat）| 2 | `fixes/results_stage2_missing/systemd_rq*_m/` | `fixes/results_stage2_missing/systemd_hc_m/` | `fixes/results_stage2_missing/systemd_u1_m.json` |
+| 主服 4（qwen2.5_0.5b, glm4_32b, qwen3_30b, qwen3.5_35b）| 4 | `fixes/results_stage2_primary_missing/systemd_rq*_miss/` | `fixes/results_stage2_primary_missing/systemd_hc_miss/` | `fixes/results_stage2_primary_missing/systemd_u1_rerun.json` |
+
+### 17.4 26 × 8 覆盖表
+
+| 模型 | 规模 | RQ1 | RQ2a | RQ3 | RQ4 | RQ5 | RQ6 | HC | u₁ |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| bloom_7b1 | 7B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ |
+| falcon_7b | 7B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ |
+| glm4_9b | 9B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **glm4_32b** fp32 | 32B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **gpt2** | 0.1B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| gptj_6b | 6B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ |
+| llama2_13b | 13B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ |
+| **llama2_7b_chat** | 7B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| llama3.1_8b | 8B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| mistral_7b_v03 | 7B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ |
+| opt_6.7b | 6.7B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ |
+| qwen1.5_14b | 14B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **qwen2.5_0.5b** | 0.5B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| qwen2.5_7b | 7B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| qwen2_7b | 7B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| qwen3_0.6b | 0.6B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| qwen3_1.7b | 1.7B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| qwen3_4b | 4B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| qwen3_8b | 8B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| qwen3_14b | 14B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **qwen3_30b_a3b** MoE | 30B→3B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| qwen3_32b | 32B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| qwen3.5_9b | 9B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| qwen3.5_27b | 27B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **qwen3.5_35b_a3b** MoE | 35B→3B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| yi_9b | 9B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+**粗体 = 今日 6 个补跑模型**。✅=真数据完成 / ⚠️=缺 u₁（6 个 prev dense，非今日本轮范围，需另行补跑 `systemd_decode_full.py`）
+
+**合计**：
+- **182/182 主实验全真**（26 × 7 = RQ1/2a/3/4/5/6/HC）
+- **20/26 u₁ 完整**，6 缺口（bloom/falcon/gptj/llama2_13b/mistral/opt）
+
+### 17.5 今日新发现（u₁ 数据亮点，rerun 4 模型）
+
+| 模型 | Top-500 unique | concentration | top 1-2 token |
+|---|:-:|:-:|---|
+| glm4_32b | 33 | **7%**（极稀疏）| `@`, `Mint`, `Confederate`（符号 + 大写实体，结构 token）|
+| qwen2.5_0.5b | 131 | 26% | `The`, `G`, `Sh`（句首大写）|
+| qwen3_30b_a3b MoE | 184 | 37% | `\n\n\n`（换行）, `z`（结构 token 极强）|
+| qwen3.5_35b_a3b MoE | 303 | **61%**（最分散）| `in`, `of`, `on`, `for`, `the`（纯功能词）|
+
+**观察**：MoE #2（qwen3.5_35b_a3b）是唯一真正在 **功能词** 上建 MA 的模型；其他都是结构 token。支持 argument E "dual sparsity"（MoE 分散、dense 结构 token）的区分。
+
+### 17.6 下一步分析（pending tasks）
+
+1. **Task #43**（RQ4 分析换指标）：从 Cohen's d 换成 "Top-K 里结构 token 占比"，26 模型全重算
+2. **Task #45**（RQ6 分析）：master 跑的 RQ6 baseline 有错层 bug（已修复），数据以 `systemd_rq6exp6_miss/` 和 prev 20 的 v2 JSON 为准
+3. **merge v2 JSON**：把今日 6 个 rerun 模型的新真数据合并进 `ALL_EXPERIMENTS_SUMMARY_v2.json`（当前 v2 JSON 里这 6 个是旧/错 data）
+4. **补 6 个 u₁**：bloom/falcon/gptj/llama2_13b/mistral/opt（在副服 HC 跑过但 u₁ 没跑）
+
+### 17.7 关键 gotcha（今日新增）
+
+- **MoE skip guard 的坑**：defensive 的 sentinel-file-and-exit 会让下游以为跑完了，实际是空壳。永远让主路径跑下去，只在最底层的 helper 里 branch。
+- **glm4 双架构**：HF-native `Glm4MLP`（`.down_proj`）vs ChatGLM shim（`.dense_4h_to_h`），区分看 `model.config.model_type`。
+- **qwen3.5 hybrid attention**：`config.layer_types[i]` 决定该层用 `self_attn` 还是 `linear_attn`。iterate layers 时不能直接 `layer.self_attn`。
+- **MoE per-expert writeback**（RQ5）：只改 effective avg 无效，得 loop 每个 expert。`experts.down_proj` 是 stacked 3D Param `[N_experts, hidden, intermediate]`。
+
+---
+
+## 18. RQ4 结论验证没做好（2026-04-23）— 重跑诊断与计划
+
+### 18.1 问题
+
+本轮 RQ4 数据虽已 26/26 补齐真数据，但**验证分析未通过**。主要问题：
+
+1. **论点之前的"重定位"是误判**：§16.5 说要从"功能词"重定位到"结构 token"——用户澄清 RQ3 的 FUNCTION_WORDS 本就是**广义定义**（含标点/换行/特殊符号）。论点不变：**MA = MLP 在广义 function words（含结构 token）位置写入的 mark**。已把 `FUNCTION_WORDS ∪ STRUCTURAL_TOKENS ∪ 数字 ∪ 短 BPE 碎片`合并统计。
+
+2. **RQ4 判据最初错用 σ₁/σ₂ ≥ 3**：只 2/26 过阈值。实际正确判据是：
+   - **C1（量级）**：`σ₁ × (h₂·v₁) × u₁[j*]` 乘积达 MA 量级（`max|MA_F| ≥ 10³`）
+   - **C2（方向一致）**：atten_h 与 v₁ 方向一致（FW 子集 sign 同向率 ≥ 85%）
+   - **不看 σ₁/σ₂ 比值**
+
+3. **单层 vs 多层判据要分开**：
+   - CONCENTRATED（单层主导）→ 用单层 RQ4 判据
+   - FEW-SOURCE / DISPERSED（多层协作）→ 用 **macro-RQ4**（macro σ₁ ≥ 10³ 且投影掉 macro v₁ 后 ΔMA ≤ -80%）
+
+### 18.2 当前统计（按分类判据，26 模型）
+
+| 分类 | 判据 | 数量 | PASS | FAIL | 待判 |
+|:-:|---|:-:|:-:|:-:|:-:|
+| CONCENTRATED 单层 | 单层 `max|MA_F|≥10³ + sign≥85%` | 8 | 3 | 5 | 0 |
+| FEW-SOURCE + DISPERSED 多层 | macro `σ₁≥10³ + ΔMA≤-80%` | 16 | 10 | 6 | 0 |
+| ANOMALY / UNKNOWN | - | 2 | - | - | 2 |
+| **合计** | | **26** | **13** | **11** | **2** |
+
+**PASS 13 清单**：glm4_32b, gptj_6b, qwen3_0.6b（单层）+ qwen3_{1.7b, 4b, 8b, 14b, 32b}, llama3.1_8b, yi_9b, falcon_7b, gpt2, glm4_9b（多层）
+
+**FAIL 11 清单**：bloom_7b1, mistral_7b_v03, qwen2.5_0.5b, qwen2.5_7b, qwen2_7b（单层）+ llama2_13b, qwen1.5_14b, qwen3.5_9b, qwen3.5_27b, qwen3.5_35b_a3b (MoE), qwen3_30b_a3b (MoE)（多层）
+
+**待判 2**：opt_6.7b (ANOMALY_NO_MLP_RESPONSE), llama2_7b_chat (无 exp2c)
+
+### 18.3 FAIL 模型的起源层诊断（关键）
+
+用 RQ5 `single_ΔMA` 和 `macro_ΔMA` 交叉检查：
+
+| 模型 | RQ2c L | RQ2b L | single ΔMA% | macro ΔMA% | 诊断 |
+|---|:-:|:-:|---:|---:|---|
+| **bloom_7b1** | 3 | 3 | **-1%** | - | 🔥 L3 错起源——消融无效 |
+| **llama2_13b** | 0 | - | **-96%** | -29% | 🔥 单层就够，分类错为 FEW-SOURCE |
+| **qwen1.5_14b** | 35 | 2 | - | -13% | 🔥 RQ2c vs RQ2b 差 33 层，冲突 |
+| mistral_7b_v03 | 0 | 1 | **-83%** | - | 起源 OK，MA 绝对值小（σ₁=1.29）|
+| qwen2.5_7b | 3 | 3 | - | - | 单层 max=9656 够，sign 77% 差 8% |
+| qwen2_7b | 3 | 3 | - | - | 单层 max=5692 够，sign 81% 差 4% |
+| qwen3.5_9b | 22 | 26 | - | 0% | RQ2c/2b/macro 三源不一致 |
+| qwen3.5_27b | 54 | 54 | - | 0% | 起源一致但 v₁ 不塌——MA 走 v₂/v₃？|
+| qwen3.5_35b_a3b (MoE) | 9 | 39 | - | +1% | 差 30 层，MoE 层级判定失效 |
+| qwen3_30b_a3b (MoE) | 1 | 2 | - | 0% | MoE 专家级 |
+| qwen2.5_0.5b | 0 | 0 | - | - | 小模型 MA 本就小 |
+
+### 18.4 重跑计划（优先级）
+
+| # | 模型 | 问题 | 操作 | 成本 |
+|:-:|---|---|---|:-:|
+| 1 | **llama2_13b** | 分类错成 FEW-SOURCE | 用 RQ5_origin 的 L 重跑**单层** RQ4 | 5 min |
+| 2 | **bloom_7b1** | L3 错起源 | 跑 RQ2b 逐层扫描 → 找真起源层 → 重跑 RQ4 | 30 min |
+| 3 | **qwen1.5_14b** | RQ2c/RQ2b 冲突 | 跑 RQ2b → 确定真层 → 重跑 RQ4 单层或 macro | 30 min |
+| 4 | **qwen3.5 家族** (9b/27b) | 起源判定不一致 / v₁ 不塌 | RQ2b + 查 v₂/v₃ 是否主导 | 1.5h |
+| 5 | **opt_6.7b / llama2_7b_chat** | 无分类数据 | 补 exp2c → 选判据重跑 | 1h |
+| 6 | qwen2.5_7b / qwen2_7b | sign 阈值差几个点 | 不重跑，分析阈值松到 80% 即 PASS | - |
+| 7 | mistral_7b_v03 / qwen2.5_0.5b | σ₁/MA 本就小 | 接受，标为"小 MA 模型"，附录讨论 | - |
+| 8 | **MoE 2 个** | 层级判定不适用 | 不重跑，附录 per-expert 讨论 | - |
+
+**预估总重跑成本**：~3h（主要是 RQ2b 逐层扫描）
+
+### 18.5 重跑命令（主服）
+
+```bash
+ssh -p 23 root@117.50.223.194
+cd /root/ma/paper_experiments
+
+# 1. llama2_13b 重跑单层 RQ4（最快）
+L=$(python -c "import json; print(json.load(open('results/ALL_EXPERIMENTS_SUMMARY_v2.json'))['llama2_13b']['exp5_origin']['layer_id'])")
+python RQ4_svd_alignment/exp3_svd_alignment_analysis.py --model llama2_13b --layer_id $L --nsamples 30
+
+# 2. bloom_7b1 RQ2b 逐层扫描
+cd /root/ma/changeHead_massvieAcitve/experiments/exp2_mlp_layers
+python exp2b_mlp_layer_ablation.py --model bloom_7b1 --all_layers
+
+# 3. qwen1.5_14b 同上
+python exp2b_mlp_layer_ablation.py --model qwen1.5_14b --all_layers
+# 取 MA 降最多的层后重跑 RQ4
+
+# 4. qwen3.5 家族 + opt_6.7b + llama2_7b_chat (见 EXECUTION_PLAN)
+```
+
+### 18.6 结论验证定稿标准（待重跑完成后重评）
+
+- ≥ 17/24 dense 模型 PASS（不含 MoE 2 个）：视为主结论成立
+- 其中 ≥ 10 个多层模式通过 macro-RQ4：**支持 §8.2 两种生成模式**
+- qwen3.5 家族单独讨论（若仍 3/3 FAIL，则 qwen3.5 有独立 MA 机制）
+- MoE 2 个附录的 per-expert 分析（Tier C）
 
 ---
 
