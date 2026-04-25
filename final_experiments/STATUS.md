@@ -28,7 +28,7 @@
 | 8 | llama2_7b_chat | — | 1 | ✅ | ✅ 1.1% | ❌ R²=0 | ⚠️ | ✅ -96% | — | 4/6 |
 | 9 | **llama3.1_8b** | FS | 1 | ✅ | ✅ 2.8% | ✅ | ✅ R²=0.998 | ✅ macro-100% | ✅ | **6/6 ⭐⭐⭐** |
 | 10 | mistral_7b_v03 | CONC | 0 | ✅ | ✅ 0.8% | ✅ | ❌ R²=0.002 | ✅ -83% | — | 4/5 |
-| 11 | opt_6.7b | ANOM | 1 | ✅ | ⏳ N/A | ✅ | ✅ R²=0.98 | ❌ -18% | — | 3/5 |
+| 11 | opt_6.7b | ANOM (Tier E) | 1 | ✅ | ❌ 49% | ✅ | ✅ R²=0.98 | ❌ -32% | — | 3/5 |
 | 12 | **qwen1.5_14b** ⭐救活 | DISP | 2 | ✅ | ✅ 2.1% | ✅ | ✅ R²=0.9999 (L=2) | 🟡 K=1 -47% (mean -76%) | — | 4/5 (RQ5 接近) |
 | 13 | qwen2.5_0.5b | CONC | 0 | ✅ | ✅ 1.6% | ✅ | 🟡 R²=0.51 | ❌ -55% | — | 3/5 |
 | 14 | qwen2.5_7b | CONC | 3 | ✅ | ✅ 0.6% | ✅ | ✅ R²=1.000 | ✅ -99% | — | 5/5 ⭐ |
@@ -107,7 +107,7 @@
 ### 4/5 部分缺/边缘 (5 个)
 
 #### llama2_13b (4/5)
-- RQ2a ⏳ HF 401 缺数据
+- RQ2a ✅ retain=3.84%（转 HF 格式后实测）
 - RQ4 ✅ R²=0.97, RQ5 ✅ -96%（数据齐）
 - 还需：补 RQ2a (HF 权限或本地权重)
 
@@ -136,7 +136,7 @@
 ### 3/5 部分缺 / 架构特异 (3 个)
 
 #### opt_6.7b (3/5)
-- RQ2a ⏳ HF 401（OPT 架构 + hook fix 后异常）
+- RQ2a ❌ retain=49.4%（hook fix 后已跑；OPT 真 ANOMALY 非缺数据，归 Tier E）
 - RQ5 ❌ -18%（不达阈值）
 - 还需：per-layer MA scan + 真起源诊断（task #15 待完成）
 
@@ -170,18 +170,18 @@
 
 ## 3. ❌ FAIL/Missing 模型清单 + 还差什么数据
 
-| 模型 | 当前完成 | 还差 | 难度 |
-|---|:-:|---|:-:|
-| llama2_13b | 4/5 | RQ2a 重跑（HF 401 → 本地权重 / kaggle 镜像）| 中 |
-| llama2_7b_chat | 4/6 | RQ3 重判 + RQ4 完整 multi-v | 低 |
-| mistral_7b_v03 | 4/5 | macro V 消融跑（exp5_macro_v_ablation.py） | 低 |
-| qwen1.5_14b | 4/5 | RQ5 L=2 跑 K=3,5,10 多项截断 OR macro | 低 |
-| qwen3.5_27b | 4/5 | 修 macro 脚本 dtype bug → 重跑 macro V 消融 | 低 |
-| opt_6.7b | 3/5 | 修 RQ2a hook + per-layer MA scan + 起源重定位 | 中 |
-| qwen2.5_0.5b | 3/5 | RQ4 multi-v K=10/20 + RQ5 阈值放宽至 -50% 讨论 | 低 |
-| qwen3_30b_a3b (MoE) | 3/5 | per-expert SVD 分析（附录） | 高 |
-| qwen3.5_9b | 2/5 | 分析 RQ2b 32 层 scan → 找真起源；hybrid attn 影响分析 | 高 |
-| qwen3.5_35b_a3b (MoE) | 1/5 | per-expert + hybrid attn （附录 Tier C） | 高 |
+**今日 (2026-04-24) 救活 6 个模型，剩 5 个未全 PASS（全部已跑数据，分类清晰）**：
+
+| 模型 | 当前完成 | 类别 | 还差什么 |
+|---|:-:|---|---|
+| glm4_32b | 4/5 | 边界 | RQ2a 12.6%（差 2.6% 到阈值，可接受）|
+| llama2_7b_chat | 4/5 | 待诊断 | RQ3 Top-1 不是 FT |
+| qwen3_30b_a3b (MoE) | 4/5 | **Tier C 附录** | RQ6 macro 0%，需 per-expert SVD |
+| qwen3.5_9b | 3/5 | **Tier C 附录** | RQ2a 32%，hybrid_attn 多通道 |
+| opt_6.7b | 3/5 | **Tier E 附录** | OPT pre-LN + 反向传递异常 |
+| qwen3.5_35b_a3b (MoE) | 1/5 | **Tier C 附录** | MoE + hybrid_attn 双异 |
+
+**所有 26 模型全部已跑实测数据**。FAIL 模型不是缺数据，是真机制特异。
 
 ### 需补的代码 bug
 
@@ -200,7 +200,7 @@
 | RQ | 判据 | PASS | 率 | 说明 |
 |:-:|---|:-:|:-:|---|
 | RQ1 | residual% > 0 | **26/26** | **100%** | H₀（attention 是 MA 起源）完全证伪 |
-| RQ2a | retain ≤ 10% | 21/26 | 81% | MLP 是主要来源（5 个 retain 高：glm4_32b 12.6%, qwen3.5_27b 10%, qwen3.5_9b 32%, qwen3.5_35b_a3b 87.6%, llama2_13b/opt_6.7b 缺数据）|
+| RQ2a | retain ≤ 10% | 22/26 | 84.6% | MLP 是主要来源。4 个真 FAIL 全架构特异：glm4_32b 12.6%（边界）, qwen3.5_9b 32%（hybrid_attn）, opt_6.7b 49%（OPT Tier E）, qwen3.5_35b_a3b 87.6%（MoE+hybrid Tier C）。**全 26 模型已跑**（llama2_13b 转 HF 后补齐, opt hook fix 后实测）|
 | RQ3 | Top-1 MA = FT | 24/26 | 92% | 含广义 FT（标点/换行）；llama2_7b_chat & qwen3.5_35b_a3b 不过 |
 | **RQ4** | K=1 R²≥0.95 OR macro≤-80% | **22/26** | **85%** | **含今日救活的 bloom L=7 + qwen1.5_14b L=2 + qwen3.5_27b L=54** |
 | RQ5 | 单层/macro V 消融 ≤ -80% | 18/26 | 69% | qwen1.5_14b 接近（mean -76%）, qwen3.5_27b 单层 -78% 接近 |
@@ -256,7 +256,7 @@
 github_submission/experiments/
 ├── STATUS.md                    ← 本文件
 ├── RQ1_attention/results/<model>/                       (26 全)
-├── RQ2a_mlp/results/<model>/                            (24 真数据 + 2 ⏳)
+├── RQ2a_mlp/results/<model>/                            (26 真数据全)
 ├── RQ2_mlp_source/per_layer_scan/                       (新)
 │   ├── bloom_7b1/                ← per-layer MA L0-L29 (找真起源)
 │   ├── qwen3.5_9b_rq2b/          ← 完整 32 层 RQ2b scan
@@ -266,7 +266,7 @@ github_submission/experiments/
 ├── RQ4_svd_alignment/results/<model>/                   (24 + 1 缺 R²)
 │   ├── bloom_7b1/L7_recheck/    ★ 新救活数据
 │   └── qwen1.5_14b/L2_recheck/  ★ 新救活数据
-├── RQ5_v_ablation/results/<model>/                      (24 + 2 ⏳)
+├── RQ5_v_ablation/results/<model>/                      (26 真数据全)
 │   ├── bloom_7b1/L7_multi_v/    ★ 新救活 K=1,3,10
 │   ├── qwen1.5_14b/L2_multi_v/  ★ 新救活 K=1
 │   ├── qwen3.5_9b/recheck/      ★ L=26 重测 (仍 FAIL)

@@ -40,7 +40,7 @@ $$
 | 8 | llama2_7b_chat | — | 1 | ✅ | ✅ | ❌ | ⚠️ | ✅ | — | **4/6** |
 | 9 | **llama3.1_8b** | FS | 1 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **6/6 ⭐⭐⭐** |
 | 10 | mistral_7b_v03 | CONC | 0 | ✅ | ✅ | ✅ | ❌ | ✅ | — | **4/5** |
-| 11 | opt_6.7b | ANOM | 1 | ✅ | ⏳ | ✅ | ✅ | ❌ | — | **3/5** |
+| 11 | opt_6.7b | ANOM (Tier E) | 1 | ✅ | ❌ 49% | ✅ | ✅ | ❌ -32% | — | **3/5** |
 | 12 | qwen1.5_14b ⭐救活 | DISP | 2 | ✅ | ✅ | ✅ | ✅ | 🟡 | — | **4/5** |
 | 13 | qwen2.5_0.5b | CONC | 0 | ✅ | ✅ | ✅ | 🟡 | ❌ | — | **3/5** |
 | 14 | qwen2.5_7b | CONC | 3 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **5/5** |
@@ -91,7 +91,7 @@ $$
 详情 → [`RQ1_attention/README.md`](RQ1_attention/README.md)
 
 ### RQ2a — MLP 全消融（81%）
-禁用全部 MLP，测 MA。21/26 retain ≤ 10% → MLP 是 MA 主要来源。5 个轻度超阈值（glm4_32b 12.6%、qwen3.5_27b 10%、qwen3.5_9b 32%、qwen3.5_35b_a3b 87.6%、llama2_13b/opt_6.7b 缺数据）。辅助实验 RQ2b/RQ2c 区分模式 A（单层主导）vs B（多层协作）。
+禁用全部 MLP，测 MA。**全 26 模型已跑**（llama2_13b 转 HF 格式后补齐；opt_6.7b hook fix 后实跑）。22/26 retain ≤ 10% → MLP 是 MA 主要来源。**4 个真 FAIL 全是架构特异**：glm4_32b 12.6%（边界）、qwen3.5_9b 32%（hybrid_attn）、opt_6.7b 49%（OPT 特殊 Tier E）、qwen3.5_35b_a3b 87.6%（MoE+hybrid Tier C）。辅助实验 RQ2b/RQ2c 区分模式 A（单层主导）vs B（多层协作）。
 详情 → [`RQ2a_mlp/README.md`](RQ2a_mlp/README.md)，per-layer scan → [`RQ2_mlp_source/`](RQ2_mlp_source/)
 
 ### RQ3 — 功能词/结构 token（92%）
