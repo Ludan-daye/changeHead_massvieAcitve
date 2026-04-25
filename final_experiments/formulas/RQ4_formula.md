@@ -24,7 +24,7 @@ $$
 
 $$
 \eta = \frac{\sigma_1}{\sigma_2}, \qquad
-r_{\mathrm{eff}} = \frac{\bigl(\sum_i \sigma_i\bigr)^2}{\sum_i \sigma_i^{2}}
+r_{\mathrm{eff}} = \frac{\bigl(\sum_i \sigma_i\bigr)^{2}}{\sum_i \sigma_i^{2}}
 $$
 
 ### 1.4 MA 近似公式（Eq. 14，**单方向支配**情形 $\eta \gg 1$）
