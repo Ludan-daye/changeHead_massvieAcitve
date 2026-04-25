@@ -142,13 +142,30 @@ $$
 
 原因：MoE 的 MA 走 **per-expert** 机制，整层平均 v₁ 稀释真正的 mark 方向。脚本修复后（`paper_experiments/lib/model_utils.py` 加 `_is_moe_layer` / `_moe_effective_down_proj` / per-expert writeback）仍因机制本质不同而不适用单-V-direction 理论。
 
-### Tier E — 架构 Anomaly
-- **opt_6.7b**：RQ2a hook 异常（fix 后仍 +250%）→ 未来补 per-layer scan 后重判
-- **llama2_7b_chat**：无 RQ2c 数据，RQ3 R²=0 异常
+### Tier E — OPT 架构特殊（**已完整诊断，不再补实验**）
 
-### Tier D — Qwen3.5 Dense
-- **qwen3.5_9b**（hybrid attention）：RQ2a 32% + RQ5 macro -57% → 单独讨论
-- **qwen3.5_27b** ⭐救活：L=54 R²=0.99，单层 V 消融 -78% 接近阈值 → 4/5 通过
+- **opt_6.7b**：3/5 — pre-LayerNorm + 非标 FFN 架构
+
+**5 个独立证据交叉证明 Tier E 真异常**：
+
+| # | 证据 | 数值 | 异常方向 |
+|:-:|---|---:|---|
+| 1 | RQ1 关 attention | **ΔMA=+744%** | attention 是抑制器（vs 主流：放大器）|
+| 2 | RQ2a 关全 MLP | **retain=49%** | MLP 仅占一半 MA（vs 主流：≤10%）|
+| 3 | RQ5 V 消融 L=0 | **ΔMA=-32%** | σ·v·u 仅占 32%（vs 主流：≥80%）|
+| 4 | exp2b 禁 L=1 | **L=0 飙 15×** | 异常反向传递 |
+| 5 | exp3_fire | **L=0→L=6 衰减 200×** | MA 不稳定（vs 主流：peak 区稳定）|
+
+**意义**：OPT 的 MA 由 attention + MLP + residual 联合维持，**不符合主公式 `MA = Σσ·v·u`**。论文附录单独讨论，**不削弱主论点**对 22 个主线 dense 模型的有效性。
+
+### Tier D — Qwen3.5 Dense（hybrid_attention）
+
+- **qwen3.5_9b**：3/5 — RQ4 用 surge L=22 R²=0.73（vs 旧 L=26 R²=0.0006，1000× 改善），但 RQ5 消 v₁ 仍只 -0.88%（多通道维持）→ Tier C 附录
+- **qwen3.5_27b** ⭐救活：5/5 — L=54 R²=0.99，K=20 多项式 -72% 判据 D PASS
+
+### 待诊断
+
+- **llama2_7b_chat**：4/5，RQ3 Top-1 不是 FT，待诊断（可能词表定义边界）
 
 ---
 
