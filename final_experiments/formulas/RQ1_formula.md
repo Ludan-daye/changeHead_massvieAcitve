@@ -22,36 +22,38 @@ $$
 - $h^{(l)}_{t,j}$：第 $l$ 层、token 位置 $t$、hidden 维度 $j$ 的激活
 - $\text{attn}\to 0$：所有层的 attention 输出清零
 
-## 主判据：**残留率**
+## 主判据：**残留率** $r$
 
 $$
-\boxed{\text{residual\%} = \frac{\text{top1}_{\text{disabled}}}{\text{top1}_{\text{baseline}}} \times 100\%}
+\boxed{r = \frac{\text{top1}_{\text{disabled}}}{\text{top1}_{\text{baseline}}}}
 $$
+
+（实际报告时乘 100 表达为百分比）
 
 **判据**：
 
 $$
-\text{residual\%} > 0 \quad \Longrightarrow \quad \text{MA 未归零} \quad \Longrightarrow \quad \text{证伪 H}_0
+r > 0 \quad \Longrightarrow \quad \text{MA 未归零} \quad \Longrightarrow \quad \text{证伪 H}_0
 $$
 
-## 副判据：**方向 + 模式分类**
+## 副判据：**方向 + 模式分类**（$\Delta$）
 
 $$
-\Delta\text{MA\%} = \frac{\text{top1}_{\text{disabled}} - \text{top1}_{\text{baseline}}}{\text{top1}_{\text{baseline}}} \times 100\%
+\Delta = \frac{\text{top1}_{\text{disabled}} - \text{top1}_{\text{baseline}}}{\text{top1}_{\text{baseline}}}
 $$
 
-按 $\Delta\text{MA\%}$ 符号分两类：
+按 $\Delta$ 符号分两类：
 
 | 模式 | 条件 | 物理意义 | 数量 |
 |---|:-:|---|:-:|
-| **Generative** | $\Delta\text{MA\%} < 0$ | Attention 是 **放大器**（关后 MA 降）| 17 |
-| **Suppressive** | $\Delta\text{MA\%} > 0$ | Attention 是 **抑制器/稳态器**（关后 MA 暴增） | 8 |
+| **Generative** | $\Delta < 0$ | Attention 是 **放大器**（关后 MA 降）| 17 |
+| **Suppressive** | $\Delta > 0$ | Attention 是 **抑制器/稳态器**（关后 MA 暴增） | 8 |
 
 ## 关键数值（26/26 = 100% PASS）
 
-| 模型 | residual% | $\Delta\text{MA\%}$ | 模式 |
+| 模型 | $r$ (residual ratio) | $\Delta$ (ΔMA ratio) | 模式 |
 |---|---:|---:|:-:|
-| **gptj_6b** | **1.69%** | -98.3% | Gen ⭐ 最强证据 |
+| **gptj_6b** | **0.0169** (=1.69%) | -0.983 | Gen ⭐ 最强证据 |
 | qwen2_7b | 5.0% | -95% | Gen |
 | qwen2.5_7b | 4.0% | -96% | Gen |
 | bloom_7b1 | 1.7% | -98.3% | Gen |
