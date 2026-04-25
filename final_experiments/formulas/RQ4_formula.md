@@ -168,8 +168,8 @@ $$
 
 | 模型类型 | 用哪条 | 阈值 |
 |---|---|---|
-| **CONCENTRATED 单层** | $\text{R}^2(K=1) \geq 0.9$ 或 K=20 误差 ≤ 30% | 公式 A 拟合 |
-| **DISPERSED 多层** | macro v₁ 投影消除后 $\Delta\text{MA} \leq -80\%$ | 公式 B2 因果验证 |
+| **CONCENTRATED 单层** | $R^{2}(K=1) \geq 0.9$ 或 K=20 误差 ≤ 30% | 公式 A 拟合 |
+| **DISPERSED 多层** | macro v₁ 投影消除后 $\Delta \leq -0.80$（即 -80%）| 公式 B2 因果验证 |
 | **任一过即 PASS** | 综合判据 D | — |
 
 ---
