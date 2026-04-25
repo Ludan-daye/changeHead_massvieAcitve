@@ -454,6 +454,18 @@ $$
 
 ---
 
+## 8.1 Limitations（**回应 Reviewer 问题 9 + 14**）
+
+| Reviewer 提问 | 我们的回应 |
+|---|---|
+| **#9 跨语言/架构泛化** | 当前实证仅英语 + dense ≤ 14B；MoE / hybrid_attn 归 Tier C 附录。**MA 机制依赖 $W_{\text{down}}$ 频谱几何**（不依赖语言特有的词汇）→ 跨语言可能改变触发 token 分布，**不否定几何放大机制** |
+| **#9 富形态语言** | 阿拉伯 / 芬兰 / 中文等富形态语言 token 化与 BPE 不同，FT 集合 $\mathcal{F}$ 需扩展（如汉语功能词类别），但 RQ4 $\sigma \cdot v \cdot u$ 公式形式不变 |
+| **#14 量化/压缩应用** | 当前**不主张实用应用**。RQ5 V 消融是**因果验证工具**（structural necessity test），$\Delta_{\text{PPL}}$ 仅展示 MA 与内部表征耦合，**不是可部署修改** |
+| **#5 RQ5 下游影响** | 见 RQ5 §4.4 PPL 度量公式（$\Delta_{\text{PPL}}$ 待补）|
+| **#3 LayerNorm 混淆** | 见 RQ2 §1.2 含 LN 残差流分解，论证 RQ4 $\varrho$ 对 LN 不变 |
+| **#4 频率 vs 句法解耦** | 见 RQ3 §2.2 4 象限 + Logistic 回归 + PMI 对比 |
+| **#1 Eq. 17 推导修正** | 见 RQ5 §1.2 完整 4 步推导 |
+
 ## 9. 主结论一句话
 
 > **MA 是 MLP 在 surge_layer 的 down-projection 上、由广义 function token 在 $v_1$ 方向触发、经 $\sigma_1$ 谱能量放大、落到 $u_1[j^{\ast}]$ 稀疏维度形成的极端激活；attention 仅作为下游调节器（放大器或抑制器）。**

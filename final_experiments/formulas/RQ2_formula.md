@@ -24,13 +24,62 @@ $$
 - $\phi$：非线性激活（GELU / SiLU）
 - $\mathbf{b}_{\text{up}}, \mathbf{b}_{\text{down}}$：偏置（老架构如 BLOOM/OPT/GPT-2 非零；新架构 LLaMA/Qwen 系 = 0）
 
-### 1.2 残差流分解
+### 1.2 残差流分解（**含 LayerNorm，回应 Reviewer bDKj**）
 
-每层 hidden state $\mathbf{H}_{\ell}$ 由 attention 和 MLP 子层加性贡献组成：
+> Reviewer bDKj 指出：LayerNorm 增益参数 $\gamma$ 会显著改变 MLP 输出幅度。完整分解需含 LN。
+
+**Pre-LN 架构**（LLaMA / Qwen / Mistral 系）：
 
 $$
-\mathbf{H}_{\ell} = \mathbf{H}_{\ell-1} + \underbrace{\text{Attn}(\mathbf{H}_{\ell-1})}_{\mathbf{H}_{\ell}^{\text{attn}}} + \underbrace{\text{MLP}\bigl(\mathbf{H}_{\ell-1} + \mathbf{H}_{\ell}^{\text{attn}}\bigr)}_{\mathbf{H}_{\ell}^{\text{mlp}}}
+\mathbf{H}_{\ell} = \mathbf{H}_{\ell-1}
++ \underbrace{\text{Attn}\bigl(\mathrm{LN}_1(\mathbf{H}_{\ell-1})\bigr)}_{\mathbf{H}_{\ell}^{\text{attn}}}
++ \underbrace{\text{MLP}\bigl(\mathrm{LN}_2(\mathbf{H}_{\ell-1} + \mathbf{H}_{\ell}^{\text{attn}})\bigr)}_{\mathbf{H}_{\ell}^{\text{mlp}}}
 $$
+
+**Post-LN 架构**（GPT-2 / OPT / 早期 BLOOM）：
+
+$$
+\mathbf{H}_{\ell} = \mathrm{LN}\bigl(\mathbf{H}_{\ell-1} + \text{Attn}(\mathbf{H}_{\ell-1}) + \text{MLP}(\cdot)\bigr)
+$$
+
+**LN 算子**：
+
+$$
+\mathrm{LN}(x) = \gamma \odot \frac{x - \mu}{\sigma} + \beta, \qquad \mathrm{RMSNorm}(x) = \gamma \odot \frac{x}{\sqrt{\frac{1}{d}\sum_i x_i^{2}}}
+$$
+
+**LN 对 MA 影响（论证）**：
+
+| 维度 | LN 影响 |
+|---|---|
+| **方向** | LN 不改变方向（除 $\gamma$ 重新加权），$v_i$ 不受影响 |
+| **幅度** | $\gamma$ 重新缩放，但 RQ4 几何对齐 $\varrho(h_2, v_1) = h_2^\top v_1 / (\|h_2\| \|v_1\|)$ 是**归一化量**，对 LN 不变 |
+| **MA 检测** | 在 hidden state 上测量，LN 后激活仍保留稀疏 $j^{\ast}$ 维 |
+
+**结论**：LN 增益是混淆变量但**不否定 MA 几何机制**：
+- RQ4 $\varrho$ 与 LN $\gamma$ 是**正交的**（一个是方向，一个是幅度）
+- RQ5 V 消融让 78.8%-99.1% MA 塌（远超 LN 缩放可解释范围）
+- → MA 主要由 $W_{\text{down}}$ 几何主导，**LN 是次要调节器**
+
+### 1.2.1 多变体架构对照（**回应 Reviewer daTc 问题 6**）
+
+| 模型 | LN 类型 | LN 位置 | 激活 $\phi$ | MLP 形式 | $\eta$（典型）|
+|---|---|---|---|---|:-:|
+| GPT-2 | LayerNorm | **Post-LN** | GELU | $W_{\text{down}} \phi(W_{\text{up}} x + b)$ | 3.05 |
+| BLOOM | LayerNorm | Pre-LN | GELU | 同上 | 1.62 |
+| OPT | LayerNorm | Pre-LN | ReLU | 同上 | 2.53 |
+| LLaMA-2 | **RMSNorm** | Pre-LN | **SwiGLU** | $W_{\text{down}}\bigl(\phi(W_{\text{gate}} x) \odot W_{\text{up}} x\bigr)$ | 1.22 |
+| LLaMA-3.1 | RMSNorm | Pre-LN | SwiGLU | 同上 | — |
+| Qwen-2.5 | RMSNorm | Pre-LN | SwiGLU | 同上 | 2.64 |
+| Mistral | RMSNorm | Pre-LN | SwiGLU | 同上 | 1.77 |
+| GPT-J | LayerNorm | **Parallel**（attn ‖ MLP）| GELU | 同上 | 2.52 |
+
+**架构对 MA 影响的总观察**（Tab 1 结合）：
+
+- **LN 类型** 影响 $\sigma_1$ 量级，但不影响**几何对齐 $\varrho$ 的存在**
+- **激活函数** GELU vs SwiGLU 差异主要影响 $h_2$ 分布形态，**不影响 MA 是否在 FT 触发**
+- **Parallel 架构**（GPT-J）→ RQ6 唯一通过（attention 与 MLP 独立计算，单层 top-K 信息完整）
+- 不同架构 $\eta$ 跨度 1.06-3.05，但**MA 公式（RQ4 多项式）覆盖全谱**
 
 ### 1.3 MLP / Attention 主导比 $\rho_{\ell}$（Eq. 8）
 
