@@ -215,8 +215,10 @@ $$
 基于 Sun et al. (2024) 已有发现（破坏 MA 让 PPL 飙升），我们预期：
 
 $$
-\Delta_{\text{PPL}}^{\text{predicted}} \in [10\%, 100\%]\text{ 量级}
+\Delta_{\text{PPL}}^{\text{predicted}} \in [0.10, 1.00]
 $$
+
+（即 10% – 100% 量级，这一区间数值放在数学块外）
 
 待补实测（论文未跑），但**预期方向已确定**：
 

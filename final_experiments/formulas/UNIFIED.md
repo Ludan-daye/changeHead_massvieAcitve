@@ -454,17 +454,35 @@ $$
 
 ---
 
-## 8.1 Limitations（**回应 Reviewer 问题 9 + 14**）
+## 8.1 Reviewer 全 14 问题逐项回应
 
-| Reviewer 提问 | 我们的回应 |
-|---|---|
-| **#9 跨语言/架构泛化** | 当前实证仅英语 + dense ≤ 14B；MoE / hybrid_attn 归 Tier C 附录。**MA 机制依赖 $W_{\text{down}}$ 频谱几何**（不依赖语言特有的词汇）→ 跨语言可能改变触发 token 分布，**不否定几何放大机制** |
-| **#9 富形态语言** | 阿拉伯 / 芬兰 / 中文等富形态语言 token 化与 BPE 不同，FT 集合 $\mathcal{F}$ 需扩展（如汉语功能词类别），但 RQ4 $\sigma \cdot v \cdot u$ 公式形式不变 |
-| **#14 量化/压缩应用** | 当前**不主张实用应用**。RQ5 V 消融是**因果验证工具**（structural necessity test），$\Delta_{\text{PPL}}$ 仅展示 MA 与内部表征耦合，**不是可部署修改** |
-| **#5 RQ5 下游影响** | 见 RQ5 §4.4 PPL 度量公式（$\Delta_{\text{PPL}}$ 待补）|
-| **#3 LayerNorm 混淆** | 见 RQ2 §1.2 含 LN 残差流分解，论证 RQ4 $\varrho$ 对 LN 不变 |
-| **#4 频率 vs 句法解耦** | 见 RQ3 §2.2 4 象限 + Logistic 回归 + PMI 对比 |
-| **#1 Eq. 17 推导修正** | 见 RQ5 §1.2 完整 4 步推导 |
+### 公式 / 数学相关（**已加进 formulas/**）
+
+| # | Reviewer 提问 | 类型 | 回应位置 |
+|:-:|---|:-:|---|
+| **#1** qarC | Eq. 17 数学不一致 | solved | RQ5 §1.2 完整 4 步推导（球面方向矩 + Jensen 上界 + MA 比值）|
+| **#3** bDKj | LayerNorm 混淆变量 | solved | RQ2 §1.2 Pre-LN/Post-LN 残差流 + LN 不变性论证 |
+| **#4** daTc | 功能词 ≠ 高频词解耦 | ask | RQ3 §2.2 4 象限 + Logistic 回归 + PMI（双向不对称证伪频率假说）|
+| **#5** daTc | RQ5 消融下游影响 | ask | RQ5 §4.4 $\Delta_{\text{PPL}}$ 公式 + 正向支持论证（PPL 升高 ⇒ MA 是关键特征）|
+| **#6** daTc | 归一化 / 激活函数差异 | solved | RQ2 §1.2.1 8 模型多变体对照表 |
+| **#9** | 跨语言 / 架构泛化 | solved | 本节（限制：英语 + dense ≤ 14B；机制依赖 $W_{\text{down}}$ 频谱几何，跨语言不否定）|
+| **#14** daTc | 量化/压缩应用 | — | RQ5 §4.4.1 明确"验证性实验，非部署方案" |
+
+### 非公式相关（**叙事 / 数据 / 编辑层**，不影响 formulas/）
+
+| # | Reviewer 提问 | 处理位置 |
+|:-:|---|---|
+| **#2** bDKj | 样本量 / 文档独立性 | 论文 Methodology 章节补充 nsamples=30, seqlen=2048, wikitext 独立采样说明 |
+| **#7** daTc | Figure 4 光谱可视化 | 论文 Figure 4 重画；formulas/ 改用 $\eta = \sigma_1/\sigma_2$ 数值表代替主观视觉 |
+| **#8** daTc/qarC | Qwen2.5 语义 token | RQ3 §4.1 Tab 摘录已标 ⚠️；论文叙事承认架构演进 |
+| **#10** bDKj | 弱化"profound discovery" | 论文文风调整（如 "we find" 替代 "we fundamentally reveal"）|
+| **#11** qarC | 拼写 "Valur/Bath/Dracton" | 论文 Figure 2/6 修正 |
+| **#12** qarC | "76% to 100%" vs Tab 1 | 论文统一用 Tab 1 精确数字 |
+| **#13** bDKj | 论文结构（方法+结果交织）| 论文章节重组（不影响公式集）|
+
+### 总览
+
+公式相关 7 项**已全部回应到** formulas/；非公式 7 项需在论文 LaTeX 主稿 (`acl_source/`) 处理，不影响本文档集合。
 
 ## 9. 主结论一句话
 
