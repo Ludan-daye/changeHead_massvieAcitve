@@ -199,7 +199,7 @@ $$
 ### 7.3 整体（合）
 
 $$
-\text{RQ5 整体 PASS} = \frac{|\{\text{PASS}\}|}{|M|} = \frac{9 + 12}{10 + 16} = \frac{21}{26} = 80.8\%
+\text{RQ5 整体 PASS rate} = \frac{|\{\text{PASS}\}|}{|M|} = \frac{9 + 12}{10 + 16} = \frac{21}{26} \approx 0.808
 $$
 
 去除 5 个架构特异（opt Tier E + qwen3.5_9b/35b Tier C + qwen3_30b_a3b MoE + qwen2.5_0.5b 小模型 σ 弱）后：**dense 主体 21/21 = 100%** ✅
