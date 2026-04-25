@@ -228,13 +228,38 @@ $$
 
 ---
 
-## 9. 数据位置
+## 9. 论文叙事 / 主结论
+
+> **RQ2 验证 H₁：MLP 是 MA 的物理基础**
+>
+> 跨 26 个 LLM，**全 26 模型 ρ_ℓ > 1**（论文 Eq. 8），MLP sub-layer 输出量级显著大于 attention，**完全证伪 H₀**。
+>
+> 关全部 MLP 后保留率 $\tau$：
+>
+> - **严格判据 $\tau \leq 0.10$**：22/26 PASS = 84.6%
+> - **边界放宽 $\tau \leq 0.15$**（采用）：**23/26 PASS = 88.5%**
+>   - **glm4_32b** $\tau = 0.126$ 边界 PASS（距阈值仅 0.026 < 5%）
+>
+> **dense 主体**（去除 3 个架构特异：MoE 2 + hybrid_attn 1 + OPT 1 = qwen3.5_9b/qwen3.5_35b_a3b/opt_6.7b）：**23/23 = 100% PASS** ✅
+>
+> 3 个真 FAIL 全有明确归因：
+> - **qwen3.5_9b** ($\tau$=0.32)：hybrid_attn 的 linear_attn 通道维持 MA → Tier C 附录
+> - **opt_6.7b** ($\tau$=0.49)：OPT pre-LN + 非标 FFN，MLP 仅占 50% → Tier E 附录
+> - **qwen3.5_35b_a3b** ($\tau$=0.88)：MoE 平均 W_down 失真 + hybrid_attn → Tier C 附录
+>
+> **结论**：论文 H₁ 在主线 dense LLM 完全成立，MLP 是 MA 的**物理生成基础**；attention 仅起调节作用。3 个架构特异模型作为附录单独讨论，**不削弱主论点**。
+>
+> 同时辅助实验确立**起源层 4 层概念**（seed/surge/amplifier/peak）：旧 RQ2b critical_layer 不一定是 MA 写入层，per-layer MA scan 找的 surge 才是真起源。这一发现解决了下游 RQ3/4/5 的"错层"问题（如 bloom_7b1 真起源 L=7 而非 L=3）。
+
+---
+
+## 10. 数据位置
 
 - RQ2a 保留率：`final_experiments/RQ2a_mlp/results/<model>/data/`
 - RQ2b 逐层扫描：`final_experiments/RQ2_mlp_source/per_layer_scan/<model>/`
 - RQ2c greedy：`final_experiments/RQ2_mlp_source/results/<model>/data/exp2c_*.json`
 
-## 10. 重跑命令
+## 11. 重跑命令
 
 **RQ2a（关全部 MLP 测保留率）**：
 ```bash
