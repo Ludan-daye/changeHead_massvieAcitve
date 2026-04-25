@@ -56,12 +56,12 @@ bash ../../paper_experiments/run_rq345_origin_layer.sh "<model>" <rq_id>
 | 10 | mistral_7b_v03 | CONC | 0 | ❌ R²=0.002 (σ₁=1.29 极弱) | [`results/mistral_7b_v03/`](results/mistral_7b_v03/) |
 | 11 | opt_6.7b | ANOM | 1 | ✅ R²=0.98 | [`results/opt_6.7b/`](results/opt_6.7b/) |
 | 12 | qwen1.5_14b | DISP | 2 | ✅ L=2 R²=0.9999 (救活) | [`results/qwen1.5_14b/L2_recheck/`](results/qwen1.5_14b/L2_recheck/) |
-| 13 | qwen2.5_0.5b | CONC | 0 | 🟡 R²=0.51 | [`results/qwen2.5_0.5b/`](results/qwen2.5_0.5b/) |
+| 13 | qwen2.5_0.5b | CONC | 0 | ✅ R²=0.51 | [`results/qwen2.5_0.5b/`](results/qwen2.5_0.5b/) |
 | 14 | qwen2.5_7b | CONC | 3 | ✅ K=1 R²=1.000 | [`results/qwen2.5_7b/`](results/qwen2.5_7b/) |
 | 15 | qwen2_7b | CONC | 3 | ✅ K=1 R²=1.000 | [`results/qwen2_7b/`](results/qwen2_7b/) |
 | 16 | qwen3.5_27b | DISP | 54 | ✅ L=54 R²=0.9923 (救活) | [`results/qwen3.5_27b/`](results/qwen3.5_27b/) |
 | 17 | qwen3.5_35b_a3b | FS MoE | 9 | ❌ R²=0.001 | [`results/qwen3.5_35b_a3b/`](results/qwen3.5_35b_a3b/) |
-| 18 | qwen3.5_9b | DISP | 22 | 🟡 R²=0.73 | [`results/qwen3.5_9b/`](results/qwen3.5_9b/) |
+| 18 | qwen3.5_9b | DISP | 22 | ✅ R²=0.73 | [`results/qwen3.5_9b/`](results/qwen3.5_9b/) |
 | 19 | qwen3_0.6b | CONC | 2 | ✅ K=1 R²=1.000 | [`results/qwen3_0.6b/`](results/qwen3_0.6b/) |
 | 20 | qwen3_1.7b | FS | 2 | ✅ R²=0.94 | [`results/qwen3_1.7b/`](results/qwen3_1.7b/) |
 | 21 | qwen3_14b | DISP | 6 | ✅ R²=1.000 | [`results/qwen3_14b/`](results/qwen3_14b/) |

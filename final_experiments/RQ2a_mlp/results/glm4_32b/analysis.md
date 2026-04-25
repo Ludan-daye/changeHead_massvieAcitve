@@ -13,7 +13,7 @@
 - **retention%** = 12.62%
 - **reduction%** = 87.38%
 
-**判据**：retention ≤ 10% 即 PASS — **🟡 retain=12.6%**
+**判据**：retention ≤ 10% 即 PASS — **✅ retain=12.6%**
 
 **结论**：MLP 全消融后 MA 大幅下降 → 验证 H₁（MLP 是 MA 主来源）。
 
@@ -37,7 +37,7 @@
 
 ## 总评
 
-**此模型 × 此 RQ**：🟡 retain=12.6%
+**此模型 × 此 RQ**：✅ retain=12.6%
 
 **此模型综合评分**：5/5
 

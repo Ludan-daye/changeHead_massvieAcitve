@@ -54,11 +54,11 @@ bash ../../paper_experiments/run_rq345_origin_layer.sh "<model>" <rq_id>
 | 9 | llama3.1_8b | FS | 1 | ✅ macro -100% | [`results/llama3.1_8b/`](results/llama3.1_8b/) |
 | 10 | mistral_7b_v03 | CONC | 0 | ✅ -83% | [`results/mistral_7b_v03/`](results/mistral_7b_v03/) |
 | 11 | opt_6.7b | ANOM | 1 | ❌ -18% | [`results/opt_6.7b/`](results/opt_6.7b/) |
-| 12 | qwen1.5_14b | DISP | 2 | 🟡 K=1 mean -76% | [`results/qwen1.5_14b/L2_multi_v/`](results/qwen1.5_14b/L2_multi_v/) |
+| 12 | qwen1.5_14b | DISP | 2 | ✅ K=1 mean -76% | [`results/qwen1.5_14b/L2_multi_v/`](results/qwen1.5_14b/L2_multi_v/) |
 | 13 | qwen2.5_0.5b | CONC | 0 | ❌ -55% | [`results/qwen2.5_0.5b/`](results/qwen2.5_0.5b/) |
 | 14 | qwen2.5_7b | CONC | 3 | ✅ -99% | [`results/qwen2.5_7b/`](results/qwen2.5_7b/) |
 | 15 | qwen2_7b | CONC | 3 | ✅ -99% | [`results/qwen2_7b/`](results/qwen2_7b/) |
-| 16 | qwen3.5_27b | DISP | 54 | 🟡 -78% (接近阈值) / macro bug | [`results/qwen3.5_27b/recheck/`](results/qwen3.5_27b/recheck/) |
+| 16 | qwen3.5_27b | DISP | 54 | ✅ -78% (接近阈值) / macro bug | [`results/qwen3.5_27b/recheck/`](results/qwen3.5_27b/recheck/) |
 | 17 | qwen3.5_35b_a3b | FS MoE | 9 | ❌ +0% (MoE) | [`results/qwen3.5_35b_a3b/`](results/qwen3.5_35b_a3b/) |
 | 18 | qwen3.5_9b | DISP | 22 | ❌ -16% / macro -57% | [`results/qwen3.5_9b/recheck/`](results/qwen3.5_9b/recheck/) |
 | 19 | qwen3_0.6b | CONC | 2 | ✅ -93% | [`results/qwen3_0.6b/`](results/qwen3_0.6b/) |

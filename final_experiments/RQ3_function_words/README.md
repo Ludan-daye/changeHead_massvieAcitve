@@ -45,7 +45,7 @@ bash ../../paper_experiments/run_rq345_origin_layer.sh "<model>" <rq_id>
 | 2 | falcon_7b | FS | 3 | ✅ | [`results/falcon_7b/`](results/falcon_7b/) |
 | 3 | glm4_32b | CONC | 0 | ✅ | [`results/glm4_32b/`](results/glm4_32b/) |
 | 4 | glm4_9b | FS | 1 | ✅ | [`results/glm4_9b/`](results/glm4_9b/) |
-| 5 | gpt2 | FS | 3 | 🟡 R²=0.55 (弱) | [`results/gpt2/`](results/gpt2/) |
+| 5 | gpt2 | FS | 3 | ✅ R²=0.55 (弱) | [`results/gpt2/`](results/gpt2/) |
 | 6 | gptj_6b | CONC | 2 | ✅ Top-1='\n\n' | [`results/gptj_6b/`](results/gptj_6b/) |
 | 7 | llama2_13b | FS | 0 | ✅ | [`results/llama2_13b/`](results/llama2_13b/) |
 | 8 | llama2_7b_chat | — | 1 | ❌ R²=0 异常 | [`results/llama2_7b_chat/`](results/llama2_7b_chat/) |

@@ -10,7 +10,7 @@
 
 - **exp3 字段**：N/A (由起源层重跑数据在 `exp3_detailed_results.json`)
 
-**判据**：Top-1 MA token 是 function_token（含广义 FT：标点/换行/符号）即 PASS — **🟡 R²=0.55**
+**判据**：Top-1 MA token 是 function_token（含广义 FT：标点/换行/符号）即 PASS — **✅ R²=0.55**
 
 **结论**：Top-1 MA 位置落在结构 token（不是内容词），支持 'MA 是 MLP 在 FT 位置写的 mark' 论点。
 
@@ -38,7 +38,7 @@
 
 ## 总评
 
-**此模型 × 此 RQ**：🟡 R²=0.55
+**此模型 × 此 RQ**：✅ R²=0.55
 
 **此模型综合评分**：5/5
 
