@@ -1,0 +1,312 @@
+% ==========================================================
+% References for "Function Words as Geometric Anchors"
+% Only entries actually cited in main.tex / appendix.tex are
+% kept; every metadata field has been verified against the
+% venue of record (as of 2026-04-24).
+% ==========================================================
+
+% --- Transformer foundations ---
+@article{vaswani2017attention,
+  title={Attention is all you need},
+  author={Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N and Kaiser, {\L}ukasz and Polosukhin, Illia},
+  journal={Advances in neural information processing systems (NeurIPS)},
+  volume={30},
+  year={2017}
+}
+
+
+@article{brown2020language,
+  title={Language models are few-shot learners},
+  author={Brown, Tom and Mann, Benjamin and Ryder, Nick and Subbiah, Melanie and Kaplan, Jared D and Dhariwal, Prafulla and Neelakantan, Arvind and Shyam, Pranav and Sastry, Girish and Askell, Amanda and others},
+  journal={Advances in neural information processing systems (NeurIPS)},
+  volume={33},
+  pages={1877--1901},
+  year={2020}
+}
+
+
+@article{touvron2023llama,
+  title={Llama 2: Open foundation and fine-tuned chat models},
+  author={Touvron, Hugo and Martin, Louis and Stone, Kevin and Albert, Peter and Almahairi, Amjad and Babaei, Yasmine and Bashlykov, Nikolay and Batra, Soumya and Bhargava, Prajjwal and Bhosale, Shruti and others},
+  journal={arXiv preprint arXiv:2307.09288},
+  year={2023}
+}
+% ============================================================
+% Massive activations and numerical pathologies
+% ============================================================
+@article{sun2024massive,
+  title={Massive activations in large language models},
+  author={Sun, Mingjie and Chen, Xinlei and Kolter, J Zico and Liu, Zhuang},
+  journal={arXiv preprint arXiv:2402.17762},
+  year={2024}
+}
+
+@article{merrill2022saturated,
+  title={Saturated transformers are constant-depth threshold circuits},
+  author={Merrill, William and Sabharwal, Ashish and Smith, Noah A},
+  journal={Transactions of the Association for Computational Linguistics (TACL)},
+  volume={10},
+  pages={843--856},
+  year={2022}
+}
+
+@article{liu2024alberta,
+  title={ALBERTA: Algorithm-based error resilience in transformer architectures},
+  author={Liu, Haoxuan and Singh, Vasu and Filipiuk, Micha{\l} and Hari, Siva Kumar Sastry},
+  journal={IEEE Open Journal of the Computer Society},
+  volume={6},
+  pages={85--96},
+  year={2024},
+  publisher={IEEE}
+}
+
+@article{liu2024lost,
+  title={Lost in the middle: How language models use long contexts},
+  author={Liu, Nelson F and Lin, Kevin and Hewitt, John and Paranjape, Ashwin and Bevilacqua, Michele and Petroni, Fabio and Liang, Percy},
+  journal={Transactions of the association for computational linguistics (TACL)},
+  volume={12},
+  pages={157--173},
+  year={2024}
+}
+% ============================================================
+% Outlier / quantisation work on extreme activations
+% ============================================================
+@article{dettmers2022gpt3,
+  title={Gpt3. int8 (): 8-bit matrix multiplication for transformers at scale},
+  author={Dettmers, Tim and Lewis, Mike and Belkada, Younes and Zettlemoyer, Luke},
+  journal={Advances in neural information processing systems (NeurIPS)},
+  volume={35},
+  pages={30318--30332},
+  year={2022}
+}
+
+@inproceedings{xiao2023smoothquant,
+  title={Smoothquant: Accurate and efficient post-training quantization for large language models},
+  author={Xiao, Guangxuan and Lin, Ji and Seznec, Mickael and Wu, Hao and Demouth, Julien and Han, Song},
+  booktitle={International conference on machine learning (ICML)},
+  pages={38087--38099},
+  year={2023},
+  organization={PMLR}
+}
+
+@article{bondarenko2023quantizable,
+  title={Quantizable transformers: Removing outliers by helping attention heads do nothing},
+  author={Bondarenko, Yelysei and Nagel, Markus and Blankevoort, Tijmen},
+  journal={Advances in Neural Information Processing Systems (NeurIPS)},
+  volume={36},
+  pages={75067--75096},
+  year={2023}
+}
+
+@inproceedings{shao2024omniquant,
+  title     = {OmniQuant: Omnidirectionally Calibrated Quantization for Large Language Models},
+  author    = {Shao, Wenqi and Chen, Mengzhao and Zhang, Zhaoyang and
+                Xu, Peng and Zhao, Lirui and Li, Zhiqian and Zhang, Kaipeng and
+                Gao, Peng and Qiao, Yu and Luo, Ping},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024}
+}
+@inproceedings{ICLR2024_c6483c8a,
+ author = {Shao, Wenqi and Chen, Mengzhao and Zhang, Zhaoyang and Xu, Peng and Zhao, Lirui and Li, Zhiqian and Zhang, Kaipeng and Peng, Gao and Qiao, Yu and Luo, Ping},
+ booktitle = {International Conference on Learning Representations},
+ editor = {B. Kim and Y. Yue and S. Chaudhuri and K. Fragkiadaki and M. Khan and Y. Sun},
+ pages = {45472--45496},
+ title = {OmniQuant: Omnidirectionally Calibrated Quantization for Large Language Models},
+ url = {https://proceedings.iclr.cc/paper_files/paper/2024/file/c6483c8a68083af3383f91ee0dc6db95-Paper-Conference.pdf},
+ volume = {2024},
+ year = {2024}
+}
+
+
+@inproceedings{liu2024intactkv,
+  title     = {{IntactKV}: Improving Large Language Model Quantization by Keeping Pivot Tokens Intact},
+  author    = {Liu, Ruikang and Bai, Haoli and Lin, Haokun and Li, Yuening and
+                Gao, Han and Xu, Zhengtao and Hou, Lu and Yao, Jun and Yuan, Chun},
+  booktitle = {Findings of the Association for Computational Linguistics (ACL Findings) 2024},
+  year      = {2024}
+}
+% ============================================================
+% Attention sinks and function-token mechanisms
+% ============================================================
+@inproceedings{xiao2024efficient,
+  title     = {Efficient Streaming Language Models with Attention Sinks},
+  author    = {Xiao, Guangxuan and Tian, Yuandong and Chen, Beidi and Han, Song and Lewis, Mike},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024}
+}
+
+@inproceedings{darcet2024registers,
+  title     = {Vision Transformers Need Registers},
+  author    = {Darcet, Timoth{\'e}e and Oquab, Maxime and Mairal, Julien and Bojanowski, Piotr},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024}
+}
+
+@inproceedings{cancedda2024spectral,
+  title={Spectral filters, dark signals, and attention sinks},
+  author={Cancedda, Nicola},
+  booktitle={Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (ACL), Volume 1: Long Papers},
+  pages={4792--4808},
+  year={2024}
+}
+
+@inproceedings{gu2025attention,
+  title     = {When Attention Sink Emerges in Language Models: An Empirical View},
+  author    = {Gu, Xiangming and Pang, Tianyu and Du, Chao and Liu, Qian and
+                Zhang, Fengzhuo and Du, Cunxiao and Wang, Ye and Lin, Min},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2025}
+}
+@article{gu2024attention,
+  title={When attention sink emerges in language models: An empirical view},
+  author={Gu, Xiangming and Pang, Tianyu and Du, Chao and Liu, Qian and Zhang, Fengzhuo and Du, Cunxiao and Wang, Ye and Lin, Min},
+  journal={arXiv preprint arXiv:2410.10781},
+  year={2024}
+}
+% ============================================================
+% Function words, syntax probes in LLMs
+% ============================================================
+@inproceedings{hewitt2019structural,
+  title={A structural probe for finding syntax in word representations},
+  author={Hewitt, John and Manning, Christopher D},
+  booktitle={Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (NAACL-HLT), Volume 1 (Long and Short Papers)},
+  pages={4129--4138},
+  year={2019}
+}
+
+@inproceedings{tenney2019bert,
+  title={BERT rediscovers the classical NLP pipeline},
+  author={Tenney, Ian and Das, Dipanjan and Pavlick, Ellie},
+  booktitle={Proceedings of the 57th annual meeting of the association for computational linguistics (ACL)},
+  pages={4593--4601},
+  year={2019}
+}
+
+@inproceedings{jawahar2019does,
+  title={What does BERT learn about the structure of language?},
+  author={Jawahar, Ganesh and Sagot, Beno{\^\i}t and Seddah, Djam{\'e}},
+  booktitle={Proceedings of the 57th annual meeting of the association for computational linguistics (ACL)},
+  pages={3651--3657},
+  year={2019}
+}
+
+@inproceedings{voita2019analyzing,
+  title={Analyzing multi-head self-attention: Specialized heads do the heavy lifting, the rest can be pruned},
+  author={Voita, Elena and Talbot, David and Moiseev, Fedor and Sennrich, Rico and Titov, Ivan},
+  booktitle={Proceedings of the 57th annual meeting of the association for computational linguistics (ACL)},
+  pages={5797--5808},
+  year={2019}
+}
+
+% ============================================================
+% MLP internals, circuit interpretability, causal intervention
+% ============================================================
+@article{elhage2021mathematical,
+  title   = {A Mathematical Framework for Transformer Circuits},
+  author  = {Elhage, Nelson and Nanda, Neel and Olsson, Catherine and
+             Henighan, Tom and Joseph, Nicholas and Mann, Ben and
+             Askell, Amanda and Bai, Yuntao and Chen, Anna and
+             Conerly, Tom and DasSarma, Nova and Drain, Dawn and
+             Ganguli, Deep and Hatfield-Dodds, Zac and Hernandez, Danny and
+             Jones, Andy and Kernion, Jackson and Lovitt, Liane and
+             Ndousse, Kamal and Amodei, Dario and Brown, Tom and
+             Clark, Jack and Kaplan, Jared and McCandlish, Sam and
+             Olah, Christopher},
+  journal = {Transformer Circuits Thread},
+  year    = {2021}
+}
+
+@inproceedings{geva2021transformer,
+  title     = {Transformer Feed-Forward Layers Are Key-Value Memories},
+  author    = {Geva, Mor and Schuster, Roei and Berant, Jonathan and Levy, Omer},
+  booktitle = {Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  pages     = {5484--5495},
+  year      = {2021}
+}
+
+@inproceedings{dai2022knowledge,
+  title={Knowledge neurons in pretrained transformers},
+  author={Dai, Damai and Dong, Li and Hao, Yaru and Sui, Zhifang and Chang, Baobao and Wei, Furu},
+  booktitle={Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL), Volume 1: Long Papers},
+  pages={8493--8502},
+  year={2022}
+}
+
+@inproceedings{wang2023ioi,
+  title     = {Interpretability in the Wild: a Circuit for Indirect Object Identification in {GPT-2} Small},
+  author    = {Wang, Kevin Ro and Variengien, Alexandre and Conmy, Arthur and
+                Shlegeris, Buck and Steinhardt, Jacob},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2023}
+}
+@article{wang2022interpretability,
+  title={Interpretability in the wild: a circuit for indirect object identification in gpt-2 small},
+  author={Wang, Kevin and Variengien, Alexandre and Conmy, Arthur and Shlegeris, Buck and Steinhardt, Jacob},
+  journal={arXiv preprint arXiv:2211.00593},
+  year={2022}
+}
+
+@article{meng2022locating,
+  title={Locating and editing factual associations in gpt},
+  author={Meng, Kevin and Bau, David and Andonian, Alex and Belinkov, Yonatan},
+  journal={Advances in neural information processing systems (NeurIPS)},
+  volume={35},
+  pages={17359--17372},
+  year={2022}
+}
+
+@article{conmy2023towards,
+  title={Towards automated circuit discovery for mechanistic interpretability},
+  author={Conmy, Arthur and Mavor-Parker, Augustine and Lynch, Aengus and Heimersheim, Stefan and Garriga-Alonso, Adri{\`a}},
+  journal={Advances in Neural Information Processing Systems (NeurIPS)},
+  volume={36},
+  pages={16318--16352},
+  year={2023}
+}
+
+@article{yuan2023asvd,
+  title={Asvd: Activation-aware singular value decomposition for compressing large language models},
+  author={Yuan, Zhihang and Shang, Yuzhang and Song, Yue and Yang, Dawei and Wu, Qiang and Yan, Yan and Sun, Guangyu},
+  journal={arXiv preprint arXiv:2312.05821},
+  year={2023}
+}
+
+@book{pearl2009causality,
+  title     = {Causality: Models, Reasoning, and Inference},
+  author    = {Pearl, Judea},
+  edition   = {2},
+  publisher = {Cambridge University Press},
+  year      = {2009}
+}
+
+% ============================================================
+% Classical probability results cited in the formal proofs
+% (Appendix E)
+% ============================================================
+@article{stam1982limit,
+  title={Limit theorems for uniform distributions on spheres in high-dimensional Euclidean spaces},
+  author={Stam, Adriaan J},
+  journal={Journal of Applied probability},
+  volume={19},
+  number={1},
+  pages={221--228},
+  year={1982},
+  publisher={Cambridge University Press}
+}
+
+@book{fang1990symmetric,
+  title     = {Symmetric Multivariate and Related Distributions},
+  author    = {Fang, Kai-Tai and Kotz, Samuel and Ng, Kai-Wang},
+  publisher = {Chapman and Hall},
+  year      = {1990}
+}
+
+@inproceedings{diaconis1987dozen,
+  title={A dozen de Finetti-style results in search of a theory},
+  author={Diaconis, Persi and Freedman, David},
+  booktitle={Annales de l'IHP Probabilit{\'e}s et statistiques},
+  volume={23},
+  number={S2},
+  pages={397--423},
+  year={1987}
+}

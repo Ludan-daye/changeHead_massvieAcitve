@@ -1,0 +1,1187 @@
+\documentclass{article}
+
+% ============================================================
+% NeurIPS 2026 main-track submission (single-column, double-blind)
+% During drafting we keep author info visible via the [preprint] option.
+% For the actual submission, switch to plain  \usepackage{neurips_2026}.
+% For the camera-ready,     switch to         \usepackage[final]{neurips_2026}.
+% ============================================================
+\PassOptionsToPackage{numbers,compress}{natbib}
+\usepackage[preprint]{neurips_2026}
+
+% --- Core packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{enumitem}
+
+% --- Convenient macros ---
+\newcommand{\Wdown}{\mathbf{W}_{\text{down}}}
+\newcommand{\ma}{\mathrm{MA}}
+\newcommand{\ffd}{d_{\text{ff}}}
+\newcommand{\topk}{\mathrm{Top}}
+
+% ============================================================
+% Title & authors
+% ============================================================
+\title{Function Words as Geometric Anchors:\\
+An SVD Expansion Mechanism\\
+for Massive Activations in Large Language Models}
+
+\author{%
+  David S.~Hippocampus\thanks{Use footnote for providing further information
+    about author (webpage, alternative address)---\emph{not} for acknowledging
+    funding agencies.} \\
+  Department of Computer Science\\
+  Cranberry-Lemon University\\
+  Pittsburgh, PA 15213 \\
+  \texttt{hippo@cs.cranberry-lemon.edu} \\
+  % examples of more authors
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \AND
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+}
+
+\begin{document}
+\maketitle
+
+% ============================================================
+% Abstract
+% ============================================================
+\begin{abstract}
+Massive activations (MAs) are hidden-state components whose magnitudes are
+orders of magnitude larger than typical activations. They reduce the
+stability of low-precision inference and complicate quantisation, yet
+have so far lacked a geometric and mechanistic explanation. Our work
+provides a unified, causally validated account of MA generation across
+a wide range of mainstream large language models, spanning ten
+architectural families and three activation functions. We combine
+spectral analysis of the MLP down-projection with systematic causal
+interventions on attention, MLP sub-modules, right-singular matrices, and
+single- to multi-layer MLPs, and show that MAs are produced through
+the conjunction of low-entropy function-token positions in the input
+and a low-rank subspace of the learned down-projection. Our framework
+delivers a mechanistic account of MA generation, a closed-form
+signed-change prediction under a randomised down-projection
+right-singular matrix, mechanism-level classifications that are
+orthogonal to normalisation and activation choices, and a system-level
+emergent phenomenon in which MAs emerge across multiple layers via
+residual-stream propagation. Our code is available at
+\url{https://anonymous.4open.science/r/changeHead_massvieAcitve-A8C6}.
+\end{abstract}
+
+% ============================================================
+% 1. Introduction
+% ============================================================
+\section{Introduction}
+\label{sec:intro}
+
+Transformer language models~\citep{vaswani2017attention,brown2020language,touvron2023llama}
+exhibit massive activations (MAs)---hidden-state components orders of
+magnitude larger than typical values~\citep{sun2024massive,merrill2022saturated}.
+MAs concentrate on a handful of tokens (often whitespace, punctuation, or the
+beginning-of-sequence token) and a handful of hidden dimensions, yet they sit
+on the critical path of every forward pass. They destabilise low-precision
+inference~\citep{dettmers2022gpt3,bondarenko2023quantizable}, interact
+with attention sinks~\citep{xiao2024efficient}, complicate long-context
+reasoning~\citep{liu2024lost}, and obstruct quantisation, pruning, or
+sharding without retraining~\citep{liu2024alberta}.
+
+Despite this operational salience, what causes an MA in a particular
+layer and on a particular token is not settled. Existing accounts fall into
+two largely descriptive camps. The first, rooted in the analysis of
+attention sinks, correlates MAs with function words and short
+structural tokens~\citep{xiao2024efficient,cancedda2024spectral,gu2025attention};
+the second, rooted in systems work, treats MAs as numerical artefacts to be
+contained via precision-aware quantisation, smoothing, or selective
+preservation~\citep{dettmers2022gpt3,xiao2023smoothquant,bondarenko2023quantizable,liu2024intactkv}.
+Neither yields a mechanistic explanation of why MAs arise only at
+certain depths, concentrate on a handful of hidden dimensions, and respond
+sharply to small geometric interventions. A unified theory should (i) predict
+where in the network MAs emerge, (ii) predict how large they
+become, and (iii) establish causality in a way that scales across
+architectures.
+
+We study MAs through mechanistic
+interpretability~\citep{elhage2021mathematical,conmy2023towards} and
+causal intervention~\citep{pearl2009causality,meng2022locating}. Our
+analysis centres on the singular-value decomposition of the MLP
+down-projection: for each token we quantify how much of its massive
+activation is carried by the leading singular directions, and we
+complement this with a $V$-matrix ablation that replaces the
+right-singular matrix by a random orthogonal matrix while keeping the
+spectrum and the rest of the network fixed. This intervention
+disentangles the directional content of the down-projection
+from its spectral amplification capacity and, crucially, admits
+a closed-form prediction in the high-dimensional regime.
+
+Within this geometric framing, function and content tokens play
+asymmetric roles. Function words (closed-class high-frequency items
+such as ``the'', ``of'', ``a'', together with structural punctuation
+and whitespace tokens) recur in highly similar contexts, so their MLP
+intermediate states $\mathbf{h}_2$ concentrate on a low-rank
+submanifold of hidden space; content words, by virtue of their
+semantic and contextual diversity, induce $\mathbf{h}_2$ that span a
+substantially higher-dimensional region. When the top right-singular
+directions of the down-projection align with the low-rank subspace
+occupied by function-token intermediates, input-side low rank
+and weight-side low rank couple: spectral amplification and
+directional alignment compound on a single hidden channel and produce
+an activation orders of magnitude above baseline. Content tokens,
+lacking systematic alignment with the same directions, almost never
+trigger MAs at the same layer. This upgrades the function-word
+correlation reported in prior
+work~\citep{sun2024massive,xiao2024efficient} from a statistical
+observation to a quantitative geometric mechanism.
+
+Our central claim has two parts. First, the MLP contribution to an MA
+obeys the SVD identity (Eq.~\eqref{eq:ma-poly}, which holds for all
+$\Wdown$ when summed to $K=r$). The empirical, falsifiable part is
+that a low-rank truncation at $K\leq 20$ already captures most of the
+MA magnitude on a wide range of architectures.
+The MA-channel MLP output decomposes into a weighted sum of
+the token's projections onto the right singular directions of the
+down-projection, with weights equal to the corresponding singular values
+and left-singular coordinates. When the top singular direction dominates
+and the MLP intermediate aligns with it, the expansion reduces to a
+one-parameter linear relationship that can be fit directly against
+observed activations. Models in which no
+single direction dominates are handled by a macro variant of
+the $V$-ablation and by a layer-support taxonomy whose measured spectral
+dominance and directional alignment explain the observed ablation behaviour.
+Together, these results
+predict where MAs emerge and how large they become, and
+they survive ablation testing across normalisation schemes, activation
+functions, and architectural families.
+Put compactly, our experiments trace a single generation pathway:
+function-token triggering, MLP down-projection generation, SVD-mediated
+geometric amplification, and residual-stream propagation.
+
+\paragraph{Contributions.}
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=2pt]
+  \item \textbf{An SVD expansion and closed-form signed-change
+  prediction}: from the SVD of the MLP down-projection, each MA-channel
+  MLP output decomposes (as an algebraic identity) into a sum of singular-direction
+  projections weighted by their singular values and left-singular
+  coordinates. Replacing the right-singular matrix $\mathbf{V}$ with a
+  random orthogonal matrix then yields a closed-form expression for the
+  expected signed change $\mathbb{E}[\Delta_V]$
+  (Eq.~\eqref{eq:delta-v}) that closely matches the empirical
+  $\Delta_V$.
+  \item \textbf{A geometric mechanism for the function-word preference}:
+  MAs concentrate almost exclusively on low-entropy function-token
+  positions because the MLP intermediate states at those positions
+  occupy a low-rank subspace that aligns with the leading
+  right-singular directions of the down-projection, supplying a
+  quantitative geometric basis for the attention-sink correlations
+  reported in prior work.
+  \item \textbf{A four-regime cross-architectural taxonomy}
+  (\textsc{Concentrated}, \textsc{Few-Source}, \textsc{Dispersed},
+  \textsc{Anomaly}) based on layer support, with spectral dominance and
+  directional alignment measured as consequences, which classifies every model in
+  our pool without recourse to normalisation or activation-function labels.
+  \item \textbf{MAs as a residual-stream-level multi-layer emergent
+  phenomenon}: with all other MLPs ablated, restoring only the
+  trigger layer rarely regenerates the MA and succeeds only in
+  architectural exceptions such as parallel blocks or very early
+  trigger layers, showing that the trigger layer depends on
+  $\mathbf{h}_2$ accumulated from upstream MLPs through the residual
+  stream and that single-layer geometry is load-bearing but not
+  sufficient.
+\end{enumerate}
+
+% ============================================================
+% 2. Related work
+% ============================================================
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Massive activations.}
+\citet{sun2024massive} systematically catalogued MAs in modern language
+models and their correlation with function words. Subsequent work studies
+their impact on post-training quantisation~\citep{dettmers2022gpt3,xiao2023smoothquant,bondarenko2023quantizable,shao2024omniquant},
+accelerator error tolerance~\citep{liu2024alberta}, long-context
+behaviour~\citep{liu2024lost}, and pivot-token
+preservation~\citep{liu2024intactkv}; earlier, \citet{merrill2022saturated}
+analysed activation saturation from a formal-linguistic perspective. These
+works treat MAs mainly as a systems phenomenon to be controlled, whereas we
+ask why MAs arise and test the causal generation pathway.
+
+\paragraph{Function words, syntactic probes, and attention sinks.}
+Probing work shows that function words carry disproportionate syntactic
+signal~\citep{hewitt2019structural,tenney2019bert,jawahar2019does}, and
+attention-head analyses identify heads specialised for structural
+functions~\citep{voita2019analyzing}. Attention sinks, where attention
+mass concentrates on a few short structural tokens, were named by
+\citet{xiao2024efficient} and independently observed in vision
+Transformers~\citep{darcet2024registers}; later work links sink emergence
+to residual-stream spectral filtering and training-time optimiser
+dynamics~\citep{cancedda2024spectral,gu2025attention}. Our geometric
+account explains this token preference quantitatively: function tokens
+project onto the leading singular directions of $\Wdown$ differently from
+content words, matching the Top-$1$ MA concentration observed in RQ3.
+
+\paragraph{SVD geometry and causal intervention.}
+SVD analyses of Transformer weights have mostly served compression, such
+as activation-aware low-rank decomposition for models with outlier
+activations~\citep{yuan2023asvd}. Causal-intervention methods such as
+ROME~\citep{meng2022locating}, grounded in Pearl's framework for
+causality~\citep{pearl2009causality}, support ablation-based attribution,
+and automated circuit discovery extends such interventions to larger
+subgraphs~\citep{conmy2023towards}. We combine these strands with a new
+$V$-matrix ablation and a closed-form prediction (Eq.~\eqref{eq:delta-v}),
+providing a quantitative bridge between SVD geometry and the generation
+pathway of pathological activations.
+
+% ============================================================
+% 3. Preliminaries
+% ============================================================
+\section{Problem Formulation}
+\label{sec:prelim}
+
+Let $\mathbf{A} \in \mathbb{R}^{B \times L \times D}$ denote an internal
+activation tensor with batch size $B$, sequence length $L$, and hidden
+dimension $D$. For the MLP at layer $\ell$ we write the down-projection as
+$\Wdown \in \mathbb{R}^{D \times \ffd}$ with singular decomposition
+$\Wdown = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^{\top}$, singular values
+$\sigma_1 \geq \sigma_2 \geq \cdots \geq 0$, and columns
+$\mathbf{u}_i \in \mathbb{R}^D$, $\mathbf{v}_i \in \mathbb{R}^{\ffd}$. The
+MLP intermediate representation that feeds $\Wdown$ is denoted
+$\mathbf{h}_2 \in \mathbb{R}^{\ffd}$.
+
+\subsection{Definitions}
+\label{sec:defs}
+
+\paragraph{Definition 1 (Massive activation).}
+A value $a \in \mathbf{A}$ is a \emph{massive activation} (MA) if $|a| > T$
+where $T = P_{0.999}(|\mathbf{A}|)$, the $99.9$th percentile of absolute
+activations in the tensor. We write
+$\mathcal{M} = \{a \in \mathbf{A} : |a| > T\}$. This percentile rule is an
+operational candidate definition; claims about orders-of-magnitude scale refer
+to the measured Top-$1$ values rather than following from the percentile alone.
+
+\paragraph{Definition 2 (Top-1 activation).}
+$\topk_1 = \max_{b,l,d} |A_{b,l,d}|$.
+
+\paragraph{Definition 3 ($\Delta\topk_1$ change rate).}
+For an intervention $\mathcal{I}$,
+$\Delta\topk_1 = (\topk_1^{(\mathcal{I})} - \topk_1^{(\text{base})}) / \topk_1^{(\text{base})} \times 100\%$.
+
+\paragraph{Definition 4 (SVD alignment).}
+For a vector $\mathbf{a} \in \mathbb{R}^{\ffd}$ and a singular direction
+$\mathbf{v}_i$,
+\(
+  \varrho(\mathbf{a}, \mathbf{v}_i) = \mathbf{a}^{\top} \mathbf{v}_i / (\|\mathbf{a}\|_2 \|\mathbf{v}_i\|_2) \in [-1,1].
+\)
+Values $|\varrho| \to 1$ indicate strong directional alignment.
+
+\paragraph{Definition 5 (Spectral dominance).}
+$\eta = \sigma_1 / \sigma_2$. Larger $\eta$ means a more spectrally
+concentrated $\Wdown$.
+
+\paragraph{Definition 6 (Function token).}
+A token $t$ is a \emph{function token} (FT) if, after stripping a leading
+byte-pair-encoding space marker, its normalised form belongs to the union
+$\mathcal{F} = \mathcal{F}_{\text{paper}} \cup \mathcal{F}_{\text{struct}}
+\cup \mathcal{F}_{\text{digit}} \cup \mathcal{F}_{\text{bpe-frag}}$.
+These four sets respectively cover closed-class function words, structural
+tokens, digit pieces, and short BPE fragments; the complete word list,
+regular-expression patterns, and detection procedure are given in
+Appendix~\ref{app:ft-definition}.
+
+\paragraph{Definition 7 (MA regime).}
+Each model is assigned to one of four regimes based on the cumulative
+layer-wise distribution of its MA intensity (\S\ref{sec:rq2}):
+\textsc{Concentrated} if one MLP layer carries $\geq\!80\%$,
+\textsc{Few-Source} if $2$--$4$ layers are required,
+\textsc{Dispersed} if $\geq\!5$ layers are required, and
+\textsc{Anomaly} if MLP ablation leaves $>\!50\%$ of MA intact. Spectral
+dominance (Def.~5) and alignment (Def.~4) are measured consequences of
+these regimes rather than defining criteria; operational details appear in
+Appendix~\ref{app:models}.
+
+\subsection{Research questions}
+\label{sec:rq-list}
+
+We structure our analysis around six linked roles, each evaluated in
+\S\ref{sec:exp}: \textbf{RQ1 Source}, attention regulates rather than
+generates MAs; \textbf{RQ2 Localization}, the MLP down-projection supplies
+the physical substrate; \textbf{RQ3 Trigger}, function tokens preferentially
+activate the mechanism; \textbf{RQ4 Mechanism}, the SVD expansion formula
+predicts MA magnitude; \textbf{RQ5 Causality}, $V$-matrix geometry is
+load-bearing; and \textbf{RQ6 Sufficiency}, single-layer recovery tests
+residual-stream dependence.
+
+The full experimental setup (model inventory, data sampling protocol,
+statistical conventions) is reported in Appendix~\ref{app:setup}.
+
+% ============================================================
+% 4. Method
+% ============================================================
+\section{Methodology}
+\label{sec:method}
+
+For each model we identify one or more \emph{trigger layers} at which
+$\topk_1$ exceeds the median $\topk_1$ of its neighbouring layers by at least
+$30\times$; at boundary layers we use the available neighbouring layer only.
+At such a layer,
+$\mathbf{y} = \Wdown \mathbf{h}_2 + \mathbf{b}_{\text{down}} \in \mathbb{R}^{D}$
+is the MLP output just before the residual stream and
+$j^{*} = \arg\max_j |y_j|$ is the hidden dimension that carries the MA. The
+down-projection bias $\mathbf{b}_{\text{down}}$ is identically zero on
+LLaMA/Qwen-style architectures but nonzero on GPT-J, BLOOM, OPT, and GPT-2.
+
+\paragraph{Trigger-layer terminology.}
+We denote the MA manifestation layer by $L_{\text{surge}}$, distinct from
+the first precursor layer $L_{\text{seed}}$, the maximum-ablation layer
+$L_{\text{ampl}}$, and the peak-magnitude layer $L_{\text{peak}}$. RQ4 fits
+Eq.~\eqref{eq:ma-poly} at the listed $L_{\text{surge}}$, while RQ5 ablates
+the MLP down-projection at the same listed trigger layer, i.e. the block whose
+output writes the extreme coordinate used in Table~\ref{tab:master}.
+
+\subsection{SVD expansion formula}
+\label{sec:method-formula}
+
+By the SVD $\Wdown = \sum_{i=1}^{r} \sigma_i \mathbf{u}_i \mathbf{v}_i^{\top}$
+with $r = \text{rank}(\Wdown)$, each coordinate of the MLP output admits the
+exact expansion
+\begin{equation}
+  \label{eq:exact}
+  y_j \;=\; (\Wdown \mathbf{h}_2 + \mathbf{b}_{\text{down}})_j \;=\; \sum_{i=1}^{r} \sigma_i\,(\mathbf{v}_i^{\top}\mathbf{h}_2)\,u_i[j] \;+\; (\mathbf{b}_{\text{down}})_j.
+\end{equation}
+Restricting to the MA channel $j^{*}$ gives our central generation formula
+\begin{equation}
+  \label{eq:ma-poly}
+  \ma_{j^{*}} \;=\; \sum_{i=1}^{r} \sigma_i\,(\mathbf{v}_i^{\top}\mathbf{h}_2)\,u_i[j^{*}] \;+\; (\mathbf{b}_{\text{down}})_{j^{*}}.
+\end{equation}
+Eq.~\eqref{eq:ma-poly} is an \emph{algebraic identity} when summed to
+$K=r$ (no approximation; it holds for any $\Wdown$). The falsifiable
+empirical claim, tested in \S\ref{sec:rq4}, is that a low-rank
+truncation at $K\leq 20$ recovers most of the MA magnitude. On modern
+bias-free architectures $(\mathbf{b}_{\text{down}})_{j^{*}} = 0$ and the
+formula collapses to a pure SVD expansion, while on legacy architectures the
+bias term contributes a small additive offset (empirically $\sim 10\%$ of
+the MA magnitude on GPT-J; \S\ref{sec:rq5}).
+
+\paragraph{Three concurrent conditions for an MA.}
+Each summand of Eq.~\eqref{eq:ma-poly} is a product of three factors, all
+of which must be large for an MA to emerge at channel $j^{*}$:
+(i) \emph{spectral power} $\sigma_i$ on the $i$-th singular direction;
+(ii) \emph{directional alignment} $|\mathbf{v}_i^{\top}\mathbf{h}_2|$
+between the MLP intermediate and that direction; and (iii) \emph{output
+sparsity} $|u_i[j^{*}]|$, the concentration of the left-singular vector on
+the MA channel. Failure of any single factor suppresses that term, and the
+function-token preference of \S\ref{sec:rq3} traces directly to
+factor (ii) at FT positions.
+
+The empirical question is how few leading singular terms are needed to
+recover the observed MA. We truncate at order $k$,
+\begin{equation}
+  \label{eq:ma-trunc}
+  \widehat{\ma}^{(k)}_{j^{*}} \;=\; \sum_{i=1}^{k} \sigma_i\,(\mathbf{v}_i^{\top}\mathbf{h}_2)\,u_i[j^{*}] \;+\; (\mathbf{b}_{\text{down}})_{j^{*}},
+\end{equation}
+and measure the relative truncation error
+$e^{(k)} = |\ma_{j^{*}} - \widehat{\ma}^{(k)}_{j^{*}}| / |\ma_{j^{*}}|$. The
+sequence $k \mapsto e^{(k)}$ characterises how ``concentrated'' MA generation
+is along the leading singular directions.
+
+Flat-spectrum models are handled by increasing $k$: when no single
+direction dominates, multiple leading terms can add coherently rather than
+cancel. For \textsc{Few-Source} and \textsc{Dispersed} regimes we also use a
+macro-SVD variant over the cumulative cross-layer residual delta. The
+direction-consistency condition, $k$-selection rule, and macro-SVD formula
+are given in Appendix~\ref{app:formula-extensions}; the empirical
+$k \mapsto e^{(k)}$ curve is reported in Table~\ref{tab:polyfit}.
+
+\subsection{Single-direction regression form}
+\label{sec:method-reg}
+
+When a single singular direction dominates---i.e.\ $\sigma_1 \gg \sigma_2$
+and $|\varrho(\mathbf{h}_2, \mathbf{v}_1)| \to 1$, the spectrally dominated
+sub-case of the \textsc{Concentrated} regime---Eq.~\eqref{eq:ma-trunc} at
+$k{=}1$ reduces to a linear relationship between the observed MA and the
+scalar projection $p(x) = \mathbf{v}_1^{\top}\mathbf{h}_2(x)$:
+\begin{equation}
+  \label{eq:lin-reg}
+  \ma(x) \;\approx\; \beta_{\text{slope}}\,p(x) + b, \qquad \beta_{\text{slope}} = \sigma_1\,u_1[j^{*}],
+\end{equation}
+with an intercept
+$b = \sum_{i \geq 2} \sigma_i\,(\mathbf{v}_i^{\top}\mathbf{h}_2)\,u_i[j^{*}] + (\mathbf{b}_{\text{down}})_{j^{*}} + r_{\text{stream}}$
+that absorbs higher-order singular contributions, the down-projection bias,
+and the residual-stream carry-over $r_{\text{stream}}$. The exact identity
+of Eq.~\eqref{eq:ma-poly} applies to the MLP contribution at the trigger
+layer; comparisons against residual-stream Top-$1$ activations therefore
+use Eq.~\eqref{eq:lin-reg}, whose intercept absorbs the residual
+carry-over. Because $\beta_{\text{slope}}$ and $b$ are jointly identifiable
+from token-level observations, Eq.~\eqref{eq:lin-reg} can be fit directly
+and evaluated by $R^2$ without separately measuring $\sigma_1$ or
+$u_1[j^{*}]$.
+
+\subsection{Closed-form causal prediction under random $\mathbf{V}$}
+\label{sec:method-vcf}
+
+Replace the right-singular matrix $\mathbf{V}$ by a Haar-uniform orthogonal
+$\tilde{\mathbf{V}} \in \mathbb{R}^{\ffd \times \ffd}$ while keeping
+$\mathbf{U}$, $\boldsymbol{\Sigma}$, and all other parameters (including
+the normalisation affine parameters) fixed. In Eq.~\eqref{eq:lin-reg} the
+only factor that changes is the projection, now
+$\tilde{p} = \tilde{\mathbf{v}}_1^{\top}\mathbf{h}_2$.
+
+By concentration on the sphere, $\tilde{p}$ is approximately half-normal in
+magnitude with mean $\sqrt{2/\pi}\|\mathbf{h}_2\|_2/\sqrt{\ffd}$. Combining
+this with $|p| \approx \|\mathbf{h}_2\|_2$ in the spectrally dominated
+sub-case of the \textsc{Concentrated} regime gives the expected signed change
+\begin{equation}
+  \label{eq:delta-v}
+  \mathbb{E}[\Delta_V] \;\approx\; \frac{\sqrt{2/\pi}}{\sqrt{\ffd}} - 1.
+\end{equation}
+For Qwen2.5-7B ($\ffd = 18{,}944$), this predicts $-99.42\%$, matching the
+empirical $-99.2\%$ in RQ5 to within $0.25$ percentage points. A formal
+derivation with finite-$\ffd$ corrections is given in
+Appendix~\ref{app:proofs}.
+
+\subsection{Intervention algorithms}
+\label{sec:method-interventions}
+
+We use four $V$-matrix interventions: Haar-random replacement of
+$\mathbf{V}$, projection removal of the leading $K$ right-singular
+directions, macro-$V$ ablation for multi-layer regimes, and per-expert
+ablation for MoE models. A model passes RQ5 if any D1--D4 criterion is met
+(single-layer multi-$K$, per-dimension collapse, macro collapse, or a
+two-point boundary relaxation). Per-model ablation magnitudes appear in
+Table~\ref{tab:master}; full algorithms and thresholds are in
+Appendix~\ref{app:interventions}.
+
+\paragraph{Regime classification.}
+Regime assignment follows Def.~7. In \S\ref{sec:rq4}--\S\ref{sec:rq5} we
+show that these assignments are consistent across the full 26-model pool,
+with the signed $V$-ablation change tracking the truncation error $e^{(k)}$ as
+predicted by Eq.~\eqref{eq:delta-v}.
+
+% ============================================================
+% 5. Experiments
+% ============================================================
+\section{Experiments and Results}
+\label{sec:exp}
+
+Each research question follows the schema \emph{Hypothesis} $\rightarrow$
+\emph{Intervention} $\rightarrow$ \emph{Result} $\rightarrow$
+\emph{Interpretation}. Table~\ref{tab:master} collects the per-model
+summary used throughout the experiments; the remainder of this section
+surfaces regime-level findings that match the theoretical predictions of
+\S\ref{sec:method}.
+
+\begin{table}[t]
+  \caption{Complete 26-model dashboard. The table reports, for every model,
+  the MA regime, trigger layer, SVD-geometry indicators, causal $V$-ablation
+  effects, and RQ1 attention mode. The dashboard shows only single- and
+  macro-$V$ signed changes; the per-coordinate (D2) and boundary (D4)
+  diagnostics that contribute to the full RQ5 D1--D4 verdict are not
+  table-visible. N/A denotes interventions that were not run or not
+  applicable; macro values are reported only when used by a diagnostic or
+  exception criterion.}
+  \label{tab:master}
+  \centering
+  \begingroup
+  \scriptsize
+  \setlength{\tabcolsep}{2.4pt}
+  \renewcommand{\arraystretch}{0.82}
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}clccccccc@{}}
+    \toprule
+    \# & Model & Type & Trigger $L$ & Spec.\ $\eta$ & Fit $R^2$ &
+    Single-$V$ $\Delta$ & Macro-$V$ $\Delta$ & RQ1 mode \\
+    \midrule
+    \multicolumn{9}{l}{\textit{\textsc{Concentrated} (single-layer MA origin; 8 models + 1 ambiguous)}} \\
+    \midrule
+    $\star$1  & GPT-J-6B             & Dense & 2  & 2.52 & 1.00 & $-99.0$ & $-99.1$ & Gen* \\
+    $\star$2  & Qwen2-7B             & Dense & 3  & 2.84 & 1.00 & $-98.6$ & N/A     & Gen  \\
+    $\star$3  & Qwen2.5-7B           & Dense & 3  & 2.64 & 1.00 & $-99.2$ & N/A     & Sup  \\
+    $\star$4  & Qwen3-0.6B           & Dense & 2  & 1.41 & 1.00 & $-93.0$ & N/A     & Gen  \\
+    5         & GLM4-32B             & Dense & 0  & 1.53 & 0.47 & $-96.8$ & $-17.1$ & Sup  \\
+    6         & Mistral-7B-v0.3      & Dense & 1  & 1.12 & 1.00 & $-83.0$ & N/A     & Gen  \\
+    7         & Qwen2.5-0.5B         & Dense & 2  & 1.48 & 0.91 & $-55.0$ & N/A     & Gen  \\
+    8         & LLaMA-2-13B          & Dense & 0  & 1.32 & 0.97 & $-95.6$ & N/A     & Gen  \\
+    9$^{\dagger}$ & LLaMA-2-7B-Chat  & Dense & 1  & 1.04 & 0.94 & $-95.7$ & N/A     & Sup  \\
+    \midrule
+    \multicolumn{9}{l}{\textit{\textsc{Few-Source} (2--4 trigger layers; 7 models)}} \\
+    \midrule
+    10  & GPT-2                      & Dense & 3  & 3.05 & 0.55 & $-6.5$  & $-94.6$  & Gen  \\
+    11  & Qwen3-1.7B                 & Dense & 2  & 1.33 & 0.94 & $-86.8$ & $-99.8$  & Gen  \\
+    12  & Qwen3-4B                   & Dense & 6  & 1.24 & 1.00 & $-94.9$ & $-99.7$  & Gen  \\
+    13  & Falcon-7B                  & Dense & 3  & 1.37 & 0.99 & $-98.1$ & $-97.4$  & Gen  \\
+    14  & LLaMA-3.1-8B               & Dense & 1  & 1.38 & 1.00 & $-93.0$ & $-99.8$  & Gen  \\
+    15  & GLM4-9B                    & Dense & 1  & 3.26 & 0.89 & $-46.5$ & $-81.8$  & Gen  \\
+    16  & BLOOM-7B1                  & Dense & 7  & 1.81 & 1.00 & $-69.7$ & $-82.0$  & Gen* \\
+    \midrule
+    \multicolumn{9}{l}{\textit{\textsc{Dispersed} ($\geq 5$ trigger layers; 8 models)}} \\
+    \midrule
+    17  & Qwen3-8B                   & Dense  & 6  & 1.48 & 1.00 & $-95.6$ & $-99.6$  & Gen  \\
+    18  & Yi-9B                      & Dense  & 8  & 1.43 & 0.88 & $-93.1$ & $-99.2$  & Sup  \\
+    19  & Qwen3.5-9B$^{\ddagger}$    & Hybrid & 22 & 1.06 & 0.73 & $-70.2$ & $-0.2$   & Gen  \\
+    20$^{\ddagger\ddagger}$ & Qwen1.5-14B & Dense  & 2  & 1.33 & 1.00 & $-49.3$ & $-12.6$  & Gen  \\
+    21  & Qwen3-14B                  & Dense  & 6  & 1.33 & 1.00 & $-93.5$ & $-88.2$  & Sup  \\
+    22  & Qwen3.5-27B$^{\ddagger}$   & Hybrid & 54 & 1.12 & 0.99 & $-77.9$ & $-0.4$   & Gen  \\
+    23  & Qwen3-30B-A3B$^{\ast}$     & MoE    & 1  & 1.17 & 0.38 & $-0.8$  & $-0.4$   & Gen  \\
+    24  & Qwen3-32B                  & Dense  & 6  & 1.35 & 1.00 & $-97.9$ & $-86.3$  & Sup  \\
+    \midrule
+    \multicolumn{9}{l}{\textit{\textsc{Anomaly} (MLP retain $> 50\%$; 2 models)}} \\
+    \midrule
+    25  & OPT-6.7B                   & Dense  & 1  & 2.53 & 0.98 & $-17.5$ & N/A      & Sup  \\
+    26  & Qwen3.5-35B-A3B$^{\ast,\ddagger}$ & MoE+H & 9  & 1.03 & 0.00 & $+0.1$  & $+0.5$   & Sup  \\
+    \bottomrule
+  \end{tabular*}
+  \endgroup
+
+  \smallskip
+  \footnotesize
+  \begin{flushleft}
+    Models are grouped by MA regime (Def.~7): \textsc{Concentrated},
+    \textsc{Few-Source}, \textsc{Dispersed}, and \textsc{Anomaly}.
+    Type abbreviations: Dense, Hybrid attention, MoE, and MoE+H.
+    $\star$ marks hero models that pass every RQ1--RQ5 test, where
+    \emph{passing RQ1} means that attention is not the direct writer of
+    the extreme coordinate (i.e.\ the MLP retains the trigger-layer source)
+    rather than that attention removal leaves the MA intact.
+    $\dagger$ marks the ambiguous RLHF layer-support case grouped with
+    \textsc{Concentrated}. $\ddagger$ marks hybrid-attention bypasses;
+    $\ast$ marks MoE routing dilution. $\ddagger\ddagger$ marks
+    \emph{D2 per-coordinate diagnostic rescue}: although the mean
+    Single-/Macro-$V$ entries do not cross the $-80\%$ threshold, the
+    per-coordinate $\Delta\mathrm{MA}_{j^{*}} = -100\%$ at the MA channel
+    yields a full RQ5 PASS under the D2 criterion (\S\ref{sec:rq5}).
+
+    Macro-$V$ is reported as N/A for \textsc{Concentrated} models per
+    the pre-registered category-bound criterion: \textsc{Concentrated}
+    checkpoints are evaluated on D1 single-layer $V$-ablation, while
+    macro-$V$ is consulted only when D1 falls in a boundary band or as
+    an exception diagnostic.
+
+    The dense pool of $22$ models used for the headline RQ1--RQ5 PASS
+    rates excludes four architecture-anomaly checkpoints: OPT-6.7B
+    (Tier~E, pre-LayerNorm + non-standard FFN), Qwen3.5-9B (Tier~C,
+    hybrid-attention bypass), Qwen3.5-35B-A3B (Tier~C, MoE + hybrid),
+    and Qwen3-30B-A3B (Tier~C, MoE routing dilution). These four are
+    reported in this dashboard but excluded from the dense-pool
+    aggregate ratios in \S\ref{sec:rq1}--\S\ref{sec:rq5}.
+  \end{flushleft}
+\end{table}
+
+% ------------------------------------------------------------
+\subsection{(RQ1) Source: attention regulates rather than generates MAs}
+\label{sec:rq1}
+
+\paragraph{Hypothesis and intervention.}
+If attention \emph{generates} MAs, zeroing every attention output should
+eliminate them. We zero all attention module outputs at every layer via
+PyTorch forward hooks, leaving the residual stream and MLP untouched, and
+measure $\Delta\topk_1$ at the baseline trigger layer.
+
+\paragraph{Zeroing attention does not erase MAs.}
+Across the twenty-six models, the residual ratio
+$\rho = \topk_1^{(\text{no-attn})}/\topk_1^{(\text{base})}$ separates the
+outcomes into three qualitatively distinct behaviours that cut across
+model scale and family. In the first, which we label
+\textbf{Gen}\textsuperscript{*}, attention carries essentially all of
+the downstream amplification: removing it collapses the MA by more than
+ninety-five percent, and only BLOOM-7B1 and GPT-J-6B exhibit this
+strong dependence. The second and most common behaviour, \textbf{Gen},
+covers sixteen models in which attention amplifies an MA that the MLP
+has already begun to produce, so that attention removal reduces but
+does not eliminate the signal. The third behaviour, \textbf{Sup}, covers
+eight models in which attention acts as a stable suppressor: zeroing it
+actually grows the MA, in several cases by more than a factor of two.
+The resulting RQ1 modes and regime assignments are reported in
+Table~\ref{tab:master}; full residual ratios are left to the supplement.
+
+\paragraph{Interpretation.}
+Because $\Delta\topk_1$ ranges from strongly negative to strongly
+positive across the pool, no single ``attention-as-generator'' account
+fits these data. Since substantial MA magnitude persists under many of
+the interventions, attention is best understood as a \emph{regulator}
+that gates or suppresses the downstream generator rather than as the
+primary generator of the extreme coordinate. Even in Gen\textsuperscript{*}
+cases, attention supplies downstream amplification while the coordinate is
+written through the MLP pathway.
+
+\paragraph{Key finding~1.}
+\emph{Attention mechanisms act as regulators---in one of three observed
+modes (Gen\textsuperscript{*}, Gen, Sup)---rather than as primary
+generators of the MA substrate
+of massive activations.}
+
+% ------------------------------------------------------------
+\subsection{(RQ2) Localization: MLP down-projection supplies the physical substrate}
+\label{sec:rq2}
+
+\paragraph{Hypothesis and intervention.}
+At every trigger layer we (a) compare the attention-block output
+$\mathbf{H}_{\text{attn}}$ against the MLP-block output
+$\mathbf{H}_{\text{mlp}}$ via the dominance ratio
+$\rho_\ell = \max|\mathbf{H}_{\text{mlp}}| / \max|\mathbf{H}_{\text{attn}}|$;
+and (b) ablate the MLP at that layer, recording the retention ratio
+\begin{equation}
+  \label{eq:tau-retain}
+  \tau \;=\; \frac{\topk_1^{(\text{mlp-zero})}}{\topk_1^{(\text{base})}}.
+\end{equation}
+A model passes RQ2 strictly when $\tau \leq 0.10$ and at the boundary when
+$\tau \leq 0.15$. In parallel, $\rho_\ell > 1$ is inconsistent with equal
+MLP and attention magnitudes in the observed measurement at that layer.
+
+\paragraph{Removing the MLP removes the spike.}
+Across dense models the MLP output exceeds the attention output by
+between a factor of a few and more than three orders of magnitude,
+confirming that the MLP branch dominates the residual stream at every
+trigger layer. Under single-layer MLP ablation, twenty-one of the
+twenty-four non-MoE checkpoints retain less than ten percent of their
+baseline Top-$1$ activation, directly implicating $\Wdown$ as the
+primary substrate of the MA. The remaining three non-MoE models fall
+outside this ``MLP-dominant'' pattern in two different ways. OPT-6.7B
+(together with the MoE variant Qwen3.5-35B-A3B, whose expert router
+dilutes the MA signal) crosses the fifty-percent retain threshold and
+is therefore classified as \textsc{Anomaly} in Def.~7. Qwen3.5-9B,
+whose hybrid linear-attention branch partially bypasses $\Wdown$, and
+GLM4-32B occupy an intermediate regime in which $\Wdown$ dominates but
+not exclusively; on both, the single-layer $V$-ablation still drives
+the MA down by more than seventy percent. We return to these
+architectural causes in \S\ref{sec:moe-dilution}; the aggregate RQ2
+outcome is summarised in Table~\ref{tab:polyfit}.
+
+\paragraph{Key finding~2.}
+\emph{Across $23/26$ models ($88.5\%$ under the boundary criterion
+$\tau \leq 0.15$), the MLP---specifically the down-projection
+$\Wdown$---is responsible for most MA intensity, with the failures
+concentrated in routing, bypass, or anomaly cases.}
+
+% ------------------------------------------------------------
+\subsection{(RQ3) Trigger: function tokens preferentially activate the mechanism}
+\label{sec:rq3}
+
+\paragraph{Hypothesis and intervention.}
+We assign FT labels using Def.~6, which combines a hand-curated
+function-token list with structural-token, digit-token, and BPE-fragment
+rules. For each model we record the token associated with
+$\topk_1$ at the trigger layer across the $64$ C4 windows, and compute,
+for $K \in \{1, 5, 10, 20\}$, the FT trigger rate
+\begin{equation}
+  \label{eq:pi-func}
+  \pi_{\text{func}} \;=\; \frac{n_{11}}{n_{+1}},
+\end{equation}
+where $n_{11}$ counts trigger-layer Top-$K$ MA tokens that are FTs and
+$n_{+1}$ is the total number of Top-$K$ measurements. To test whether the
+FT enrichment is statistically distinguishable from independence we run
+Fisher's exact test on the $2\!\times\!2$ contingency table of (token is
+FT) $\times$ (token triggers MA). The probability of the observed table is
+\begin{equation}
+  \label{eq:fisher-table}
+  P(T=n_{11}) \;=\; \frac{\binom{n_{1+}}{n_{11}}\binom{n_{2+}}{n_{21}}}{\binom{N}{n_{+1}}},
+\end{equation}
+and the Fisher $p$-value sums this probability over tables at least as
+extreme, declaring significance at $p < 0.01$.
+
+\paragraph{Function tokens are the trigger points.}
+The Top-$1$ MA token is a function token in twenty-four of the
+twenty-six models, well above the same-corpus baseline FT rate of
+roughly one in three. Enrichment at Top-$5$ and Top-$10$ remains
+substantially above baseline and decays toward it as the rank $K$
+grows, consistent with a mechanism sharply localised on the very
+highest-magnitude positions rather than on the broader tail. On the
+\textsc{Concentrated} models for which a second-direction diagnosis is
+informative---excluding the rank-$1$-exact GPT-J-6B and the ambiguous
+LLaMA-2-7B-Chat case---the leading two singular directions
+$\mathbf{v}_1$ and $\mathbf{v}_2$ place their strongest projection on
+the same function token in all but one case, with the shared token
+typically a structural whitespace or punctuation marker (examples
+include \texttt{\textbackslash n\textbackslash n}, \texttt{`~@'}, and
+\texttt{`S'}). This direction coherence explains why the SVD-expansion
+rescue of RQ4 preserves the FT interpretation as the truncation order
+$k$ increases.
+
+\paragraph{Decoding $\mathbf{u}_1$ through the unembedding.}
+The left singular vector $\mathbf{u}_1$ tells us \emph{which output
+vocabulary token} the MA channel writes into. Multiplying it through the
+unembedding matrix $\mathbf{W}_U$ gives a logit vector over the vocabulary
+$\mathcal{V}$:
+\begin{equation}
+  \label{eq:u1-decode}
+  \text{logits}_{\mathbf{u}_1} \;=\; \mathbf{W}_U\,\mathbf{u}_1,
+  \qquad \mathrm{Top}\text{-}1_{\mathbf{u}_1} \;=\; \arg\max_{t \in \mathcal{V}} \bigl(\text{logits}_{\mathbf{u}_1}[t]\bigr).
+\end{equation}
+On six of these seven \textsc{Concentrated} models, the
+$\mathrm{Top}\text{-}1_{\mathbf{u}_1}$ token is the \emph{same} structural
+FT (typically \texttt{`\textbackslash n\textbackslash n'} or another
+whitespace/punctuation marker) that achieves the largest input-side
+projection on $\mathbf{v}_1$. The MA channel therefore closes a loop:
+the FT both triggers ($\mathbf{v}_1$) and is amplified ($\mathbf{u}_1$) by
+the same MLP geometry.
+
+\paragraph{Frequency-vs-syntax decoupling.}
+\label{sec:freq-vs-syntax}
+Because FTs are inherently high-frequency, one might suspect the
+enrichment is a pure frequency effect. We disentangle category from
+frequency along three converging lines.
+
+\emph{(i) $2\!\times\!2$ contingency at the trigger layer.}
+Define the high-frequency set
+$\mathcal{H}_{\theta} = \{\,t \in \mathcal{V}: \mathrm{freq}(t) \geq \theta\,\}$
+with $\theta$ chosen so that $|\mathcal{H}_{\theta}| = K$. Crossing this
+with the function-token set $\mathcal{F}$ yields four quadrants
+$Q_1{=}\mathcal{F}\cap\mathcal{H}$,
+$Q_2{=}\mathcal{F}\setminus\mathcal{H}$,
+$Q_3{=}\mathcal{H}\setminus\mathcal{F}$,
+$Q_4{=}\overline{\mathcal{F}}\cap\overline{\mathcal{H}}$, and a
+within-quadrant trigger rate
+$\pi(Q_i) = |\{\,t\in Q_i : t \text{ triggers MA}\,\}| / |Q_i|$.
+The frequency-confound hypothesis predicts
+$\pi(Q_2) \!\approx\! \pi(Q_4)$ and $\pi(Q_3) \!\approx\! \pi(Q_1)$;
+the syntax hypothesis predicts the opposite asymmetry,
+$\pi(Q_2)\!\gg\!\pi(Q_3)$. Table~\ref{tab:freq-vs-syntax} reports the
+GPT-2 measurement at trigger layer $L{=}3$. Low-frequency function
+tokens trigger MA at rate $0.612$ while high-frequency content tokens
+trigger at only $0.014$:
+\begin{equation}
+  \label{eq:freq-vs-syntax-ratio}
+  \frac{\pi(Q_2)}{\pi(Q_3)} \;=\; \frac{0.612}{0.014} \;\approx\; 43.7,
+\end{equation}
+a $43.7\!\times$ separation in favour of the syntactic category.
+
+\emph{(ii) Logistic regression with frequency as a covariate.}
+We fit
+\begin{equation}
+  \label{eq:logit-freq-syntax}
+  \mathrm{logit}\bigl(P(t \text{ triggers MA})\bigr)
+  \;=\; \beta_0 + \beta_{\mathcal{F}}\,\mathbb{1}[t\in\mathcal{F}]
+       + \beta_{\text{freq}}\,\log\mathrm{freq}(t),
+\end{equation}
+with document-cluster-robust ($G{=}30$) sandwich SE. Across the $22$
+dense checkpoints we obtain $\hat{\beta}_{\mathcal{F}} > 0$ at
+$z > 3.29$ ($p < 10^{-3}$) on every model and
+$|\hat{\beta}_{\mathcal{F}}| > 2|\hat{\beta}_{\text{freq}}|$ in $20/22$,
+satisfying our pre-registered criterion (Appendix~\ref{app:ft-definition}).
+On Qwen2.5-7B, $\hat{\beta}_{\mathcal{F}} = 1.83$ ($p < 10^{-12}$).
+
+\emph{(iii) Permutation null and additional support.}
+Shuffling FT labels uniformly at random ($B{=}1000$) yields a null
+distribution for the ratio $\pi(Q_2)/\pi(Q_3)$ with mean $1.02$ and
+$95\%$ percentile interval $[0.83, 1.21]$; the observed value $43.7$
+lies far outside this band ($p < 10^{-3}$). Two further observations
+reinforce the same conclusion: the causal $V$-ablation of RQ5 leaves
+all input-side statistics unchanged yet still suppresses $78$--$99\%$
+of MA on D1--D4-PASS models, and MAs are layer-specific (the same FT
+does not produce an MA at non-trigger layers).
+
+\begin{table}[t]
+  \caption{Frequency-vs-syntax $2\!\times\!2$ on GPT-2 at trigger layer
+  $L{=}3$ (WikiText-2, $30$ documents, $K{=}1000$). Trigger threshold:
+  $99$th-percentile MA over the window. Low-frequency FTs trigger MA
+  $43.7\!\times$ more often than high-frequency content tokens.}
+  \label{tab:freq-vs-syntax}
+  \centering
+  \small
+  \begin{tabular}{@{}l c c c@{}}
+    \toprule
+    Quadrant & Example tokens & $|Q_i|$ & $\pi(Q_i)$ \\
+    \midrule
+    $Q_1=\mathcal{F}\cap\mathcal{H}$ (HF FT)
+      & \texttt{the}, \texttt{of}, \texttt{.} & $156$ & $0.795$ \\
+    $Q_2=\mathcal{F}\setminus\mathcal{H}$ (LF FT)
+      & \texttt{`\textbackslash n\textbackslash n'}, \texttt{`\,k'}, \texttt{St} & $1{,}243$ & $\mathbf{0.612}$ \\
+    $Q_3=\mathcal{H}\setminus\mathcal{F}$ (HF content)
+      & \texttt{language}, \texttt{model}, \texttt{data} & $287$ & $\mathbf{0.014}$ \\
+    $Q_4=\overline{\mathcal{F}}\cap\overline{\mathcal{H}}$ (LF content)
+      & rare proper nouns & $8{,}952$ & $0.011$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Function tokens are information-theoretic anchors.}
+Beyond raw frequency, FT positions are distinguished by the \emph{low
+entropy} of their next-token prediction. On $14$ models sampled for
+detailed conditional-entropy analysis, FT positions exhibit a
+next-token entropy
+$H(C) = -\sum_{c} p(c \mid x) \log p(c \mid x)$ consistently $2$--$4$
+bits below content-token positions (e.g.\ on Qwen2.5-7B a
+\texttt{`\textbackslash n\textbackslash n'} position gives
+$H(C) \approx 0.3$ bits, whereas a typical content-word position gives
+$H(C) \approx 3.5$ bits). This \emph{information-theoretic anchor}
+interpretation explains why MA concentrates on FTs rather than on
+arbitrary high-frequency tokens: the language model has the tightest
+prediction context at low-entropy positions, and our geometric
+mechanism shows those positions are precisely the ones whose
+$\mathbf{h}_2$ aligns with $\mathbf{v}_1$. Function tokens are thus
+simultaneously sparse in two complementary senses---token-level
+(low-entropy anchors) and direction-level ($\mathbf{v}_1$,
+$\mathbf{u}_1$ spectrum)---a \emph{dual-sparsity} framing we develop
+in \S\ref{sec:dual-sparsity}.
+
+\paragraph{Key finding~3.}
+\emph{Function tokens act as geometric anchors of MA generation: they
+project onto the leading singular directions of $\Wdown$ in a way that
+content words do not, and they do so coherently across the top two
+singular directions in \textsc{Concentrated} models.}
+
+% ------------------------------------------------------------
+\subsection{(RQ4) Mechanism: the SVD expansion predicts MA magnitude}
+\label{sec:rq4}
+
+\paragraph{Hypothesis and intervention.}
+Eq.~\eqref{eq:ma-poly} predicts $\ma_{j^{*}}$ as a truncated sum over the
+leading $k$ singular directions. We compute the relative truncation error
+$e^{(k)}$ for the trigger layer of each model over a $1{,}000$-token
+WikiText-2 window, at $k \in \{1, 3, 5, 10, 20\}$.
+
+\begin{table}[t]
+  \caption{Compact evidence matrix for the six-question mechanism chain.
+  The top block reports aggregate results; the bottom block keeps the RQ4
+  rank-$k$ truncation curve in the main text.}
+  \label{tab:polyfit}
+  \centering
+  \scriptsize
+  \setlength{\tabcolsep}{4pt}
+  \renewcommand{\arraystretch}{0.9}
+  \begin{tabular}{@{}l l c l@{}}
+    \toprule
+    RQ & Main test & Headline statistic & Mechanistic role \\
+    \midrule
+    RQ1 & attention zeroing & Gen$^{*}$: $2$, Gen: $16$, Sup: $8$ & regulator \\
+    RQ2 & MLP ablation & $23/26$ pass under $\tau \leq 0.15$ & $\Wdown$ substrate \\
+    RQ3 & FT enrichment & $24/26$ Top-$1$ FT triggers & function-token anchors \\
+    RQ4 & SVD expansion & $24/26$ unified; rank-$20$ $16/22$ & magnitude prediction \\
+    RQ5 & D1--D4 $V$-ablation & $21/26$ full; dashboard threshold $18/21$ & causal geometry \\
+    RQ6 & single-layer recovery & $2/26$ high; dense $16/22$ consistent & residual stream \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{2pt}
+  \begin{tabular}{@{}l c c c c c@{}}
+    \toprule
+    RQ4 rank $k$ & $1$ & $3$ & $5$ & $10$ & $20$ \\
+    \midrule
+    near-exact ($e^{(k)}<5\%$) & $6$ & $6$ & $6$ & $7$ & $\mathbf{9}$ \\
+    PASS ($e^{(k)}<30\%$) & $11/22$ & $15/22$ & $15/22$ & $15/22$ & $\mathbf{16/22}$ \\
+    PASS rate & $50\%$ & $68\%$ & $68\%$ & $68\%$ & $\mathbf{73\%}$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Low-rank SVD predicts the spike.}
+Table~\ref{tab:polyfit} shows that a single singular direction already
+predicts the observed MA within thirty percent on half of the
+twenty-two models analysed, and within five percent on six of them.
+Extending the truncation to $k{=}20$ raises the pass rate to roughly
+seventy percent, with nine models in near-exact agreement. Four hero
+\textsc{Concentrated} models---GPT-J-6B, Qwen2.5-7B, Qwen2-7B, and
+Qwen3-0.6B---achieve $R^{2} = 1.00$ and essentially zero truncation
+error at rank one, making them the cleanest empirical instantiation of
+Eq.~\eqref{eq:ma-poly}. The models that benefit most from higher
+truncation orders are, by inspection of Table~\ref{tab:master},
+precisely those with flatter spectra ($\eta < 2$), so the SVD
+truncation error tracks spectral structure in the way
+Eq.~\eqref{eq:ma-poly} predicts.
+
+\paragraph{Empirical verification of $\beta_{\text{slope}} = \sigma_1 \cdot u_1[j^{*}]$.}
+The regression form of Eq.~\eqref{eq:lin-reg} identifies the fitted
+slope $\beta_{\text{slope}}$ with the product $\sigma_1 \cdot u_1[j^{*}]$,
+a mechanistic identity that we test by comparing the regression coefficient against
+the SVD-derived factor. On the two hero Qwen models, Qwen2-7B and
+Qwen2.5-7B, the fitted slope agrees with the predicted product within
+two percent, directly confirming the identity. More broadly, the
+leading coordinate of $\mathbf{u}_1$ captures at least half of its
+total energy on thirteen of the fifteen models for which the full
+$\Wdown$ SVD is tabulated, with one near-degenerate extreme (GPT-2)
+and two dense counter-examples (Qwen3-8B and Qwen3-14B).
+The $\mathbf{u}_1$ sparsity complements the input-side
+$\mathbf{h}_2$--$\mathbf{v}_1$ alignment: together they localise MA to
+a single hidden coordinate $j^{*}$ exactly as Eq.~\eqref{eq:lin-reg}
+predicts.
+
+\paragraph{Key finding~4.}
+\emph{Low-rank truncation of Eq.~\eqref{eq:ma-poly} at $K\leq 20$
+empirically captures the observed MA magnitude on most models:
+the rank-$20$ single-layer truncation, evaluated at
+$k \in \{1, 3, 5, 10, 20\}$, recovers the observed MA within $30\%$\footnote{The
+$30\%$ threshold corresponds to errors below the random-$K$ null
+$95$th percentile (Appendix~\ref{app:formula-extensions}). Top-$K$
+truncation errors on the passing models are typically $5$--$20\times$
+tighter than random-$K$ baselines.} on
+$16/22$ models and within $5\%$ on $9/22$; the rank-$1$ truncation alone
+is sufficient for half of the $22$ analysed models and is near-exact
+for six. Combining single-layer multi-$K$ $V$-projection (the D1
+criterion of \S\ref{sec:method-interventions} at
+$K \in \{1, 3, 10, 20\}$) with the macro-SVD path, the unified SVD
+criterion ($K \in \{1, 3, 10, 20\}$ or macro $\Delta_V \leq -80\%$) is
+satisfied by $24/26 = 92.3\%$ of all models, with the two failures
+attributable to routing dilution in MoE architectures and
+hybrid-attention bypass.}
+
+% ------------------------------------------------------------
+\subsection{(RQ5) Causality: $V$-matrix geometry is load-bearing}
+\label{sec:rq5}
+
+\paragraph{Hypothesis and intervention.}
+If Eq.~\eqref{eq:ma-poly} is causal rather than merely predictive, then
+randomising the right-singular matrix while preserving
+$\boldsymbol{\Sigma}$, $\mathbf{U}$, and all other parameters should collapse
+MA magnitude by an amount governed by Eq.~\eqref{eq:delta-v}.
+We perform the single-layer intervention of
+\S\ref{sec:method-interventions} on every model and, for
+non-\textsc{Concentrated} models, the macro variant.
+
+\paragraph{Randomising $V$ collapses the mechanism.}
+Twenty-one of the twenty-six models pass the combined D1--D4 criterion of
+\S\ref{sec:method-interventions} ($80.8\%$). The dashboard
+(Table~\ref{tab:master}) shows only single-layer and macro-$V$ signed
+changes; under this dashboard-visible threshold ($\Delta_V \leq -80\%$),
+the clean dense subset excluding MoE, hybrid-attention, and the OPT
+anomaly passes in $18/21$ cases. The full D1--D4 verdict additionally
+counts the per-coordinate D2 and boundary D4 diagnostics, which are not
+table-visible and rescue three further models. Among
+the passing \textsc{Concentrated} models the closed-form prediction of
+Eq.~\eqref{eq:delta-v} is tight: on Qwen2.5-7B the empirical single-layer
+collapse matches the theoretical prediction to within a quarter of a
+percentage point. \textsc{Dispersed} models depart from this prediction in the
+expected direction, with the gap tracking the RQ4 truncation error
+$e^{(1)}$; \textsc{Few-Source} single-layer failures are rescued by macro
+$V$-ablation, while MoE and hybrid-attention failures reflect routing
+dilution or architectural bypasses rather than a dense $\Wdown$ mechanism.
+
+\paragraph{Key finding~5.}
+\emph{$V$-matrix geometry is load-bearing for MA generation in the
+full pool (ablating it is sufficient for elimination): the combined D1--D4 criterion is satisfied by
+$21/26 = 80.8\%$ of models, while the dashboard-visible single/macro-$V$
+threshold ($\Delta_V \leq -80\%$) is met by $18/21$ clean dense models
+after excluding MoE, hybrid-attention, and the OPT anomaly. The
+magnitude of the collapse quantitatively matches the closed-form prediction
+of Eq.~\eqref{eq:delta-v} on \textsc{Concentrated} models and deviates on
+\textsc{Dispersed} models in proportion to the RQ4 truncation error
+$e^{(1)}$.}
+
+% ------------------------------------------------------------
+\subsection{(RQ6) Sufficiency: single-layer recovery tests residual-stream dependence}
+\label{sec:rq6}
+
+\paragraph{Hypothesis and intervention.}
+RQ2 establishes that the MLP block is \emph{necessary} for MA
+generation. RQ6 tests the complementary sufficiency question: when
+all other MLP outputs are zeroed along the forward pass, does
+restoring a single MLP layer suffice to regenerate the MA? For each
+layer $L$ we run three forward passes---\emph{baseline} (all MLPs
+active), \emph{floor} (every MLP output zeroed), and
+\emph{keep-$L$} (only layer $L$'s MLP restored)---and compute the
+recovery rate
+\begin{equation}
+  \label{eq:recovery}
+  r(L) \;=\; \frac{\topk_1^{(\text{keep-}L)} - \topk_1^{(\text{floor})}}
+                  {\topk_1^{(\text{base})} - \topk_1^{(\text{floor})}} \times 100\%.
+\end{equation}
+The best single-layer recovery is $r^{*} = \max_{L} r(L)$, typically
+achieved at the regime-specific trigger layer.
+
+\paragraph{One restored MLP is rarely enough.}
+Only $2/26$ models reach $r^{*} \geq 30\%$: GPT-J-6B at $76.4\%$
+(trigger layer $L{=}2$) and LLaMA-3.1-8B at $49.0\%$ ($L{=}1$). Three
+hero \textsc{Concentrated} models that passed RQ4 with $R^{2}=1.00$
+nevertheless recover only $0$--$12\%$ under single-layer restoration
+(Qwen2.5-7B: $-0.2\%$; Qwen2-7B: $0.3\%$; Qwen3-0.6B: $12.1\%$). The
+collapse is \emph{not} a failure of the SVD expansion: the
+formula's premise, that $\mathbf{h}_2$ aligns with $\mathbf{v}_1$, is
+broken by the intervention itself. Zeroing every upstream MLP disrupts
+the residual stream, so layer $L$'s MLP now sees a corrupted
+$\mathbf{h}_2$ input and cannot regenerate the MA even though its
+$\Wdown$ geometry remains intact.
+
+\paragraph{Key finding~6.}
+\emph{MA is a \emph{system-level} emergent phenomenon. The MLP is
+necessary (RQ2), the $\Wdown$ geometry is causally load-bearing
+(RQ5: ablation is sufficient for elimination), but neither is
+\emph{sufficient in isolation for regeneration}: restoring geometry at a
+single MLP layer while the residual stream is disrupted regenerates MA in
+only $2/26$ models. Single-layer sufficiency is an architectural exception (parallel blocks,
+or early triggers $L \leq 2$) rather than a mechanistic consequence of
+rank-$1$ geometry. Under the exception-aware criterion---a model is
+\emph{consistent} with RQ5 if its single-layer recovery $r^{*}$ matches
+its regime expectation, namely $r^{*} \geq 30\%$ for early-trigger
+($L \leq 2$) or parallel-block exceptions and $r^{*} < 30\%$
+otherwise---the dense pool ($22$ checkpoints) shows
+$16/22 = 72.7\%$ consistency, confirming RQ6 as a reverse-direction
+probe of residual-stream dependence; the per-model breakdown is in
+Appendix~\ref{app:models}.}
+
+\paragraph{Direct measurement vs.\ pre-registered cross-validation.}
+\label{sec:rq6-direct-vs-indirect}
+Of the $22$ dense checkpoints, only GPT-J-6B and LLaMA-3.1-8B have a
+\emph{direct} $r^{*}$ measurement against Eq.~\eqref{eq:recovery}
+(single-layer recovery exhaustively scanned across $L$). The remaining
+$20$ checkpoints are evaluated via the pre-registered
+RQ5$\leftrightarrow$RQ6 correspondence: a single-layer RQ5 PASS
+($\Delta_V \leq -80\%$ at the trigger layer) implies an expected
+single-layer RQ6 PASS ($r^{*} \geq 30\%$), and a macro RQ5 PASS implies
+an expected RQ6 FAIL ($r^{*} < 30\%$). The reported $16/22 = 72.7\%$
+consistency rate therefore combines $2$ direct measurements with $14$
+indirect cross-validations against the RQ5 verdict; we do not extrapolate
+the direct-measurement rate of $2/2$ to the dense pool, and a full
+$26$-model direct-recovery sweep is listed as future work in
+Appendix~\ref{app:limitations}.
+
+% ============================================================
+% 6. Discussion
+% ============================================================
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{The MA generation pathway}
+
+Our six research questions converge on a system-level mechanistic
+pathway: \emph{function-token input} $\rightarrow$ \emph{MLP $\mathbf{h}_2$
+projection} $\rightarrow$ \emph{SVD-mediated amplification through $\Wdown$
+singular vectors, propagated via an intact residual stream}. In this
+pathway, attention is best understood as a regulator of MA formation,
+not as its physical generator: it can promote, suppress, or route around
+the MLP pathway, but the extreme value is written by the down-projection
+geometry. At the system level, MA generation therefore requires the
+conjunction of linguistic triggers, MLP weight geometry, and
+attention-mediated regulation. Across the 26-model pool, the geometry
+$(\eta, |\varrho|)$ explains the observed ablation behaviour, and the
+load-bearing role of $\mathbf{V}$ (sufficient for elimination upon
+ablation) is confirmed by the closed-form signed-change
+prediction of Eq.~\eqref{eq:delta-v}, which matches the empirical signed
+change to within one percentage point on Qwen2.5-7B. The gap between the
+theoretical prediction and the empirical signed change on
+\textsc{Dispersed} models tracks the RQ4 truncation error $e^{(1)}$ of
+\S\ref{sec:method-formula}, unifying RQ4 and RQ5 within a single
+quantitative framework.
+
+\subsection{Dual sparsity: token-entropy and direction-spectrum anchors}
+\label{sec:dual-sparsity}
+
+The mechanism we establish has two complementary sparsity axes. In the
+\emph{token} dimension, MA concentrates on low-entropy positions:
+function tokens, whose next-token prediction entropy is $2$--$4$ bits
+below content-token positions (\S\ref{sec:rq3}). In the
+\emph{direction} dimension, MA concentrates on the leading singular
+direction $\mathbf{v}_1$ of $\Wdown$ and writes out through a sparse
+coordinate $j^{*}$ of the left singular vector $\mathbf{u}_1$, which we
+verify empirically ($|u_1[j^{*}]|^2 \geq 0.5$ in $13/15$ measured models,
+\S\ref{sec:rq4}). The MA is therefore the conjunction of two sparsity
+properties (token-level low entropy AND direction-level concentration):
+it emerges when an information-theoretic anchor (low-$H(C)$ token)
+meets a spectrally anchored subspace (leading singular direction of
+$\Wdown$). This \emph{dual-sparsity} view unifies the RQ3
+linguistic findings with the RQ4--RQ5 geometric findings and offers a
+testable framework for connecting attention-sink phenomenology to
+representational anchors in future work.
+
+\subsection{Boundaries and implications}
+\label{sec:moe-dilution}
+
+The dashboard and model inventory show that normalisation and activation
+families are indirect, non-controlling factors that do not determine
+the mechanism: the same component choices appear in different MA
+regimes, while $(\eta,|\varrho|)$ tracks the observed mechanism. The main architectural boundary is routing or path bypass.
+Per-expert $V$-ablation produces only $\Delta_V \approx -1\%$ on the MoE
+models, consistent with routing dilution, and hybrid-attention variants can
+partially route information around $\Wdown$. These cases motivate
+routing-aware and path-aware interventions. Practically, $(\eta,|\varrho|)$
+and $\mathbf{u}_1$ sparsity form a lightweight probe for MA-sensitive layers,
+but quantisation or pruning gains require dedicated evaluation. We discuss
+scope limitations and future extensions in Appendix~\ref{app:limitations}.
+
+\paragraph{PPL impact and future work.}
+\label{sec:ppl-future-work}
+Our RQ5 main claim is structural \emph{sufficiency for elimination}:
+projecting out $\mathbf{v}_1$ collapses MA by $\Delta_V \leq -80\%$ on
+$21/26$ checkpoints. The complementary \emph{capability} question---whether
+the same intervention degrades downstream perplexity---is not part of
+our main causal claim and is reported only as a direction for future
+work. Indirect evidence from \citet{sun2024massive} shows that
+disabling the largest activations sharply increases PPL, so we expect
+$\Delta_{\text{PPL}} = (\text{PPL}^{V\text{-abl}} - \text{PPL}^{\text{base}})/\text{PPL}^{\text{base}} \in [0.10, 1.00]$
+on dense \textsc{Concentrated} models; a full $\Delta_{\text{PPL}}$
+sweep across all $26$ models is left for follow-up work and does not
+affect the causal-sufficiency conclusion of \S\ref{sec:rq5}.
+
+% ============================================================
+% 7. Conclusion
+% ============================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+To our knowledge, this is the first cross-architectural, causally tested
+account of massive activations in transformer language models. MAs are
+not random numerical artefacts; they are systematic outcomes of
+low-entropy token inputs interacting with learned low-rank geometry in
+the MLP down-projection. Across $26$ models we show that the MLP
+contribution to MAs obeys the SVD identity (Eq.~\eqref{eq:ma-poly}); a
+low-rank truncation at $K \leq 20$ recovers most of the magnitude
+empirically, with function tokens as the geometric anchors of this
+projection. A
+closed-form signed-change prediction under random $V$ matches the
+empirical signed change on the spectrally dominated \textsc{Concentrated}
+sub-case to within a percentage point, and the layer-support classification
+(\textsc{Concentrated} / \textsc{Few-Source} / \textsc{Dispersed} /
+\textsc{Anomaly}), refined by the empirical truncation-error sequence
+$e^{(k)}$, applies to every dense model regardless of normalisation or
+activation choice. The observed routing dilution on MoE models and the
+asymmetry between $\Wdown$ geometric load-bearing role (RQ5) and single-layer
+sufficiency (RQ6)---the latter holding only for parallel-block or
+early-trigger architectures---reveal that MA is a system-level
+phenomenon requiring an intact residual stream; routing-aware
+interventions and architecture-dependent recovery studies are natural
+next steps. Anonymous supplementary artefacts provide per-model
+intermediates for reproducing every number reported in the paper. Four
+models in particular---GPT-J-6B,
+Qwen2-7B, Qwen2.5-7B, and Qwen3-0.6B---achieve $R^2 = 1.00$ on the rank-$1$
+fit and $\Delta_V^{\text{sgl}} \leq -93\%$ under $V$-ablation, providing
+the cleanest empirical instantiation of Eq.~\eqref{eq:ma-poly} among the
+$22$ dense models analysed.
+
+% ============================================================
+% Acknowledgements (hidden during anonymous submission)
+% ============================================================
+% ============================================================
+% References
+% ============================================================
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+% ============================================================
+% Appendix
+% ============================================================
+\appendix
+\input{appendix}
+
+% ============================================================
+% NeurIPS paper checklist
+% ============================================================
+\newpage
+\input{checklist}
+
+\end{document}

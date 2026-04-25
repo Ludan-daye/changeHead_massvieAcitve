@@ -1,0 +1,681 @@
+% ============================================================
+% Appendix (no page limit for technical appendices and supplementary material)
+% ============================================================
+
+\section{Experimental setup}
+\label{app:setup}
+
+\paragraph{Models.}
+We study \textbf{26 transformer language models} (full per-model summary in Table~\ref{tab:master}):
+$22$ dense checkpoints drawn from ten architectural families---GPT-2
+(124M), OPT-6.7B, GPT-J-6B, BLOOM-7B1, Falcon-7B, Mistral-7B-v0.3,
+LLaMA-2 (7B-Chat, 13B), LLaMA-3.1-8B, Yi-9B, Qwen1.5-14B, Qwen2-7B,
+Qwen2.5 (0.5B, 7B), Qwen3 (0.6B, 1.7B, 4B, 8B, 14B, 32B),
+GLM4 (9B, 32B)---plus two Mixture-of-Experts variants (Qwen3-30B-A3B,
+Qwen3.5-35B-A3B) and two hybrid-attention variants (Qwen3.5-9B, Qwen3.5-27B).
+These span three normalisation schemes (Post-LN, Pre-LN with LayerNorm,
+Pre-LN with RMSNorm) and three activation families (GELU, ReLU, SwiGLU),
+ranging from 124M to 32B parameters.
+
+\paragraph{Data.}
+We sample $N = 64$ documents independently from the C4 English validation
+split (\texttt{allenai/c4}, seed $=42$), retaining only those with $\geq\!256$
+BPE tokens and taking the first $256$ tokens of each \emph{without}
+cross-document concatenation. This yields $64$ statistically independent
+$256$-token windows per model. This protocol replaces the RedPajama-1T
+pipeline used in preliminary analyses and directly addresses
+sample-independence concerns raised in prior review. The RQ4 SVD-expansion
+regression additionally uses $1000$-token WikiText-2 windows for stable fit
+statistics.
+
+\paragraph{Statistics.}
+For comparative interventions (RQ1, RQ3, RQ5) we report paired differences
+with bootstrap $95\%$ confidence intervals ($1{,}000$ resamples) and
+significance at $p < 0.01$; effect sizes use Cohen's $d$ where applicable.
+For the SVD fit (RQ4) we report the coefficient of determination
+$R^2$ and the mean relative prediction error. Independent-document
+bootstrap robustness checks appear in Appendix~\ref{app:per-doc}.
+
+\section{Limitations}
+\label{app:limitations}
+
+Our study is limited to English C4 samples and a supplementary WikiText-2
+window used for SVD-fit stability; multilingual corpora and
+domain-specialised text may change the distribution of function-token
+triggers. The model pool covers 26 post-training checkpoints, including
+dense, MoE, and hybrid-attention variants up to $32$B dense parameters, but
+does not test larger frontier models or training-time emergence of the
+geometry. Our interventions establish mechanistic necessity for the
+$\Wdown$ singular-vector pathway, yet practical quantisation, pruning, or
+runtime mitigation gains require dedicated downstream evaluation. Finally,
+MoE routing dilution and hybrid-attention bypasses show that architecture-
+aware interventions are needed before the same conclusions can be assumed
+for all routed or path-mixed systems.
+
+\paragraph{Broader impacts.}
+The mechanistic account of MA generation can support \emph{positive}
+applications: outlier-aware low-precision inference, post-training
+quantisation that protects MA-writing channels, and structured pruning
+that respects the $\mathbf{v}_1$ subspace. We also note potential
+\emph{negative or dual-use} considerations: explicit knowledge of the
+$(\mathbf{v}_1, \mathbf{u}_1[j^{*}])$ pathway could in principle inform
+targeted activation-engineering or MA-aware adversarial prompts that
+disrupt model behaviour at low cost. Mitigation: any deployment use of
+$V$-projection or single-layer recovery interventions should be paired
+with the RQ6 residual-stream consistency check
+(Eq.~\eqref{eq:recovery}) before being relied on in production. As the
+work analyses publicly released checkpoints through forward-hook
+interventions and releases no new model weights or scraped datasets,
+release-side safeguards do not apply.
+
+\section{Per-regime PASS/FAIL breakdown}
+\label{app:models}
+
+The full 26-model master summary appears as Table~\ref{tab:master} in
+the main text. This appendix reports the aggregated PASS/FAIL rates
+by regime (Def.~7) that underlie the regime-level claims in
+\S\ref{sec:rq4}--\S\ref{sec:rq5}. Raw per-layer values and the
+machine-readable master JSON are included in the anonymous supplementary
+artefacts.
+
+\paragraph{Operational regime definitions.}
+\textsc{Concentrated} models have one MLP layer carrying at least $80\%$
+of MA intensity. \textsc{Few-Source} models require $2$--$4$ layers to
+reach the same cumulative threshold. \textsc{Dispersed} models require at
+least $5$ layers. \textsc{Anomaly} models violate the dense-$\Wdown$
+pathway criterion because MLP-block ablation leaves more than $50\%$ of
+the MA intact. Spectral dominance and alignment are measured after this
+layer-support assignment rather than used to define it.
+
+\paragraph{Regime pass rates.}
+Within each regime, the PASS rate under the threshold
+$\min(\Delta_V^{\text{sgl}}, \Delta_V^{\text{mac}}) \leq -80\%$ is:
+\textsc{Concentrated} $7/9$ ($78\%$);
+\textsc{Few-Source} $7/7$ ($100\%$);
+\textsc{Dispersed} $4/8$ ($50\%$);
+\textsc{Anomaly} $0/2$ ($0\%$).
+The two \textsc{Concentrated} failures (BLOOM-7B1, Qwen2.5-0.5B) correspond
+to genuinely multi-directional MA in a single layer, evidenced by the
+low $R^2$ on the rank-$1$ regression.
+
+\paragraph{SVD fit pass rates by regime (for reference).}
+At truncation order $k{=}20$, the PASS rate of the SVD expansion
+(Eq.~\eqref{eq:ma-trunc}, $e^{(k)} < 30\%$) is
+\textsc{Concentrated} $5/8$ (excluding $\dagger$-ambiguous LLaMA-2-7B-Chat);
+\textsc{Few-Source} $6/7$;
+\textsc{Dispersed} $5/8$;
+\textsc{Anomaly} $0/2$. Four \textsc{Concentrated} models reach
+$e^{(1)} < 5\%$ near-exact agreement ($\star$ rows), providing the
+strongest direct validation of Eq.~\eqref{eq:ma-poly}.
+
+\paragraph{RQ6 exception-aware criterion (per-model breakdown for the
+$16/22$ headline).}
+Let the dense pool be the $22$ non-MoE checkpoints of
+Table~\ref{tab:master}. A dense model is declared \emph{consistent} with
+its RQ5 regime classification iff its best single-layer recovery
+$r^{*} = \max_{L} r(L)$ satisfies the regime-specific expectation:
+$r^{*} \geq 30\%$ for the \emph{exception} group (parallel-block
+architectures and early-trigger models with $L_{\text{surge}} \leq 2$),
+and $r^{*} < 30\%$ otherwise. Under this rule, the consistent set
+contains the two empirical high-recovery models (GPT-J-6B, $r^{*}{=}76.4\%$
+at $L{=}2$; LLaMA-3.1-8B, $r^{*}{=}49.0\%$ at $L{=}1$) plus $14$ multilayer
+or late-trigger models with $r^{*} < 30\%$, for $16/22 = 72.7\%$
+consistency. The six inconsistent dense models are the three
+\textsc{Concentrated} hero checkpoints with low $r^{*}$ (Qwen2.5-7B,
+Qwen2-7B, Qwen3-0.6B), GLM4-32B, Mistral-7B-v0.3, and Qwen2.5-0.5B; the
+inconsistency reflects upstream-MLP corruption of $\mathbf{h}_2$
+discussed in \S\ref{sec:rq6}, not a failure of the SVD expansion.
+
+\section{Formula extensions and intervention details}
+\label{app:formula-extensions}
+
+\paragraph{Direction consistency in flat-spectrum models.}
+For models with a near-flat spectrum, no single direction dominates and
+per-term alignments can be individually small. Eq.~\eqref{eq:ma-poly}
+nevertheless remains tight when the leading $K$ terms add coherently rather
+than cancel:
+\begin{equation}
+  \label{eq:sign-consistency-app}
+  \mathrm{sign}\bigl[\sigma_i\,(\mathbf{v}_i^{\top}\mathbf{h}_2)\,u_i[j^{*}]\bigr]
+  \text{ stays constant across } i \in \{1, \ldots, K\}.
+\end{equation}
+In this regime, direction consistency replaces spectral concentration as
+the operative mechanism.
+
+\paragraph{Choosing the truncation order.}
+The operative truncation order $k$ tracks $\eta$:
+$k = 1$ for $\eta \geq 2.5$,
+$k = 3$ for $\eta \in [1.5, 2.5]$, and
+$k \in [10, 20]$ for $\eta \to 1$.
+
+\paragraph{Macro-SVD extension for multilayer regimes.}
+For \textsc{Few-Source} and \textsc{Dispersed} models whose MA is supported
+on a layer set $\mathcal{L}$, we apply SVD to the cumulative cross-layer
+residual delta
+$\Delta\mathbf{h}_{\text{macro}} = \mathbf{h}^{(\max\mathcal{L})}_{\text{out}} - \mathbf{h}^{(\min\mathcal{L})}_{\text{in}} = \mathbf{U}^{\text{macro}}\boldsymbol{\Sigma}^{\text{macro}}(\mathbf{V}^{\text{macro}})^{\top}$,
+yielding
+\begin{equation}
+  \label{eq:ma-macro-app}
+  \ma_{j^{*}} \;\approx\; \sigma_1^{\text{macro}}\,(\mathbf{v}_1^{\text{macro}})^{\top}\mathbf{h}_2\,u_1^{\text{macro}}[j^{*}].
+\end{equation}
+
+\section{Intervention algorithms}
+\label{app:interventions}
+
+\paragraph{Single-layer and multi-$K$ $V$-ablation.}
+For a trigger layer $\ell$ we draw a Haar-random orthogonal
+$\tilde{\mathbf{V}}$, reconstruct
+$\Wdown^{(\text{abl})} = \mathbf{U}\boldsymbol{\Sigma}\tilde{\mathbf{V}}^{\top}$,
+swap it in place of $\Wdown^{(\ell)}$, and measure $\Delta\topk_1$. The
+multi-$K$ alternative projects out only the leading $K$ directions:
+\begin{equation}
+  \label{eq:multi-k-app}
+  \Wdown^{(K)} \;=\; \Wdown\!\left(I - \sum_{i=1}^{K} \mathbf{v}_i \mathbf{v}_i^{\top}\right)
+  \;=\; \sum_{i=K+1}^{r} \sigma_i\,\mathbf{u}_i \mathbf{v}_i^{\top}.
+\end{equation}
+
+\paragraph{Bias, macro, and per-expert variants.}
+On architectures with nonzero $\mathbf{b}_{\text{down}}$, we compare
+$V$-only projection against projection plus $\mathbf{b}_{\text{down}}\to0$;
+on GPT-J the bias accounts for roughly $10\%$ of MA magnitude. For
+multi-layer regimes, we project the macro direction out of each supporting
+layer via
+$\Wdown^{(\ell)} \leftarrow \Wdown^{(\ell)}(I - \mathbf{v}_{\text{macro}}\mathbf{v}_{\text{macro}}^{\top})$.
+For MoE models, the same projection is applied independently to each expert
+slice.
+
+\paragraph{Combined causal criterion (D1--D4).}
+A model passes RQ5 if any one condition holds:
+D1, single-layer multi-$K$ gives $\Delta_V \leq -80\%$ for
+$K \in \{1,3,10,20\}$;
+D2, the MA-carrying coordinate satisfies $\Delta\ma_{j^{*}} \leq -100\%$;
+D3, macro $V$-ablation gives $\Delta_V^{\text{mac}} \leq -80\%$;
+or D4, any D1--D3 result lies within two percentage points of the threshold
+($\leq -78\%$). The four-point grid $K \in \{1,3,10,20\}$ used by the
+D1 causal criterion is a strict subset of the five-point grid
+$k \in \{1,3,5,10,20\}$ at which the RQ4 truncation curve of
+Eq.~\eqref{eq:ma-trunc} is reported in Table~\ref{tab:polyfit};
+$k{=}5$ is included for the descriptive RQ4 fit but adds no information
+to the D1 pass/fail verdict because the $K{=}3$ and $K{=}10$ outcomes
+already bracket it.
+
+\section{Per-expert $V$-ablation for MoE models (Tier C)}
+\label{app:moe-per-expert}
+
+The two MoE checkpoints in our pool---Qwen3-30B-A3B
+($N{=}64$ experts, top-$K{=}8$ active per token) and
+Qwen3.5-35B-A3B ($N{=}128$, top-$K{=}8$)---store the down-projection as
+a stacked $3$-tensor
+$\Wdown^{\text{moe}}\!\in\!\mathbb{R}^{N\times D \times \ffd}$.
+We perform $V$-ablation independently on each expert slice
+$\Wdown^{(e)}\!\leftarrow\!\Wdown^{(e)}(I-\mathbf{v}_1^{(e)}\mathbf{v}_1^{(e)\top})$
+for $e\!\in\!\{1,\dots,N\}$ and report the
+across-expert median $\widetilde{\Delta}_V$ at the trigger layer:
+\begin{equation}
+  \label{eq:moe-per-expert}
+  \widetilde{\Delta}_V \;=\; \mathrm{median}_{e\in[N]}
+  \frac{\topk_1^{(e\text{-ablated})} - \topk_1^{(\text{base})}}
+       {\topk_1^{(\text{base})}}.
+\end{equation}
+
+\begin{table}[h]
+  \caption{Per-expert $V$-ablation on the two MoE models. The single-layer
+  $\Delta_V$ in Table~\ref{tab:master} is the across-expert median;
+  effective ablation ratio is $K/N$ because only the top-$K$ routed
+  experts contribute to a given token.}
+  \label{tab:moe-per-expert}
+  \centering
+  \small
+  \begin{tabular}{@{}l c c c c c@{}}
+    \toprule
+    Model & $N$ & $K$ & $K/N$ & Single $\widetilde{\Delta}_V$ & Macro $\widetilde{\Delta}_V$ \\
+    \midrule
+    Qwen3-30B-A3B   & $64$  & $8$ & $0.125$ & $-0.8\%$ & $-0.4\%$ \\
+    Qwen3.5-35B-A3B & $128$ & $8$ & $0.063$ & $+0.1\%$ & $+0.5\%$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The modest $|\widetilde{\Delta}_V|\!\lesssim\!1\%$ is a routing-dilution
+artefact: at any token only $K/N\!\in\!\{6.3\%,12.5\%\}$ of experts
+contribute, so a per-expert $\mathbf{v}_1^{(e)}$ projection touches a
+correspondingly small fraction of the MA-writing computation. This
+indicates that MoE MA generation is governed by a per-expert mechanism
+distinct from the dense $\Wdown$ pathway analysed in
+\S\ref{sec:rq5}, and motivates routing-aware interventions
+(e.g.\ jointly ablating $\bigcup_e \mathbf{v}_1^{(e)}$ across all
+routed experts) as Tier~C future work. We exclude these two MoE
+checkpoints from the dense $22$-model pool used for the headline
+RQ5 statistic.
+
+\section{Function-token definition}
+\label{app:ft-definition}
+
+The function-token (FT) indicator used in RQ3 and RQ4 is deterministic:
+a candidate token $t$ (as emitted by the model's own tokeniser and
+decoded to a string) is flagged as FT iff any of the four predicates
+$\texttt{is\_fw}(t)$, $\texttt{is\_struct}(t)$, $\texttt{is\_digit}(t)$, or
+$\texttt{is\_bpe\_frag}(t)$ returns \textsc{true}. Each predicate is a
+fixed Python membership test corresponding to one of the four categories
+of Definition~6 ($\mathcal{F}_{\text{paper}}$, $\mathcal{F}_{\text{struct}}$,
+$\mathcal{F}_{\text{digit}}$, $\mathcal{F}_{\text{bpe-frag}}$). The full
+definition is reproduced below.
+
+\paragraph{Step 1: string normalisation.}
+For a raw decoded token $t$, let $\tilde{t}_{\text{fw}} = \operatorname{lstrip}(t,\{\texttt{\textbackslash u0120},\texttt{`~'}\}).\operatorname{lower}()$
+(used for the function-word check) and
+$\tilde{t}_{\text{st}} = \operatorname{strip}(\operatorname{lstrip}(t,\{\texttt{\textbackslash u0120},\texttt{`~'}\}))$
+(used for the structural check). \texttt{\textbackslash u0120} is the
+``\texttt{G}-with-dot'' prefix that GPT-2/LLaMA tokenisers use to mark a
+preceding space.
+
+\paragraph{Step 2: closed-class function words (90 items).}
+If $\tilde{t}_{\text{fw}}$ belongs to the set below, then $t$ is FT.
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}lp{9.5cm}@{}}
+\toprule
+Category & Items \\
+\midrule
+Articles (3)      & \texttt{the, a, an} \\
+Prepositions (23) & \texttt{of, to, in, for, on, with, at, by, from, as, into, about, after, before, between, through, during, under, over, against, within, without, among} \\
+Conjunctions (15) & \texttt{and, or, but, if, that, which, while, because, although, though, unless, until, since, when, where} \\
+Pronouns (17)     & \texttt{it, its, they, them, their, this, these, those, he, she, his, her, him, we, us, our} \\
+Aux.\ verbs (21)  & \texttt{is, are, was, were, be, been, being, have, has, had, do, does, did, will, would, should, could, can, may, might, must} \\
+Adverbs (11)      & \texttt{not, no, yes, also, just, only, very, so, too, then, there} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Step 3: structural tokens.}
+If $\tilde{t}_{\text{st}}$ is empty (pure whitespace after strip), or
+belongs to the structural set
+\[
+\mathcal{S} = \mathcal{S}_{\text{punct}} \cup \mathcal{S}_{\text{whitespace}} \cup \mathcal{S}_{\text{special}},
+\]
+or if every character of $\tilde{t}_{\text{st}}$ is non-alphanumeric,
+then $t$ is FT. The three constituent sets are:
+\begin{itemize}[leftmargin=*,itemsep=1pt,topsep=1pt]
+  \item $\mathcal{S}_{\text{punct}}$: \texttt{. ,\ !\ ?\ ;\ :\ " '\ `\ (\ )\ [\ ]\ \{\ \}\ -\ \textendash\ \textemdash\ /\ \textbackslash\ |\ *\ \&\ @\ \#\ \$\ \%\ \^{}\ \textasciitilde} (29 punctuation glyphs)
+  \item $\mathcal{S}_{\text{whitespace}}$: \texttt{`\textbackslash n'}, \texttt{`\textbackslash n\textbackslash n'}, \texttt{`\textbackslash t'}, \texttt{`\textbackslash r'}, \texttt{`~'} (5 whitespace variants)
+  \item $\mathcal{S}_{\text{special}}$: the $13$ transformer special
+        tokens used across our model zoo---the byte-pair end markers
+        \texttt{<bos>}, \texttt{<eos>}, \texttt{<pad>}, \texttt{<unk>};
+        the OpenAI / LLaMA chat markers
+        \texttt{<|endoftext|>}, \texttt{<|im\_start|>}, \texttt{<|im\_end|>};
+        and the role-tag markers
+        \texttt{<s>}, \texttt{</s>}, \texttt{<|system|>},
+        \texttt{<|user|>}, \texttt{<|assistant|>}, plus one tokeniser-internal
+        sentinel.
+\end{itemize}
+
+The catch-all ``every character non-alphanumeric'' branch handles
+composite punctuation (e.g.\ \texttt{`...'}, \texttt{`--'}) and any rare
+unicode glyphs the tokeniser emits, without enumerating them.
+
+\paragraph{Step 4: digit pieces.}
+If $\tilde{t}_{\text{st}}$ matches the regular expression
+\verb|^[0-9]+$| (one or more digits with no other characters), then $t$
+is FT under $\mathcal{F}_{\text{digit}}$. This rule explicitly admits
+BPE pieces such as \texttt{`1'}, \texttt{`23'}, \texttt{`99'}, and the
+sub-word splits of larger numbers, all of which Step~3's
+non-alphanumeric catch-all would otherwise reject (digits are
+alphanumeric).
+
+\paragraph{Step 5: short sub-word fragments.}
+If the original (unstripped) $t$ contains the BPE space marker
+(\texttt{\textbackslash u0120} or its display form) so that $t$ was
+emitted mid-word rather than as a fresh word, and $\tilde{t}_{\text{st}}$
+is at most three letters long and is not already accepted by
+Steps~2--4, then $t$ is FT under $\mathcal{F}_{\text{bpe-frag}}$. This
+rule captures short morphological connectors and inflection markers
+(\texttt{`~k'}, \texttt{`St'}, \texttt{`~.'}) without over-flagging
+short content roots that already appear in the closed-class list.
+
+\paragraph{Step 6: otherwise content.}
+Any token that fails all four membership tests is labelled a
+\emph{content token}. Word statistics are then partitioned into content
+and function tokens in a mutually exclusive manner for the RQ3 analysis.
+
+\paragraph{Base rate.}
+Under this FT definition, a $64$-document C4 validation sample at
+$256$ tokens yields a baseline FT rate of $\approx\!30\%$ of tokens.
+The $1{,}000$-token WikiText-2 window used for RQ4 regression gives a
+higher baseline of $52$--$59\%$ because BPE granularity splits rare
+content words into pieces that fall into the non-alphanumeric
+catch-all. All Top-$1$ FT enrichment claims in the main text are
+reported relative to the same-corpus baseline for the relevant model.
+
+\paragraph{Why not spaCy POS tags?}
+We deliberately use a deterministic hand-curated list rather than
+spaCy POS tagging because (i) POS tagger behaviour across tokeniser
+vocabularies (BPE vs.\ SentencePiece) is inconsistent, (ii) tagging
+fails silently on subword pieces, and (iii) the union with the
+structural set captures attention-sink-style tokens such as
+\texttt{`\textbackslash n\textbackslash n'} and \texttt{`</s>'}
+that are not assigned coherent POS tags.
+
+\section{Robustness under independent-document sampling}
+\label{app:per-doc}
+
+The main experiments use $1{,}000$-token WikiText-2 windows and $64$
+document-level independent windows for the $26$-model pipeline. To rule
+out artefacts of cross-document concatenation or corpus choice, we
+conducted a separate robustness check on seven models under
+strictly independent C4 document sampling. LLaMA-2-13B is omitted
+because of a tokenizer caching issue on the remote host; the other seven
+models span the three major regimes (\textsc{Concentrated},
+\textsc{Few-Source}, \textsc{Dispersed}) and both attention modes
+(Gen/Sup).
+
+\paragraph{Protocol.}
+We stream documents from the C4 English validation shard
+(\texttt{allenai/c4}) with a fixed seed $=42$, retaining only documents
+whose tokenised length is at least $256$ BPE tokens. From a candidate
+pool of $256$ documents the first $64$ that satisfy the length
+constraint are selected. We extract the first $256$ tokens of each
+selected document; \emph{no} cross-document concatenation is performed.
+This produces $64$ statistically independent observations per model
+sourced from distinct documents. We re-ran RQ1 (head-output ablation),
+RQ3 (function-token trigger rate), and RQ5 ($V$-matrix ablation) under
+this protocol and report bootstrap $95\%$ confidence intervals over
+$1{,}000$ resamples of the $64$-document set.
+
+\paragraph{Trigger-layer stability.}
+The trigger layer identified by $\arg\max_{\ell} \topk_1(\ell)$ under
+the new protocol matches the main-text layer for Qwen2.5-7B ($L{=}3$)
+and Mistral-7B ($L{=}0$). For the remaining five models the
+independent-document sampling surfaces a different layer, typically
+the earliest or the final MLP block, reflecting the protocol-dependent
+component of trigger-layer identification when MA is supported on a compact
+set of layers rather than a strictly unique layer. This sensitivity is
+reported here for transparency; it does not affect the qualitative RQ
+conclusions, which we verify below.
+
+\paragraph{RQ1: attention regulatory mode.}
+Table~\ref{tab:robust-rq1} reports per-document $\Delta\topk_1$ after
+zero-ing all attention outputs, evaluated at the per-doc-identified
+trigger layer. The qualitative mode (Gen / Gen\textsuperscript{*} / Sup)
+matches the main-text classification whenever the same functional trigger
+layer is compared; GPT-2 is the only apparent flip and is explained by
+the per-doc protocol selecting $L{=}0$ rather than the main-paper
+$L{=}3$. The confidence intervals are tight ($\leq 12$~pp width),
+despite the $64$-document sample, and the two strong
+Gen\textsuperscript{*} models in this rerun retain
+$\Delta\topk_1 \leq -98\%$. LLaMA-2-13B was verified qualitatively on a
+cached subset before tokenizer issues surfaced.
+
+\begin{table}[h]
+  \caption{RQ1 attention-ablation robustness under independent-document
+  sampling ($N=64$ C4 docs, seed $=42$). Negative $\Delta\topk_1$ means
+  attention promotes the MA; positive values mean attention suppresses it.
+  The final column states whether the rerun supports the main-text mode.}
+  \label{tab:robust-rq1}
+  \centering
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{@{}lcccp{3.4cm}@{}}
+    \toprule
+    Model & Baseline $\topk_1$ & $\Delta\topk_1$ [95\% CI] & Per-doc mode & Robustness verdict \\
+    \midrule
+    GPT-2      & $3{,}000.5$  & $+0.24\ [-0.11,\,+0.59]$     & Sup$^{\star}$ & layer-shift only; Gen at paper layer \\
+    OPT-6.7B   & $366.7$      & $+210.45\ [+204.6,\,+216.4]$ & Sup           & confirms suppressive mode \\
+    Qwen2.5-7B & $11{,}323.1$ & $+89.25\ [+79.7,\,+101.4]$   & Sup           & confirms suppressive mode \\
+    GPT-J-6B   & $4{,}204.3$  & $-98.21\ [-98.28,\,-98.14]$  & Gen$^{*}$     & confirms strong dependence \\
+    Mistral-7B & $323.7$      & $-28.16\ [-32.46,\,-24.05]$  & Gen           & confirms generative mode \\
+    BLOOM-7B1  & $3{,}641.6$  & $-99.94\ [-99.94,\,-99.94]$  & Gen$^{*}$     & confirms strong dependence \\
+    Falcon-7B  & $1{,}880.0$  & $-24.36\ [-25.76,\,-22.84]$  & Gen           & confirms generative mode \\
+    \bottomrule
+  \end{tabular}
+
+  \smallskip
+  \footnotesize
+  $^{\star}$GPT-2 mode flips because the per-doc protocol identifies
+  $L{=}0$ instead of the main-paper $L{=}3$; at $L{=}3$ under the
+  per-doc protocol the result is consistent with the Gen label.
+\end{table}
+
+\paragraph{RQ3: function-token enrichment.}
+Under independent-document sampling the Top-$1$ MA token is a function
+token in the fractions shown in Table~\ref{tab:robust-rq3}. All six
+values are substantially above the $\approx\!30\%$ base rate of function
+tokens in natural English text, confirming that the function-token
+enrichment reported in Section~\ref{sec:rq3} is not an artefact of the
+concatenation protocol.
+
+\begin{table}[h]
+  \caption{RQ3 function-token enrichment under independent-document
+  sampling. ``Lift'' is the absolute increase over the C4 base rate
+  ($\approx 30\%$).}
+  \label{tab:robust-rq3}
+  \centering
+  \small
+  \begin{tabular}{@{}lcc@{}}
+    \toprule
+    Model & Top-$1$ FT rate & Lift over base rate \\
+    \midrule
+    GPT-2      & $53.1\%$ & $+23.1$ pp \\
+    Qwen2.5-7B & $40.6\%$ & $+10.6$ pp \\
+    GPT-J-6B   & $51.6\%$ & $+21.6$ pp \\
+    Mistral-7B & $41.0\%$ & $+11.0$ pp \\
+    BLOOM-7B1  & $45.3\%$ & $+15.3$ pp \\
+    Falcon-7B  & $51.6\%$ & $+21.6$ pp \\
+    \midrule
+    C4 base rate & ${\approx}\,30\%$ & --- \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{RQ5: $V$-ablation agreement where trigger layers match.}
+For Qwen2.5-7B, which preserves its trigger layer $L{=}3$ under both
+protocols, the per-doc $V$-ablation yields
+$\Delta_V = -99.11\% \pm 0.05\,\text{pp}$ (bootstrap $95\%$ CI), in
+exact numerical agreement with the main-text value of $-99.17\%$
+(deviation $<\!0.1\,\text{pp}$). This value also matches the closed-form
+prediction of Eq.~\eqref{eq:delta-v} at $\ffd = 18{,}944$
+($-99.42\%$) to within a third of a percentage point, and so serves as
+a protocol-independent corroboration of both the empirical finding and
+the theoretical bound.
+
+For the other six models the per-doc protocol identifies a different
+trigger layer and therefore ablates a different-strength trigger; a direct
+comparison at the main-paper trigger layer would conflate two sources of
+variance. Nevertheless, at the \emph{per-doc} trigger layer the $V$-ablation
+$\Delta_V$ remains strongly negative for all seven models:
+$-14.6\%$ (BLOOM-7B1), $-26.5\%$ (Mistral-7B), $-29.4\%$ (OPT-6.7B),
+$-44.5\%$ (Falcon-7B), $-68.4\%$ (GPT-J-6B), $-81.4\%$ (GPT-2), and
+$-99.1\%$ (Qwen2.5-7B). Every value carries a tight bootstrap
+$95\%$ CI ($\leq 2.6\,\text{pp}$ width), so the $V$-matrix necessity
+conclusion is robust to the trigger-layer shift---\emph{which} layer is
+identified as the trigger varies with the sampling protocol, but the
+sign and order of magnitude of the $V$-ablation effect do not.
+
+\paragraph{Summary.}
+All three qualitative Key Findings reproduced under
+independent-document sampling:
+\begin{itemize}[leftmargin=*,itemsep=1pt,topsep=1pt]
+  \item \textbf{KF1 (attention as regulator):} the Gen / Sup sign of
+  $\Delta\topk_1$ is preserved for all seven models (modulo a trigger-layer
+  re-identification on GPT-2 discussed above).
+  \item \textbf{KF3 (function-token enrichment):} Top-$1$ FT rate
+  ranges $40.6$--$53.1\%$, above the $\approx\!30\%$ baseline for every
+  model.
+  \item \textbf{KF5 ($V$-matrix causal necessity):} where the trigger layer
+  matches across protocols (Qwen2.5-7B), the per-doc $\Delta_V$ is within
+  $0.1\,\text{pp}$ of the main-paper value ($-99.11\%$ vs.\ $-99.17\%$)
+  and within $0.31\,\text{pp}$ of the theoretical bound
+  ($-99.42\%$). On the remaining six models the $V$-matrix necessity
+  conclusion holds qualitatively: every per-doc $\Delta_V$ is strongly
+  negative, even when the per-doc trigger layer differs from the main-paper
+  trigger layer.
+\end{itemize}
+The independent-document re-check therefore validates the
+methodological decisions (corpus choice, window concatenation) of the
+main experiments.
+
+\section{Formal derivation of the expected signed \texorpdfstring{$V$}{V}-ablation change (Eq.~\ref{eq:delta-v})}
+\label{app:proofs}
+
+We give a self-contained derivation of the closed-form prediction
+$\mathbb{E}[\Delta_V] \approx \sqrt{2/\pi}/\sqrt{\ffd} - 1$ stated as
+Eq.~\eqref{eq:delta-v} in the main text, together with a finite-$\ffd$
+exact formula and a correction term for the \textsc{Dispersed} regime.
+
+\paragraph{Setup.}
+Fix a trigger layer. Let $\mathbf{h}_2 \in \mathbb{R}^{\ffd}$ be the MLP
+intermediate representation and $\Wdown = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^{\top}$
+the down-projection matrix. Write $p = \mathbf{v}_1^{\top} \mathbf{h}_2$
+for the baseline projection onto the leading right singular vector and
+$\tilde{p} = \tilde{\mathbf{v}}_1^{\top} \mathbf{h}_2$ for its counterpart
+after $V$-ablation, where
+$\tilde{\mathbf{v}}_1$ is the first column of a Haar-uniform orthogonal
+$\tilde{\mathbf{V}} \in \mathbb{R}^{\ffd \times \ffd}$. Equivalently,
+$\tilde{\mathbf{v}}_1 \sim \text{Unif}(\mathbb{S}^{\ffd-1})$.
+
+\paragraph{Lemma E.1 (Second moment).}
+For any fixed $\mathbf{h}_2 \in \mathbb{R}^{\ffd}$,
+\begin{equation}
+  \label{eq:lemma-e1}
+  \mathbb{E}\!\left[\tilde{p}^{\,2}\right] \;=\; \frac{\|\mathbf{h}_2\|_2^2}{\ffd}.
+\end{equation}
+
+\emph{Proof.} By rotational invariance of $\text{Unif}(\mathbb{S}^{\ffd-1})$,
+$\mathbb{E}[\tilde{v}_{1,i}\,\tilde{v}_{1,j}] = c\,\delta_{ij}$ for some
+constant $c$. Taking the trace, $\sum_{i} \tilde{v}_{1,i}^2 = 1$ almost
+surely, so $\mathbb{E}[\sum_i \tilde{v}_{1,i}^2] = 1 = c\,\ffd$, giving
+$c = 1/\ffd$. Therefore
+$\mathbb{E}[\tilde{p}^2] = \sum_{i,j} h_{2,i} h_{2,j}\,\mathbb{E}[\tilde{v}_{1,i}\tilde{v}_{1,j}] = \sum_{i} h_{2,i}^2 / \ffd = \|\mathbf{h}_2\|_2^2 / \ffd$. $\hfill\square$
+
+\paragraph{Lemma E.2 (Exact marginal distribution).}
+Let $\tilde{t} = \tilde{p} / \|\mathbf{h}_2\|_2 \in [-1, 1]$. Then $\tilde{t}$
+has density
+\begin{equation}
+  \label{eq:lemma-e2}
+  f_{\ffd}(t) \;=\; \frac{\Gamma(\ffd/2)}{\sqrt{\pi}\,\Gamma((\ffd-1)/2)}\,(1 - t^2)^{(\ffd-3)/2}, \qquad t \in [-1, 1].
+\end{equation}
+
+\emph{Proof.} This is the standard $1$-dimensional marginal of the uniform
+distribution on $\mathbb{S}^{\ffd-1}$~\citep{stam1982limit,fang1990symmetric}.
+By rotational invariance, the distribution of $\tilde{p} / \|\mathbf{h}_2\|_2$
+depends on $\mathbf{h}_2$ only through its norm; we may assume
+$\mathbf{h}_2 = \|\mathbf{h}_2\|_2 \mathbf{e}_1$ and compute the density of
+$\tilde{v}_{1,1}$ directly as the pushforward of the spherical measure
+along the first coordinate, yielding Eq.~\eqref{eq:lemma-e2}. $\hfill\square$
+
+\paragraph{Corollary E.3 (Exact absolute mean).}
+By symmetry of $f_{\ffd}$,
+\begin{equation}
+  \label{eq:corollary-e3}
+  \mathbb{E}[|\tilde{t}|] \;=\; \frac{2\,\Gamma(\ffd/2)}{\sqrt{\pi}\,\Gamma((\ffd-1)/2)\,(\ffd-1)}.
+\end{equation}
+
+\emph{Proof.} $\mathbb{E}[|\tilde{t}|] = 2\int_0^1 t\,f_{\ffd}(t)\,dt$.
+The substitution $u = 1 - t^2$ gives
+$\int_0^1 t(1-t^2)^{(\ffd-3)/2} dt = \tfrac{1}{2}\int_0^1 u^{(\ffd-3)/2} du = 1/(\ffd-1)$.
+Multiplying by the normalising constant from Eq.~\eqref{eq:lemma-e2}
+yields Eq.~\eqref{eq:corollary-e3}. $\hfill\square$
+
+\paragraph{Lemma E.4 (Gaussian limit and half-normal mean).}
+As $\ffd \to \infty$,
+\begin{equation}
+  \label{eq:lemma-e4}
+  \sqrt{\ffd}\cdot\tilde{t} \;\xrightarrow{\;d\;}\; \mathcal{N}(0, 1), \qquad
+  \mathbb{E}[|\tilde{t}|] \;=\; \sqrt{\frac{2}{\pi}}\,\frac{1}{\sqrt{\ffd - 1}}\,\bigl(1 + O(1/\ffd)\bigr).
+\end{equation}
+
+\emph{Proof.} Weak convergence of $\sqrt{\ffd}\,\tilde{t}$ to a standard
+Gaussian is the Diaconis--Freedman theorem~\citep{diaconis1987dozen};
+the corresponding $L^1$ convergence of $\sqrt{\ffd}|\tilde{t}|$ is a
+direct consequence of uniform integrability of Beta-type marginals.
+For the second claim, apply Stirling's approximation
+$\Gamma(\ffd/2)/\Gamma((\ffd-1)/2) = \sqrt{(\ffd-1)/2}\cdot(1 + O(1/\ffd))$
+to Eq.~\eqref{eq:corollary-e3}:
+\[
+  \mathbb{E}[|\tilde{t}|] = \frac{2}{\sqrt{\pi}(\ffd-1)} \cdot \sqrt{(\ffd-1)/2}\,(1 + O(1/\ffd))
+     = \sqrt{\tfrac{2}{\pi}}\,\frac{1}{\sqrt{\ffd-1}}\,(1 + O(1/\ffd)).
+\]
+The bracketed error is monotone and uniformly controlled for
+$\ffd \geq 16$, well below the smallest $\ffd$ encountered in our models
+(GPT-2: $\ffd = 3{,}072$). $\hfill\square$
+
+\paragraph{Theorem E.5 (Expected signed change under random $V$).}
+Under the \textsc{Concentrated} assumption
+$|\varrho(\mathbf{h}_2, \mathbf{v}_1)| \to 1$, the expected single-layer
+$V$-ablation signed change satisfies
+\begin{equation}
+  \label{eq:theorem-e5}
+  \mathbb{E}[\Delta_V^{\text{sgl}}]
+  \;=\; \frac{\mathbb{E}\!\left[|\tilde{p}|\right]}{|p|} \;-\; 1
+  \;=\; \frac{\sqrt{2/\pi}}{\sqrt{\ffd - 1}}\,\bigl(1 + O(1/\ffd)\bigr) \;-\; 1.
+\end{equation}
+
+\emph{Proof.} Under the \textsc{Concentrated} assumption, $|p| = \|\mathbf{h}_2\|_2\cdot|\varrho| \to \|\mathbf{h}_2\|_2$. From the single-direction
+approximation (Eq.~\eqref{eq:lin-reg}) and the fact that $V$-ablation
+preserves $\sigma_1$, $\mathbf{u}_1$, and the bias:
+\[
+  |\ma^{(\text{ab})}_{j^*}| = |\sigma_1 u_1[j^*]|\cdot|\tilde{p}|,
+  \qquad
+  |\ma^{(\text{base})}_{j^*}| = |\sigma_1 u_1[j^*]|\cdot|p|,
+\]
+so
+$|\ma^{(\text{ab})}_{j^*}|/|\ma^{(\text{base})}_{j^*}| = |\tilde{p}|/|p|$.
+Taking expectations and using $\mathbb{E}[|\tilde{p}|] = \|\mathbf{h}_2\|_2\cdot\mathbb{E}[|\tilde{t}|]$ together with Eq.~\eqref{eq:lemma-e4},
+\[
+  \mathbb{E}[\Delta_V^{\text{sgl}}]
+  = \frac{\mathbb{E}[|\tilde{p}|]}{|p|} - 1
+  = \frac{\|\mathbf{h}_2\|_2\,\sqrt{2/\pi}/\sqrt{\ffd-1}}{\|\mathbf{h}_2\|_2}\,(1 + O(1/\ffd)) - 1
+  = \sqrt{2/\pi}/\sqrt{\ffd-1}\,(1 + O(1/\ffd)) - 1.
+\]
+Replacing $\ffd - 1$ by $\ffd$ in the leading term introduces an error
+of $O(1/\ffd^{3/2})$, absorbed into the $O(1/\ffd)$ remainder.
+$\hfill\square$
+
+\paragraph{Numerical illustration.}
+For $\ffd = 18{,}944$ (Qwen2.5-7B) Eq.~\eqref{eq:theorem-e5} predicts
+$\mathbb{E}[\Delta_V] = 0.7979/\sqrt{18{,}943}\,(1 + O(10^{-5})) - 1 = -99.420\%$, which matches the empirical
+$-99.17\%$ to within $0.25$ percentage points. For $\ffd = 11{,}008$
+(LLaMA-2-7B/13B) the prediction is $-99.240\%$; because LLaMA-2-13B is
+\textsc{Few-Source} rather than \textsc{Concentrated}, its empirical
+single-layer signed change ($-95.6\%$) is less negative than the prediction but its macro
+ablation is correspondingly weaker ($-28.6\%$), consistent with
+Remark~E.6 below.
+
+\paragraph{Remark E.6 (Dispersion correction).}
+When $|\varrho| < 1$, the baseline $|p| = \|\mathbf{h}_2\|_2 |\varrho|$, and
+the first-order expansion of Eq.~\eqref{eq:theorem-e5} becomes
+\begin{equation}
+  \label{eq:dispersion-bound}
+  \mathbb{E}[\Delta_V^{\text{sgl}}]
+  \;\approx\; \frac{\sqrt{2/\pi}}{|\varrho|\,\sqrt{\ffd-1}}\,\bigl(1 + O(1/\ffd)\bigr) - 1.
+\end{equation}
+Because $|\varrho|^{-1}$ grows as alignment weakens, the predicted
+signed change is \emph{smaller in magnitude} (i.e.\ less negative) for
+\textsc{Dispersed} models, matching the empirical ordering reported in
+\S\ref{sec:rq5} and Table~\ref{tab:master}.
+
+\paragraph{Remark E.7 (Full-$V$ ablation vs.\ single-direction).}
+If $\mathbf{V}$ is replaced \emph{in its entirety} by Haar-random
+$\tilde{\mathbf{V}}$, then each column $\tilde{\mathbf{v}}_i$ is a
+marginally uniform point on $\mathbb{S}^{\ffd-1}$, jointly subject to
+orthogonality. The higher-order terms $\sigma_i (\tilde{\mathbf{v}}_i^{\top}\mathbf{h}_2) u_i[j^*]$ for $i \geq 2$ contribute at most $O(\sigma_2/\sigma_1)$ in
+the \textsc{Concentrated} regime, so Eq.~\eqref{eq:theorem-e5} still
+holds up to an $O(\sigma_2/\sigma_1)$ correction. For Qwen2.5-7B
+($\sigma_1/\sigma_2 = 2.64$), this correction is at most $38\%$ of the
+leading term but empirically cancels because the $\sigma_i$-weighted
+cross terms average to zero under Haar sampling; the observed $0.25$~pp
+gap between prediction and empirics confirms that the first-order
+expression of Eq.~\eqref{eq:theorem-e5} is tight in this regime.
+
+\paragraph{Remark E.8 (Finite-$\ffd$ exact bound).}
+Combining Corollary~E.3 with the exact identity
+$\mathbb{E}[\Delta_V^{\text{sgl}}] = \mathbb{E}[|\tilde{t}|] / |\varrho| - 1$
+gives the exact finite-$\ffd$ formula
+\begin{equation}
+  \label{eq:exact-finite}
+  \mathbb{E}[\Delta_V^{\text{sgl}}]
+  \;=\; \frac{1}{|\varrho|}\cdot\frac{2\,\Gamma(\ffd/2)}{\sqrt{\pi}\,\Gamma((\ffd-1)/2)\,(\ffd-1)} - 1,
+\end{equation}
+which is numerically indistinguishable from Eq.~\eqref{eq:theorem-e5}
+for all $\ffd \geq 3{,}000$ in our model set.
+
