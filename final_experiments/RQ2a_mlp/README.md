@@ -29,7 +29,7 @@ bash ../../paper_experiments/run_rq345_origin_layer.sh "<model>" <rq_id>
 
 ## 结论
 
-**要证明什么 / 本轮证明了什么**：
+**要证明什么 / 主要论点**：
 - **主结论**：MLP 是 MA 主要来源——24/26 有数据模型中，20/24 retain ≤ 10%，bloom_7b1 完全归零（100% reduction）
 - **4 个残留异常**（retain > 15%）：qwen3.5_35b_a3b 87.6%（MoE 特异）、qwen3.5_9b 32.1%、qwen3.5_27b 10.0%（qwen3.5 家族）、gpt2 4.3%
 - **模式分布**（RQ2c 辅助）：CONCENTRATED 8 / FEW-SOURCE 8 / DISPERSED 8 / ANOMALY 1

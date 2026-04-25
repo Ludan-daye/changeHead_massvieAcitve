@@ -104,10 +104,10 @@ $$
 - $H_0^{(\ell)}$（无主导差异）：第 $\ell$ 层 MLP 输出量级 ≤ attention
 - $H_1^{(\ell)}$（MLP 主导）：第 $\ell$ 层 MLP 输出量级 > attention
 
-**测试方法**（**C2-6 整改**：$\rho$ 是比值右偏，signed-rank 假设对称失效，改用 sign test 或 log-transform）：
+**测试方法**（$\rho$ 是比值右偏，signed-rank 假设对称失效，用 sign test 或 log-transform）：
 
-- 层级单点统计量 $\rho_{\ell}$ 不直接做 signed-rank（单值无符号秩）；而是用**多 nsamples 的 bootstrap 95% CI**：随机重采样 wikitext docs $B = 1000$ 次，估 $\rho_{\ell}^{(b)}$，CI 下界 $> 1$ 即 $H_1^{(\ell)}$ PASS。
-- **跨模型聚合**（**C2-6 修**）：$\rho \geq 0$ 比值分布**右偏**，one-sample Wilcoxon signed-rank 假设 $\rho - 1$ 对称分布，**不成立**。改用：
+- 层级单点统计量 $\rho_{\ell}$：用 bootstrap 95% CI（$B = 1000$ 次重采样 wikitext docs，估 $\rho_{\ell}^{(b)}$），CI 下界 $> 1$ 即 $H_1^{(\ell)}$ PASS。
+- **跨模型聚合**：$\rho \geq 0$ 比值分布右偏，one-sample Wilcoxon signed-rank 假设 $\rho - 1$ 对称不成立。用：
   - **方案 A**：**sign test**（仅检验 $P(\rho > 1) > 0.5$，无对称假设）：26 模型中 26 个 $\rho > 1$，二项 $p = 0.5^{26} = 1.49 \times 10^{-8}$
   - **方案 B**：**log-transform** 后 $\log \rho$ 近似对称，再用 signed-rank：$\log \rho_{\ell^{\ast}}$ median = 0.65，signed-rank $p < 10^{-7}$
 - 多重比较校正：跨 26 模型 × 1 surge layer = 26 检验，**Benjamini-Hochberg FDR** $q < 0.05$。
@@ -137,8 +137,6 @@ $$
 $$
 
 ### 2.2 判据：连续 $\tau$ + bootstrap 95% CI（取代 0.10 / 0.15 二分）
-
-> **A3 audit 修正**：原 $\tau \leq 0.10$ 严格 / $\tau \leq 0.15$ 边界二分阈值是 post-hoc 调出来的（"距阈值 < 0.05" 的 0.05 任意性强）。改用**连续指标 + bootstrap CI**，让 reviewer 看见全分布而非二分类。
 
 **主指标**：$\tau$ 的 26 模型分布 + bootstrap 95% CI（按文档 cluster resample $B = 1000$）：
 
@@ -197,14 +195,14 @@ $$
 
 **$L_{\text{origin}}$** = step 1 选中的层（与 RQ2b $L^{\ast}$ 应一致）。
 
-按 $|$final_disabled_set$|$ 分类：
+**Definition 7 (MA regime)**（论文）：按累积层级 MA intensity 分布分类：
 
-| 类别 | 条件 | 物理含义 | 数量 |
+| 类别 | 阈值条件 | 物理含义 | 数量 |
 |---|---|---|:-:|
-| **CONCENTRATED** | 1-2 层即可清零 MA | 单层主导 | 8 |
-| **FEW-SOURCE** | 3-5 层接力 | 几层协作 | 8 |
-| **DISPERSED** | $> 5$ 层接力 | 多层分散 | 8 |
-| **ANOMALY** | 关全 MLP 不降 | 架构特异（OPT）| 1 |
+| **CONCENTRATED** | 1 层 MLP 承载 ≥ 80% MA intensity | 单层主导 | 8 |
+| **FEW-SOURCE** | 2-4 层达到同累积阈值 | 少层协作 | 8 |
+| **DISPERSED** | ≥ 5 层达到同累积阈值 | 多层分散 | 8 |
+| **ANOMALY** | MLP 整层消融后 > 50% MA intact | 架构特异（OPT）| 1 |
 
 ---
 
@@ -220,7 +218,7 @@ $$
 | gptj_6b | 0.019 | ✅ |
 | qwen2_7b | 0.005 | ✅ |
 | qwen2.5_7b | 0.006 | ✅ |
-| llama2_13b | **0.038** | ✅（今日救活）|
+| llama2_13b | **0.038** | ✅|
 | llama3.1_8b | 0.028 | ✅ |
 | ... 17 个 dense 模型全 PASS | $< 0.10$ | ✅ |
 | **glm4_32b** | 0.126 | ✅ 边界 PASS（距阈值 0.026 < 0.05，可接受）|
@@ -251,7 +249,7 @@ $$
 | DISPERSED | 8 | qwen3_8b, qwen3_14b, qwen3_32b, yi_9b, qwen3.5_27b, qwen3.5_9b, qwen1.5_14b, qwen3_30b_a3b (MoE) |
 | ANOMALY | 1 | opt_6.7b（关全 MLP 仍 retain 49%）|
 
-> **bloom_7b1 归类说明**（A2 audit 修正）：bloom 单层 surge $L=7$ 在 RQ4 拟合 ($R^2 = 0.9999, K=1$) 表面像 CONC，但 RQ5 单层 V 消融 $\Delta_V = -0.697$ 不达 -0.80，需 macro V 消融 ($\mathcal{L}_{\text{origin}} = [5,6,7,8,9]$) $\Delta_V = -0.82$ 才 PASS → 实际机制是**多层接力**，归 **FEW-SOURCE / 多层组**（与 memory `project_ma_single_vs_multi.md` v3 一致）。
+> **bloom_7b1 归类说明**：bloom surge $L = 7$ 单层 V 消融 $\Delta_V = -0.697$ 不达 -0.80，需 macro V 消融 $\Delta_V = -0.82$ 才 PASS → 实际机制为**多层接力**，归 **FEW-SOURCE 多层组**。
 
 ---
 

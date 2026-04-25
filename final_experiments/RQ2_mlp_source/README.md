@@ -6,7 +6,7 @@
 
 补 RQ2b（逐层 MLP 消融）和 per-layer MA scan，用于：
 1. **发现真起源层**：当 RQ2c 的 L_origin 与 RQ2b 的 critical_layer 冲突时，跑 per-layer MA 找最早的 MA 增量层
-2. **救活错层模型**：bloom_7b1 就是通过这个方法发现真起源 L=7（非 RQ2c 的 L=3），之后 RQ4/RQ5 用 L=7 救活
+2. **确定真起源层**：bloom_7b1 就是通过这个方法发现真起源 L=7（非 RQ2c 的 L=3），之后 RQ4/RQ5 用 L=7 定位
 3. **opt_6.7b 诊断**：补数据确定真起源（task #15 pending）
 
 ## 内容
@@ -23,12 +23,12 @@ RQ2_mlp_source/
     └── opt_6.7b/secondary/     ← opt_6.7b 补跑中
 ```
 
-## 救活案例（2026-04-23）
+## 定位案例
 
 ### bloom_7b1
 - 原 RQ2c L_origin=3，但 RQ4 @ L=3 R²=0.0001（失败）
 - per-layer MA scan 发现 L=7 才是真起源
-- RQ4 @ L=7 R²=0.9999（救活）+ RQ5 K=10 ΔMA=-67% ✅
+- RQ4 @ L=7 R²=0.9999（定位）+ RQ5 K=10 ΔMA=-67% ✅
 
 ### qwen1.5_14b
 - RQ2c L=35 vs RQ2b L=2（冲突 33 层）

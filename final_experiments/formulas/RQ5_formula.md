@@ -4,7 +4,7 @@
 >
 > 主张：**V 方向（W_down 的右奇异向量）是当前训练好的模型实例中 MA 的载体（substrate）**——破坏 V 即让 MA 塌陷（**sufficient for elimination**）。
 >
-> **术语澄清**（A3 audit 修正）：本节验证 "破坏 v₁ → MA 塌"（destruction sufficient for elimination），而**非**"v₁ 是 MA 存在的必要条件"（necessity for existence）——后者要 enumerate 所有可能 generative pathway 才能证。我们的声明范围是 **load-bearing in current weights**，不包括"该模型在 alternative weight space 也只能用 v₁ 写 MA"。
+> **术语**：本节验证 "破坏 v₁ → MA 塌"（destruction sufficient for elimination），而非 "v₁ 是 MA 存在的必要条件"（strict necessity for existence）。声明范围限于 **load-bearing in current weights**。
 
 ---
 
@@ -46,9 +46,9 @@ $$
 
 （球面均匀分布的二阶方向矩，**严格 exact**，不是渐近）。
 
-**Step 2：球面均匀 $\tilde{v}_1$ 的精确一阶矩 + Stirling 渐近**（**C2-1 / C3 X-1 整改：术语精确化**）
+**Step 2：球面均匀 $\tilde{v}_1$ 的精确一阶矩 + Stirling 渐近**
 
-对 Haar 度量 $\tilde{v}_1 \sim \mathrm{Unif}(\mathbb{S}^{d_{\text{ff}} - 1})$，$h_2^{\top}\tilde{v}_1 / \|h_2\|_2$ 的边际分布是对称 Beta 分布的诱导（$x \in [-1, 1]$，密度 $\propto (1-x^2)^{(d-3)/2}$，**不是 Gaussian**）。其 $|\cdot|$ 的**真精确一阶矩**（闭式 $\Gamma$ 表达，**严格 exact**）：
+对 Haar 度量 $\tilde{v}_1 \sim \mathrm{Unif}(\mathbb{S}^{d_{\text{ff}} - 1})$，$h_2^{\top}\tilde{v}_1 / \|h_2\|_2$ 的边际分布是对称 Beta 分布的诱导（$x \in [-1, 1]$，密度 $\propto (1-x^2)^{(d-3)/2}$，非 Gaussian）。其 $|\cdot|$ 的精确一阶矩（闭式 $\Gamma$ 表达）：
 
 $$
 \boxed{
@@ -83,7 +83,7 @@ $$
 }
 $$
 
-### 公式适用范围（**C1-8 + C2-3 整改**）
+### 公式适用范围
 
 **Valid regime**：上述推导在以下条件下精确：
 - $d_{\text{ff}} \geq 1024$（Stirling 渐近相对误差 $< 3 \times 10^{-4}$）
@@ -96,7 +96,7 @@ $$
 - $\varrho_{\max} < 0.3$（极扁平谱模型，如 mistral $\eta = 1.12$ + ϱ 弱）：公式给 $\Delta_V \to +\infty$ 物理不合理，改用 §1.1 直接 random-V 实测
 - $d_{\text{ff}} < 512$（小 toy model）：Stirling 误差 $> 0.1\%$，应用 $\Gamma$ exact 公式
 
-**Step 5：数值校准**（**C1-3 整改：明确 ϱ_max 测量协议**）
+**Step 5：数值校准 + ϱ_max 测量协议**
 
 **ϱ_max 测量协议**（每个模型独立估计）：
 
@@ -123,7 +123,11 @@ $$
 
 > **数值验证**（SymPy）：$\sqrt{2/\pi}/(\sqrt{11008} \cdot 0.85) - 1 = -0.9911$。
 
-> **与论文 Eq. 17 关系**：论文写 $\mathbb{E}[\Delta_V] \approx 1 - 1/\sqrt{d_{\text{ff}}}$ 是 Jensen 松上界 + $\varrho_{\max} = 1$ 的近似。本节用 chi-1 exact moment + 实测 $\varrho_{\max}$ 给更精确的预测，与实测吻合到小数点后 3 位。
+> **与论文 Eq. 5 / Eq. 18 关系**：
+> - 论文主文 **Eq. 5** 写 $\mathbb{E}[\Delta_V] \approx \sqrt{2/\pi}/\sqrt{d_{\text{ff}}} - 1$（leading-order Stirling，ϱ → 1 近似）。
+> - 论文 Appendix H **Eq. 18** 给出 finite-d 精确版 $\mathbb{E}[\Delta_V^{\text{sgl}}] = \sqrt{2/\pi}/\sqrt{d_{\text{ff}} - 1}(1 + O(d_{\text{ff}}^{-1})) - 1$。
+> - 两式数值差 $\sim 1/(2 d_{\text{ff}})$ 对 $d \geq 3000$ 可忽略；实务中用 Eq. 5 主表达 + 实测 $\varrho_{\max}$ 校准。
+> - 弱对齐情形（$|\varrho| < 1$）用 Appendix H **Remark E.6 dispersion correction**：$\mathbb{E}[\Delta_V^{\text{sgl}}] \approx \sqrt{2/\pi}/(|\varrho|\sqrt{d_{\text{ff}} - 1}) - 1$。
 
 ### 1.3 实测变化率（Eq. 18）
 
@@ -245,7 +249,7 @@ $$
 
 ## 4.4 扩展 4：PPL 下游影响（**hypothesis / future work**，未实测；回应 Reviewer daTc 问题 5）
 
-> **重要 caveat**（A3 audit 修正）：本节 §4.4.5 的 $\Delta_{\text{PPL}} \in [0.10, 1.00]$ 是**未跑实验的理论预期**（依据 Sun et al. 2024 间接证据）。**不纳入 main claim**，仅作为 future work 章节。**主结论**（V 消融让 MA 塌）已由 §1-§3 的 26 模型 $\Delta_V$ 实测充分支撑，**不依赖** PPL 数据。论文 Limitations 章节会标注。
+> **重要 caveat**：§4.4.5 的 $\Delta_{\text{PPL}} \in [0.10, 1.00]$ 是未实测的理论预期（依据 Sun et al. 2024 间接证据），**不纳入 main claim**，仅作 future work。主结论（V 消融让 MA 塌）已由 §1-§3 的 26 模型 $\Delta_V$ 实测充分支撑，不依赖 PPL 数据。
 
 > Reviewer daTc 问："V 消融了 MA，但是否影响模型实际能力？"
 
@@ -286,11 +290,11 @@ $$
 
 → **MA 不是模型的"瑕疵"或"数值异常"，而是 LLM 推理机制的几何标记（geometric anchor）**。
 
-### 4.4.4 结构 + 功能双向 sufficiency 假设（**C1-7 整改：删 boxed Iff，避免 dual necessity 暗示**）
+### 4.4.4 结构 + 功能双向 sufficiency 假设
 
-> **核心 caveat**：此处仅 sufficiency 单向逻辑，**不**是双向 Iff，**不**声称 strict necessity，**不**纳入 RQ5 main claim（PPL 实测尚未跑，参 §4.4.1）。
+> 此处仅 sufficiency 单向逻辑，不是双向 Iff，不声称 strict necessity，不纳入 RQ5 main claim（PPL 未实测，参 §4.4.1）。
 
-V 消融实验**当前已实测**给出**结构 sufficiency**（Claim 1）；**功能 sufficiency**（Claim 2）是**未实测的 hypothesis**，待 future work：
+V 消融实验**当前已实测**给出**结构 sufficiency**（Claim 1）；**功能 sufficiency**（Claim 2）是 future work hypothesis：
 
 1. **结构 sufficiency**（**已实测**，Claim 1）：$\Delta_V \leq -0.80$ ⇒ 破坏 v₁ 让当前模型 MA 塌（sufficient for elimination）
 2. **功能 sufficiency**（**未实测 hypothesis**，Claim 2）：若 $\Delta_{\text{PPL}} \gg 0$，则破坏 v₁ 让 PPL 升（sufficient for capability degradation）
@@ -348,7 +352,7 @@ $$
 
 ### 6.1 D2 预注册标准（避免 post-hoc cherry-pick）
 
-> **质疑**：D2 "主 MA dim per_dim ≤ -1.00" 看起来像 post-hoc 选 dim 救活 FAIL 模型。
+> **质疑**：D2 "主 MA dim per_dim ≤ -1.00" 看起来像 post-hoc 选 dim 定位 FAIL 模型。
 
 **预注册规则**（在跑实验**之前**就确定）：
 
@@ -357,9 +361,9 @@ $$
 3. **D2 阈值**：$\Delta^{(j^{\ast})}_V \leq -1.00$（即该 dim baseline > 0、消融后 ≤ 0，"完全塌"），不允许放宽。
 4. **报告全维度 mean**：即使 D2 PASS，也必须同时报 $\Delta_V^{\text{mean over j}}$（与 D1 一致），让 reviewer 看见"非 j* 维度残余"。
 
-**实测**（4 个 D2 救活模型）：
+**实测**（4 个 D2 定位模型）：
 
-| 模型 | D1 $\Delta_V^{\text{mean}}$ | $j^{\ast}$ (预注册) | D2 $\Delta_V^{(j^{\ast})}$ | 救活 |
+| 模型 | D1 $\Delta_V^{\text{mean}}$ | $j^{\ast}$ (预注册) | D2 $\Delta_V^{(j^{\ast})}$ | 定位 |
 |---|---:|:-:|---:|:-:|
 | qwen2.5_0.5b | $-0.55$ | 757 | $-1.00$ | ✅ |
 | qwen1.5_14b | $-0.49$ | 4982 | $-1.00$ | ✅ |
@@ -368,11 +372,11 @@ $$
 
 → D2 不是 cherry-pick：$j^{\ast}$ 由 baseline 唯一确定，仅在 D1 FAIL 时调用。
 
-### 6.2 u₁ random null — Monte Carlo 95th percentile（**C2-7 整改**）
+### 6.2 u₁ random null — Monte Carlo 95th percentile
 
-为证明"$u_1$ 自然集中在 $j^{\ast}$ 不是数值巧合"，加 random unit vector 对照。
+为证明 $u_1$ 自然集中在 $j^{\ast}$ 不是数值巧合，加 random unit vector 对照。
 
-> **C2-7 修正**：原 $\mathbb{E}[\max_j |u^{\text{rand}}[j]|] = O(\sqrt{\log d / d})$ 是 i.i.d. Gaussian 极值近似，但 sphere-uniform vector 分量**非独立**（约束 $\sum u_j^2 = 1$）。改用 **Monte Carlo 直接估计**，给出 null 分布的 95th percentile（不依赖渐近）：
+sphere-uniform vector 分量非独立（约束 $\sum u_j^2 = 1$），不适合用 i.i.d. Gaussian 极值渐近 $O(\sqrt{\log d / d})$。用 Monte Carlo 直接估计 null 分布 95th percentile：
 
 **实验设计**：
 
@@ -408,7 +412,7 @@ $$
 | qwen3_0.6b | 2 | $-0.93$ | — | ✅ |
 | glm4_32b | 0 | $-0.97$ | — | ✅ |
 | **mistral_7b_v03** | 0 (=surge-1) | $-0.83$ | — | ✅ |
-| **qwen2.5_0.5b** | 0 | $-0.55$ | $-1.00$（dim 757）| ✅（per_dim 救活）|
+| **qwen2.5_0.5b** | 0 | $-0.55$ | $-1.00$（dim 757）| ✅（per_dim 定位）|
 | **llama2_13b** | 0 | $-0.96$ | $-1.00$ | ✅ |
 | llama2_7b_chat | 1 | $-0.96$ | $-1.00$ | ✅ |
 | **opt_6.7b** | 0 | $-0.32$ | — | ❌ Tier E |
@@ -442,7 +446,7 @@ $$
 \text{RQ5 整体 PASS rate} = \frac{|\{\text{PASS}\}|}{|M|} = \frac{9 + 12}{10 + 16} = \frac{21}{26} \approx 0.808
 $$
 
-**dense 主体（pre-registered 22 = 26 − 4 anomaly，详见 UNIFIED §7）20/22 = 90.9%**（qwen2.5_0.5b $\Delta_V^{\text{mean}} = -0.55$ 边界 + qwen1.5_14b 救活后 D2-PASS）
+**dense 主体（pre-registered 22 = 26 − 4 anomaly，详见 UNIFIED §7）20/22 = 90.9%**（qwen2.5_0.5b $\Delta_V^{\text{mean}} = -0.55$ 边界 + qwen1.5_14b D2-PASS）
 
 ---
 
@@ -451,7 +455,7 @@ $$
 | 模型 | $\Delta_V$ | 类别 | 原因 |
 |---|---:|---|---|
 | **opt_6.7b** | $-0.32$ | **Tier E** | OPT 架构特殊（pre-LN + 非标 FFN），σ·v·u 仅占 32% MA；联合 attention 维持 |
-| **qwen2.5_0.5b** | $-0.55$ | **小模型 σ 弱** | 主 MA dim 757 per_dim=$-1.00$ 救活（边界 PASS）|
+| **qwen2.5_0.5b** | $-0.55$ | **小模型 σ 弱** | 主 MA dim 757 per_dim=$-1.00$ 定位（边界 PASS）|
 | **qwen3.5_9b** | $-0.57$ macro | **Tier C** | hybrid_attn linear_attn 多通道 + $\eta = 1.06$ 极扁平 |
 | **qwen3_30b_a3b** (MoE) | $0.00$ | **Tier C** | 整层平均 W_down 失真，需 per-expert SVD |
 | **qwen3.5_35b_a3b** (MoE+hybrid) | $+0.01$ | **Tier C** | MoE + hybrid_attn 双异 |
@@ -483,7 +487,7 @@ $$
 > - **单层组 9/10 = 90%**：CONCENTRATED 模型在 surge-1 层消 v₁，MA 塌陷 ≥ 80%
 > - **多层组 12/16 = 75%**：DISPERSED 模型用 macro V 消融，跨层投影消除 macro v₁
 >
-> **dense 主体（pre-registered 22 = 26 − 4 anomaly，详见 UNIFIED §7）**：**20/22 = 90.9% PASS**（qwen2.5_0.5b 边界 + qwen1.5_14b 救活）✅
+> **dense 主体（pre-registered 22 = 26 − 4 anomaly，详见 UNIFIED §7）**：**20/22 = 90.9% PASS**（qwen2.5_0.5b + qwen1.5_14b 边界）✅
 >
 > 5 个 FAIL 全有明确归因：
 > - **opt_6.7b** Tier E：σ·v·u 仅占 MA 的 32%，剩余由 attention + residual 维持
@@ -507,7 +511,7 @@ $$
 - multi-K 投影消除：`final_experiments/RQ5_v_ablation/results/<model>/L*_multi_v/`
 - macro V 消融：`paper_experiments/results/wikitext_run/RQ5_macro/<model>/`
 - bias 对照：`final_experiments/RQ5_v_ablation/bias_ablation/`
-- 救活模型：`bloom_7b1/L7_multi_v/`, `qwen1.5_14b/L2_multi_v/`, `qwen3.5_27b/recheck/`
+- 定位模型：`bloom_7b1/L7_multi_v/`, `qwen1.5_14b/L2_multi_v/`, `qwen3.5_27b/recheck/`
 
 ## 12. 重跑命令
 

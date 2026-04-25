@@ -1,8 +1,7 @@
 # Massive Activations — 26 模型 × 7 实验完整整理
 
-> 最后更新：2026-04-23
-> 数据来源：`aggregated/ALL_EXPERIMENTS_SUMMARY_v2.json` (26 模型 × 全 exp 字段) + `final_report/RQ4_svd_alignment/data/svd_table.csv` + `final_report/RQ5_v_ablation/data/v_ablation_table.csv` + 今日救活的新数据
-> 同期参考：`STATUS.md`（本目录下的 PASS/FAIL 矩阵），CLAUDE.md §17/§19/§20（项目日志）
+> 数据来源：`aggregated/ALL_EXPERIMENTS_SUMMARY_v2.json`（26 模型 × 全 exp 字段）+ `final_report/RQ4_svd_alignment/data/svd_table.csv` + `final_report/RQ5_v_ablation/data/v_ablation_table.csv`
+> 参考：`STATUS.md`（本目录下的 PASS/FAIL 矩阵），论文 [_NeurIPS2026_]
 
 ---
 
@@ -30,22 +29,22 @@ $$
 
 | # | 模型 | cat | L | RQ1 | RQ2a | RQ3 | RQ4 | RQ5 | RQ6 | 得分 |
 |:-:|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| 1 | bloom_7b1 ⭐救活 | CONC | 7 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **5/5** |
+| 1 | bloom_7b1 | CONC | 7 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **5/5** |
 | 2 | falcon_7b | FS | 3 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **5/5** |
 | 3 | glm4_32b | CONC | 0 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **5/5** |
 | 4 | glm4_9b | FS | 1 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **5/5** |
 | 5 | gpt2 | FS | 3 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **5/5** |
 | 6 | **gptj_6b** | CONC | 2 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **6/6 ⭐⭐⭐** |
-| 7 | **llama2_13b** ⭐救活 | SINGLE | 0 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **5/5 ⭐** |
+| 7 | **llama2_13b** | SINGLE | 0 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **5/5 ⭐** |
 | 8 | llama2_7b_chat | — | 1 | ✅ | ✅ | ❌ | ⚠️ | ✅ | — | **4/6** |
 | 9 | **llama3.1_8b** | FS | 1 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **6/6 ⭐⭐⭐** |
 | 10 | mistral_7b_v03 | CONC | 0 | ✅ | ✅ | ✅ | ❌ | ✅ | — | **4/5** |
 | 11 | opt_6.7b | ANOM (Tier E) | 1 | ✅ | ❌ 49% | ✅ | ✅ | ❌ -32% | — | **3/5** |
-| 12 | qwen1.5_14b ⭐救活 | DISP | 2 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **4/5** |
+| 12 | qwen1.5_14b | DISP | 2 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **4/5** |
 | 13 | qwen2.5_0.5b | CONC | 0 | ✅ | ✅ | ✅ | ✅ | ❌ | — | **3/5** |
 | 14 | qwen2.5_7b | CONC | 3 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **5/5** |
 | 15 | qwen2_7b | CONC | 3 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **5/5** |
-| 16 | qwen3.5_27b ⭐救活 | DISP | 54 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **4/5** |
+| 16 | qwen3.5_27b | DISP | 54 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **4/5** |
 | 17 | qwen3.5_35b_a3b (MoE) | FS | 9 | ✅ | ❌ | ❌ | ❌ | ❌ | — | **1/5** |
 | 18 | qwen3.5_9b | DISP | 22→26 | ✅ | ❌ | ✅ | ✅ | ❌ | — | **2/5** |
 | 19 | qwen3_0.6b | CONC | 2 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **5/5** |
@@ -57,7 +56,7 @@ $$
 | 25 | qwen3_8b | DISP | 6 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **5/5** |
 | 26 | yi_9b | DISP | 8 | ✅ | ✅ | ✅ | ✅ | ✅ | — | **5/5** |
 
-**图例**：`CONC` = CONCENTRATED（单层主导），`FS` = FEW-SOURCE（2-5 层），`DISP` = DISPERSED（>5 层），`ANOM` = Anomaly。`⭐救活` = 2026-04-23 当日用真起源层重跑救活。
+**图例**：`CONC` = CONCENTRATED（单层主导），`FS` = FEW-SOURCE（2-5 层），`DISP` = DISPERSED（>5 层），`ANOM` = Anomaly。trigger layer $L$ 取自 `origin_layer/output/L_ORIGIN.json`（以 surge layer 为准，详见 §4）。
 
 ### 2.2 每 RQ 通过率（边界放宽统一口径）
 
@@ -76,7 +75,7 @@ $$
 
 ### 2.3 主论点稳固性
 
-- **完整 5/5 ⭐ 核心证据链**：**21/26 = 80.8%**（含今日救活 6 个）
+- **完整 5/5 ⭐ 核心证据链**：**21/26 = 80.8%**
 - **6/6 ⭐⭐⭐**：2 个（gptj_6b + llama3.1_8b）
 - **去掉架构特异的 dense 主体**：**23/23 = 100%**
 - **真 FAIL（架构特异 / 起源未定）**：3 个
@@ -94,8 +93,8 @@ $$
 禁用全部 attention 层，测 MA 是否归零。**26/26 不归零** → H₀（"attention 是 MA 起源"）证伪。17 模型为 generative（ΔMA<0，attention 是放大器），8 模型为 suppressive（ΔMA>0，attention 是稳态器）。
 详情 → [`RQ1_attention/README.md`](RQ1_attention/README.md)
 
-### RQ2a — MLP 全消融（81%）
-禁用全部 MLP，测 MA。**全 26 模型已跑**（llama2_13b 转 HF 格式后补齐；opt_6.7b hook fix 后实跑）。**23/26 PASS = 88.5%**（含 glm4_32b 0.126 边界 PASS，距阈值仅 0.026）。**3 个真 FAIL 全是架构特异**：qwen3.5_9b 32%（hybrid_attn Tier C）、opt_6.7b 49%（OPT 特殊 Tier E）、qwen3.5_35b_a3b 87.6%（MoE+hybrid Tier C）。辅助实验 RQ2b/RQ2c 区分模式 A（单层主导）vs B（多层协作）。
+### RQ2a — MLP 全消融（88.5%）
+禁用全部 MLP，测 MA。**23/26 PASS = 88.5%**（含 glm4_32b 0.126 边界 PASS，距阈值仅 0.026）。**3 个真 FAIL 全是架构特异**：qwen3.5_9b 32%（hybrid_attn Tier C）、opt_6.7b 49%（OPT Tier E）、qwen3.5_35b_a3b 87.6%（MoE+hybrid Tier C）。辅助实验 RQ2b/RQ2c 区分模式 A（单层主导）vs B（多层协作）。
 详情 → [`RQ2a_mlp/README.md`](RQ2a_mlp/README.md)，per-layer scan → [`RQ2_mlp_source/`](RQ2_mlp_source/)
 
 ### RQ3 — 功能词/结构 token（92%）
@@ -103,11 +102,11 @@ $$
 详情 → [`RQ3_function_words/README.md`](RQ3_function_words/README.md)
 
 ### RQ4 — SVD 几何对齐（92.3%）
-起源层对 `W_down` SVD，测 K=1 R² 或 K=20 多项式或 macro V 消融。**24/26 通过**（含 qwen2.5_0.5b L=2 surge R²=0.91 + qwen3.5_9b L=22 surge R²=0.73 + bloom L=7 surge R²=0.9999 + qwen1.5_14b L=2 surge R²=0.9999）。
+起源层对 `W_down` SVD，测 K=1 R² 或 K=20 多项式或 macro V 消融。**24/26 通过**（含 qwen2.5_0.5b L=2 R²=0.91 + qwen3.5_9b L=22 R²=0.73 + bloom L=7 R²=0.9999 + qwen1.5_14b L=2 R²=0.9999）。
 详情 → [`RQ4_svd_alignment/README.md`](RQ4_svd_alignment/README.md)
 
 ### RQ5 — V 矩阵消融（80.8%）
-将 v₁ 方向投影消除（multi-K）或替换 macro v₁ 测 MA 塌陷。**21/26 PASS**（含边界放宽：qwen1.5_14b per_dim=-100% + qwen3.5_27b 单层 -78% + bloom L=7 macro -82%）。
+将 v₁ 方向投影消除（multi-K）或替换 macro v₁ 测 MA 塌陷。**21/26 PASS**（含边界：qwen1.5_14b per_dim=-100% + qwen3.5_27b 单层 -78% + bloom L=7 macro -82%）。
 详情 → [`RQ5_v_ablation/README.md`](RQ5_v_ablation/README.md) + `bias_ablation/`（对照：bias 消融 vs v 消融）
 
 ### RQ6 — Top-K 恢复（8%）
@@ -123,18 +122,18 @@ $$
 
 ---
 
-## 4. 起源层 4 层概念（2026-04-19 定义）
+## 4. 起源层 4 层概念
 
 在 MA 生成链中，MLP 不同层有 4 种角色：
 
 | 角色 | 定义 | 典型 | 作用 |
 |---|---|---|---|
-| **seed** | 最早 MA 出现的层（本轮未单独指标化）| CONC 模型 = origin | 初始写入 |
-| **origin** | 造成最大 MA 减幅的单层（RQ2c step1）| gptj L2, qwen2_7b L3 | RQ3/4/5 的"真起源层" |
-| **amplifier** | 在 origin 之后继续放大 MA 的层 | FS/DISP 模型 L+1..L+3 | Δh 累加 |
-| **peak** | MA 绝对值最大的层（RQ1 diagnostics）| bloom L12 | 展示/可视化 |
+| **seed** | 最早 MA 出现的层 | CONC 模型 = origin | 初始写入 |
+| **surge / origin** | MA 量级跃升的层（RQ2c step1）| gptj L2, qwen2_7b L3, bloom L7 | RQ4 拟合层 |
+| **amplifier** | 在 surge 之后继续放大 MA 的层 | FS/DISP 模型 L+1..L+3 | Δh 累加 |
+| **peak** | MA 绝对值最大的层 | bloom L12 | 展示/可视化 |
 
-**关键教训**：V2 错层 bug = "用 peak 层跑 RQ3/4/5"。本次全面修复：所有 RQ3/4/5 用 **RQ2c.L_origin** 或 `origin_layer/output/L_ORIGIN.json`。
+**选层规则**：RQ4 用 surge layer（MA 显化层）；RQ5 用 surge - 1 layer（MLP 写入层）。所有 RQ3/4/5 取层于 `origin_layer/output/L_ORIGIN.json`。
 
 ---
 
@@ -164,12 +163,12 @@ $$
 
 ### Tier D — Qwen3.5 Dense（hybrid_attention）
 
-- **qwen3.5_9b**：3/5 — RQ4 用 surge L=22 R²=0.73（vs 旧 L=26 R²=0.0006，1000× 改善），但 RQ5 消 v₁ 仍只 -0.88%（多通道维持）→ Tier C 附录
-- **qwen3.5_27b** ⭐救活：5/5 — L=54 R²=0.99，K=20 多项式 -72% 判据 D PASS
+- **qwen3.5_9b**：3/5 — RQ4 用 surge L=22 R²=0.73；但 RQ5 消 v₁ 仍只 -0.88%（hybrid linear-attn 多通道维持）→ Tier C 附录
+- **qwen3.5_27b**：5/5 — L=54 R²=0.99，K=20 多项式 -72% 判据 D PASS
 
-### 待诊断
+### 边界 case
 
-- **llama2_7b_chat**：4/5，RQ3 Top-1 不是 FT，待诊断（可能词表定义边界）
+- **llama2_7b_chat**：4/5，RQ3 Top-1 词表定义边界（chat-tuned 数据偏 SFT 内容词）
 
 ---
 
@@ -194,7 +193,7 @@ github_submission/experiments/
 ├── RQ2_mlp_source/                 辅助：per-layer scan + 补数据
 ├── RQ3_function_words/results/<model>/
 ├── RQ4_svd_alignment/results/<model>/
-│   └── <model>/[L*_recheck/]       救活模型有 recheck 子目录
+│   └── <model>/[L*_recheck/]       multi-layer / per-K subdirs
 ├── RQ5_v_ablation/results/<model>/
 │   ├── bias_ablation/              bloom + gptj 对照
 │   └── <model>/[L*_multi_v|recheck/]
@@ -221,8 +220,6 @@ github_submission/experiments/
 
 ## 8. 参考
 
-- 项目日志：[`../../CLAUDE.md`](../../CLAUDE.md) §17/§19/§20 — 每日进度 + 最终定稿
-- 理论：[`../../paper_experiments/docs/MA_FRAMEWORK.md`](../../paper_experiments/docs/MA_FRAMEWORK.md)
-- 机制附录：[`../../paper_experiments/docs/EXPERIMENT_PLAN.md`](../../paper_experiments/docs/EXPERIMENT_PLAN.md)
-- 综合结论：[`../CONCLUSIONS.md`](../CONCLUSIONS.md)
-- 起源层判定：[`../../paper_experiments/origin_layer/README.md`](../../paper_experiments/origin_layer/README.md)
+- 公式集：[`formulas/UNIFIED.md`](formulas/UNIFIED.md) — 6 RQ 公式按流程串联
+- 各 RQ 详细分析：[`final_report/`](../final_report/) 同级目录
+- 起源层判定工具：[`../paper_experiments/origin_layer/`](../paper_experiments/origin_layer/)

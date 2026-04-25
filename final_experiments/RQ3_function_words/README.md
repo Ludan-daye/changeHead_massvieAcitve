@@ -29,7 +29,7 @@ bash ../../paper_experiments/run_rq345_origin_layer.sh "<model>" <rq_id>
 
 ## 结论
 
-**要证明什么 / 本轮证明了什么**：
+**要证明什么 / 主要论点**：
 - **主结论**：24/26 模型的 Top-1 MA token 是 function_token（广义定义含 \n\n、标点、符号）
 - **Top-1 实例**：gptj/qwen2_7b/qwen3_0.6b = `\n\n`（换行）；yi_9b = `''`（空白）；bloom = `' k'`
 - **2 个 FAIL**：llama2_7b_chat（R²=0 异常）、qwen3.5_35b_a3b（MoE）

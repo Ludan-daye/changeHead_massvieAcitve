@@ -1,6 +1,6 @@
 # llama2_13b — RQ2a（MLP 消融）
 
-**模型分类**：`SINGLE`（今日 2026-04-24 重分类，原 FS 是 RQ2c 误判）| **真起源层 L**：`0`（peak_layer = L=22）
+**模型分类**：`SINGLE`（）| **真起源层 L**：`0`（peak_layer = L=22）
 
 **本 RQ 在问什么**：MLP 全消融：禁用全部 MLP 后 MA 是否归零（验证 'MLP 是 MA 起源'）
 
@@ -35,7 +35,7 @@
 
 ## 备注
 
-- 今日（2026-04-24）把 Meta 原生 PyTorch 权重用 `transformers/models/llama/convert_llama_weights_to_hf.py` 转成 HF 格式（主服本地 56s 完成），解决之前 HF 401 缺数据问题
+- 把 Meta 原生 PyTorch 权重用 `transformers/models/llama/convert_llama_weights_to_hf.py` 转成 HF 格式（主服本地 56s 完成），解决之前 HF 401 缺数据问题
 - 转换后权重路径（主服）：`model_weights/llama2_13b_hf/`
 
 ---

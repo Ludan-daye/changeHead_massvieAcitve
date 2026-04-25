@@ -29,7 +29,7 @@ bash ../../paper_experiments/run_rq345_origin_layer.sh "<model>" <rq_id>
 
 ## 结论
 
-**要证明什么 / 本轮证明了什么**：
+**要证明什么 / 主要论点**：
 - **主结论**：仅 2/26 模型期望高 recovery 达成（gptj_6b 76%, llama3.1_8b 49%）
 - **gptj_6b 独特**：CONCENTRATED + Parallel architecture（attention 和 MLP 并行计算）→ 单层 top-K 足够恢复
 - **llama3.1_8b 独特**：FEW-SOURCE 但 L=1 RQ6 也过 → 极早层 + 后续 residual 稳态

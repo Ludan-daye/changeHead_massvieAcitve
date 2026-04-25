@@ -29,12 +29,12 @@ bash ../../paper_experiments/run_rq345_origin_layer.sh "<model>" <rq_id>
 
 ## 结论
 
-**要证明什么 / 本轮证明了什么**：
+**要证明什么 / 主要论点**：
 - **主结论**：18/26 模型（69%）ΔMA ≤ -80%
 - **核心证据**：gptj_6b / qwen2.5_7b / qwen2_7b V 消融 ΔMA = **-99%**（完美因果）
 - **Pattern A 成功**：单层 V 消融在 CONC/FS 模型的达成率 ~85%
 - **Pattern B 成功**：macro V 消融在 DISP 模型的达成率 ~70%（qwen3_32b/4b/8b/14b macro -86%~-100%）
-- **2026-04-22 修正**：llama2_7b_chat 原 L=26 错层 ΔMA=0% → 修为 L=1 ΔMA=-96%
+- llama2_7b_chat 原 L=26 错层 ΔMA=0% → 修为 L=1 ΔMA=-96%
 - **失败模式**：qwen3.5_35b_a3b（MoE）、qwen3_30b_a3b（MoE）、opt_6.7b（架构特异）
 
 ---

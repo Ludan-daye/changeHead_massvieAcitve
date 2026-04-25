@@ -29,7 +29,7 @@ bash ../../paper_experiments/run_rq345_origin_layer.sh "<model>" <rq_id>
 
 ## 结论
 
-**要证明什么 / 本轮证明了什么**：
+**要证明什么 / 主要论点**：
 - **主结论**（H₀ 证伪）：**atten_h 不是 MA 的起源**——26/26 有数据模型中，关 attention 后 MA 都有残留。最小残留 residual% = **1.69%**（`gptj_6b`）。**没有任何一个模型归零** → MA 必须有另一来源（→ RQ2 指向 MLP）。
 - **副结论（影响方向）**：
   - **Generative**（ΔMA<0）：17 个——attention 是放大器/广播器

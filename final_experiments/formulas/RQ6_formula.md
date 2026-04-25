@@ -18,15 +18,19 @@ $$
 
 让模型继续前向，测 MA 在下游层是否能恢复到 baseline 水平。
 
-### 1.2 Recovery rate
+### 1.2 Recovery rate（论文 Eq. 10）
+
+每层 $L$ 跑三组前向：**baseline**（所有 MLP 激活）、**floor**（所有 MLP 输出清零）、**keep-L**（仅恢复第 $L$ 层 MLP），定义 recovery rate：
 
 $$
 \boxed{
-r_{\text{recovery}} = \frac{\text{Top1}^{\text{topk-keep}}}{\text{Top1}^{\text{baseline}}}
+r(L) = \frac{\text{Top1}^{\text{keep-}L} - \text{Top1}^{\text{floor}}}{\text{Top1}^{\text{base}} - \text{Top1}^{\text{floor}}} \times 100\%
 }
 $$
 
-物理意义：保留单层 top-K 后，下游 MA 能恢复多少。
+**减 floor**项排除 "all-MLP-zero baseline" 仍残留的 attention/residual 贡献。最佳单层 recovery $r^{\ast} = \max_L r(L)$，通常在 regime-specific trigger layer 取得。
+
+物理意义：保留单层 top-K 后，下游 MA 能从 floor baseline 恢复多少。
 
 ---
 
@@ -114,11 +118,9 @@ RQ6 与 RQ5 是**同一机制的正反两面**：
 | **RQ5 删 v₁ / macro v₁** | 摧毁 MA | $\Delta_V \leq -0.80$ |
 | **RQ6 保留 top-K 激活** | 恢复 MA | $r_{\text{recovery}} \geq 0.30$ |
 
-**单向 hypothesis**（**C3-Y2 整改：N=2 直测无法支撑 Iff**）：
+**单向 hypothesis**（仅 N = 2 直测，不构成 universal Iff）：
 
-> **致命澄清**：旧版本 boxed "RQ5 PASS $\Longleftrightarrow$ RQ6 PASS" 是 universal Iff claim，但只有 N=2 直测样本（gptj + llama3.1_8b）支撑——数学上无法证 universal Iff。
-
-降级为 **case study hypothesis**（非主结论）：
+声明限定为 **case study hypothesis**（非主结论）：
 
 $$
 \text{Hypothesis (one-direction)}: \quad \text{单层 RQ5 PASS} \;\Rightarrow\; \text{期望 RQ6 PASS（待验）}

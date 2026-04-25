@@ -6,16 +6,16 @@
 
 **整体公式纲要**：把 RQ1-RQ6 按 MA 生成流程串联，统一符号体系，从 token 输入到 MA 因果验证一气呵成。每个公式既有数学定义，也有该步在 MA 链中的物理意义。
 
-## 各 RQ 详细索引
+## 各 RQ 详细索引（论文 §3.2 命名）
 
-| RQ | 公式主题 | 文件 | 通过率 |
-|:-:|---|---|:-:|
-| **RQ1** | Attention 消融判据（H₀ 证伪）| [RQ1_formula.md](RQ1_formula.md) | **26/26 = 100%** |
-| **RQ2** | MLP 是物理基础 + ρ 主导比 + 起源层定位 | [RQ2_formula.md](RQ2_formula.md) | 23/26 = **88.5%** |
-| **RQ3** | 广义 function token 触发 + Fisher + u₁ decode | [RQ3_formula.md](RQ3_formula.md) | 24/26 = **92.3%** |
-| **RQ4** | MA 生成多项式公式（单层 + 多层 + 方向一致性）| [RQ4_formula.md](RQ4_formula.md) | 24/26 = **92.3%** |
-| **RQ5** | V 消融因果（multi-K + macro + bias 对照 + per_dim 强证据）| [RQ5_formula.md](RQ5_formula.md) | 21/26 = **80.8%** |
-| **RQ6** | Top-K Recovery（辅助，反向验证 RQ5；分层判据）| [RQ6_formula.md](RQ6_formula.md) | dense 16/23 = **70%** |
+| RQ | 名称 | 公式主题 | 文件 | 通过率（dense 22）|
+|:-:|---|---|---|:-:|
+| **RQ1** | Source | Attention 消融判据（attention 是 regulator）| [RQ1_formula.md](RQ1_formula.md) | **22/22 = 100%** |
+| **RQ2** | Localization | MLP 是 substrate + ρ 主导比 + 起源层 | [RQ2_formula.md](RQ2_formula.md) | 21/22 = **95.5%** |
+| **RQ3** | Trigger | Function token 触发 + Fisher + u₁ decode | [RQ3_formula.md](RQ3_formula.md) | 21/22 = **95.5%** |
+| **RQ4** | Mechanism | SVD 公式 + multi-K 截断 + macro-SVD | [RQ4_formula.md](RQ4_formula.md) | 21/22 = **95.5%** |
+| **RQ5** | Causality | V 消融（multi-K + macro + bias + per_dim）| [RQ5_formula.md](RQ5_formula.md) | 20/22 = **90.9%** |
+| **RQ6** | Sufficiency | Top-K recovery（case-study）| [RQ6_formula.md](RQ6_formula.md) | 2 直测 + 14-16 间接一致 |
 
 ## 主公式（统一形式）
 

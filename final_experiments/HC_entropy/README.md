@@ -27,7 +27,7 @@ bash ../../paper_experiments/run_rq345_origin_layer.sh "<model>" <rq_id>
 
 ## 结论
 
-**要证明什么 / 本轮证明了什么**：
+**要证明什么 / 主要论点**：
 - MA 位置的 H(C) 显著低于非 MA 位置 → 功能词是确定性高（锚点）
 - 26 模型均完成
 

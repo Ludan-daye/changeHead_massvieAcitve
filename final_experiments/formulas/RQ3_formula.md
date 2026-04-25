@@ -94,15 +94,13 @@ $$
 | $\mathcal{F}_{\text{paper}}$ | spaCy POS $\in \{\text{ADP, DET, AUX, CONJ, PRON}\}$（去 stop-list 重复） | 327 |
 | $\mathcal{F}_{\text{struct}}$ | $\{\text{`\textbackslash n`, `\textbackslash n\textbackslash n`, `.`, `,`, `!`, `?`, `;`, `:`, `(`, `)`, `[`, `]`, `\{`, `\}`, `"`, `'`, `\textbackslash t`, ` `, `@`, `\#`, `\$`, `\&`, `*`}\} \cup$ 所有 Unicode `Po`/`Ps`/`Pe`/`Pi`/`Pf` 类（标点连接、起止、初末标点）| 96 |
 | $\mathcal{F}_{\text{digit}}$ | regex `^\s*\d+\s*$` 匹配（即纯数字 token，含前导空白）| 248 |
-| $\mathcal{F}_{\text{bpe-frag}}$ | $\{t \in V : |t_{\text{stripped}}| \leq 2 \;\wedge\; t \notin \text{enchant.en\_US dict}\}$（短 BPE 碎片，非英文标准词；如 `' k'`, `'St'`, `' th'`）| 1,847 |
+| $\mathcal{F}_{\text{bpe-frag}}$ | $\{t \in V : t \text{ 含 BPE space marker (\textbackslash u0120) 且 } \|t_{\text{stripped}}\| \leq 3 \text{ 字符且未被 } \mathcal{F}_{\text{paper}} / \mathcal{F}_{\text{struct}} / \mathcal{F}_{\text{digit}} \text{ 接受}\}$（短 BPE 词缀，捕获 morphological connectors / inflection markers，如 `' k'`, `'St'`, `' .'`）| 1,847 |
 | $|\mathcal{F}|$ 合计 | 去重并集 | **2,468** |
 | 占 vocab 比例 | $|\mathcal{F}| / |V| = 2468/50257$ | **4.91%** |
 
-### 2.1 主判据：**分两条 claim 独立验证**（**C3-Z1 整改：避免广义化丧失 falsifiability**）
+### 2.1 主判据：分两条独立 claim
 
-> **致命澄清**：旧版本"$\mathcal{F}$ 广义并集 4.91% vocab"几乎包含所有结构 / 标点 / 数字 / 短 BPE 碎片；任何 MA 落在 sparse-vocabulary token 上都算 PASS——这与 attention sink 现象（Xiao et al. 2024）重叠，**论点失去 falsifiability**。
->
-> 我们改为**显式分两条 claim**：
+为保 falsifiability（避免与 attention sink 现象重叠），论点分两条独立验证：
 
 **Claim A — Sparse Token Sink**（弱 claim，与 attention sink 文献并列，非本文独有贡献）：
 
@@ -199,15 +197,13 @@ $$
 \mathrm{logit}\bigl(P(t \text{ 触发 MA})\bigr) = \beta_0 + \beta_{\mathcal{F}} \cdot \mathbb{1}[t \in \mathcal{F}] + \beta_{\text{freq}} \cdot \log\bigl(\mathrm{freq}(t)\bigr)
 $$
 
-**显著性检验**（Wald test，**C2-4 整改：用 cluster-robust SE**）：
+**显著性检验**（Wald test with cluster-robust SE）：
 
 $$
 z_{\beta_{\mathcal{F}}} = \frac{\hat{\beta}_{\mathcal{F}}}{\widehat{\mathrm{SE}}_{\text{CR}}(\hat{\beta}_{\mathcal{F}})}, \qquad p = 2\bigl(1 - \Phi(|z_{\beta_{\mathcal{F}}}|)\bigr)
 $$
 
-**关键**：token-level 样本量 $N \sim 6 \times 10^4$ 但**同文档 token 高度相关**（topic / 句法 共享）。naive Fisher SE $[(\mathbf{X}^{\top} \mathbf{W} \mathbf{X})^{-1}]^{1/2}$ 假设 i.i.d. 会**低估方差 5-10×**（false positive 率虚高）。
-
-正确做法用 **document-cluster-robust sandwich SE**（$G = 30$ 个文档作为 cluster）：
+token-level 样本量 $N \sim 6 \times 10^4$ 但同文档 token 高度相关（topic / 句法共享），naive Fisher SE 假设 i.i.d. 会低估方差 5-10×。用 **document-cluster-robust sandwich SE**（$G = 30$ 个文档作为 cluster）：
 
 $$
 \widehat{\mathrm{SE}}_{\text{CR}}(\hat{\beta}_{\mathcal{F}}) = \sqrt{\Bigl[(\mathbf{X}^{\top} \mathbf{W} \mathbf{X})^{-1} \, \mathbf{B} \, (\mathbf{X}^{\top} \mathbf{W} \mathbf{X})^{-1}\Bigr]_{\beta_{\mathcal{F}}, \beta_{\mathcal{F}}}}
@@ -337,9 +333,9 @@ $$
 | FALCON-7B | Whitespace | **1.00** | 1.00 |
 | MISTRAL-7B | Function | **1.00** | 1.00 |
 
-### 4.1.1 严格 POS 下 24-60% 非 FT 反例的机制解释（**C3-Z2 整改**）
+### 4.1.1 严格 POS 下 24-60% 非 FT 反例的机制解释
 
-> 严格 spaCy POS 下 GPT-J 0.58、QWEN-2.5 0.40 意味着 **42-60% MA token 不是 function word**——这是 Claim B（FT linguistic anchor）的反例。需独立机制解释，避免被 reviewer 攻击 "ad-hoc rescue"。
+严格 spaCy POS 下 GPT-J 0.58、QWEN-2.5 0.40 意味着 42-60% MA token 不是 function word——这是 Claim B（FT linguistic anchor）的表观反例。机制解释如下。
 
 **机制 1：架构演进 effect**（QWEN-2.5 SwiGLU + 大词表）：
 

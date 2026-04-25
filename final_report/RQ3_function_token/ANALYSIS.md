@@ -11,7 +11,7 @@
 
 验证"**MLP 在 function token 位置（广义，含标点/换行/结构符号/数字/短 BPE 碎片）写入 MA**"——即 MA 最大值（extreme）几乎都落在 function token 位置。这是连接 RQ2（MLP 是起源）和 RQ4（V 矩阵方向）的中间证据层。
 
-**用户澄清的 function token 统一定义**（本次分析采用）：
+**用户澄清的 function token 统一定义**（采用）：
 ```
 function_token = {
   1. 标准功能词:   the, a, of, in, on, to, is, are, and, or, ... (140 个)
@@ -184,12 +184,12 @@ C1:  Cohen's d (|h₂·v₁|_FT vs |h₂·v₁|_CT) > 0.3
 > |:-:|---|---|:-:|
 > | 2026-04-17 | **A. "功能词 mark"**：MLP 把 MA 写在 the/of/and 等语法功能词位置 | Cohen's d 均值比较 | ✗ gpt2 Top-10 只 1 个功能词 |
 > | 2026-04-20 | **B. "结构 token mark"**（§16.5）：MA 写在 `\n`/标点/@ 等结构 token 位置 | gpt2 L3 Top-1 `\n\n` MA=165 | ✗ 14 模型扫完只 glm4 支持 |
-> | 2026-04-22 | **C. "低熵 token mark"**（前次定稿）：MA 写在**模型能稳定预测下一 token 的位置**（信息论低熵位置） | 14 模型 Top-K 三分天下的共性 | ✓ 被本次最终稿吸收为"广义 FT 的信息论内涵" |
+> | 2026-04-22 | **C. "低熵 token mark"**（）：MA 写在**模型能稳定预测下一 token 的位置**（信息论低熵位置） | 14 模型 Top-K 三分天下的共性 | ✓ 被吸收为"广义 FT 的信息论内涵" |
 > | 2026-04-23 | **最终稿（当前）**：用户统一澄清 function_token = 广义 FT（含标点/换行/结构/数字/短 BPE），**MA 最大值位置 24/26 都是 FT** | RQ4 sample_tokens 1000 位置 Top-K 统计 | ★ 定稿 |
 
 ### 2026-04-22 论点 C 细化
 
-**本轮数据**：Primary stage 2 14 模型 RQ3（B1 修复过，每模型 ~12,000 unique tokens，含结构 token / 功能词 / 内容词 + `is_function` / `is_structural` 标签）。
+**数据**：Primary stage 2 14 模型 RQ3（B1 修复过，每模型 ~12,000 unique tokens，含结构 token / 功能词 / 内容词 + `is_function` / `is_structural` 标签）。
 
 **Top-10 按 `|mean_alignment_with_v1|`（count ≥ 20 过滤）统计**：
 
@@ -348,9 +348,9 @@ C1:  Cohen's d (|h₂·v₁|_FT vs |h₂·v₁|_CT) > 0.3
 
 ### 论点 E 的证伪条件
 
-- 若跨模型 u₁ eff_dim / hidden ≥ 10% → 稀疏假设不成立（**目前 1/13 违反，qwen3_14b**）
-- 若 Top-K unique count ≈ K（无集中度）→ token 稀疏不成立（**目前 0/14 违反**）
-- 若 σ₁/σ₂ 与 eff_dim% 无相关 → 机制链 σ₁ ↔ u₁ 断开（**目前 Spearman 负相关 -0.49，弱证据支持**）
+- 若跨模型 u₁ eff_dim / hidden ≥ 10% → 稀疏假设不成立（** 1/13 违反，qwen3_14b**）
+- 若 Top-K unique count ≈ K（无集中度）→ token 稀疏不成立（** 0/14 违反**）
+- 若 σ₁/σ₂ 与 eff_dim% 无相关 → 机制链 σ₁ ↔ u₁ 断开（** Spearman 负相关 -0.49，弱证据支持**）
 
 ### 异常记录
 

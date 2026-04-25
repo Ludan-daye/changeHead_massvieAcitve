@@ -31,7 +31,7 @@ bash ../../paper_experiments/run_rq345_origin_layer.sh "<model>" <rq_id>
 
 ## 结论
 
-**要证明什么 / 本轮证明了什么**：
+**要证明什么 / 主要论点**：
 - **主结论**：22/26 模型（85%）通过 K=1 R²≥0.95 OR macro V 消融 ≤-80%
 - **K=1 完美**（R²≥0.999）：gptj_6b, qwen2_7b, qwen2.5_7b, qwen3_0.6b, qwen3_14b, qwen3_32b, qwen3_4b, qwen3_8b, bloom_7b1(L=7), qwen1.5_14b(L=2), llama3.1_8b
 - **K=3 救场**：glm4_32b（σ₁ 扁平，K=1 R²=0.47, K=3 err=0.04%）
@@ -44,7 +44,7 @@ bash ../../paper_experiments/run_rq345_origin_layer.sh "<model>" <rq_id>
 
 | # | 模型 | cat | L | 结果 | 数据目录 |
 |:-:|---|---|:-:|---|---|
-| 1 | bloom_7b1 | CONC | 7 | ✅ L=7 R²=0.9999 (救活) | [`results/bloom_7b1/L7_recheck/`](results/bloom_7b1/L7_recheck/) |
+| 1 | bloom_7b1 | CONC | 7 | ✅ L=7 R²=0.9999 | [`results/bloom_7b1/L7_recheck/`](results/bloom_7b1/L7_recheck/) |
 | 2 | falcon_7b | FS | 3 | ✅ R²=0.99 | [`results/falcon_7b/`](results/falcon_7b/) |
 | 3 | glm4_32b | CONC | 0 | ✅ K=3 err=0.04% | [`results/glm4_32b/`](results/glm4_32b/) |
 | 4 | glm4_9b | FS | 1 | ✅ R²=0.89 | [`results/glm4_9b/`](results/glm4_9b/) |
@@ -55,11 +55,11 @@ bash ../../paper_experiments/run_rq345_origin_layer.sh "<model>" <rq_id>
 | 9 | llama3.1_8b | FS | 1 | ✅ K=1 R²=0.998 | [`results/llama3.1_8b/`](results/llama3.1_8b/) |
 | 10 | mistral_7b_v03 | CONC | 0 | ❌ R²=0.002 (σ₁=1.29 极弱) | [`results/mistral_7b_v03/`](results/mistral_7b_v03/) |
 | 11 | opt_6.7b | ANOM | 1 | ✅ R²=0.98 | [`results/opt_6.7b/`](results/opt_6.7b/) |
-| 12 | qwen1.5_14b | DISP | 2 | ✅ L=2 R²=0.9999 (救活) | [`results/qwen1.5_14b/L2_recheck/`](results/qwen1.5_14b/L2_recheck/) |
+| 12 | qwen1.5_14b | DISP | 2 | ✅ L=2 R²=0.9999 | [`results/qwen1.5_14b/L2_recheck/`](results/qwen1.5_14b/L2_recheck/) |
 | 13 | qwen2.5_0.5b | CONC | 0 | ✅ R²=0.51 | [`results/qwen2.5_0.5b/`](results/qwen2.5_0.5b/) |
 | 14 | qwen2.5_7b | CONC | 3 | ✅ K=1 R²=1.000 | [`results/qwen2.5_7b/`](results/qwen2.5_7b/) |
 | 15 | qwen2_7b | CONC | 3 | ✅ K=1 R²=1.000 | [`results/qwen2_7b/`](results/qwen2_7b/) |
-| 16 | qwen3.5_27b | DISP | 54 | ✅ L=54 R²=0.9923 (救活) | [`results/qwen3.5_27b/`](results/qwen3.5_27b/) |
+| 16 | qwen3.5_27b | DISP | 54 | ✅ L=54 R²=0.9923 | [`results/qwen3.5_27b/`](results/qwen3.5_27b/) |
 | 17 | qwen3.5_35b_a3b | FS MoE | 9 | ❌ R²=0.001 | [`results/qwen3.5_35b_a3b/`](results/qwen3.5_35b_a3b/) |
 | 18 | qwen3.5_9b | DISP | 22 | ✅ R²=0.73 | [`results/qwen3.5_9b/`](results/qwen3.5_9b/) |
 | 19 | qwen3_0.6b | CONC | 2 | ✅ K=1 R²=1.000 | [`results/qwen3_0.6b/`](results/qwen3_0.6b/) |

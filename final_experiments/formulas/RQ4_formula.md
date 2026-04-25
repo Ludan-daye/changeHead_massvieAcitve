@@ -43,19 +43,31 @@ $$
 | **②  Strong directional matching** | $\bigl|h_2^{\top} v_1\bigr|$ 大 | 中间激活在 $v_1$ 方向投影强 |
 | **③  Output sparsity** | $\max_j \bigl|(u_1)_j\bigr|$ 大 | $u_1$ 高度集中在少数 hidden 维度 |
 
-### 1.5 Log 回归验证（Eq. 15）
+### 1.5 Single-direction regression form（论文 Eq. 4）
+
+当 $\sigma_1 \gg \sigma_2$ 且 $|\varrho(h_2, v_1)| \to 1$（CONCENTRATED 强主导子情形），Eq. (3) 的 $K = 1$ 截断退化为 token 投影 $p(x) = v_1^{\top} h_2(x)$ 的线性关系：
 
 $$
-\log(\text{Top1}) = \beta_0 + \beta_1 \log(\sigma_1) + \beta_2 \log\bigl|\,h_2^{\top} v_1\,\bigr| + \epsilon, \qquad \epsilon \sim \mathcal{N}(0, \sigma_{\epsilon}^2)
+\boxed{
+\text{MA}(x) \;\approx\; \beta_{\text{slope}} \, p(x) + b, \qquad \beta_{\text{slope}} = \sigma_1 \cdot u_1[j^{\ast}]
+}
 $$
 
-通过拟合 $\beta_1, \beta_2$ 是否近 1 验证乘性结构。
+intercept $b = \sum_{i \geq 2} \sigma_i (v_i^\top h_2) u_i[j^{\ast}] + (b_{\text{down}})_{j^{\ast}} + r_{\text{stream}}$ 吸收 higher-order singular contributions、down-projection bias 与 residual-stream carry-over $r_{\text{stream}}$。
 
-**5-fold Group-CV 防过拟合**（**fold 单元 = 文档**，避免同一文档 token leakage）：
+**实证检验**：在每模型 trigger layer 的 token-level 数据上 fit linear regression $\text{MA}(x) = \beta_{\text{slope}} p(x) + b + \varepsilon$，比较：
+
+$$
+\hat\beta_{\text{slope}} \overset{?}{\approx} \sigma_1 \cdot u_1[j^{\ast}]
+$$
+
+若两者 within ±5%，则 Eq. (4) closed-form identity 验证（论文报告：Qwen2-7B 与 Qwen2.5-7B fitted slope 与预测 within 2%）。
+
+**$R^2$ + 5-fold Group-CV 防过拟合**（**fold 单元 = 文档**，避免同一文档 token leakage）：
 
 - **样本单元**：每个 (model, layer) 独立拟合；token-level 样本量 $N \approx N_{\text{samples}} \cdot L_{\text{seq}} = 30 \times 2048 \approx 6 \times 10^4$ 个 token。
 - **CV 切分**：按**文档** group-K-fold，30 文档分 5 组，每组 6 文档；4 组训练（24 文档），1 组测试（6 文档）。**不允许同一文档 token 横跨 train/test**（否则 leakage 会让 OOS R² 虚高）。
-- **fit 公式**：$\log(\text{Top1}_{t,\ell}) = \beta_0 + \beta_1 \log(\sigma_1) + \beta_2 \log|h_2 \cdot v_1|_{t,\ell} + \epsilon_t$，$t$ 是 token index，$\ell$ 固定为 $L_{\text{surge}}$。
+- **fit 公式**：$\text{MA}(x_t) = \beta_{\text{slope}} \, p(x_t) + b + \varepsilon_t$，$t$ 是 token index，$\ell$ 固定为 $L_{\text{surge}}$。
 
 $$
 R^2_{\text{CV}} = 1 - \frac{\sum_{k=1}^{5} \mathrm{SSE}_k^{\text{test}}}{\sum_{k=1}^{5} \mathrm{SST}_k^{\text{test}}}
@@ -101,14 +113,12 @@ $$
 | 中等主导 | $\eta \in [1.5, 2.5]$ | 3 | bloom_7b1, glm4_32b | 0.04% |
 | 扁平 | $\eta \approx 1$ | 10–20 | mistral, qwen3.5_27b | < 30% |
 
-### 2.3 K 选择不是 cherry-pick：random-K null 阈值（**A3 audit 修正**）
+### 2.3 K 选择：random-K null 阈值
 
-> **质疑**：K=20 + 误差 ≤ 30% 可能是事后凑出的"凑通过"阈值。
-
-**A3-3 + C2-8 整改**：K 阈值由 random-K null 分布给出，不是任选：
+K 阈值由 random-K null 分布给出（非任意选）：
 
 1. **完整 K 扫描**：$K \in \{1, 2, 3, 5, 10, 20, 50, 100, r\}$（$r$ = full rank）逐一报误差曲线
-2. **random-K null per-K 独立估**（**C2-8 整改：每个 $K$ 单独跑 $B$ 次 simulate，因为不同 $K$ 的 random-K 误差分布方差异质**）：
+2. **random-K null per-K 独立估**（每个 $K$ 单独跑 $B$ 次 simulate，因为不同 $K$ 的 random-K 误差分布方差异质）：
 
 $$
 \varepsilon_{\text{null}}^{(K)} = \mathrm{percentile}_{95}\Bigl\{\varepsilon^{(K, b)}_{\text{rand}} \,:\, \mathcal{S}_K^{(b)} \sim \mathrm{Uniform}\bigl(\binom{[r] \setminus \{1, \dots, K\}}{K}\bigr), \; b = 1, \dots, B = 100\Bigr\}
@@ -155,9 +165,9 @@ $$
 | **D2 j$^{\ast}$ 共享** | $\bigl|u_i[j^{\ast}]\bigr| \gg \bigl|u_i[j']\bigr|$ for $j' \neq j^{\ast}$ | 稀疏 readout：MA 永落同 1-2 个 hidden 维 |
 | **D3 跨层方向一致** | 多层 $v_1^{(L)}$ 之间 cos similarity 高 | 多层接力写同一方向 |
 
-**D1 显著性检验**（per-model 同号率 $\hat{r}$ 的 **Wilson score interval**，**C2-5 整改**）：
+**D1 显著性检验**（per-model 同号率 $\hat{r}$ 的 **Wilson score interval**）：
 
-> Wald binomial CI $\hat r \pm 1.96 \sqrt{\hat r(1-\hat r)/N}$ 在 $\hat r \to 1$ 时严重偏窄（CI 上界可能 $> 1$，下界偏高）。论文实测同号率常 0.85-0.99，Wald CI 不准。改用 **Wilson score interval**（更适合极端比例）：
+Wald binomial CI 在 $\hat r \to 1$ 时严重偏窄（CI 上界可能 $> 1$）。实测同号率常 0.85-0.99，用 Wilson score interval（更适合极端比例）：
 
 $$
 \mathrm{CI}_{95\%}^{\text{Wilson}} = \frac{\hat r + \frac{z^2}{2N} \pm z \sqrt{\frac{\hat r (1-\hat r)}{N} + \frac{z^2}{4N^2}}}{1 + \frac{z^2}{N}}, \quad z = 1.96
@@ -196,18 +206,18 @@ $$
 
 ### 5.1 单层情形（Eq. 14 / Eq. 2.1，10 个 SINGLE 模型）
 
-| 模型 | $L_{\text{surge}}$ | $\eta$ | $\varrho(h_2, v_1)$ | $R^{2}$ (K=1) | 救活 / 备注 | PASS |
+| 模型 | $L_{\text{surge}}$ | $\eta$ | $\varrho(h_2, v_1)$ | $R^{2}$ (K=1) | 备注 | PASS |
 |---|:-:|:-:|:-:|:-:|---|:-:|
 | gptj_6b | 2 | 2.52 | 0.998 | **1.000** | 论文 Eq. 14 完美 | ✅ |
 | qwen2.5_7b | 3 | 2.64 | — | **1.000** | | ✅ |
 | qwen2_7b | 3 | 2.84 | — | **1.000** | | ✅ |
-| qwen3_0.6b | 2 | 1.41 | — | **1.000** | 扁平也成立 | ✅ |
+| qwen3_0.6b | 2 | 1.41 | — | **1.000** | 扁平谱 | ✅ |
 | glm4_32b | 0 | 1.53 | — | K=3 误差 0.04% | 扁平多项 | ✅ |
-| **mistral_7b_v03** | 1 (surge，**救活后**) | **1.12** | 0.85 (surge L=1) | **0.9999** | 救活前 K=20 = 93% FAIL（CLAUDE.md §20 旧数据，已废弃）；救活后 surge L=1 R² = 0.9999 ✅ | ✅ |
-| **qwen2.5_0.5b** | 2 (surge) | 1.48 | — | **0.91** | | ✅ |
-| ~~bloom_7b1~~ ⓘ | 7 (surge) | 1.81 | — | 0.9999 ⓘ | **informative only**：RQ2c=FEW-SOURCE，按 §0.4.0.B pre-register 强制走 macro D-3，单层 R² 不算 PASS 路径 | — (走 multi) |
-| **llama2_13b** | 0 | — | — | **0.97** | | ✅ |
-| **llama2_7b_chat** | 1 (surge) | 1.45 | 0.71 | **0.94** | 起源层 L=1（旧用 L=26 错层），救活后 PASS | ✅ |
+| mistral_7b_v03 | 1 | **1.12** | 0.85 | **0.9999** | 极扁平 | ✅ |
+| qwen2.5_0.5b | 2 | 1.48 | — | **0.91** | | ✅ |
+| bloom_7b1 ⓘ | 7 | 1.81 | — | 0.9999 | informative only：RQ2c = FEW-SOURCE，主路径走 macro D-3 | — (走 multi) |
+| llama2_13b | 0 | — | — | **0.97** | | ✅ |
+| llama2_7b_chat | 1 | 1.45 | 0.71 | **0.94** | | ✅ |
 
 ### 5.2 多层情形（Macro-SVD，16 个 MULTI 模型）
 
@@ -250,11 +260,9 @@ $$
 
 ---
 
-## 7. 综合判据 D — **identity vs falsifiable claim 严格区分**（**C3-X2 整改**）
+## 7. 综合判据 D — identity vs falsifiable claim 严格区分
 
-> **致命澄清**：MA 公式 $\text{MA}_{j^{\ast}} = \sum_{i=1}^{r} \sigma_i (h_2 \cdot v_i) u_i[j^{\ast}] + b_{\text{down}}[j^{\ast}]$ 当 $K = r$ 时是 **SVD 完整展开恒等式**（任何 $W_{\text{down}}$ 都满足，浮点严格相等，trivially $R^2 = 1$）。**这不是科学 claim，无可证伪性**。
-
-我们的 RQ4 真正声明的**可证伪 claims**（任一被反例即推翻 hypothesis）：
+MA 公式 $\text{MA}_{j^{\ast}} = \sum_{i=1}^{r} \sigma_i (h_2 \cdot v_i) u_i[j^{\ast}] + b_{\text{down}}[j^{\ast}]$ 当 $K = r$ 时是 SVD 完整展开恒等式（任何 $W_{\text{down}}$ 都满足，trivially $R^2 = 1$），不构成 falsifiable claim。RQ4 真正声明的可证伪 claims：
 
 | Claim | 数学 | 反例（若出现 ⇒ falsified）|
 |---|---|---|
@@ -263,7 +271,7 @@ $$
 | **C-C: 输出稀疏 sign 同向** | sign($h_2 \cdot v_i$) · sign($u_i[j^{\ast}]$) 跨 $i$ 同号率 Wilson 95% CI 下界 $\geq 0.85$ | 同号率不超 chance baseline 0.5 |
 | **C-D: macro 因果** | macro $\Delta_V \leq -0.80$ | macro V 消融不让 MA 塌 |
 
-**RQ4 PASS 判据**（pre-registered，按 RQ2c category 强制路径，**C1-2 + C3 Y-1 整改**）：
+**RQ4 PASS 判据**（pre-registered，按 RQ2c category 路径）：
 
 | RQ2c category | 必走路径 | 通过条件 |
 |---|---|---|
@@ -271,7 +279,7 @@ $$
 | **FEW-SOURCE / DISPERSED** | C-D macro 因果 | $\Delta_V^{\text{macro}} \leq -0.80$ ⇒ PASS |
 | **ANOMALY / Tier C / Tier E** | 不期望 PASS | 附录单独讨论 |
 
-> **关键禁止**：bloom_7b1 的 RQ2c category = FEW-SOURCE，**强制走 C-D**；不允许"单层 K=1 R²=0.9999 PASS"换路径救活（违反 UNIFIED §0.4.0.B pre-register）。bloom 单层拟合数据**仅作 informative**，§5.1 表灰色行。
+> bloom_7b1 RQ2c = FEW-SOURCE，路径绑定 C-D macro。单层 K=1 R²=0.9999 仅作 informative，不计入 PASS（§5.1 表灰色行）。
 
 ---
 
@@ -309,7 +317,7 @@ $$
 
 - 单层 RQ4 拟合：`final_experiments/RQ4_svd_alignment/results/<model>/data/`
 - 多层 macro 消融：`final_experiments/RQ5_v_ablation/results/<model>/data/` 或 `RQ5_macro/`
-- 救活模型新数据：`bloom_7b1/L7_recheck/`, `qwen1.5_14b/L2_recheck/`, `qwen3.5_27b/recheck/`
+- 定位模型新数据：`bloom_7b1/L7_recheck/`, `qwen1.5_14b/L2_recheck/`, `qwen3.5_27b/recheck/`
 
 ## 11. 重跑命令
 

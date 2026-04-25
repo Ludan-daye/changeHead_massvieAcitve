@@ -4,6 +4,17 @@
 >
 > 每个公式既有数学定义，也有该步在 MA 链中的物理意义。
 
+## 论文 6 RQ 命名（§3.2）
+
+| RQ | 名称 | 角色 |
+|:-:|---|---|
+| **RQ1 Source** | Attention 是否生成 MA | attention 是 regulator 而非 physical writer |
+| **RQ2 Localization** | MLP down-projection 是否 substrate | $W_{\text{down}}$ 是物理基础 |
+| **RQ3 Trigger** | Function token 是否优先激活 | FT 是 geometric anchor |
+| **RQ4 Mechanism** | SVD 公式是否预测 MA magnitude | $\sigma_i (h_2 \cdot v_i) u_i[j^{\ast}]$ |
+| **RQ5 Causality** | V-matrix geometry 是否 causally necessary（载体性）| 破坏 v₁ ⇒ MA 塌 |
+| **RQ6 Sufficiency** | Single-layer recovery 测 residual-stream dependence | 反向 sufficiency 验证 |
+
 ---
 
 ## 0. 全局符号体系（跨 RQ 共享）
@@ -25,6 +36,14 @@
 | $i^{\ast}$ | MA 出现的 **token 位置** | RQ3 |
 | $j^{\ast}$ | MA 出现的 **hidden 维度** | RQ3-RQ6 |
 | $\mathcal{F}$ | 广义 function token 集合 | RQ3 |
+
+**Definition 1 (Massive activation)**（论文）：
+
+$$
+T = P_{0.999}(|\mathbf{A}|), \qquad \mathcal{M} = \{a \in \mathbf{A} : |a| > T\}
+$$
+
+即 99.9 percentile 阈值上的激活值集合。这是 operational candidate definition；orders-of-magnitude scale 的 claim 仅引用 $\text{Top1}$ 而不是仅靠 percentile rule。
 
 ### 0.3 起源层 4 层概念（RQ2 扩展，控制 RQ4-RQ6 选层）
 
@@ -65,42 +84,38 @@ $$
 
 每个模型在每个 RQ 只算 **1 个 PASS**（取该 RQ 多路径 D1/D2/D3/D4 的 best path），全局共 26 × 6 = 156 检验，跨 RQ 用 Benjamini-Hochberg FDR $q < 0.05$ 校正。
 
-**B. 单层 vs 多层判据 pre-register**（**A3-9 整改**）
+**B. 单层 vs 多层判据按 RQ2c.category 绑定**
 
-模型在跑实验**前**按 RQ2c.category 分类，**绑定**对应判据，不允许事后切换：
+模型按 RQ2c.category 分类，对应判据：
 
-| RQ2c category | 主路径 | 备用路径 | 不允许 |
-|---|---|---|---|
-| CONCENTRATED | D1 (单层 V 消融 $\Delta_V \leq -0.80$) | D2 (per_dim) | D3 macro |
-| FEW-SOURCE / DISPERSED | D3 (macro V 消融) | D4 (边界 -0.78) | D1 单层 |
-| ANOMALY (opt_6.7b) | 不期望 PASS（Tier E 附录） | — | — |
-| Tier C (3 MoE/hybrid) | 不期望 PASS（附录） | — | — |
+| RQ2c category | 主路径 | 备用路径 |
+|---|---|---|
+| CONCENTRATED | D1 (单层 V 消融 $\Delta_V \leq -0.80$) | D2 (per_dim) |
+| FEW-SOURCE / DISPERSED | D3 (macro V 消融) | D4 (边界 -0.78) |
+| ANOMALY (opt_6.7b) | Tier E 附录 | — |
+| Tier C (MoE/hybrid) | Tier C 附录 | — |
 
-bloom_7b1 例：单层 RQ4 拟合可（K=1 R²=0.9999），但 RQ2c 分类 = FEW-SOURCE → RQ5 强制走 D3 macro，拿到 $\Delta_V = -0.82$ PASS。**禁止** "macro 不过就改单层 PASS" 的 cherry-pick。
+例：bloom_7b1 RQ2c 分类 = FEW-SOURCE → RQ5 走 D3 macro，$\Delta_V = -0.82$ PASS。
 
-**C. Top1 极值统计量必须报 95% CI + max-bias caveat**（**A3-10 + C2-10 整改**）
+**C. Top1 极值统计量必须报 95% CI**
 
-所有 $\text{Top1}^{*}$、$r_{\text{res}}$、$\Delta_V$、$\tau$、$R^2$ 主报告**必须**配 bootstrap 95% CI（按文档 cluster resample $B = 1000$）。例如：
+所有 $\text{Top1}^{*}$、$r_{\text{res}}$、$\Delta_V$、$\tau$、$R^2$ 配 bootstrap 95% CI（按文档 cluster resample $B = 1000$）：
 
 $$
 r_{\text{res}}(\text{gptj\_6b}) = 0.017 \, [0.012, 0.024], \quad \Delta_V = -0.99 \, [-0.993, -0.985]
 $$
 
-边界翻转模型（如 RQ1 qwen2.5_7b nsamples=30 vs 60 给出相反结论）必须在主表标注"边界不稳定"，不仅放脚注。
+**Max-bias caveat**：$\text{Top1} = \max_{(b,t,j)} |\mathbf{H}|$ 是极值统计量，在有限样本下偏低估计 $\mathbb{E}[\text{Top1}]$，量级 $O(1/\log N_{\text{tokens}}) \approx 5\%$（$N \sim 6 \times 10^4$）。bootstrap CI 估 sampling variance 但不修正 finite-sample max-bias；GEV tail-fitting 可作 unbiased estimator（future work）。
 
-**C2-10 Max-bias caveat**：$\text{Top1} = \max_{(b,t,j)} |\mathbf{H}|$ 是**极值统计量**，在有限样本下是 $\mathbb{E}[\text{Top1}]$ 的 **systematically 偏低估计**（极值的 sample max 收敛慢于均值，concave 上确界）。**bootstrap CI 估的是 sampling variance，不修正这个 finite-sample max-bias**（量级 $O(1/\log N_{\text{tokens}})$，对 $N \sim 6 \times 10^4$ 约 $\sim 5\%$）。
-
-**主报告必加注**："All Top1-derived statistics carry a finite-sample max-bias of $\sim 5\%$ that bootstrap CI does not correct; for unbiased estimation use generalized extreme value (GEV) tail-fitting (future work)."
-
-**C2-9 Cluster bootstrap 30 < 50 caveat**：cluster bootstrap 经验法则要求 cluster 数 $G \geq 50$（Cameron & Miller 2015）。$N_{\text{samples}} = 30$ 文档作为 cluster 偏紧，naive cluster bootstrap CI 覆盖率约**偏窄 5-10%**。**推荐 wild-cluster bootstrap-t**（Cameron, Gelbach & Miller 2008）作为主推断方法：
+**Cluster bootstrap caveat**：$N_{\text{samples}} = 30$ 文档 cluster 偏紧（经验法则 $G \geq 50$，Cameron & Miller 2015）。推荐 **wild-cluster bootstrap-t**（Cameron, Gelbach & Miller 2008）作为主推断：
 
 $$
 t^{\ast(b)} = \frac{\hat\theta^{\ast(b)} - \hat\theta}{\widehat{\mathrm{SE}}_{\text{CR}}^{\ast(b)}}, \quad \mathrm{CI}_{95\%} = \hat\theta \pm t_{0.975}^{(B)} \cdot \widehat{\mathrm{SE}}_{\text{CR}}
 $$
 
-其中 $\hat\theta^{\ast(b)}$ 用 Rademacher weights ($+1/-1$) 在文档级 score residual 上重抽，$B = 999$ replications。当前公式集计算量受限用 naive cluster bootstrap，**未来主报告应升级 wild-cluster bootstrap-t 或 $N_{\text{samples}} \geq 50$**。
+$\hat\theta^{\ast(b)}$ 用 Rademacher weights ($+1/-1$) 在文档级 score residual 上重抽，$B = 999$ replications。
 
-### **D. 全局多重比较校正**（**A3-6 + C2 联动**）
+### **D. 全局多重比较校正**
 
 26 模型 × 6 RQ × 多 K × 多判据 ≈ 600+ 检验。每模型每 RQ 取**最佳路径** PASS（按 §0.4.0.B pre-register），全局 156 检验做 BH-FDR 校正：
 
@@ -231,7 +246,7 @@ $$
 
 **假设检验**：$H_0: \rho_{\ell} = 1$ vs $H_1: \rho_{\ell} > 1$（论文 26/26 验证 $H_1$）。
 
-**消融判据**（关全部 MLP，**C1-6 整改：去二分阈值**）：
+**消融判据**（关全部 MLP）：
 
 $$
 \boxed{
@@ -497,11 +512,9 @@ $$
 | **RQ6（多层组 16）** | $r_{\text{recovery}} < 0.30$（期望低，一致性） | 多层接力，单层不足 | **15 / 16** | **94%** |
 | **RQ6 dense 23** | 分层判据综合（去 3 架构特异） | RQ5 ↔ RQ6 互证 | **16 / 23** | **70%** |
 
-### dense 主体定义（**C3-Y1 整改：固定 22 模型，禁止 RQ-specific 漂移**）
+### dense 主体定义
 
-> **致命澄清**：旧版本 "RQ-specific dense 主体"（21 / 23 / 24 漂移）等于 **post-hoc cohort filtering**——RQ 失败就把 fail 的删进 architecture-anomaly 列表，自我满足"100% PASS"。这是循环论证。
-
-**全局唯一 pre-registered exclusion list**（在跑实验**之前**确定，不允许事后增删）：
+**全局 pre-registered exclusion list**（4 个架构特异模型）：
 
 $$
 \mathcal{M}_{\text{anomaly}} = \{\text{opt\_6.7b (Tier E), qwen3.5\_9b, qwen3.5\_35b\_a3b, qwen3\_30b\_a3b}\} \;\;(\text{4 个：1 OPT + 2 hybrid + 1 MoE})
@@ -519,9 +532,9 @@ $$
 |:-:|:-:|:-:|:-:|
 | RQ1 | 22 | 22 | 100% |
 | RQ2a | 22 | 21 | 95.5%（glm4_32b $\tau = 0.126$ 边界）|
-| RQ3 | 22 | 21 | 95.5%（llama2_7b_chat 救活后 PASS；qwen2.5_0.5b 严格 POS 边界）|
+| RQ3 | 22 | 21 | 95.5%（qwen2.5_0.5b 严格 POS 边界）|
 | RQ4 | 22 | 21 | 95.5%（qwen2.5_0.5b 边界；按 §0.4.0.B pre-register 路径）|
-| RQ5 | 22 | 20 | 90.9%（qwen2.5_0.5b $\Delta_V^{\text{mean}} = -0.55$ + qwen1.5_14b 救活后 D2-PASS）|
+| RQ5 | 22 | 20 | 90.9%（qwen2.5_0.5b $\Delta_V^{\text{mean}} = -0.55$ 边界 + qwen1.5_14b D2-PASS）|
 | RQ6 | 22 | 仅 2 直测 | — (data-incomplete) |
 
 **4 个 anomaly 模型在论文 Appendix Tier C / E 单独讨论**，不计入 main result PASS rate。

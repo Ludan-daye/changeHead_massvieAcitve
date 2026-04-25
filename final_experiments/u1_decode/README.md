@@ -27,7 +27,7 @@ bash ../../paper_experiments/run_rq345_origin_layer.sh "<model>" <rq_id>
 
 ## 结论
 
-**要证明什么 / 本轮证明了什么**：
+**要证明什么 / 主要论点**：
 - Top-K 大多数是 function_token（换行/标点/短词）
 - MoE #2（qwen3.5_35b_a3b）是唯一真正在**功能词** (`in`, `of`, `on`, `for`, `the`) 上建 MA 的模型
 - Top-500 concentration：glm4_32b 7% (极稀疏) → qwen3.5_35b_a3b 61% (最分散)
