@@ -7,7 +7,7 @@
 | RQ | 公式主题 | 文件 | 通过率 |
 |:-:|---|---|:-:|
 | **RQ1** | Attention 消融判据（H₀ 证伪）| [RQ1_formula.md](RQ1_formula.md) | **26/26 = 100%** |
-| **RQ2** | MLP 是物理基础 + ρ 主导比 + 起源层定位 | [RQ2_formula.md](RQ2_formula.md) | 22/26 = **84.6%** |
+| **RQ2** | MLP 是物理基础 + ρ 主导比 + 起源层定位 | [RQ2_formula.md](RQ2_formula.md) | 23/26 = **88.5%** |
 | **RQ4** | MA 生成多项式公式（单层 + 多层 + 方向一致性）| [RQ4_formula.md](RQ4_formula.md) | 24/26 = **92.3%** |
 | RQ3 | Function Token 定位判据 | 待写 | 24/26 = 92.3% |
 | RQ5 | 单层 V 消融因果判据 | 待写 | 9/10 = 90% |
