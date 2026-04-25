@@ -3,7 +3,7 @@
 ## 通用形式
 
 $$
-\boxed{\text{MA}_{j^*} = \sum_{i=1}^{K} \sigma_i \cdot (h_2 \cdot v_i) \cdot u_i[j^*] + b[j^*]}
+\boxed{\text{MA}_{j^{*}} = \sum_{i=1}^{K} \sigma_i \cdot (h_2 \cdot v_i) \cdot u_i[j^{*}] + b[j^{*}]}
 $$
 
 但根据 **起源结构** 分两种情况。
@@ -15,7 +15,7 @@ $$
 **条件**：MA 在单层（origin layer $L$）通过其 $W_{\text{down}}^{(L)}$ 写入
 
 $$
-\boxed{\text{MA}_{j^*} = \sum_{i=1}^{K} \sigma_i^{(L)} \cdot \bigl(h_2^{(L)} \cdot v_i^{(L)}\bigr) \cdot u_i^{(L)}[j^*] + b^{(L)}[j^*]}
+\boxed{\text{MA}_{j^{*}} = \sum_{i=1}^{K} \sigma_i^{(L)} \cdot \bigl(h_2^{(L)} \cdot v_i^{(L)}\bigr) \cdot u_i^{(L)}[j^{*}] + b^{(L)}[j^{*}]}
 $$
 
 **适用模型（10 个 SINGLE 组）**：
@@ -42,7 +42,7 @@ $$
 ### B1. 逐层累加形式（基本）
 
 $$
-\text{MA}_{j^*} = \sum_{L \in \mathcal{L}_{\text{origin}}} \left[ \sum_{i=1}^{K} \sigma_i^{(L)} \cdot \bigl(h_2^{(L)} \cdot v_i^{(L)}\bigr) \cdot u_i^{(L)}[j^*] + b^{(L)}[j^*] \right]
+\text{MA}_{j^{*}} = \sum_{L \in \mathcal{L}_{\text{origin}}} \left[ \sum_{i=1}^{K} \sigma_i^{(L)} \cdot \bigl(h_2^{(L)} \cdot v_i^{(L)}\bigr) \cdot u_i^{(L)}[j^{*}] + b^{(L)}[j^{*}] \right]
 $$
 
 ### B2. Macro-SVD 聚合形式（推荐用于因果验证）
@@ -56,7 +56,7 @@ $$
 对其做 SVD：$\Delta h^{\text{macro}} = U^{\text{macro}} \Sigma^{\text{macro}} V^{\text{macro}\,\top}$
 
 $$
-\boxed{\text{MA}_{j^*} \approx \sigma_1^{\text{macro}} \cdot \bigl(h_2 \cdot v_1^{\text{macro}}\bigr) \cdot u_1^{\text{macro}}[j^*] + \text{higher-order}}
+\boxed{\text{MA}_{j^{*}} \approx \sigma_1^{\text{macro}} \cdot \bigl(h_2 \cdot v_1^{\text{macro}}\bigr) \cdot u_1^{\text{macro}}[j^{*}] + \text{higher-order}}
 $$
 
 **验证方法**：消除 $v_1^{\text{macro}}$ 后看 ΔMA（macro V 投影消除）
@@ -99,10 +99,10 @@ $$
 
 ### 为什么扁平谱也成立？— 方向一致性叠加
 
-公式各项 $\sigma_i \cdot (h_2 \cdot v_i) \cdot u_i[j^*]$ 对 MA 的贡献 **符号一致同向叠加**：
+公式各项 $\sigma_i \cdot (h_2 \cdot v_i) \cdot u_i[j^{*}]$ 对 MA 的贡献 **符号一致同向叠加**：
 
 $$
-\text{cos}(h_2, v_i) \approx 0 \text{（弱对齐）但} \quad \text{sign}\bigl[\sigma_i (h_2 \cdot v_i) u_i[j^*]\bigr] \text{ 跨 } i \text{ 一致}
+\text{cos}(h_2, v_i) \approx 0 \text{（弱对齐）但} \quad \text{sign}\bigl[\sigma_i (h_2 \cdot v_i) u_i[j^{*}]\bigr] \text{ 跨 } i \text{ 一致}
 $$
 
 ### 三个一致性维度
@@ -110,7 +110,7 @@ $$
 | 一致性 | 数学条件 | 物理意义 |
 |---|---|---|
 | **D1：sign 同向** | $\text{sign}(h_2 \cdot v_i)$ 跨 token 在 FT 位置一致率 ≥ 85% | function token 触发同向激活 |
-| **D2：j\* 共享** | 不同 $i$ 的 $u_i[j^*]$ 都集中在同一稀疏维度 | **稀疏 readout** —— MA 永远落在同 1-2 个 hidden 维度 |
+| **D2：j\* 共享** | 不同 $i$ 的 $u_i[j^{*}]$ 都集中在同一稀疏维度 | **稀疏 readout** —— MA 永远落在同 1-2 个 hidden 维度 |
 | **D3：跨层方向一致** | 多层 $v_1^{(L)}$ 之间 cos similarity（macro v₁ 与各层 v₁ 对齐） | 多层接力写 **同一方向** |
 
 ---
@@ -123,8 +123,8 @@ $$
 $$
 \boxed{
 \begin{aligned}
-&\textbf{方向条件 (sign 一致)}: & \quad &\text{sign}(h_2 \cdot v_i) \cdot \text{sign}(u_i[j^*]) \text{ 跨 } i \text{ 同号} \\[2pt]
-&\textbf{稀疏条件 (j\* 集中)}: & \quad &|u_i[j^*]| \gg |u_i[j']| \quad \forall j' \neq j^* \\[2pt]
+&\textbf{方向条件 (sign 一致)}: & \quad &\text{sign}(h_2 \cdot v_i) \cdot \text{sign}(u_i[j^{*}]) \text{ 跨 } i \text{ 同号} \\[2pt]
+&\textbf{稀疏条件 (j\* 集中)}: & \quad &|u_i[j^{*}]| \gg |u_i[j']| \quad \forall j' \neq j^{*} \\[2pt]
 &\textbf{触发条件 (FT 选择性)}: & \quad &|h_2 \cdot v_i| \text{ 在 FT 位置} \gg \text{ 内容词位置}
 \end{aligned}
 }

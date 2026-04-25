@@ -13,7 +13,7 @@
 ### 核心公式（多项式形式）
 
 $$
-\text{MA}_{j^*} = \sum_{i=1}^{K} \sigma_i \cdot (h_2 \cdot v_i) \cdot u_i[j^*] + b[j^*]
+\text{MA}_{j^{*}} = \sum_{i=1}^{K} \sigma_i \cdot (h_2 \cdot v_i) \cdot u_i[j^{*}] + b[j^{*}]
 $$
 
 - `σᵢ, vᵢ, uᵢ` = `W_down[L_origin]` 的 SVD 第 i 组奇异值 / 右奇异向量 / 左奇异向量

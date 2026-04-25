@@ -16,11 +16,11 @@
 ## 主公式（统一形式）
 
 $$
-\boxed{\text{MA}_{j^*} = \sum_{i=1}^{K} \sigma_i \cdot (h_2 \cdot v_i) \cdot u_i[j^*] + b[j^*]}
+\boxed{\text{MA}_{j^{*}} = \sum_{i=1}^{K} \sigma_i \cdot (h_2 \cdot v_i) \cdot u_i[j^{*}] + b[j^{*}]}
 $$
 
 - $\sigma_i, v_i, u_i$：$W_{\text{down}}$ 的 SVD 第 $i$ 组奇异值/右/左奇异向量
 - $h_2$：MLP 中间激活
-- $j^*$：MA 出现的稀疏 hidden 维度
-- $b[j^*]$：down-projection bias（老架构如 OPT/BLOOM/GPT-2 非零；新架构 LLaMA/Qwen 系 = 0）
+- $j^{*}$：MA 出现的稀疏 hidden 维度
+- $b[j^{*}]$：down-projection bias（老架构如 OPT/BLOOM/GPT-2 非零；新架构 LLaMA/Qwen 系 = 0）
 - $K$：截断阶数（按 $\sigma_1/\sigma_2$ 谱形态选）
