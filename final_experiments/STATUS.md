@@ -2,7 +2,7 @@
 
 > 最后更新：2026-04-23（含今日 救活的 bloom_7b1 / qwen1.5_14b / qwen3.5_27b 新数据）
 > 数据源：`aggregated/ALL_EXPERIMENTS_SUMMARY_v2.json` + `final_report/RQ4_svd_alignment/data/svd_table.csv` + `final_report/RQ5_v_ablation/data/v_ablation_table.csv` + 今日 `scp` 拉回的新数据
-> 注：MA 公式 = $\sum_{i=1}^{K} \sigma_i \cdot (h_2 \cdot v_i) \cdot u_i[j^{*}]$（K=1 是 σ₁ 主导时的特殊形式，K=20 是完整多项式）
+> 注：MA 公式 = $\sum_{i=1}^{K} \sigma_i \cdot (h_2 \cdot v_i) \cdot u_i[j^{\ast}]$（K=1 是 σ₁ 主导时的特殊形式，K=20 是完整多项式）
 
 ---
 
