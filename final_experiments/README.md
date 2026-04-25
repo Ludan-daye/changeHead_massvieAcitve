@@ -67,7 +67,7 @@ $$
 | **RQ2a** | retain ≤ 0.10 严格 / ≤ 0.15 边界 PASS | **23/26** | **88.5%** | 含 glm4_32b 0.126 边界 PASS |
 | **RQ3** | Top-1 MA token = function_token（含广义 FT）| **24/26** | **92.3%** | MA 极值位置在结构 token |
 | **RQ4** | K=1 R²≥0.7 OR K=20 误差 ≤ 0.30 OR macro ΔMA≤-80%（任一）| **24/26** | **92.3%** | 含 qwen2.5_0.5b R²=0.91 (L=2 surge) + qwen3.5_9b R²=0.73 (L=22 surge) |
-| **RQ5** | 单层 ΔMA ≤ -0.80 OR per_dim ≤ -1.00 OR -78% 边界 | **20/26** | **76.9%** | 含 qwen1.5_14b per_dim=-100% + qwen3.5_27b -78% 边界 |
+| **RQ5** | 单层 ΔMA ≤ -0.80 OR per_dim ≤ -1.00 OR macro ≤ -0.80 OR -78% 边界 | **21/26** | **80.8%** | 含 qwen1.5_14b per_dim=-100% + qwen3.5_27b -78% + bloom L=7 macro -82% |
 | **RQ6** | CONC: recovery ≥30% / 多层: <30% 一致性 | 2/26 | 8% | 仅 gptj + llama3.1_8b 期望高通过 |
 
 ### 2.3 主论点稳固性
@@ -102,8 +102,8 @@ $$
 起源层对 `W_down` SVD，测 K=1 R² 或 K=20 多项式或 macro V 消融。**24/26 通过**（含 qwen2.5_0.5b L=2 surge R²=0.91 + qwen3.5_9b L=22 surge R²=0.73 + bloom L=7 surge R²=0.9999 + qwen1.5_14b L=2 surge R²=0.9999）。
 详情 → [`RQ4_svd_alignment/README.md`](RQ4_svd_alignment/README.md)
 
-### RQ5 — V 矩阵消融（76.9%）
-将 v₁ 方向投影消除（multi-K）或替换 macro v₁ 测 MA 塌陷。**20/26 PASS**（含边界放宽：qwen1.5_14b per_dim=-100% + qwen3.5_27b 单层 -78%）。
+### RQ5 — V 矩阵消融（80.8%）
+将 v₁ 方向投影消除（multi-K）或替换 macro v₁ 测 MA 塌陷。**21/26 PASS**（含边界放宽：qwen1.5_14b per_dim=-100% + qwen3.5_27b 单层 -78% + bloom L=7 macro -82%）。
 详情 → [`RQ5_v_ablation/README.md`](RQ5_v_ablation/README.md) + `bias_ablation/`（对照：bias 消融 vs v 消融）
 
 ### RQ6 — Top-K 恢复（8%）

@@ -10,7 +10,7 @@
 | **RQ2** | MLP 是物理基础 + ρ 主导比 + 起源层定位 | [RQ2_formula.md](RQ2_formula.md) | 23/26 = **88.5%** |
 | **RQ3** | 广义 function token 触发 + Fisher + u₁ decode | [RQ3_formula.md](RQ3_formula.md) | 24/26 = **92.3%** |
 | **RQ4** | MA 生成多项式公式（单层 + 多层 + 方向一致性）| [RQ4_formula.md](RQ4_formula.md) | 24/26 = **92.3%** |
-| RQ5 | 单层 V 消融因果判据 | 待写 | 9/10 = 90% |
+| **RQ5** | V 消融因果（multi-K + macro + bias 对照 + per_dim 强证据）| [RQ5_formula.md](RQ5_formula.md) | 21/26 = **80.8%** |
 | RQ6 | 多层 macro V 消融因果判据 | 待写 | 13/16 = 81.2% |
 
 ## 主公式（统一形式）
