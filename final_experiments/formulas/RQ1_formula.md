@@ -68,7 +68,7 @@ $$
 1. **同家族翻转**：qwen2.5_7b Sup vs qwen2.5_0.5b Gen；glm4_32b Sup vs glm4_9b Gen
 2. **baseline 越大越倾向 Sup**（大模型 attention 收束更强）
 3. **Suppressive 集群在中国开源家族**（Qwen 4/13、Yi 1/1、GLM 1/2）；西方家族（GPT/BLOOM/Falcon/Mistral/Llama-base）全 Gen
-4. **MoE 弱响应**：qwen3.5_35b_a3b $\Delta\text{MA}=+5\%$（整层关 attention 对 MoE 路由影响小）
+4. **MoE 弱响应**：qwen3.5_35b_a3b $\Delta = +0.05$（即 +5%，整层关 attention 对 MoE 路由影响小）
 
 ## 实验流程伪码
 
@@ -93,7 +93,7 @@ for each model M ∈ 26 models:
 ## 通过率
 
 $$
-\text{RQ1 PASS rate} = \frac{|\{M : \text{residual\%}(M) > 0\}|}{|M|} = \frac{26}{26} = \boxed{100\%}
+\text{RQ1 PASS rate} = \frac{\bigl|\{M : r(M) > 0\}\bigr|}{|M|} = \frac{26}{26} = \boxed{1.00}
 $$
 
 **所有 26 模型关 attention 后 MA 均未归零**，**完全证伪 H₀**。
