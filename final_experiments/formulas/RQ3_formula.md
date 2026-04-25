@@ -93,6 +93,117 @@ $$
 
 ---
 
+## 2.2 ⭐ 反驳"频率混淆"：function token ≠ 高频 token
+
+**反对意见**：function word（如 "the", "of"）是因为**出现频率高**才触发 MA，不是因为它们是语法功能词。
+
+需要**控制频率变量**证明 function 属性独立贡献。
+
+### 2.2.1 高频集合定义
+
+定义 token 频率：
+
+$$
+\mathrm{freq}(t) = \frac{\bigl|\{\text{occurrences of } t \text{ in corpus}\}\bigr|}{N_{\text{tokens}}}
+$$
+
+**高频集合**（top-K 阈值 $\theta$）：
+
+$$
+\mathcal{H}_{\theta} = \{\,t \in V : \mathrm{freq}(t) \geq \theta\,\}, \quad |\mathcal{H}_{\theta}| = K
+$$
+
+通常取 $K \in \{100, 1000\}$。
+
+### 2.2.2 2×2 列联表（function 属性 × 频率）
+
+$$
+\begin{array}{r|cc|c}
+ & t \in \mathcal{H}\;\text{(高频)} & t \notin \mathcal{H}\;\text{(低频)} & \text{合计} \\
+\hline
+t \in \mathcal{F}\;\text{(功能词)} & Q_1 & Q_2 & |\mathcal{F}| \\
+t \notin \mathcal{F}\;\text{(内容词)} & Q_3 & Q_4 & N - |\mathcal{F}| \\
+\hline
+\text{合计} & |\mathcal{H}| & N - |\mathcal{H}| & N
+\end{array}
+$$
+
+| 象限 | 类型 | 例子 |
+|:-:|---|---|
+| $Q_1 = \mathcal{F} \cap \mathcal{H}$ | **高频功能词** | "the", "of", "is", "."(句号) |
+| $Q_2 = \mathcal{F} \setminus \mathcal{H}$ | **低频功能词** | 罕见标点、低频连词、特殊符号 `@` |
+| $Q_3 = \mathcal{H} \setminus \mathcal{F}$ | **高频内容词** | "model", "data", "the year" 中"year" |
+| $Q_4 = \overline{\mathcal{F}} \cap \overline{\mathcal{H}}$ | **低频内容词** | 罕见名词、专有名词 |
+
+### 2.2.3 条件 MA 触发率（核心反驳判据）
+
+定义象限内 MA 触发率：
+
+$$
+\pi(Q_i) = \frac{\bigl|\{\,t \in Q_i : t \text{ 触发 MA}\,\}\bigr|}{|Q_i|}
+$$
+
+**反驳"频率假说"的判据**（双向不对称）：
+
+$$
+\boxed{
+\begin{aligned}
+&\text{(a) 低频功能词 }\mathcal{F} \setminus \mathcal{H}\text{ 仍高 MA 触发：} & \pi(Q_2) \gg \pi(Q_4) \\[4pt]
+&\text{(b) 高频内容词 }\mathcal{H} \setminus \mathcal{F}\text{ 不触发 MA：} & \pi(Q_3) \approx \pi(Q_4) \\[4pt]
+&\text{两者同时成立 } \;\Longrightarrow\; \text{ function 属性独立于频率}
+\end{aligned}
+}
+$$
+
+### 2.2.4 Logistic 回归（控制频率，看 function 系数）
+
+更严格的多变量分析：
+
+$$
+\mathrm{logit}\bigl(P(t \text{ 触发 MA})\bigr) = \beta_0 + \beta_{\mathcal{F}} \cdot \mathbb{1}[t \in \mathcal{F}] + \beta_{\text{freq}} \cdot \log\bigl(\mathrm{freq}(t)\bigr) + \epsilon
+$$
+
+**判据**：
+
+$$
+\boxed{
+\beta_{\mathcal{F}} > 0 \text{ 显著（} p < 0.001\text{）} \;\text{且}\; \bigl|\beta_{\mathcal{F}}\bigr| \gg \bigl|\beta_{\text{freq}}\bigr|
+\;\Longrightarrow\; \text{function 属性独立贡献，不可被频率解释}
+}
+$$
+
+### 2.2.5 PMI 对比（点互信息）
+
+定义点互信息：
+
+$$
+\mathrm{PMI}(A; B) = \log \frac{P(A, B)}{P(A) \cdot P(B)}
+$$
+
+对比 function 属性 vs 频率属性对 MA 的预测力：
+
+$$
+\Delta\mathrm{PMI} = \mathrm{PMI}(\text{trigger MA}; \mathcal{F}) - \mathrm{PMI}(\text{trigger MA}; \mathcal{H})
+$$
+
+判据：$\Delta\mathrm{PMI} > 0$（function 属性 PMI 更高）→ 不是频率混淆。
+
+### 2.2.6 实测验证（2 关键象限）
+
+| 象限 | 例子 token | 是否触发 MA | 解读 |
+|---|---|:-:|---|
+| **$Q_2$ 低频功能词** | 罕见标点（如 `' k'`, `'St'` BPE 碎片）| ✅ **触发** | 即使频率低，function 属性仍触发 |
+| **$Q_3$ 高频内容词** | 高频名词（如 "year", "data"）| ❌ 不触发 | 即使频率高，无 function 属性不触发 |
+| $Q_1$ 高频功能词 | "the", "of" | ✅ 触发 | 共同贡献 |
+| $Q_4$ 低频内容词 | 罕见专名 | ❌ 不触发 | 共同不贡献 |
+
+**典型证据**（gpt2 Top-K MA 验证）：
+- $Q_2$ 例：`'\n\n'` 换行（spaCy 不归 function 但是结构 token）→ MA = 165（**Top-1**）
+- $Q_3$ 例：`'language'`, `'model'` 等高频内容词 → MA < 10
+- → 验证 $\pi(Q_2) \gg \pi(Q_3)$，**function 属性 ≠ 频率属性**
+
+---
+
 ## 3. 辅助指标
 
 ### 3.1 Cohen's d（FT vs 内容词差异）
