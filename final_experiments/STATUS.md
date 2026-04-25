@@ -14,7 +14,14 @@
 - **RQ3**: Top-1 MA token = function_token（含广义 FT：标点/换行/特殊符号）
 - **RQ4**: K=1 R² ≥ 0.95 OR macro V 消融 ΔMA ≤ -80%（任一即 PASS，多项式精度）
 - **RQ5**: CONC 单层 V 消融 ΔMA ≤ -80% / 多层 macro V 消融 ΔMA ≤ -80%
-- **RQ6**: CONC 期望 recovery ≥ 30% / 多层 recovery < 30% 一致性（独立判据，仅 gptj+llama3.1_8b 通过期望高条件）
+- **RQ5**: 分单层组（10）+ 多层组（16）分别计算
+  - 单层组：$\Delta_V \leq -0.80$ OR per_dim ≤ -1.00（CONC 类单层 V 消融），9/10 = **90%**
+  - 多层组：macro $\Delta_V \leq -0.80$（FS/DISP 类 macro V 消融），12/16 = **75%**
+  - 合计 21/26 = **80.8%**；dense 主体 21/21 = 100%
+- **RQ6**: 分层判据
+  - 单层组（CONC 期望高 recovery ≥ 30%）：1/10 = 10%（仅 gptj）
+  - 多层组（期望低 recovery < 30%，一致性）：15/16 = 94%
+  - dense 综合：16/23 = **70%**
 
 | # | 模型 | cat | L | RQ1 | RQ2a | RQ3 | RQ4 | RQ5 | RQ6 | 完成度 |
 |:-:|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
