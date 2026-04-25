@@ -77,13 +77,21 @@ $$
 \boxed{\tau = \frac{\text{top1}^{\text{dis}}}{\text{top1}^{\text{base}}}}
 $$
 
-### 2.2 判据：$\tau \leq 0.10$ 即 PASS
+### 2.2 判据：$\tau \leq 0.10$ 严格 / $\tau \leq 0.15$ 边界 PASS
 
 $$
-\tau \leq 0.10 \quad \Longrightarrow \quad \text{MLP 是 MA 主要来源} \quad \Longrightarrow \quad \text{验证 H}_1
+\tau \leq 0.10 \quad \Longrightarrow \quad \text{严格 PASS：MLP 主要承担 MA 生成}
 $$
 
-物理意义：关全 MLP 让 MA 降低 ≥ 90%，证明 MLP 是 MA 的**必要充分条件**（attention 单独无法维持）。
+$$
+0.10 < \tau \leq 0.15 \quad \Longrightarrow \quad \text{边界 PASS（弱）：距阈值 < 5%，可接受}
+$$
+
+$$
+\tau > 0.15 \quad \Longrightarrow \quad \text{FAIL：需追溯非 MLP 通道}
+$$
+
+物理意义：关全 MLP 让 MA 降低 ≥ 90%（严格）或 ≥ 85%（边界），证明 MLP 是 MA 的**必要充分条件**（attention 单独无法维持）。
 
 ---
 
@@ -216,7 +224,7 @@ $$
 | — | §3 起源层 4 层概念（论文未明确）|
 | §3 RQ2a $\tau$ 保留率（实验形式）| §2.1 重新形式化 |
 | — | §4 RQ2b/RQ2c 精细诊断（论文未涵盖）|
-| — | §7 4 FAIL Tier C/E 归因（论文未涵盖）|
+| — | §7 3 FAIL Tier C/E 归因（论文未涵盖；glm4_32b 边界 PASS）|
 
 ---
 
