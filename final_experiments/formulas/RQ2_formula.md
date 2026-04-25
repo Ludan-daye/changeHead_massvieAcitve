@@ -84,7 +84,7 @@ $$
 $$
 
 $$
-0.10 < \tau \leq 0.15 \quad \Longrightarrow \quad \text{边界 PASS（弱）：距阈值 < 5%，可接受}
+0.10 < \tau \leq 0.15 \quad \Longrightarrow \quad \text{边界 PASS（弱，距阈值 < 0.05）}
 $$
 
 $$
