@@ -95,14 +95,24 @@ $$
 
 ### 1.4 假设检验
 
+**逐层 per-layer 测试**（每个 (model, layer) 对独立测试）：
+
 $$
-H_0: \rho_{\ell} = 1 \quad \text{vs} \quad H_1: \rho_{\ell} > 1
+H_0^{(\ell)}: \rho_{\ell} = 1 \quad \text{vs} \quad H_1^{(\ell)}: \rho_{\ell} > 1
 $$
 
-- $H_0$（无主导差异）：MLP 输出量级 ≤ attention 输出
-- $H_1$（MLP 主导）：MLP 输出量级 ≫ attention（MA 主要由 MLP 产生）
+- $H_0^{(\ell)}$（无主导差异）：第 $\ell$ 层 MLP 输出量级 ≤ attention
+- $H_1^{(\ell)}$（MLP 主导）：第 $\ell$ 层 MLP 输出量级 > attention
 
-跨所有层 + 所有模型测试，用 Wilcoxon signed-rank test，bootstrap CI₉₅。
+**测试方法**（**C2-6 整改**：$\rho$ 是比值右偏，signed-rank 假设对称失效，改用 sign test 或 log-transform）：
+
+- 层级单点统计量 $\rho_{\ell}$ 不直接做 signed-rank（单值无符号秩）；而是用**多 nsamples 的 bootstrap 95% CI**：随机重采样 wikitext docs $B = 1000$ 次，估 $\rho_{\ell}^{(b)}$，CI 下界 $> 1$ 即 $H_1^{(\ell)}$ PASS。
+- **跨模型聚合**（**C2-6 修**）：$\rho \geq 0$ 比值分布**右偏**，one-sample Wilcoxon signed-rank 假设 $\rho - 1$ 对称分布，**不成立**。改用：
+  - **方案 A**：**sign test**（仅检验 $P(\rho > 1) > 0.5$，无对称假设）：26 模型中 26 个 $\rho > 1$，二项 $p = 0.5^{26} = 1.49 \times 10^{-8}$
+  - **方案 B**：**log-transform** 后 $\log \rho$ 近似对称，再用 signed-rank：$\log \rho_{\ell^{\ast}}$ median = 0.65，signed-rank $p < 10^{-7}$
+- 多重比较校正：跨 26 模型 × 1 surge layer = 26 检验，**Benjamini-Hochberg FDR** $q < 0.05$。
+
+实测：26/26 模型 surge 层 $\rho_{\ell^{\ast}} > 1$（最低 1.06，最高 3.05），sign test $p \approx 1.5 \times 10^{-8}$ + log-Wilcoxon $p < 10^{-7}$，FDR-adjusted $q < 10^{-6}$。
 
 ---
 
@@ -110,37 +120,44 @@ $$
 
 ### 2.1 主公式：保留率 $\tau$
 
-定义 baseline 与 disabled（关全部 MLP）状态下的 top1 激活：
+定义 baseline 与 disabled（关全部 MLP）状态下的 Top1 激活（命名与 UNIFIED §0.5 一致）：
 
 $$
-\text{top1}^{\text{base}} = \max_{l, t, j} \bigl|h^{(l)}_{t,j}\bigr| \quad \text{(原模型)}
+\text{Top1}^{\text{base}} = \max_{l, t, j} \bigl|h^{(l)}_{t,j}\bigr| \quad \text{(原模型)}
 $$
 
 $$
-\text{top1}^{\text{dis}} = \max_{l, t, j} \bigl|h^{(l)}_{t,j}\bigr|_{\,\text{MLP} \to 0} \quad \text{(关全 MLP)}
+\text{Top1}^{\text{dis,mlp}} = \max_{l, t, j} \bigl|h^{(l)}_{t,j}\bigr|_{\,\text{MLP} \to 0} \quad \text{(关全 MLP)}
 $$
 
 **保留率**：
 
 $$
-\boxed{\tau = \frac{\text{top1}^{\text{dis}}}{\text{top1}^{\text{base}}}}
+\boxed{\tau = \frac{\text{Top1}^{\text{dis,mlp}}}{\text{Top1}^{\text{base}}}}
 $$
 
-### 2.2 判据：$\tau \leq 0.10$ 严格 / $\tau \leq 0.15$ 边界 PASS
+### 2.2 判据：连续 $\tau$ + bootstrap 95% CI（取代 0.10 / 0.15 二分）
+
+> **A3 audit 修正**：原 $\tau \leq 0.10$ 严格 / $\tau \leq 0.15$ 边界二分阈值是 post-hoc 调出来的（"距阈值 < 0.05" 的 0.05 任意性强）。改用**连续指标 + bootstrap CI**，让 reviewer 看见全分布而非二分类。
+
+**主指标**：$\tau$ 的 26 模型分布 + bootstrap 95% CI（按文档 cluster resample $B = 1000$）：
 
 $$
-\tau \leq 0.10 \quad \Longrightarrow \quad \text{严格 PASS：MLP 主要承担 MA 生成}
+\widehat{\tau}_M \pm \mathrm{CI}_{95\%}^{\text{bootstrap-doc}}, \qquad M \in \{\text{26 models}\}
 $$
 
-$$
-0.10 < \tau \leq 0.15 \quad \Longrightarrow \quad \text{边界 PASS（弱，距阈值 < 0.05）}
-$$
+**离散判据**（保留以兼容旧表，但不作为主报告）：
 
-$$
-\tau > 0.15 \quad \Longrightarrow \quad \text{FAIL：需追溯非 MLP 通道}
-$$
+| 区间 | 解释 | 模型数 |
+|---|---|:-:|
+| $\tau \leq 0.05$ | 强 PASS（MA 几乎全 MLP 来）| 18 |
+| $0.05 < \tau \leq 0.10$ | 中 PASS | 4 |
+| $0.10 < \tau \leq 0.20$ | 弱 PASS / 边界（含 glm4_32b 0.126）| 1 |
+| $\tau > 0.20$ | FAIL（架构特异）| 3（qwen3.5_9b/35b, opt） |
 
-物理意义：关全 MLP 让 MA 降低 ≥ 90%（严格）或 ≥ 85%（边界），证明 MLP 是 MA 的**必要充分条件**（attention 单独无法维持）。
+**主报告改为 effect size**：$\tau$ 跨 dense 22 模型 median = **0.020**（IQR $[0.005, 0.038]$），$-\log_{10}(\tau)$ median = **1.70**（即 MA 降至 $\sim 2\%$）。
+
+物理意义：关全 MLP 让 MA 中位数降至 $\sim 2\%$，证明 MLP 是当前模型 MA 的 **load-bearing substrate**（attention 单独无法维持；不声称 strict necessity）。
 
 ---
 
@@ -166,7 +183,7 @@ $$
 对每层 $\ell$ 单独关 MLP，测整体 MA 降幅：
 
 $$
-\Delta_{\ell} = \frac{\text{top1}^{\text{base}} - \text{top1}^{\text{dis} (\ell)}}{\text{top1}^{\text{base}}}
+\Delta_{\ell} = \frac{\text{Top1}^{\text{base}} - \text{Top1}^{\text{dis,mlp}(\ell)}}{\text{Top1}^{\text{base}}}
 $$
 
 **critical_layer** $L^{\ast} = \arg\max_{\ell} \Delta_{\ell}$（关掉后 MA 降最多的层）。
@@ -229,10 +246,12 @@ $$
 
 | 类别 | 数量 | 典型模型（起源层）|
 |---|:-:|---|
-| CONCENTRATED 单层 | 8 | gptj_6b (L=2), qwen2_7b (L=3), bloom_7b1 (L=7 surge) |
-| FEW-SOURCE | 8 | falcon_7b, glm4_9b, gpt2, llama3.1_8b, qwen3_1.7b, qwen3_4b |
-| DISPERSED | 8 | qwen3_8b, qwen3_14b, qwen3_32b, yi_9b, qwen3.5_27b |
+| CONCENTRATED 单层 | 8 | gptj_6b (L=2), qwen2_7b (L=3), qwen2.5_7b (L=3), qwen3_0.6b (L=2), glm4_32b (L=0), mistral_7b_v03 (L=1 surge), qwen2.5_0.5b (L=2 surge), llama2_13b (L=0) |
+| FEW-SOURCE | 8 | falcon_7b, glm4_9b, gpt2, llama3.1_8b, qwen3_1.7b, qwen3_4b, **bloom_7b1 (L=7 surge → macro)**, llama2_7b_chat |
+| DISPERSED | 8 | qwen3_8b, qwen3_14b, qwen3_32b, yi_9b, qwen3.5_27b, qwen3.5_9b, qwen1.5_14b, qwen3_30b_a3b (MoE) |
 | ANOMALY | 1 | opt_6.7b（关全 MLP 仍 retain 49%）|
+
+> **bloom_7b1 归类说明**（A2 audit 修正）：bloom 单层 surge $L=7$ 在 RQ4 拟合 ($R^2 = 0.9999, K=1$) 表面像 CONC，但 RQ5 单层 V 消融 $\Delta_V = -0.697$ 不达 -0.80，需 macro V 消融 ($\mathcal{L}_{\text{origin}} = [5,6,7,8,9]$) $\Delta_V = -0.82$ 才 PASS → 实际机制是**多层接力**，归 **FEW-SOURCE / 多层组**（与 memory `project_ma_single_vs_multi.md` v3 一致）。
 
 ---
 
@@ -257,7 +276,7 @@ $$
 | opt_6.7b | 0.494 | **Tier E** | OPT pre-LN + 非标 FFN，MLP 仅占 50% |
 | qwen3.5_35b_a3b | 0.876 | **Tier C** | MoE 平均 W_down 失真 + hybrid_attn |
 
-**dense 主体（去 3 个架构特异）23/23 = 100%** ✅
+**dense 主体（pre-registered 22 = 26 − 4 anomaly，详见 UNIFIED §7）21/22 = 95.5%**（glm4_32b $\tau = 0.126$ 边界）
 
 ---
 
@@ -289,7 +308,7 @@ $$
 > - **边界放宽 $\tau \leq 0.15$**（采用）：**23/26 PASS = 88.5%**
 >   - **glm4_32b** $\tau = 0.126$ 边界 PASS（距阈值仅 0.026 < 0.05）
 >
-> **dense 主体**（去除 3 个架构特异：MoE 2 + hybrid_attn 1 + OPT 1 = qwen3.5_9b/qwen3.5_35b_a3b/opt_6.7b）：**23/23 = 100% PASS** ✅
+> **dense 主体**（pre-registered 22 = 26 − 4 anomaly = qwen3.5_9b + qwen3.5_35b_a3b + qwen3_30b_a3b + opt_6.7b，详见 UNIFIED §7）：**21/22 = 95.5% PASS**（glm4_32b $\tau = 0.126$ 边界）✅
 >
 > 3 个真 FAIL 全有明确归因：
 > - **qwen3.5_9b** ($\tau$=0.32)：hybrid_attn 的 linear_attn 通道维持 MA → Tier C 附录

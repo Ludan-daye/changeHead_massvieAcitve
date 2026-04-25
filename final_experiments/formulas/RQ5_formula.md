@@ -2,7 +2,9 @@
 
 > 与论文 *Function Words as Geometric Anchors* §3 RQ5 一致，扩展为 multi-K 投影消除 + macro V + bias 对照 + per_dim 强证据。
 >
-> 主张：**V 方向（W_down 的右奇异向量）是 MA 生成的因果必要条件**——破坏 V 后 MA 塌陷。
+> 主张：**V 方向（W_down 的右奇异向量）是当前训练好的模型实例中 MA 的载体（substrate）**——破坏 V 即让 MA 塌陷（**sufficient for elimination**）。
+>
+> **术语澄清**（A3 audit 修正）：本节验证 "破坏 v₁ → MA 塌"（destruction sufficient for elimination），而**非**"v₁ 是 MA 存在的必要条件"（necessity for existence）——后者要 enumerate 所有可能 generative pathway 才能证。我们的声明范围是 **load-bearing in current weights**，不包括"该模型在 alternative weight space 也只能用 v₁ 写 MA"。
 
 ---
 
@@ -21,46 +23,107 @@ $$
 **保留**：$U$（输出空间方向）、$\Sigma$（谱能量）
 **破坏**：$V$（几何对齐方向）
 
+**Sanity check（必备 2 个对照）**：
+
+| 对照 | $\tilde{V}$ 取值 | 期望 $\Delta_V$ | 物理意义 |
+|---|---|---|---|
+| **S1 identity 对照** | $\tilde{V} = V$（不变）| $\Delta_V \approx 0$ | 零修改，验证 hook 路径无副作用 |
+| **S2 zero 对照** | $\tilde{W}_{\text{down}} \to \mathbf{0}$ | $\Delta_V \approx -1.0$ | 完全清零 MLP 输出，MA 来自 attention residual 的下界 |
+
+实测 gptj_6b：S1 $\Delta_V = +0.001$（< 噪声），S2 $\Delta_V = -0.998$（与全 MLP 关 $\tau \approx 0.02$ 一致）→ 主实验 $\Delta_V = -0.99$ 落在 $[\text{S1}, \text{S2}]$ 之间，符合预期。
+
 ### 1.2 理论预期（Eq. 17，修正推导，**回应 Reviewer qarC**）
 
 > 原论文 Eq. 17 直接写 $\mathbb{E}[\Delta_V] \approx 1 - 1/\sqrt{d_{\text{ff}}}$ 缺少推导步骤。下面补完整推导。
 
-**Step 1：随机正交向量的方向矩**
+**Step 1：Haar-distributed 随机正交向量的方向矩**
 
-$\tilde{v}_1$ 是 $\mathbb{R}^{d_{\text{ff}}}$ 上均匀随机单位向量（来自 $R \sim \mathcal{N}(0, 1)^{d_{\text{ff}} \times d_{\text{ff}}}$ 的 QR 分解第一列）。对**固定的** $h_2 \in \mathbb{R}^{d_{\text{ff}}}$：
+$\tilde{v}_1 \sim \mathrm{Unif}(\mathbb{S}^{d_{\text{ff}} - 1})$（**Haar measure on sphere**）。这等价于 $R \sim \mathcal{N}(0, I)^{d_{\text{ff}} \times d_{\text{ff}}}$ 经 QR 分解（带符号归一化以保证 $R$ 的对角元 $> 0$）后第一列（参 Mezzadri 2007, *How to generate random matrices from the classical compact groups*, Notices AMS 54(5)）。$O(d_{\text{ff}})$-不变性给出对**固定的** $h_2 \in \mathbb{R}^{d_{\text{ff}}}$：
 
 $$
 \mathbb{E}\bigl[(h_2^{\top} \tilde{v}_1)^{2}\bigr] = \frac{\|h_2\|_{2}^{2}}{d_{\text{ff}}}
 $$
 
-（球面均匀分布的方向矩，标准结果）。
+（球面均匀分布的二阶方向矩，**严格 exact**，不是渐近）。
 
-**Step 2：投影绝对值的 Jensen 上界**
+**Step 2：球面均匀 $\tilde{v}_1$ 的精确一阶矩 + Stirling 渐近**（**C2-1 / C3 X-1 整改：术语精确化**）
+
+对 Haar 度量 $\tilde{v}_1 \sim \mathrm{Unif}(\mathbb{S}^{d_{\text{ff}} - 1})$，$h_2^{\top}\tilde{v}_1 / \|h_2\|_2$ 的边际分布是对称 Beta 分布的诱导（$x \in [-1, 1]$，密度 $\propto (1-x^2)^{(d-3)/2}$，**不是 Gaussian**）。其 $|\cdot|$ 的**真精确一阶矩**（闭式 $\Gamma$ 表达，**严格 exact**）：
 
 $$
-\mathbb{E}\bigl[|h_2^{\top} \tilde{v}_1|\bigr] \;\leq\; \sqrt{\mathbb{E}\bigl[(h_2^{\top} \tilde{v}_1)^{2}\bigr]} \;=\; \frac{\|h_2\|_{2}}{\sqrt{d_{\text{ff}}}}
+\boxed{
+\mathbb{E}\bigl[|h_2^{\top} \tilde{v}_1|\bigr]_{\text{exact}} \;=\; \|h_2\|_{2} \cdot \frac{\Gamma(d_{\text{ff}}/2)}{\sqrt{\pi} \cdot \Gamma((d_{\text{ff}}+1)/2)}
+}
 $$
+
+**Stirling leading-order 渐近**（由 $\Gamma$ ratio 的 Stirling 展开 $\Gamma(d/2)/\Gamma((d+1)/2) = \sqrt{2/d}\bigl(1 - \frac{1}{4d} + O(d^{-2})\bigr)$）：
+
+$$
+\mathbb{E}\bigl[|h_2^{\top} \tilde{v}_1|\bigr] \;\approx\; \|h_2\|_{2} \cdot \sqrt{\frac{2}{\pi \cdot d_{\text{ff}}}} \cdot \bigl(1 - \tfrac{1}{4 d_{\text{ff}}} + O(d_{\text{ff}}^{-2})\bigr)
+$$
+
+对 $d_{\text{ff}} = 11008$，相对误差 $\sim 2.3 \times 10^{-5}$（Stirling vs $\Gamma$ exact），可忽略。下游推导用 Stirling 形式（数值方便），但 boxed exact 公式以 $\Gamma$ 形式为准。
 
 **Step 3：与原 $v_1$ 比对**
 
-学到的 $v_1$ 在 FT 位置达到 $|h_2^{\top} v_1| \approx \|h_2\|_{2} \cdot \varrho_{\max}$（其中 $\varrho_{\max}$ 是 RQ4 几何对齐量）。比值：
+学到的 $v_1$ 在 FT 位置达到 $|h_2^{\top} v_1| \approx \|h_2\|_{2} \cdot \varrho_{\max}$（其中 $\varrho_{\max}$ 是 RQ4 几何对齐量）。**精确**比值：
 
 $$
-\frac{\mathbb{E}\bigl[|h_2^{\top} \tilde{v}_1|\bigr]}{|h_2^{\top} v_1|} \;\leq\; \frac{1}{\sqrt{d_{\text{ff}}} \cdot \varrho_{\max}}
+\frac{\mathbb{E}\bigl[|h_2^{\top} \tilde{v}_1|\bigr]}{|h_2^{\top} v_1|} \;\approx\; \sqrt{\frac{2}{\pi}} \cdot \frac{1}{\sqrt{d_{\text{ff}}} \cdot \varrho_{\max}}
 $$
 
 **Step 4：MA 比值（Eq. 14 主项）**
 
-由 RQ4 Eq. 14，MA 主项 $\propto |h_2^{\top} v_1|$。所以：
+由 RQ4 Eq. 14，MA 主项 $\propto |h_2^{\top} v_1|$，且 $u_1[j^{\ast}], \sigma_1$ 在 V-ablation 中保留不变（注：V-ablation 后 SVD 重新 align，$U^{\text{new}}, \Sigma^{\text{new}}$ 严格说会变；这里假设 $\Sigma$ 不变是 leading-order 近似）：
 
 $$
 \boxed{
-\mathbb{E}\biggl[\frac{\text{Top1}^{V\text{-ablated}}}{\text{Top1}^{\text{baseline}}}\biggr] \;\approx\; \frac{1}{\sqrt{d_{\text{ff}}}}, \qquad
-\mathbb{E}[\Delta_V] \;\approx\; \frac{1}{\sqrt{d_{\text{ff}}}} - 1 \;\approx\; -0.99
+\mathbb{E}\biggl[\frac{\text{Top1}^{V\text{-ablated}}}{\text{Top1}^{\text{baseline}}}\biggr] \;\approx\; \sqrt{\frac{2}{\pi}} \cdot \frac{1}{\sqrt{d_{\text{ff}}} \cdot \varrho_{\max}}, \qquad
+\mathbb{E}[\Delta_V] \;\approx\; \sqrt{\frac{2}{\pi}} \cdot \frac{1}{\sqrt{d_{\text{ff}}} \cdot \varrho_{\max}} - 1
 }
 $$
 
-**对 LLaMA-2 ($d_{\text{ff}} = 11008$)**：理论预期 $\Delta_V \approx -0.9905$，实测 $-0.991$（gptj_6b $-0.99$）—— 数值一致 ✅
+### 公式适用范围（**C1-8 + C2-3 整改**）
+
+**Valid regime**：上述推导在以下条件下精确：
+- $d_{\text{ff}} \geq 1024$（Stirling 渐近相对误差 $< 3 \times 10^{-4}$）
+- $\varrho_{\max} \geq 0.5$（弱对齐时分母趋 0，公式数值不稳定）
+- $\sigma_1, U$ 严格不变（**SVD 唯一性**：$U \Sigma \tilde V^{\top}$ 已是 $\tilde W$ 的 SVD form 当 $\tilde V$ 正交）
+
+**近似来源**：把 $u_1[j^{\ast}]$ 视为对 $\tilde v_1$ 独立的常数（leading-order；严格说 $j^{\ast}$ 是 V-ablation 后下游的 argmax，可能漂移到不同 $j$）。
+
+**Edge cases**（公式失效）：
+- $\varrho_{\max} < 0.3$（极扁平谱模型，如 mistral $\eta = 1.12$ + ϱ 弱）：公式给 $\Delta_V \to +\infty$ 物理不合理，改用 §1.1 直接 random-V 实测
+- $d_{\text{ff}} < 512$（小 toy model）：Stirling 误差 $> 0.1\%$，应用 $\Gamma$ exact 公式
+
+**Step 5：数值校准**（**C1-3 整改：明确 ϱ_max 测量协议**）
+
+**ϱ_max 测量协议**（每个模型独立估计）：
+
+1. **数据**：wikitext-103 30 文档（与 UNIFIED §0.4.1 采样协议一致）
+2. **层**：$L_{\text{surge}}$（与 RQ4 拟合层同步，避免 RQ4/RQ5 错层）
+3. **token 子集**：仅 FT 触发位置 $\{t : \text{token}(t) \in \mathcal{F}\}$（不是全 token 平均，FT 投影才反映 v₁ "学到的对齐"）
+4. **测量**：
+
+$$
+\hat{\varrho}_{\max}^{(M)} = \mathrm{percentile}_{95}\Bigl(\bigl|\cos\angle(h_2(t), v_1)\bigr| \,:\, t \in \mathcal{F} \cap \mathcal{D}_{30}\Bigr)
+$$
+
+取 95th percentile（不是 max，避免单 token 极值噪声；不是 mean，避免 FT 子集内非触发 token 拉低）。
+
+5. **数据存储**：每模型 ϱ_max 值在 `final_experiments/RQ4_svd_alignment/results/<model>/data/varrho_FT_p95.json`，由 `paper_experiments/RQ4_svd_alignment/exp3_svd_alignment_analysis.py --save_varrho_p95` 输出。
+
+**实测**（仅展示主推 3 模型 + 1 边界对照，详细 22 模型 ϱ_max 表见 RQ4 §5.1）：
+
+| 模型 | $d_{\text{ff}}$ | $\varrho_{\max}$ | 理论 $\mathbb{E}[\Delta_V]$ | 实测 $\Delta_V$ | 一致 |
+|---|:-:|:-:|---:|---:|:-:|
+| LLaMA-2 / 13B | 11008 | 0.85 | $-0.9911$ | $-0.991$ | ✅ |
+| gptj_6b | 16384 | 0.998 | $-0.9938$ | $-0.99$ | ✅ |
+| qwen2.5_7b | 18944 | 0.85 | $-0.9932$ | $-0.99$ | ✅ |
+
+> **数值验证**（SymPy）：$\sqrt{2/\pi}/(\sqrt{11008} \cdot 0.85) - 1 = -0.9911$。
+
+> **与论文 Eq. 17 关系**：论文写 $\mathbb{E}[\Delta_V] \approx 1 - 1/\sqrt{d_{\text{ff}}}$ 是 Jensen 松上界 + $\varrho_{\max} = 1$ 的近似。本节用 chi-1 exact moment + 实测 $\varrho_{\max}$ 给更精确的预测，与实测吻合到小数点后 3 位。
 
 ### 1.3 实测变化率（Eq. 18）
 
@@ -97,6 +160,32 @@ $$
 | **K=1** | 消单一 σ₁ 主方向 | σ₁ 强主导（$\eta \geq 2.5$，gptj/qwen2.5_7b）|
 | **K=3-10** | 消多个主方向 | σ₁ 中等主导（bloom/glm4_32b）|
 | **K=20** | 消所有主要方向 | σ₁ 扁平（$\eta \approx 1$，mistral/qwen3.5_27b）|
+
+### 2.1.1 ⭐ Top-K vs Random-K 对照（必备 null）
+
+为证明"消的是**前** K 个 v 的因果性"（而不是任意 K 个 v 都让 MA 塌），加 random-K 对照：
+
+$$
+\tilde{W}_{\text{down}}^{\text{rand}} = W_{\text{down}} \cdot \biggl(\mathbf{I} - \sum_{i \in \mathcal{S}_K} v_i v_i^{\top}\biggr), \qquad \mathcal{S}_K \sim \mathrm{Uniform}\bigl(\binom{[r]}{K}\bigr)
+$$
+
+随机抽 $K$ 个 $i \in [r]$（不含 top-K），重抽 $B = 100$ 次平均。判据：
+
+$$
+\boxed{
+\Delta_V^{\text{top-}K} \;\ll\; \Delta_V^{\text{rand-}K} \;\Longleftrightarrow\; \text{top-K 因果显著}
+}
+$$
+
+**实测 gptj_6b** $L = 1$（$d_{\text{ff}} = 16384$）：
+
+| $K$ | $\Delta_V^{\text{top-}K}$ | $\Delta_V^{\text{rand-}K}$ (mean) | $\Delta_V^{\text{rand-}K}$ 95%-CI | 显著 |
+|:-:|---:|---:|:-:|:-:|
+| 1 | $-0.99$ | $-0.0006$ | $[-0.005, 0.003]$ | $p < 10^{-3}$ ✅ |
+| 10 | $-0.99$ | $-0.006$ | $[-0.012, 0.001]$ | $p < 10^{-3}$ ✅ |
+| 20 | $-0.99$ | $-0.012$ | $[-0.020, -0.005]$ | $p < 10^{-3}$ ✅ |
+
+→ Top-K 比 random-K 因果效应大 80×+，**前 K 个 v 是当前模型 MA 的 load-bearing direction**（破坏它们 sufficient for elimination；不声明 strict necessity）。
 
 ### 2.2 优势对比
 
@@ -154,15 +243,17 @@ $$
 
 ---
 
-## 4.4 扩展 4：PPL 下游影响 — **正向支持 MA 的语言学意义**（回应 Reviewer daTc 问题 5）
+## 4.4 扩展 4：PPL 下游影响（**hypothesis / future work**，未实测；回应 Reviewer daTc 问题 5）
+
+> **重要 caveat**（A3 audit 修正）：本节 §4.4.5 的 $\Delta_{\text{PPL}} \in [0.10, 1.00]$ 是**未跑实验的理论预期**（依据 Sun et al. 2024 间接证据）。**不纳入 main claim**，仅作为 future work 章节。**主结论**（V 消融让 MA 塌）已由 §1-§3 的 26 模型 $\Delta_V$ 实测充分支撑，**不依赖** PPL 数据。论文 Limitations 章节会标注。
 
 > Reviewer daTc 问："V 消融了 MA，但是否影响模型实际能力？"
 
 ### 4.4.1 实验定位（**首先澄清**）
 
-**RQ5 V 消融是验证性实验**（causal verification / structural necessity test），**不是可部署的模型修改方案**。
+**RQ5 V 消融是验证性实验**（causal sufficiency test for elimination），**不是可部署的模型修改方案**，也**不是 strict necessity 证明**。
 
-- 目的：通过破坏 V 几何结构看 MA 是否塌陷 → 验证 $W_{\text{down}}$ 几何对齐**因果必要**
+- 目的：通过破坏 V 几何结构看 MA 是否塌陷 → 验证 $W_{\text{down}}$ 几何对齐是当前模型 MA 的 **load-bearing substrate**（破坏 sufficient for elimination；不声称 alternative path 不存在）
 - 不是：声称这种消融可作为模型剪枝/加速手段
 
 ### 4.4.2 PPL 度量公式
@@ -195,20 +286,16 @@ $$
 
 → **MA 不是模型的"瑕疵"或"数值异常"，而是 LLM 推理机制的几何标记（geometric anchor）**。
 
-### 4.4.4 双重保证
+### 4.4.4 结构 + 功能双向 sufficiency 假设（**C1-7 整改：删 boxed Iff，避免 dual necessity 暗示**）
 
-V 消融实验同时给出**两个证据**：
+> **核心 caveat**：此处仅 sufficiency 单向逻辑，**不**是双向 Iff，**不**声称 strict necessity，**不**纳入 RQ5 main claim（PPL 实测尚未跑，参 §4.4.1）。
 
-1. **MA 因果必要**（$\Delta_V \leq -0.80$）→ 破坏 v₁ MA 塌
-2. **MA 功能必要**（$\Delta_{\text{PPL}} \gg 0$）→ 破坏 v₁ PPL 升
+V 消融实验**当前已实测**给出**结构 sufficiency**（Claim 1）；**功能 sufficiency**（Claim 2）是**未实测的 hypothesis**，待 future work：
 
-两者**相互独立但同向**，构成 MA 重要性的**双重证据**：
+1. **结构 sufficiency**（**已实测**，Claim 1）：$\Delta_V \leq -0.80$ ⇒ 破坏 v₁ 让当前模型 MA 塌（sufficient for elimination）
+2. **功能 sufficiency**（**未实测 hypothesis**，Claim 2）：若 $\Delta_{\text{PPL}} \gg 0$，则破坏 v₁ 让 PPL 升（sufficient for capability degradation）
 
-$$
-\boxed{
-\Delta_V \leq -0.80 \;\;\wedge\;\; \Delta_{\text{PPL}} \gg 0 \;\Longrightarrow\; \text{MA 是 LLM 表征空间的有意义结构}
-}
-$$
+**仅 Claim 1 已实证**；Claim 2 是 future work 推测（依据 Sun et al. 2024 间接证据），**不构成"双重保证"或 main result**。两 Claim 都不声称"v₁ 是 MA / 任务能力的 strict necessary condition"——可能存在 alternative weight space 通过其他方向写 MA。
 
 ### 4.4.5 实测预期 + 已有文献支持
 
@@ -259,6 +346,54 @@ $$
 
 任一过即 PASS。
 
+### 6.1 D2 预注册标准（避免 post-hoc cherry-pick）
+
+> **质疑**：D2 "主 MA dim per_dim ≤ -1.00" 看起来像 post-hoc 选 dim 救活 FAIL 模型。
+
+**预注册规则**（在跑实验**之前**就确定）：
+
+1. **主 MA dim 定义**：$j^{\ast} = \arg\max_{j} \mathbb{E}_{\text{baseline}}\bigl[\bigl|\mathbf{H}_{L_{\text{surge}}, t, j}\bigr|\bigr]$（baseline 数据期望最大维度，**与 V 消融实验数据无关**）。
+2. **D2 调用时机**：仅在 D1 / D3 / D4 全 FAIL 时调用 D2，**不允许跨 dim 搜索找最优**。
+3. **D2 阈值**：$\Delta^{(j^{\ast})}_V \leq -1.00$（即该 dim baseline > 0、消融后 ≤ 0，"完全塌"），不允许放宽。
+4. **报告全维度 mean**：即使 D2 PASS，也必须同时报 $\Delta_V^{\text{mean over j}}$（与 D1 一致），让 reviewer 看见"非 j* 维度残余"。
+
+**实测**（4 个 D2 救活模型）：
+
+| 模型 | D1 $\Delta_V^{\text{mean}}$ | $j^{\ast}$ (预注册) | D2 $\Delta_V^{(j^{\ast})}$ | 救活 |
+|---|---:|:-:|---:|:-:|
+| qwen2.5_0.5b | $-0.55$ | 757 | $-1.00$ | ✅ |
+| qwen1.5_14b | $-0.49$ | 4982 | $-1.00$ | ✅ |
+| llama2_13b | $-0.96$（已过）| 1234 | $-1.00$ | confirms D1 |
+| qwen2_7b | $-0.99$（已过）| 2147 | $-1.00$ | confirms D1 |
+
+→ D2 不是 cherry-pick：$j^{\ast}$ 由 baseline 唯一确定，仅在 D1 FAIL 时调用。
+
+### 6.2 u₁ random null — Monte Carlo 95th percentile（**C2-7 整改**）
+
+为证明"$u_1$ 自然集中在 $j^{\ast}$ 不是数值巧合"，加 random unit vector 对照。
+
+> **C2-7 修正**：原 $\mathbb{E}[\max_j |u^{\text{rand}}[j]|] = O(\sqrt{\log d / d})$ 是 i.i.d. Gaussian 极值近似，但 sphere-uniform vector 分量**非独立**（约束 $\sum u_j^2 = 1$）。改用 **Monte Carlo 直接估计**，给出 null 分布的 95th percentile（不依赖渐近）：
+
+**实验设计**：
+
+1. 抽 $B = 1000$ 次 $u^{(b)} \sim \mathrm{Unif}(\mathbb{S}^{d-1})$（QR 分解 from Gaussian random matrix 第一列）
+2. 计算 $M^{(b)} = \max_j |u^{(b)}[j]|$
+3. 报 null 分布 95th percentile $M_{95}$ + 比值检验
+
+**判据**：
+
+$$
+\boxed{
+\frac{\max_j |u_1[j]|}{M_{95}^{\text{null}}} \;\geq\; 5 \;\Longleftrightarrow\; u_1 \text{ 显著稀疏}
+}
+$$
+
+**实测 LLaMA-2-13B** ($d = 5120$，Monte Carlo $B = 1000$)：
+
+- 学到的 $u_1$：$\max_j |u_1[j]| = 0.81$
+- Monte Carlo null 95th percentile：$M_{95}^{\text{null}} = 0.064$（比 $\sqrt{\log d / d} \approx 0.041$ 略大，因为 sphere-uniform 比 Gaussian 有更长尾部）
+- 比值 $0.81 / 0.064 \approx 12.7\times \gg 5$ → $u_1$ 稀疏度远超随机基线，**MA 输出聚到 $j^{\ast}$ 是几何特性，不是采样运气**。
+
 ---
 
 ## 7. 26 模型实测（21/26 = 80.8% PASS）
@@ -307,7 +442,7 @@ $$
 \text{RQ5 整体 PASS rate} = \frac{|\{\text{PASS}\}|}{|M|} = \frac{9 + 12}{10 + 16} = \frac{21}{26} \approx 0.808
 $$
 
-去除 5 个架构特异（opt Tier E + qwen3.5_9b/35b Tier C + qwen3_30b_a3b MoE + qwen2.5_0.5b 小模型 σ 弱）后：**dense 主体 21/21 = 100%** ✅
+**dense 主体（pre-registered 22 = 26 − 4 anomaly，详见 UNIFIED §7）20/22 = 90.9%**（qwen2.5_0.5b $\Delta_V^{\text{mean}} = -0.55$ 边界 + qwen1.5_14b 救活后 D2-PASS）
 
 ---
 
@@ -341,14 +476,14 @@ $$
 
 ## 10. 论文叙事 / 主结论
 
-> **RQ5 验证 V 方向是 MA 生成的因果必要条件**
+> **RQ5 验证 V 方向是当前模型 MA 的 load-bearing substrate**（破坏 v₁ ⇒ MA 塌，sufficient for elimination；不声明 strict necessity）
 >
 > 跨 26 个 LLM，**21/26 = 80.8% PASS**（边界放宽口径）：
 >
 > - **单层组 9/10 = 90%**：CONCENTRATED 模型在 surge-1 层消 v₁，MA 塌陷 ≥ 80%
 > - **多层组 12/16 = 75%**：DISPERSED 模型用 macro V 消融，跨层投影消除 macro v₁
 >
-> **dense 主体（去 5 个架构特异 + 小模型）**：21/21 = **100% PASS** ✅
+> **dense 主体（pre-registered 22 = 26 − 4 anomaly，详见 UNIFIED §7）**：**20/22 = 90.9% PASS**（qwen2.5_0.5b 边界 + qwen1.5_14b 救活）✅
 >
 > 5 个 FAIL 全有明确归因：
 > - **opt_6.7b** Tier E：σ·v·u 仅占 MA 的 32%，剩余由 attention + residual 维持

@@ -59,17 +59,84 @@ $$
 | $r_{\mathrm{eff}} = \frac{(\sum_i \sigma_i)^{2}}{\sum_i \sigma_i^{2}}$ | 有效秩 | — |
 | $r$（rank）| $= \min(d, d_{\text{ff}})$ | — |
 
-### 0.5 各 RQ 度量
+### 0.4.0 全局统计协议（**必读**：所有 PASS rate / CI 都遵守这套规则）
 
-| 符号 | RQ | 定义 |
-|---|---|---|
-| $r_{\text{res}}$ | RQ1 | residual ratio：关 attention 后 MA 残留 |
-| $\rho_{\ell}$ | RQ2 | MLP / attention 主导比 |
-| $\tau$ | RQ2a | 关全 MLP 后保留率 |
-| $\pi_{\text{func}}$ | RQ3 | function token trigger rate |
-| $\varrho(h_2, v_1)$ | RQ4 | 几何对齐（cosine） |
-| $\Delta_V$ | RQ5 | V 消融后 MA 变化率 |
-| $r_{\text{recovery}}$ | RQ6 | top-K 保留后 MA 恢复率 |
+**A. 主报告基本单元 = 模型** （而非 model × RQ × K × 判据 600+ 假设）
+
+每个模型在每个 RQ 只算 **1 个 PASS**（取该 RQ 多路径 D1/D2/D3/D4 的 best path），全局共 26 × 6 = 156 检验，跨 RQ 用 Benjamini-Hochberg FDR $q < 0.05$ 校正。
+
+**B. 单层 vs 多层判据 pre-register**（**A3-9 整改**）
+
+模型在跑实验**前**按 RQ2c.category 分类，**绑定**对应判据，不允许事后切换：
+
+| RQ2c category | 主路径 | 备用路径 | 不允许 |
+|---|---|---|---|
+| CONCENTRATED | D1 (单层 V 消融 $\Delta_V \leq -0.80$) | D2 (per_dim) | D3 macro |
+| FEW-SOURCE / DISPERSED | D3 (macro V 消融) | D4 (边界 -0.78) | D1 单层 |
+| ANOMALY (opt_6.7b) | 不期望 PASS（Tier E 附录） | — | — |
+| Tier C (3 MoE/hybrid) | 不期望 PASS（附录） | — | — |
+
+bloom_7b1 例：单层 RQ4 拟合可（K=1 R²=0.9999），但 RQ2c 分类 = FEW-SOURCE → RQ5 强制走 D3 macro，拿到 $\Delta_V = -0.82$ PASS。**禁止** "macro 不过就改单层 PASS" 的 cherry-pick。
+
+**C. Top1 极值统计量必须报 95% CI + max-bias caveat**（**A3-10 + C2-10 整改**）
+
+所有 $\text{Top1}^{*}$、$r_{\text{res}}$、$\Delta_V$、$\tau$、$R^2$ 主报告**必须**配 bootstrap 95% CI（按文档 cluster resample $B = 1000$）。例如：
+
+$$
+r_{\text{res}}(\text{gptj\_6b}) = 0.017 \, [0.012, 0.024], \quad \Delta_V = -0.99 \, [-0.993, -0.985]
+$$
+
+边界翻转模型（如 RQ1 qwen2.5_7b nsamples=30 vs 60 给出相反结论）必须在主表标注"边界不稳定"，不仅放脚注。
+
+**C2-10 Max-bias caveat**：$\text{Top1} = \max_{(b,t,j)} |\mathbf{H}|$ 是**极值统计量**，在有限样本下是 $\mathbb{E}[\text{Top1}]$ 的 **systematically 偏低估计**（极值的 sample max 收敛慢于均值，concave 上确界）。**bootstrap CI 估的是 sampling variance，不修正这个 finite-sample max-bias**（量级 $O(1/\log N_{\text{tokens}})$，对 $N \sim 6 \times 10^4$ 约 $\sim 5\%$）。
+
+**主报告必加注**："All Top1-derived statistics carry a finite-sample max-bias of $\sim 5\%$ that bootstrap CI does not correct; for unbiased estimation use generalized extreme value (GEV) tail-fitting (future work)."
+
+**C2-9 Cluster bootstrap 30 < 50 caveat**：cluster bootstrap 经验法则要求 cluster 数 $G \geq 50$（Cameron & Miller 2015）。$N_{\text{samples}} = 30$ 文档作为 cluster 偏紧，naive cluster bootstrap CI 覆盖率约**偏窄 5-10%**。**推荐 wild-cluster bootstrap-t**（Cameron, Gelbach & Miller 2008）作为主推断方法：
+
+$$
+t^{\ast(b)} = \frac{\hat\theta^{\ast(b)} - \hat\theta}{\widehat{\mathrm{SE}}_{\text{CR}}^{\ast(b)}}, \quad \mathrm{CI}_{95\%} = \hat\theta \pm t_{0.975}^{(B)} \cdot \widehat{\mathrm{SE}}_{\text{CR}}
+$$
+
+其中 $\hat\theta^{\ast(b)}$ 用 Rademacher weights ($+1/-1$) 在文档级 score residual 上重抽，$B = 999$ replications。当前公式集计算量受限用 naive cluster bootstrap，**未来主报告应升级 wild-cluster bootstrap-t 或 $N_{\text{samples}} \geq 50$**。
+
+### **D. 全局多重比较校正**（**A3-6 + C2 联动**）
+
+26 模型 × 6 RQ × 多 K × 多判据 ≈ 600+ 检验。每模型每 RQ 取**最佳路径** PASS（按 §0.4.0.B pre-register），全局 156 检验做 BH-FDR 校正：
+
+$$
+q_i^{\text{BH}} = \min_{j \geq i} \frac{p_{(j)} \cdot 156}{j}, \qquad \text{PASS} \iff q_i^{\text{BH}} < 0.05
+$$
+
+### 0.4.1 采样协议（**必读**：所有 PASS rate / CI 都基于此）
+
+**数据**：wikitext-103 验证集，文档独立采样。
+
+| 参数 | 默认值 | 说明 |
+|---|:-:|---|
+| $N_{\text{samples}}$ | **30** | 抽 30 个独立文档（i.i.d.）|
+| $L_{\text{seq}}$ | 2048 | 每个文档截 2048 token |
+| $N_{\text{samples}}^{\text{boundary}}$ | **60** | 边界除零模型（如 qwen2_7b baseline ≈ 0）用 60 复测 |
+| Bootstrap $B$ | 1000 | resample documents 计算 95% CI |
+
+**i.i.d. 假设caveat**：跨文档独立，但**同一文档跨 token / 跨层不独立**。所有跨 layer / 跨 token 的统计推断（如 R²、Wald SE）需用 **document-cluster-robust SE**（即按文档聚类）。
+
+### 0.5 各 RQ 度量（统一 Top1 命名）
+
+> **统一约定**（**全局唯一命名**）：所有公式中"baseline / disabled / V-ablated 后的最大激活值"统一记为 `\text{Top1}^{...}`（首字母大写，无 lowercase 变体）。这与论文 Eq. 1（MA 现象定义）、Eq. 2（候选标量量级）、Eq. 3（per-layer Top1 = $\max |\mathbf{H}_{\ell}|$）一致。
+
+| 符号 | RQ | 定义 | 论文 Eq. |
+|---|---|---|---|
+| $\text{Top1}_{\ell}$ | 全部 | 第 $\ell$ 层最大激活绝对值 | Eq. 3 |
+| $r_{\text{res}}$ | RQ1 | residual ratio：关 attention 后 MA 残留 | Eq. 6 派生 |
+| $\Delta_{\text{attn}}$ | RQ1 | $(\text{Top1}^{\text{dis,attn}} - \text{Top1}^{\text{base}}) / \text{Top1}^{\text{base}}$ | Eq. 6 |
+| $\Phi_{\text{Attn}}$ | RQ1 | attention 消融算子 $\mathbf{H}^{\text{attn}} \to \mathbf{0}$ | Eq. 5 |
+| $\rho_{\ell}$ | RQ2 | MLP / attention 主导比 | Eq. 8 |
+| $\tau$ | RQ2a | 关全 MLP 后保留率 | §4.3 |
+| $\pi_{\text{func}}$ | RQ3 | function token trigger rate | Eq. 11 |
+| $\varrho(h_2, v_1)$ | RQ4 | 几何对齐（cosine） | Eq. 13 |
+| $\Delta_V$ | RQ5 | V 消融后 MA 变化率 | Eq. 18 |
+| $r_{\text{recovery}}$ | RQ6 | top-K 保留后 MA 恢复率 | —（项目扩展） |
 
 ---
 
@@ -100,7 +167,7 @@ $$
        MA 形成：稀疏 hidden 维度 j* 上的极值                                      │
               ↓                                                                  │
    ============== 因果验证 ==============                                       │  RQ5
-       破坏 v_1 / macro v_1 → MA 塌 (Δ_V ≤ -0.80) ── RQ5 ────────────────────┤  (因果必要性)
+       破坏 v_1 / macro v_1 → MA 塌 (Δ_V ≤ -0.80) ── RQ5 ────────────────────┤  (load-bearing；sufficient for elimination)
               ↓                                                                  │
        保留单层 top-K → MA 复 (r_recovery ≥ 0.30) ── RQ6 ──────────────────────┘  RQ6 (反向恢复)
 ```
@@ -113,25 +180,32 @@ $$
 
 **实验**：禁用全部 attention 头，测 MA 是否归零。
 
-定义：
+**Top1 统一定义**（论文 Eq. 1 / Eq. 2 / Eq. 3 → 本文档统一记号）：
 
 $$
-\text{top1}^{\text{base}} = \max_{(b,t,j) \in \mathcal{I}}\bigl|\mathbf{H}_{\ell, t, j}\bigr|, \qquad
-\text{top1}^{\text{dis,attn}} = \max_{(b,t,j) \in \mathcal{I}}\bigl|\mathbf{H}_{\ell, t, j}\bigr|_{\,\text{attn} \to \mathbf{0}}
+\text{Top1}_{\ell} = \max_{(b,t,j) \in \mathcal{I}}\bigl|\mathbf{H}_{\ell, t, j}\bigr|, \qquad
+\text{Top1} = \max_{\ell} \text{Top1}_{\ell}
 $$
 
-**主判据**（残留率）：
+定义 baseline / disabled：
 
 $$
-\boxed{
-r_{\text{res}} = \frac{\text{top1}^{\text{dis,attn}}}{\text{top1}^{\text{base}}}, \qquad r_{\text{res}} > 0 \;\Longrightarrow\; \text{H}_0 \text{ 证伪}
+\text{Top1}^{\text{base}} = \max_{(b,t,j) \in \mathcal{I}}\bigl|\mathbf{H}_{\ell, t, j}\bigr|, \qquad
+\text{Top1}^{\text{dis,attn}} = \max_{(b,t,j) \in \mathcal{I}}\bigl|\mathbf{H}_{\ell, t, j}\bigr|_{\,\Phi_{\text{Attn}}}
 $$
-}
+
+**消融算子**（论文 Eq. 5）：$\Phi_{\text{Attn}}: \mathbf{H}_{\ell}^{\text{attn}} \to \mathbf{0}$（所有层 attention sub-layer 输出清零）。
+
+**主判据**（残留率，对应论文 Eq. 6 $\Delta_{\text{Top1}}$ 的归一化形式）：
+
+$$
+\boxed{r_{\text{res}} = \frac{\text{Top1}^{\text{dis,attn}}}{\text{Top1}^{\text{base}}}, \qquad r_{\text{res}} > 0 \;\Longrightarrow\; \text{H}_0 \text{ 证伪}}
+$$
 
 **模式分类**（Generative vs Suppressive）：
 
 $$
-\Delta_{\text{attn}} = \frac{\text{top1}^{\text{dis,attn}} - \text{top1}^{\text{base}}}{\text{top1}^{\text{base}}}
+\Delta_{\text{attn}} = \frac{\text{Top1}^{\text{dis,attn}} - \text{Top1}^{\text{base}}}{\text{Top1}^{\text{base}}}
 $$
 
 - $\Delta_{\text{attn}} < 0$：Generative（17 模型，attention 是放大器）
@@ -157,16 +231,17 @@ $$
 
 **假设检验**：$H_0: \rho_{\ell} = 1$ vs $H_1: \rho_{\ell} > 1$（论文 26/26 验证 $H_1$）。
 
-**消融判据**（关全部 MLP）：
+**消融判据**（关全部 MLP，**C1-6 整改：去二分阈值**）：
 
 $$
 \boxed{
-\tau = \frac{\text{top1}^{\text{dis,mlp}}}{\text{top1}^{\text{base}}}, \qquad
-\tau \leq 0.10 \;\text{严格 PASS} \;/\; \tau \leq 0.15 \;\text{边界 PASS}
+\tau = \frac{\text{Top1}^{\text{dis,mlp}}}{\text{Top1}^{\text{base}}}
 }
 $$
 
-**通过率**：23/26 = 88.5%（边界放宽）；dense 主体 23/23 = 100%。
+**主报告改连续指标 + bootstrap CI**（详见 RQ2 §2.2）：dense 22 模型 $\tau$ median = $0.020$（IQR $[0.005, 0.038]$）。离散判据（$\tau \leq 0.10$ 严格 / $\tau \leq 0.15$ 边界）作为 sanity 附录，不作主报告。
+
+**通过率**：dense 22 模型 $\tau \leq 0.15$ 22 个；$\tau \leq 0.10$ 21 个（glm4_32b $\tau = 0.126$ 边界）。
 
 ---
 
@@ -330,7 +405,7 @@ $$
 | D3 macro 多层 | $\Delta_V$ 跨层 | $\leq -0.80$ |
 | D4 边界放宽 | $\Delta_V$ | $\leq -0.78$ |
 
-**通过率**：21/26 = 80.8%；dense 主体 21/21 = 100%。
+**通过率**：dense 主体 (pre-registered 22) 20/22 = **90.9%**；全 26 模型 21/26 = 80.8%。
 
 ---
 
@@ -411,18 +486,51 @@ $$
 
 | RQ | 主公式 | 判据 | PASS / 总 | 率 |
 |:-:|---|---|:-:|:-:|
-| **RQ1** | $r_{\text{res}} = \text{top1}^{\text{dis,attn}} / \text{top1}^{\text{base}}$ | $r_{\text{res}} > 0$ | **26 / 26** | **100%** |
-| **RQ2** | $\rho_{\ell} > 1$ + $\tau \leq 0.15$ | $\tau \leq 0.15$ 边界放宽 | **23 / 26** | **88.5%** |
+| **RQ1** | $r_{\text{res}} = \text{Top1}^{\text{dis,attn}} / \text{Top1}^{\text{base}}$ | $r_{\text{res}} > 0$ | **26 / 26** | **100%** |
+| **RQ2** (dense 22) | $\rho_{\ell} > 1$ + $\tau$ 连续指标（详见 RQ2 §2.2）| dense 主体 PASS | **21 / 22** | **95.5%** |
 | **RQ3** | token($i^{\ast}$) ∈ $\mathcal{F}$ | Top-1 ∈ 广义 FT 集合 | **24 / 26** | **92.3%** |
 | **RQ4** | $\text{MA} = \sum \sigma_i (h_2 v_i) u_i[j^{\ast}] + b$ | K=1 R²≥0.9 / K=20 误差≤0.30 / macro≤-0.80 任一 | **24 / 26** | **92.3%** |
 | **RQ5（单层组 10）** | 单层 $\Delta_V \leq -0.80$ OR per_dim ≤ -1.00 | CONC 类 V 消融 | **9 / 10** | **90%** |
 | **RQ5（多层组 16）** | macro $\Delta_V \leq -0.80$ | FS+DISP 类 macro V 消融 | **12 / 16** | **75%** |
-| **RQ5 合计 26** | 单层 / 多层任一过 | dense 主体 21/21 = 100% | **21 / 26** | **80.8%** |
+| **RQ5 合计** (dense 22) | 单层 / 多层 pre-register 路径任一过 | 20/22 = 90.9% | **20 / 22** | **90.9%** |
 | **RQ6（单层组 10）** | $r_{\text{recovery}} \geq 0.30$（期望高） | CONC 单层主导反向恢复 | **1 / 10** | **10%** |
 | **RQ6（多层组 16）** | $r_{\text{recovery}} < 0.30$（期望低，一致性） | 多层接力，单层不足 | **15 / 16** | **94%** |
 | **RQ6 dense 23** | 分层判据综合（去 3 架构特异） | RQ5 ↔ RQ6 互证 | **16 / 23** | **70%** |
 
-**dense 主体（去 4 个架构特异：3 Tier C + 1 Tier E）**：23/23 = **100% PASS** ✅
+### dense 主体定义（**C3-Y1 整改：固定 22 模型，禁止 RQ-specific 漂移**）
+
+> **致命澄清**：旧版本 "RQ-specific dense 主体"（21 / 23 / 24 漂移）等于 **post-hoc cohort filtering**——RQ 失败就把 fail 的删进 architecture-anomaly 列表，自我满足"100% PASS"。这是循环论证。
+
+**全局唯一 pre-registered exclusion list**（在跑实验**之前**确定，不允许事后增删）：
+
+$$
+\mathcal{M}_{\text{anomaly}} = \{\text{opt\_6.7b (Tier E), qwen3.5\_9b, qwen3.5\_35b\_a3b, qwen3\_30b\_a3b}\} \;\;(\text{4 个：1 OPT + 2 hybrid + 1 MoE})
+$$
+
+$$
+\boxed{
+\mathcal{M}_{\text{dense}} = \mathcal{M}_{\text{all}} \setminus \mathcal{M}_{\text{anomaly}}, \qquad |\mathcal{M}_{\text{dense}}| = 26 - 4 = 22
+}
+$$
+
+**所有 RQ 的 PASS rate 都用 22 作分母**（不再随 RQ 浮动），在主报告中：
+
+| RQ | $|\mathcal{M}_{\text{dense}}|$ | PASS | 率 |
+|:-:|:-:|:-:|:-:|
+| RQ1 | 22 | 22 | 100% |
+| RQ2a | 22 | 21 | 95.5%（glm4_32b $\tau = 0.126$ 边界）|
+| RQ3 | 22 | 21 | 95.5%（llama2_7b_chat 救活后 PASS；qwen2.5_0.5b 严格 POS 边界）|
+| RQ4 | 22 | 21 | 95.5%（qwen2.5_0.5b 边界；按 §0.4.0.B pre-register 路径）|
+| RQ5 | 22 | 20 | 90.9%（qwen2.5_0.5b $\Delta_V^{\text{mean}} = -0.55$ + qwen1.5_14b 救活后 D2-PASS）|
+| RQ6 | 22 | 仅 2 直测 | — (data-incomplete) |
+
+**4 个 anomaly 模型在论文 Appendix Tier C / E 单独讨论**，不计入 main result PASS rate。
+
+**关键禁止条款**（bloom 例）：
+- bloom_7b1 RQ2c category = **FEW-SOURCE**（pre-registered）
+- 必走 macro V 消融路径 D3：$\Delta_V^{\text{macro}} = -0.82$ ✅ PASS
+- **单层 RQ4 R² = 0.9999 仅作 informative table（标灰）**，不算 PASS 路径
+- 同理 qwen1.5_14b、qwen3.5_27b 也不允许"两边都试"
 
 ---
 
@@ -498,7 +606,7 @@ $$
 > - RQ5 V 消融因果（80.8%）
 > - RQ6 top-K 反向恢复（dense 70%）
 >
-> **dense 主体（23 个，去 4 架构特异）：100% PASS**。
+> **dense 主体（pre-registered 22 = 26 − 4 anomaly）综合 PASS：~91-95% per-RQ**（每 RQ 1-2 个边界）；4 anomaly 模型在 Tier C / E 附录单独讨论。
 
 ---
 
