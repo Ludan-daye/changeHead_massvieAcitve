@@ -11,7 +11,7 @@
 | **RQ3** | 广义 function token 触发 + Fisher + u₁ decode | [RQ3_formula.md](RQ3_formula.md) | 24/26 = **92.3%** |
 | **RQ4** | MA 生成多项式公式（单层 + 多层 + 方向一致性）| [RQ4_formula.md](RQ4_formula.md) | 24/26 = **92.3%** |
 | **RQ5** | V 消融因果（multi-K + macro + bias 对照 + per_dim 强证据）| [RQ5_formula.md](RQ5_formula.md) | 21/26 = **80.8%** |
-| RQ6 | 多层 macro V 消融因果判据 | 待写 | 13/16 = 81.2% |
+| **RQ6** | Top-K Recovery（辅助，反向验证 RQ5；分层判据）| [RQ6_formula.md](RQ6_formula.md) | dense 16/23 = **70%** |
 
 ## 主公式（统一形式）
 
