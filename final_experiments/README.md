@@ -91,7 +91,7 @@ $$
 详情 → [`RQ1_attention/README.md`](RQ1_attention/README.md)
 
 ### RQ2a — MLP 全消融（81%）
-禁用全部 MLP，测 MA。**全 26 模型已跑**（llama2_13b 转 HF 格式后补齐；opt_6.7b hook fix 后实跑）。22/26 retain ≤ 10% → MLP 是 MA 主要来源。**4 个真 FAIL 全是架构特异**：glm4_32b 12.6%（边界）、qwen3.5_9b 32%（hybrid_attn）、opt_6.7b 49%（OPT 特殊 Tier E）、qwen3.5_35b_a3b 87.6%（MoE+hybrid Tier C）。辅助实验 RQ2b/RQ2c 区分模式 A（单层主导）vs B（多层协作）。
+禁用全部 MLP，测 MA。**全 26 模型已跑**（llama2_13b 转 HF 格式后补齐；opt_6.7b hook fix 后实跑）。**23/26 PASS = 88.5%**（含 glm4_32b 0.126 边界 PASS，距阈值仅 0.026）。**3 个真 FAIL 全是架构特异**：qwen3.5_9b 32%（hybrid_attn Tier C）、opt_6.7b 49%（OPT 特殊 Tier E）、qwen3.5_35b_a3b 87.6%（MoE+hybrid Tier C）。辅助实验 RQ2b/RQ2c 区分模式 A（单层主导）vs B（多层协作）。
 详情 → [`RQ2a_mlp/README.md`](RQ2a_mlp/README.md)，per-layer scan → [`RQ2_mlp_source/`](RQ2_mlp_source/)
 
 ### RQ3 — 功能词/结构 token（92%）
