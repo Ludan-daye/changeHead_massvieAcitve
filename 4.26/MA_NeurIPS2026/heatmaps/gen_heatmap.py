@@ -1,12 +1,13 @@
 """
-Per-RQ 26-model heatmap. One figure per RQ, output flat under heatmaps/.
+Per-RQ 26-model heatmap. One figure per RQ.
 
 Each heatmap: 26 rows (models, sorted by primary RQ metric) × N columns
 (sub-metrics specific to that RQ). Cell text = raw metric, cell color =
 normalised strength (0..100). PASS line marked on the relevant column.
 No titles (per user spec).
 
-Output:  heatmaps/<RQ_dir>.png
+Output:  heatmaps/<RQ_dir>/heatmap/26models.png
+        (mirrors figures/<RQ_dir>/<panel_type>/<file>.png layout)
 """
 import os
 import sys
@@ -140,7 +141,8 @@ def make_rq1():
         strength[i, 1] = clamp(absΔ, 0, 100)
         strength[i, 2] = 80 if sign == 'Gen' else 60  # both informative; just hue
         raw.append([f'{ρ:.1f}%', f'{absΔ:.1f}%', sign])
-    save = os.path.join(ROOT, RQ_DIRS['RQ1'] + ".png")
+    save = os.path.join(ROOT, RQ_DIRS['RQ1'], 'heatmap', '26models.png')
+    os.makedirs(os.path.dirname(save), exist_ok=True)
     draw_heatmap(rows, cols_label, raw, strength, None, save)
     print(f'Saved: {save}')
 
@@ -162,7 +164,8 @@ def make_rq2():
         strength[i, 1] = clamp(eff, 0, 100)
         strength[i, 2] = clamp(50 + gap * 5, 0, 100)
         raw.append([f'{τ:.1f}%', f'{eff:.1f}%', f'{gap:+.1f}%'])
-    save = os.path.join(ROOT, RQ_DIRS['RQ2'] + ".png")
+    save = os.path.join(ROOT, RQ_DIRS['RQ2'], 'heatmap', '26models.png')
+    os.makedirs(os.path.dirname(save), exist_ok=True)
     draw_heatmap(rows, cols_label, raw, strength, None, save)
     print(f'Saved: {save}')
 
@@ -187,7 +190,8 @@ def make_rq3():
                         "'\\n\\n\\n'", "'The'"}
         strength[i, 2] = 90 if is_ft else 30
         raw.append([f'{π:.2f}', f'{1 - π:.2f}', tok])
-    save = os.path.join(ROOT, RQ_DIRS['RQ3'] + ".png")
+    save = os.path.join(ROOT, RQ_DIRS['RQ3'], 'heatmap', '26models.png')
+    os.makedirs(os.path.dirname(save), exist_ok=True)
     draw_heatmap(rows, cols_label, raw, strength, None, save)
     print(f'Saved: {save}')
 
@@ -209,7 +213,8 @@ def make_rq4():
         strength[i, 1] = R2 * 100
         strength[i, 2] = clamp(50 + gap * 200, 0, 100)
         raw.append([f'{η:.2f}', f'{R2:.2f}', f'{gap:+.2f}'])
-    save = os.path.join(ROOT, RQ_DIRS['RQ4'] + ".png")
+    save = os.path.join(ROOT, RQ_DIRS['RQ4'], 'heatmap', '26models.png')
+    os.makedirs(os.path.dirname(save), exist_ok=True)
     draw_heatmap(rows, cols_label, raw, strength, None, save)
     print(f'Saved: {save}')
 
@@ -242,7 +247,8 @@ def make_rq5():
             None if m_abs is None else f'{m_abs:.0f}%',
             f'{b:.0f}%',
         ])
-    save = os.path.join(ROOT, RQ_DIRS['RQ5'] + ".png")
+    save = os.path.join(ROOT, RQ_DIRS['RQ5'], 'heatmap', '26models.png')
+    os.makedirs(os.path.dirname(save), exist_ok=True)
     draw_heatmap(rows, cols_label, raw, strength, None, save)
     print(f'Saved: {save}')
 
@@ -262,7 +268,8 @@ def make_rq6():
         strength[i, 0] = clamp(r, 0, 100)
         strength[i, 1] = clamp(50 + gap * 1.5, 0, 100)
         raw.append([f'{r:.0f}%', f'{gap:+.0f}%'])
-    save = os.path.join(ROOT, RQ_DIRS['RQ6'] + ".png")
+    save = os.path.join(ROOT, RQ_DIRS['RQ6'], 'heatmap', '26models.png')
+    os.makedirs(os.path.dirname(save), exist_ok=True)
     draw_heatmap(rows, cols_label, raw, strength, None, save)
     print(f'Saved: {save}')
 
