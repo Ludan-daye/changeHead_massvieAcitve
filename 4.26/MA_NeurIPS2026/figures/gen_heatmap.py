@@ -6,21 +6,14 @@ Each heatmap: 26 rows (models, sorted by primary RQ metric) × N columns
 normalised strength (0..100). PASS line marked on the relevant column.
 No titles (per user spec).
 
-Output:  heatmaps/<RQ_dir>/heatmap/26models.png
-        (mirrors figures/<RQ_dir>/<panel_type>/<file>.png layout)
+Output:  figures/<RQ_dir>/heatmap/26models.png
+        (lives next to the per-model panel folders inside each RQ)
 """
 import os
-import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.colors import LinearSegmentedColormap
-
-# Pull style/data from the sibling figures/ module
-SIBLING = os.path.normpath(os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), '..', 'figures'))
-if SIBLING not in sys.path:
-    sys.path.insert(0, SIBLING)
 from _style import apply, REG
 from _per_model_data import PER_MODEL
 
