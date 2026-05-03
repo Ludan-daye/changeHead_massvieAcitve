@@ -179,3 +179,64 @@ MoE 保留单层后 MA 反而比 floor 还低——**专家路由异常**的表�
 - **修复后数据**：`paper_experiments/fixes/results_stage2*/systemd_rq6*/<model>/<model>_rq6_results.json`
 - **代码（修复版）**：`paper_experiments/RQ6_single_layer_activation/exp6_single_layer_activation.py`
 - **老版（错层 bug）**：`changeHead_massvieAcitve/experiments/exp6_v_ablation/exp6_v_ablation.py`（弃用）
+
+---
+
+## 真实数据归档（2026-04-27 重新校验 + 互补判据）
+
+### 1. 真值数据集 JSON
+
+`final_report/RQ6_topk_recovery/data/r_star_26models.json`
+
+机读规范化数据，含 26 模型 `best_recovery_pct`、baseline_top1、floor_top1、best_single_layer、source_file、PASS（按互补判据）。直接从 26 个 raw `*_rq6_results.json` 抽取，**取代** 论文图脚本里 `4.26/MA_NeurIPS2026/figures/scripts/_per_model_data.py` 早期手工 hardcode 的版本。
+
+### 2. 互补判据（tier-aware）
+
+> RQ5 和 RQ6 是**互补**的，不能用统一阈值：
+
+| Regime | RQ6 期望 | RQ6 PASS 条件 | 物理含义 |
+|---|:-:|---|---|
+| **CONC**（单层主导）| ↑ 高 r* | `r* ≥ 30%` | 单层应该够 → recovery 高 |
+| **FS / DISP**（多层协作）| ↓ 低 r* | `r* < 30%` 或 N/A | 单层不够 → 一致性证明 |
+| **ANOM** | 个案 | 附录单独讨论 | 架构异常 |
+
+之前所有图按统一 `r* ≥ 30` 判 → 多层模型大量"假 FAIL"。现已修正。
+
+### 3. 修正后 26 模型 PASS 分布（15/26 = 58%）
+
+| Regime | n | PASS | FAIL |
+|---|:-:|:-:|---|
+| **CONC** (9) | 9 | **1** (gptj_6b 76.4%) | 8（CONC 内部异质：单层结构存在但单层恢复不足）|
+| **FS** (7) | 7 | **6** (GPT-2, Qwen3-1.7B, Qwen3-4B, Falcon-7B, GLM4-9B, BLOOM-7B1) | 1（LLaMA-3.1-8B 49% 异常高）|
+| **DISP** (8) | 8 | **8** (全部 r*<30，完美一致性证明) | 0 |
+| **ANOM** (2) | 2 | 0 | 2（OPT-6.7B, Qwen3.5-35B-A3B）|
+| **合计** | 26 | **15** | 11 |
+
+### 4. 关键发现：CONC 类内部异质性
+
+之前 `_per_model_data.py` 的 hardcode 错误掩盖了真相：
+- **Qwen2-7B 旧值 42.0% → 真值 0.3%**
+- **Qwen2.5-7B 旧值 38.0% → 真值 -0.2%**
+- 23 个模型之前写 `None`（未填）→ 现已全部填入 JSON 真值
+
+**真正高 recovery (r* ≥ 30) 只有 2 个模型**：
+- GPT-J-6B (76.4%)：parallel MLP+Attn 架构副产物
+- LLaMA-3.1-8B (49.0%)：FEW-SOURCE 主层 L=1
+
+CONC 类 9 个模型里有 8 个 r* < 30，与 RQ2c 的"单层主导"分类**冲突**。
+
+### 5. 论文叙事建议
+
+**不要把 RQ6 卖成 "CONC 单层充分性证明"** —— 实测只有 gptj 真单层充分。
+
+正确叙事：
+> "RQ6 通过相反方向证明 RQ5：关所有 MLP 后单层无法独立重建 MA，意味着 **MA 是 MLP + residual stream 协作的系统性产物**。
+> CONC vs DISP 的"单层 vs 多层"区分是 **MA 写入位置** 的区分（RQ2b/2c 测的），不是 **MA 重建充分条件** 的区分。"
+
+### 6. 影响的下游图
+
+`_per_model_data.py` 修正后已重渲染：
+- `summary/samples/main_smallmult.png`（每模型 #PASS 计数会变）
+- `RQ5_v_ablation/smallmult/26models.png`（互补判据高亮主指标）
+- `RQ6_topk_scan/smallmult/26models.png`（按 tier 期望方向判 PASS/FAIL）
+- `gen_per_model_per_rq.py` 输出的 156 张 per-model 子图（PASS/FAIL 标签更新）
